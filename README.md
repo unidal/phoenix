@@ -5,3 +5,5 @@ phoenix
 * line from Frankie
 * a new trip @ figo
 xx
+a trip around the world of @marsqing
+test @ xiangbin
