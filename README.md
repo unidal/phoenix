@@ -1,10 +1,3 @@
-phoenix
+Phoenix
 =======
-
-* a new trip
-* line from Frankie
-* a new trip @ figo
-* xx
-* a trip around the world of @marsqing
-* test @ xiangbin
-* ready for prototype
+Phoenix is a powerful custmized container for java application server(eg. JBoss, Jetty, Tomcat), created and maintained by [unidal](http://github.com/unidal), [marsqing](http://github.com/marsqing), [firefox007](http://github.com/firefox007) and [figoyang](http://github.com/figoyang).
