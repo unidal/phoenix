@@ -7,3 +7,4 @@ phoenix
 * xx
 * a trip around the world of @marsqing
 * test @ xiangbin
+* ready for prototype
