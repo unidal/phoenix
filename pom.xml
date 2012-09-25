@@ -11,6 +11,7 @@
 	<modules>
 		<module>bootstrap</module>
 		<module>kernel</module>
+		<module>samples</module>
 	</modules>
         <build>
                 <pluginManagement>
