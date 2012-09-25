@@ -5,7 +5,7 @@
 	<groupId>com.dianping.platform</groupId>
 	<artifactId>phoenix-parent</artifactId>
 	<version>0.1-SNAPSHOT</version>
-	<name>platform-phoenix</name>
+	<name>phoenix-parent</name>
 	<description>Phoenix Project</description>
 	<packaging>pom</packaging>
 	<modules>
