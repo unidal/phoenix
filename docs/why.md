@@ -17,7 +17,7 @@ If we update framework library from 1.0 to 1.1 for one app:
 
 If we update this for multiple apps (eg.100+ apps), what will happen?  
 
-** THIS GONNA BE A DISASTER **
+**THIS GONNA BE A DISASTER**
 
 HOWEVER, this happens again and again...  
 
@@ -32,5 +32,11 @@ New Idea
 
 ![png](https://raw.github.com/dianping/phoenix/master/docs/images/why-3.png)
 
+
+If we update framework library from 1.0 to 1.1 for multiple apps:  
+(Prerequisites: no change with framework library API)
+
+
+![png](https://raw.github.com/dianping/phoenix/master/docs/images/why-4.png)
 
 

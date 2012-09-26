@@ -23,13 +23,13 @@
 			<groupId>com.dianping.platform</groupId>
 			<artifactId>phoenix-bootstrap</artifactId>
 			<version>0.1-SNAPSHOT</version>
-			<scope>runtime</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>catalina</artifactId>
 			<version>6.0.29</version>
-			<scope>runtime</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
     		<groupId>org.apache.tomcat</groupId>
