@@ -17,9 +17,9 @@ public class Tomcat6WebappLoader extends WebappLoader {
 	public void start() throws LifecycleException {
 		Configurator configurator = loadConfigurator(null);
 
-		configurator.preStart(this);
+		configurator.configure(this);
 		super.start();
-		configurator.postStart(this);
+		configurator.postConfigure(this);
 	}
 
 	private Configurator loadConfigurator(ClassLoader classloader) {
@@ -37,8 +37,18 @@ public class Tomcat6WebappLoader extends WebappLoader {
 	}
 
 	public static interface Configurator {
-		public void preStart(Tomcat6WebappLoader loader);
+		/**
+		 * Configure the tomcat6 webapp loader before it starts.
+		 * 
+		 * @param loader
+		 */
+		public void configure(Tomcat6WebappLoader loader);
 
-		public void postStart(Tomcat6WebappLoader loader);
+		/**
+		 * Configure the tomcat6 webapp loader after it starts.
+		 * 
+		 * @param loader
+		 */
+		public void postConfigure(Tomcat6WebappLoader loader);
 	}
 }
