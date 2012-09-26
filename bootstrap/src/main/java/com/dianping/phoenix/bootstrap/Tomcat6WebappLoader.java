@@ -1,6 +1,7 @@
 package com.dianping.phoenix.bootstrap;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -124,12 +125,22 @@ public class Tomcat6WebappLoader extends WebappLoader {
 	}
 
 	public void setKernelWarRoot(String kernelWebapp) {
-		m_kernelWarRoot = kernelWebapp;
+		try {
+			m_kernelWarRoot = new File(kernelWebapp).getCanonicalPath();
+		} catch (IOException e) {
+			m_kernelWarRoot = kernelWebapp;
+		}
 	}
 
 	@Override
 	public void start() throws LifecycleException {
-		m_warRoot = getServletContext().getRealPath("/");
+		String warRoot = getServletContext().getRealPath("/");
+
+		try {
+			m_warRoot = new File(warRoot).getCanonicalPath();
+		} catch (IOException e) {
+			m_warRoot = warRoot;
+		}
 
 		ClassLoader bootstrapClassloader = getBootstrapClassloader();
 		Configurator configurator = loadConfigurator(bootstrapClassloader);

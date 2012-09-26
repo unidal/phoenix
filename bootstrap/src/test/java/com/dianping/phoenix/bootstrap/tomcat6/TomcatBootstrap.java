@@ -141,6 +141,7 @@ public class TomcatBootstrap {
 		if (args != null && args.length != 2) {
 			System.out.println("Usage: phoenixProjectRoot kernelWarRoot");
 			System.exit(1);
+		} else {
 			phoenixProjectRoot = args[0];
 			kernelWarRoot = args[1];
 		}
@@ -155,7 +156,7 @@ public class TomcatBootstrap {
 			config.setClassesDir(Arrays.asList(extraClassesDir));
 		}
 		config.setContextPath("");
-		config.setWebappDir(phoenixProjectRoot + "/samples/src/test/resources");
+		config.setWebappDir(phoenixProjectRoot + "/samples/src/main/webapp");
 
 		final TomcatBootstrap inst = new TomcatBootstrap(phoenixProjectRoot + "/bootstrap/src/test/resources/tomcat6",
 		      8080, Arrays.asList(config), kernelWarRoot);
@@ -170,6 +171,7 @@ public class TomcatBootstrap {
 			}
 		}.start();
 
+		System.out.println("Press any key to stop ...");
 		System.in.read();
 		inst.stopTomcat();
 	}
