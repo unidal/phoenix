@@ -11,6 +11,7 @@ Author
 	* <http://weibo.com/marsqing>
 	* <http://github.com/marsqing>
 * Bin Miao
+	* <http://weibo.com/u/2085273381>
 	* <http://github.com/firefox007>
 * Figo Yang
 	* <http://weibo.com/figoyang>
