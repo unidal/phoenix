@@ -16,6 +16,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
+import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
+
 
 /**
  * @author bin.miao
@@ -26,12 +28,14 @@ public class Tomcat6WebappRegister {
 	private boolean xmlNamespaceAware = false;
 	private boolean xmlValidation = false;
 	private static Digester webDigester = null;
+	private Tomcat6WebappLoader loader;
 	
 	/**
 	 * @param loader
 	 * @throws Exception 
 	 */
-	public void start(WebappLoader loader,File webXml) throws Exception{
+	public void start(Tomcat6WebappLoader loader,File webXml) throws Exception{
+		this.loader = loader;
 		//Get StandardContext
 		StandardContext context = (StandardContext)loader.getContainer();
 		LifecycleListener[] listeners = context.findLifecycleListeners();
