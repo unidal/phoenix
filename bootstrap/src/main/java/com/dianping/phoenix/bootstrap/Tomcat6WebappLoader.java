@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ServiceLoader;
 
 import javax.servlet.ServletContext;
@@ -11,7 +13,10 @@ import javax.servlet.ServletContext;
 import org.apache.catalina.Container;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.loader.WebappClassLoader;
 import org.apache.catalina.loader.WebappLoader;
+import org.apache.juli.logging.Log;
+import org.apache.juli.logging.LogFactory;
 
 /**
  * A WebappLoader that allows a customized classpath to be added through
@@ -31,6 +36,8 @@ public class Tomcat6WebappLoader extends WebappLoader {
 
 	private String m_warRoot;
 
+	private static Log m_log = LogFactory.getLog(Tomcat6WebappLoader.class);
+
 	public Tomcat6WebappLoader() {
 	}
 
@@ -40,13 +47,51 @@ public class Tomcat6WebappLoader extends WebappLoader {
 
 	ClassLoader getBootstrapClassloader() {
 		try {
-			URL[] urls = new URL[1];
+			List<URL> urls = new ArrayList<URL>();
+			File classesDir = new File(m_kernelWarRoot, "WEB-INF/classes");
+			File libDir = new File(m_kernelWarRoot, "WEB-INF/lib");
 
-			urls[0] = new File(m_kernelWarRoot, "WEB-INF/classes").toURI().toURL();
-			return new URLClassLoader(urls);
+			if (classesDir.isDirectory()) {
+				urls.add(classesDir.toURI().toURL());
+			} else {
+				m_log.warn(String.format("Directory(%s) is not found! IGNORED.", classesDir));
+			}
+
+			if (libDir.isDirectory()) {
+				String[] files = libDir.list();
+
+				for (String file : files) {
+					if (file.endsWith(".jar")) {
+						File jarFile = new File(libDir, file);
+
+						urls.add(jarFile.toURI().toURL());
+					}
+				}
+			} else {
+				m_log.warn(String.format("Directory(%s) is not found! IGNORED.", libDir));
+			}
+
+			m_log.info("Bootstrap class path: " + urls);
+			return new URLClassLoader(urls.toArray(new URL[0]));
 		} catch (MalformedURLException e) {
-			throw new RuntimeException(String.format("Unable to create bootstrap classloader from kernel war! path: %s.",
-			      m_kernelWarRoot), e);
+			throw new RuntimeException(String.format(
+			      "Unable to create bootstrap classloader for kernel war! kernelWarRoot: %s.", m_kernelWarRoot), e);
+		}
+	}
+
+	public String getKernelWarRoot() {
+		return m_kernelWarRoot;
+	}
+
+	public ServletContext getServletContext() {
+		Container container = super.getContainer();
+
+		if (container instanceof Context) {
+			ServletContext servletContext = ((Context) container).getServletContext();
+
+			return servletContext;
+		} else {
+			throw new RuntimeException("No ServletContext was found!");
 		}
 	}
 
@@ -54,8 +99,14 @@ public class Tomcat6WebappLoader extends WebappLoader {
 		return m_warRoot;
 	}
 
-	public String getKernelWarRoot() {
-		return m_kernelWarRoot;
+	/**
+	 * The webapp class loader should be used to load all classes for the runtime
+	 * request.
+	 * 
+	 * @return webapp class loader
+	 */
+	public WebappClassLoader getWebappClassLoader() {
+		return (WebappClassLoader) super.getClassLoader();
 	}
 
 	Configurator loadConfigurator(ClassLoader classloader) {
@@ -72,20 +123,8 @@ public class Tomcat6WebappLoader extends WebappLoader {
 		throw new UnsupportedOperationException("No implemenation class found for " + Configurator.class);
 	}
 
-	public void setKernelWebapp(String kernelWebapp) {
+	public void setKernelWarRoot(String kernelWebapp) {
 		m_kernelWarRoot = kernelWebapp;
-	}
-
-	public ServletContext getServletContext() {
-		Container container = super.getContainer();
-
-		if (container instanceof Context) {
-			ServletContext servletContext = ((Context) container).getServletContext();
-
-			return servletContext;
-		} else {
-			throw new RuntimeException("No ServletContext was found!");
-		}
 	}
 
 	@Override
