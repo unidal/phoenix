@@ -32,5 +32,8 @@ New Idea
 
 ![png](https://raw.github.com/dianping/phoenix/master/docs/images/why-3.png)
 
+If we update framework library from 1.0 to 1.1 for multiple apps:
+
+![png](https://raw.github.com/dianping/phoenix/master/docs/images/why-4.png)
 
 
