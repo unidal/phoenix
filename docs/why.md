@@ -9,10 +9,10 @@ Current Situation
 -----------------
 The classical packaging & deployment strategy looks like this: 
 
-![png](why-1.png)
+![png](https://raw.github.com/dianping/phoenix/master/docs/images/why-1.png)
 
 If we update framework library from 1.0 to 1.1:
 
-![png](why-2.png)
+![png](https://raw.github.com/dianping/phoenix/master/docs/images/why-2.png)
 
 
