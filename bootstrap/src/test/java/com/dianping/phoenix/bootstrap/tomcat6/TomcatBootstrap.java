@@ -3,7 +3,7 @@ package com.dianping.phoenix.bootstrap.tomcat6;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -11,7 +11,6 @@ import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
 import org.apache.catalina.Host;
 import org.apache.catalina.connector.Connector;
-import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.session.StandardManager;
 import org.apache.catalina.startup.Embedded;
@@ -27,27 +26,32 @@ import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
 public class TomcatBootstrap {
 
 	private Embedded container = null;
+
 	private Host localHost;
+
 	private CountDownLatch shutdownLatch = new CountDownLatch(1);
+
 	private String kernelWarRoot;
 
 	/**
 	 * The directory to create the Tomcat server configuration under.
 	 */
 	private String catalinaHome;
+
 	private int port = 8080;
+
 	private List<TomcatWebappConfig> webappConfig;
 
 	/**
 	 * 
 	 * @param catalinaHome
-	 *            directory which contains a children directory named conf which
-	 *            contains all files from a standard tomcat installation's conf
-	 *            directory
+	 *           directory which contains a children directory named conf which
+	 *           contains all files from a standard tomcat installation's conf
+	 *           directory
 	 * @param port
-	 *            port to listen
+	 *           port to listen
 	 * @param webappConfig
-	 *            web apps to start
+	 *           web apps to start
 	 */
 	public TomcatBootstrap(String catalinaHome, int port, List<TomcatWebappConfig> webappConfig, String kernelWarRoot) {
 		this.catalinaHome = catalinaHome;
@@ -106,7 +110,9 @@ public class TomcatBootstrap {
 	 */
 	public void addWebapp(TomcatWebappConfig config) throws MalformedURLException {
 		Tomcat6WebappLoader loader = new Tomcat6WebappLoader(this.getClass().getClassLoader());
-		loader.setKernelWebapp(kernelWarRoot);
+
+		loader.setKernelWarRoot(kernelWarRoot);
+
 		if (config.getClassesDir() != null) {
 			for (String classDir : config.getClassesDir()) {
 				loader.addRepository(new File(classDir).toURI().toURL().toString());
@@ -146,21 +152,13 @@ public class TomcatBootstrap {
 		final TomcatWebappConfig config = new TomcatWebappConfig();
 		final String extraClassesDir = phoenixProjectRoot + "/samples/target/classes";
 		if ((new File(extraClassesDir)).exists()) {
-			config.setClassesDir(new ArrayList<String>() {
-				{
-					add(extraClassesDir);
-				}
-			});
+			config.setClassesDir(Arrays.asList(extraClassesDir));
 		}
 		config.setContextPath("");
 		config.setWebappDir(phoenixProjectRoot + "/samples/src/test/resources");
 
-		final TomcatBootstrap inst = new TomcatBootstrap(phoenixProjectRoot + "/bootstrap/src/test/resources/tomcat6", 8080,
-				new ArrayList<TomcatWebappConfig>() {
-					{
-						add(config);
-					}
-				}, kernelWarRoot);
+		final TomcatBootstrap inst = new TomcatBootstrap(phoenixProjectRoot + "/bootstrap/src/test/resources/tomcat6",
+		      8080, Arrays.asList(config), kernelWarRoot);
 
 		new Thread() {
 			public void run() {
