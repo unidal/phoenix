@@ -45,13 +45,13 @@ public class TomcatBootstrap {
 	/**
 	 * 
 	 * @param catalinaHome
-	 *           directory which contains a children directory named conf which
-	 *           contains all files from a standard tomcat installation's conf
-	 *           directory
+	 *            directory which contains a children directory named conf which
+	 *            contains all files from a standard tomcat installation's conf
+	 *            directory
 	 * @param port
-	 *           port to listen
+	 *            port to listen
 	 * @param webappConfig
-	 *           web apps to start
+	 *            web apps to start
 	 */
 	public TomcatBootstrap(String catalinaHome, int port, List<TomcatWebappConfig> webappConfig, String kernelWarRoot) {
 		this.catalinaHome = catalinaHome;
@@ -136,18 +136,20 @@ public class TomcatBootstrap {
 
 	public static void main(String[] args) throws Exception {
 		String phoenixProjectRoot = "../";
-		String kernelWarRoot = "/Users/marsqing/Projects/phoenix/kernel/target/kernel/";
+		String kernelWarRoot = "../kernel/target/kernel/";
 
-		if (args != null && args.length != 2) {
-			System.out.println("Usage: phoenixProjectRoot kernelWarRoot");
-			System.exit(1);
-			phoenixProjectRoot = args[0];
-			kernelWarRoot = args[1];
+		if (args != null && args.length > 0) {
+			if (args.length != 2) {
+				System.out.println("Usage: phoenixProjectRoot kernelWarRoot");
+				System.exit(1);
+			} else {
+				phoenixProjectRoot = args[0];
+				kernelWarRoot = args[1];
+			}
 		}
 
-		File phoenixBase = new File(phoenixProjectRoot);
-		System.out.println("Starting tomcat with phoenix project root dir " + phoenixBase.getAbsolutePath());
-		System.out.println("\t\t and kernel war root dir " + kernelWarRoot);
+		System.out.println("Starting tomcat with phoenix project root dir " + new File(phoenixProjectRoot).getAbsolutePath());
+		System.out.println("\t\t and kernel war root dir " + new File(kernelWarRoot).getAbsolutePath());
 
 		final TomcatWebappConfig config = new TomcatWebappConfig();
 		final String extraClassesDir = phoenixProjectRoot + "/samples/target/classes";
@@ -155,10 +157,10 @@ public class TomcatBootstrap {
 			config.setClassesDir(Arrays.asList(extraClassesDir));
 		}
 		config.setContextPath("");
-		config.setWebappDir(phoenixProjectRoot + "/samples/src/test/resources");
+		config.setWebappDir(phoenixProjectRoot + "/samples/src/main/webapp");
 
 		final TomcatBootstrap inst = new TomcatBootstrap(phoenixProjectRoot + "/bootstrap/src/test/resources/tomcat6",
-		      8080, Arrays.asList(config), kernelWarRoot);
+				8080, Arrays.asList(config), kernelWarRoot);
 
 		new Thread() {
 			public void run() {
@@ -170,6 +172,7 @@ public class TomcatBootstrap {
 			}
 		}.start();
 
+		System.out.println("Press any key to stop ...");
 		System.in.read();
 		inst.stopTomcat();
 	}
