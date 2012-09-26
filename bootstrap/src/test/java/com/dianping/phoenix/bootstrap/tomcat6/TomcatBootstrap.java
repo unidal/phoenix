@@ -14,6 +14,8 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.session.StandardManager;
 import org.apache.catalina.startup.Embedded;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
 
@@ -53,11 +55,17 @@ public class TomcatBootstrap {
 	 * @param webappConfig
 	 *            web apps to start
 	 */
-	public TomcatBootstrap(String catalinaHome, int port, List<TomcatWebappConfig> webappConfig, String kernelWarRoot) {
-		this.catalinaHome = catalinaHome;
-		this.port = port;
-		this.webappConfig = webappConfig;
-		this.kernelWarRoot = kernelWarRoot;
+//	public TomcatBootstrap(String catalinaHome, int port, List<TomcatWebappConfig> webappConfig, String kernelWarRoot) {
+//		this.catalinaHome = catalinaHome;
+//		this.port = port;
+//		this.webappConfig = webappConfig;
+//		this.kernelWarRoot = kernelWarRoot;
+//	}
+	
+	/**
+	 * fake, for unit test only
+	 */
+	public TomcatBootstrap() {
 	}
 
 	public void startTomcat() throws Exception {
@@ -135,6 +143,24 @@ public class TomcatBootstrap {
 	}
 
 	public static void main(String[] args) throws Exception {
+		innerStart(args);
+	}
+	
+	@Test
+	public void testServer() throws Exception {
+		String[] args = new String[2];
+		String phoenixProjectRoot = System.getProperty("phoenixProjectRoot");
+		String kernelWarRoot = System.getProperty("kernelWarRoot");
+		if(phoenixProjectRoot != null && kernelWarRoot != null) {
+			args[0] = phoenixProjectRoot;
+			args[1] = kernelWarRoot;
+			innerStart(args);
+		} else {
+			innerStart(null);
+		}
+	}
+	
+	private static void innerStart(String[] args) throws Exception {
 		String phoenixProjectRoot = "../";
 		String kernelWarRoot = "../kernel/target/kernel/";
 
@@ -159,8 +185,11 @@ public class TomcatBootstrap {
 		config.setContextPath("");
 		config.setWebappDir(phoenixProjectRoot + "/samples/src/main/webapp");
 
-		final TomcatBootstrap inst = new TomcatBootstrap(phoenixProjectRoot + "/bootstrap/src/test/resources/tomcat6",
-				8080, Arrays.asList(config), kernelWarRoot);
+		final TomcatBootstrap inst = new TomcatBootstrap();
+		inst.setCatalinaHome(phoenixProjectRoot + "/bootstrap/src/test/resources/tomcat6");
+		inst.setKernelWarRoot(kernelWarRoot);
+		inst.setPort(8080);
+		inst.setWebappConfig(Arrays.asList(config));
 
 		new Thread() {
 			public void run() {
@@ -177,4 +206,20 @@ public class TomcatBootstrap {
 		inst.stopTomcat();
 	}
 
+	public void setKernelWarRoot(String kernelWarRoot) {
+		this.kernelWarRoot = kernelWarRoot;
+	}
+
+	public void setCatalinaHome(String catalinaHome) {
+		this.catalinaHome = catalinaHome;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public void setWebappConfig(List<TomcatWebappConfig> webappConfig) {
+		this.webappConfig = webappConfig;
+	}
+	
 }
