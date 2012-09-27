@@ -9,9 +9,9 @@
 	<description>Phoenix Project</description>
 	<packaging>pom</packaging>
 	<modules>
-		<module>bootstrap</module>
-		<module>kernel</module>
-		<module>samples</module>
+		<module>phoenix-bootstrap</module>
+		<module>phoenix-kernel</module>
+		<module>phoenix-samples</module>
 	</modules>
         <build>
                 <pluginManagement>
