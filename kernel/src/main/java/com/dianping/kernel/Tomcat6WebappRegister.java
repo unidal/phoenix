@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.WebRuleSet;
 import org.apache.tomcat.util.digester.Digester;
@@ -30,14 +29,21 @@ public class Tomcat6WebappRegister {
 	private static Digester webDigester = null;
 	private Tomcat6WebappLoader loader;
 	
+	private StandardContext context;
+	
 	/**
 	 * @param loader
 	 * @throws Exception 
 	 */
+	/**
+	 * @param loader
+	 * @param webXml
+	 * @throws Exception
+	 */
 	public void start(Tomcat6WebappLoader loader,File webXml) throws Exception{
 		this.loader = loader;
 		//Get StandardContext
-		StandardContext context = (StandardContext)loader.getContainer();
+		context = (StandardContext)loader.getContainer();
 		LifecycleListener[] listeners = context.findLifecycleListeners();
 		ContextConfig config = null;
 		//Get ContextConfig
@@ -49,11 +55,7 @@ public class Tomcat6WebappRegister {
 		if(config == null){
 			throw new TomcatRegisterException("can't get ContextConfig from Context");
 		}
-		//Reflect webRuleSet
-		Field field = ContextConfig.class.getDeclaredField("webRuleSet");
-		field.setAccessible(true);
-		WebRuleSet webRuleSet = (WebRuleSet)field.get(null);
-		Method recycle = WebRuleSet.class.getMethod("recycle", new Class[0]);
+		
 		//Create WebXml Source and Stream
 		InputStream stream = new FileInputStream(webXml);
 		InputSource source = new InputSource(webXml.toURI().toURL().toExternalForm());
@@ -61,10 +63,24 @@ public class Tomcat6WebappRegister {
 		xmlValidation = context.getXmlValidation();
 		webDigester = config.createWebXmlDigester(xmlNamespaceAware, xmlValidation);
 		
+		context.setReplaceWelcomeFiles(true);
+		
+		parseWebXml(source,stream);
+	}
+	
+	/**
+	 * Parse WebXml
+	 * @param source
+	 */
+	public void parseWebXml(InputSource source,InputStream stream) throws Exception{
+		
+		//Reflect webRuleSet
+		Field field = ContextConfig.class.getDeclaredField("webRuleSet");
+		field.setAccessible(true);
+		WebRuleSet webRuleSet = (WebRuleSet)field.get(null);
+		Method recycle = WebRuleSet.class.getMethod("recycle", new Class[0]);
+		
 		source.setByteStream(stream);
-        // Parse WebXml
-        if (context instanceof StandardContext)
-            ((StandardContext) context).setReplaceWelcomeFiles(true);
         webDigester.setClassLoader(this.getClass().getClassLoader());
         webDigester.setUseContextClassLoader(false);
         webDigester.push(context);
