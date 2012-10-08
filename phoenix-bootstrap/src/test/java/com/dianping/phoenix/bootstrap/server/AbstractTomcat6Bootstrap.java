@@ -48,6 +48,28 @@ public abstract class AbstractTomcat6Bootstrap {
 	 */
 	protected abstract WebappProvider getWebappProvider() throws IOException;
 
+	protected void display(String requestUri) {
+		String url = "http://localhost:" + getPort() + requestUri;
+		String os = System.getProperty("os.name");
+		String[] commandLine;
+
+		if (os != null && os.startsWith("Windows")) {
+			commandLine = new String[] { "rundll32", "url.dll,FileProtocolHandler", url };
+		} else if (os != null && os.indexOf("Mac") >= 0) {
+			commandLine = new String[] { "open", url };
+		} else if (os != null && os.indexOf("Linux") >= 0) {
+			commandLine = new String[] { "xdg-open", url };
+		} else {
+			throw new RuntimeException(String.format("Not supported OS(%s)!", System.getProperty("os.name")));
+		}
+
+		try {
+			Runtime.getRuntime().exec(commandLine);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	protected void startTomcat() throws Exception {
 		Embedded container = new Embedded();
 
@@ -91,10 +113,6 @@ public abstract class AbstractTomcat6Bootstrap {
 
 		// start server
 		container.start();
-
-		System.out.println("Press any key to stop the server ...");
-		System.in.read();
-		container.stop();
 	}
 
 	static class DevClasspathBuilder {

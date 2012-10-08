@@ -1,9 +1,11 @@
 package com.dianping.phoenix.bootstrap;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -37,6 +39,10 @@ public class Tomcat6WebappLoader extends WebappLoader {
 
 	private WebappProvider m_kernelProvider;
 
+	private ClassLoader m_webappClassloader;
+
+	private boolean m_debug = true;
+
 	public Tomcat6WebappLoader() {
 	}
 
@@ -44,7 +50,44 @@ public class Tomcat6WebappLoader extends WebappLoader {
 		super(classloader);
 	}
 
-	ClassLoader getBootstrapClassloader() {
+	WebappClassLoader adjustWebappClassloader(WebappClassLoader classloader) {
+		try {
+			List<File> entries = new ArrayList<File>(256);
+
+			entries.addAll(m_kernelProvider.getClasspathEntries());
+			entries.addAll(m_appProvider.getClasspathEntries());
+
+			for (File entry : entries) {
+				File file = entry.getCanonicalFile();
+
+				if (file.isDirectory() || file.getPath().endsWith(".jar")) {
+					// no phoenix-kernel/target/classes
+					// since it's for bootstrap classloader only by design
+					if (m_debug || !file.getPath().contains("/phoenix-kernel/target/classes")) {
+						classloader.addRepository(file.toURI().toURL().toExternalForm());
+					}
+				}
+			}
+
+			m_log.info(String.format("Webapp classpath: %s.", Arrays.asList(classloader.getURLs())));
+			return classloader;
+		} catch (Exception e) {
+			throw new RuntimeException("Error when adjusting webapp classloader!", e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getFieldValue(Class<?> clazz, String fieldName, Object instance) throws Exception {
+		Field field = clazz.getDeclaredField(fieldName);
+
+		if (!field.isAccessible()) {
+			field.setAccessible(true);
+		}
+
+		return (T) field.get(instance);
+	}
+
+	ClassLoader createBootstrapClassloader() {
 		try {
 			List<URL> urls = new ArrayList<URL>();
 
@@ -56,10 +99,10 @@ public class Tomcat6WebappLoader extends WebappLoader {
 				}
 			}
 
-			m_log.info("Bootstrap class path: " + urls);
+			m_log.info(String.format("Bootstrap classpath: %s.", urls));
 			return new URLClassLoader(urls.toArray(new URL[0]));
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to create bootstrap classloader for kernel war!", e);
+			throw new RuntimeException("Unable to create bootstrap classloader!", e);
 		}
 	}
 
@@ -90,10 +133,8 @@ public class Tomcat6WebappLoader extends WebappLoader {
 	 * @return webapp class loader
 	 */
 	public WebappClassLoader getWebappClassLoader() {
-		WebappClassLoader classLoader = (WebappClassLoader) super.getClassLoader();
-
-		if (classLoader != null) {
-			return classLoader;
+		if (m_webappClassloader != null) {
+			return (WebappClassLoader) m_webappClassloader;
 		} else {
 			throw new IllegalStateException("WebappClassLoader is not ready at this time!");
 		}
@@ -125,11 +166,13 @@ public class Tomcat6WebappLoader extends WebappLoader {
 	public void start() throws LifecycleException {
 		init();
 
-		ClassLoader bootstrapClassloader = getBootstrapClassloader();
-		Configurator configurator = loadConfigurator(bootstrapClassloader);
+		Configurator configurator = loadConfigurator(createBootstrapClassloader());
 
 		configurator.configure(this);
+
 		super.start();
+
+		m_webappClassloader = adjustWebappClassloader((WebappClassLoader) getClassLoader());
 		configurator.postConfigure(this);
 	}
 

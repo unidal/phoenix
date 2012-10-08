@@ -16,5 +16,9 @@ public class Tomcat6Bootstrap extends AbstractTomcat6Bootstrap {
 	@Test
 	public void startServer() throws Exception {
 		startTomcat();
+		display("/");
+		
+		System.out.println("Press any key to stop the server ...");
+		System.in.read();
 	}
 }
