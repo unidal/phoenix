@@ -26,7 +26,7 @@ import org.apache.juli.logging.LogFactory;
  * 
  * <pre>
  * &lt;Context docBase="\webapps\mydocbase">
- *   &lt;Loader className="com.dianping.phoenix.bootstrap.Tomcat6WebappLoader" kernelWebappRoot="/data/webapps/kernel/current/kernel.war/"/>
+ *   &lt;Loader className="com.dianping.phoenix.bootstrap.Tomcat6WebappLoader"/>
  * &lt;/Context>
  * </pre>
  */
@@ -110,7 +110,7 @@ public class Tomcat6WebappLoader extends WebappLoader {
 			return e;
 		}
 
-		throw new UnsupportedOperationException("No implemenation class found for " + Configurator.class);
+		throw new UnsupportedOperationException("No implementation class found for " + Configurator.class);
 	}
 
 	public void setApplicationWebappProvider(WebappProvider appProvider) {

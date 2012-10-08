@@ -8,9 +8,9 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dianping.platform</groupId>
-	<artifactId>platform-kernel</artifactId>
+	<artifactId>phoenix-kernel</artifactId>
 	<version>0.1-SNAPSHOT</version>
-	<name>platform-kernel</name>
+	<name>phoenix-kernel</name>
 	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
@@ -50,7 +50,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>kernel</finalName>
+		<finalName>phoenix-kernel</finalName>
 	</build>
 </project>
 

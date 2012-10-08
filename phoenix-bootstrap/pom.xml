@@ -38,5 +38,8 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<build>
+		<finalName>phoenix-bootstrap</finalName>
+	</build>
 </project>
 
