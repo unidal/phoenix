@@ -3,6 +3,19 @@ SHOPPIC_WAR=/Users/marsqing/Projects/shoppic-service/shoppic-remote-service/targ
 MAX_HTTP_TRY=30
 
 WEB_LOG_HOME=/data/applogs/
+PHOENIX_KERNEL_WAR=./phoenix-kernel/target/phoenix-kernel.war
+PHOENIX_BOOTSTRAP_JAR=./phoenix-bootstrap/target/phoenix-bootstrap.jar
+
+cwd=`pwd`
+mvn -Dmaven.test.skip package >/dev/null
+mkdir tmp
+rm -rf tmp/*
+unzip $PHOENIX_KERNEL_WAR -d tmp
+cd tmp/WEB-INF/classes
+zip -r phoenix-kernel.jar * >/dev/null
+cp phoenix-kernel.jar $TOMCAT_HOME/lib/
+cd $cwd
+cp $PHOENIX_BOOTSTRAP_JAR $TOMCAT_HOME/lib/
 
 # stop all tomcat
 jps |awk '$2=="Bootstrap"{cmd=sprintf("kill -9 %s", $1);system(cmd)}'
