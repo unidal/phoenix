@@ -144,9 +144,9 @@ public abstract class AbstractTomcat6Bootstrap {
 
 		private File m_warRoot;
 
-		public MavenWebappProvider(String baseDir, String finalName) throws IOException {
+		public MavenWebappProvider(String baseDir, String warName) throws IOException {
 			m_classesDir = new File(baseDir, "target/classes").getCanonicalFile();
-			m_libDir = new File(baseDir, "target/" + finalName + "/WEB-INF/lib").getCanonicalFile();
+			m_libDir = new File(baseDir, "target/" + warName + "/WEB-INF/lib").getCanonicalFile();
 			m_warRoot = new File(baseDir, "src/main/webapp").getCanonicalFile();
 
 			if (!m_warRoot.exists()) {
