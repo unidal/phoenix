@@ -14,6 +14,7 @@ import javax.servlet.ServletContext;
 import org.apache.catalina.Container;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.loader.WebappClassLoader;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.juli.logging.Log;
@@ -42,6 +43,8 @@ public class Tomcat6WebappLoader extends WebappLoader {
 	private ClassLoader m_webappClassloader;
 
 	private boolean m_debug = true;
+	
+	private Configurator configurator;
 
 	public Tomcat6WebappLoader() {
 	}
@@ -166,17 +169,20 @@ public class Tomcat6WebappLoader extends WebappLoader {
 	public void start() throws LifecycleException {
 		init();
 
-		Configurator configurator = loadConfigurator(createBootstrapClassloader());
-
-		configurator.configure(this);
-
 		super.start();
 
 		m_webappClassloader = adjustWebappClassloader((WebappClassLoader) getClassLoader());
-		configurator.postConfigure(this);
+	}
+	
+	@Override
+	public void setContainer(Container container) {
+		super.setContainer(container);
+		configurator = loadConfigurator(createBootstrapClassloader());
+		configurator.configure(this);
 	}
 
 	public static interface Configurator {
+		
 		/**
 		 * Configure the tomcat6 webapp loader before it starts.
 		 * 
@@ -184,12 +190,6 @@ public class Tomcat6WebappLoader extends WebappLoader {
 		 */
 		public void configure(Tomcat6WebappLoader loader);
 
-		/**
-		 * Configure the tomcat6 webapp loader after it starts.
-		 * 
-		 * @param loader
-		 */
-		public void postConfigure(Tomcat6WebappLoader loader);
 	}
 
 	public static interface WebappProvider {

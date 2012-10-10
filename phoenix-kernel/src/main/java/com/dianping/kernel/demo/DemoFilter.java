@@ -20,6 +20,7 @@ public class DemoFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
+		m_id = filterConfig.getFilterName();
 		System.out.println(m_id + " Init");
 	}
 
