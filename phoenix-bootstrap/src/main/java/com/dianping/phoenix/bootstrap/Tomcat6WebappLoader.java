@@ -13,7 +13,11 @@ import javax.servlet.ServletContext;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.Context;
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleListener;
+import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.loader.WebappClassLoader;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.juli.logging.Log;
@@ -43,6 +47,8 @@ public class Tomcat6WebappLoader extends WebappLoader {
 
 	private boolean m_debug = true;
 
+	private String m_kernelDocBase;
+
 	public Tomcat6WebappLoader() {
 	}
 
@@ -61,11 +67,7 @@ public class Tomcat6WebappLoader extends WebappLoader {
 				File file = entry.getCanonicalFile();
 
 				if (file.isDirectory() || file.getPath().endsWith(".jar")) {
-					// no phoenix-kernel/target/classes
-					// since it's for bootstrap classloader only by design
-					if (m_debug || !file.getPath().contains("/phoenix-kernel/target/classes")) {
-						classloader.addRepository(file.toURI().toURL().toExternalForm());
-					}
+					classloader.addRepository(file.toURI().toURL().toExternalForm());
 				}
 			}
 
@@ -74,17 +76,6 @@ public class Tomcat6WebappLoader extends WebappLoader {
 		} catch (Exception e) {
 			throw new RuntimeException("Error when adjusting webapp classloader!", e);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T> T getFieldValue(Class<?> clazz, String fieldName, Object instance) throws Exception {
-		Field field = clazz.getDeclaredField(fieldName);
-
-		if (!field.isAccessible()) {
-			field.setAccessible(true);
-		}
-
-		return (T) field.get(instance);
 	}
 
 	ClassLoader createBootstrapClassloader() {
@@ -104,6 +95,17 @@ public class Tomcat6WebappLoader extends WebappLoader {
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to create bootstrap classloader!", e);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getFieldValue(Class<?> clazz, String fieldName, Object instance) throws Exception {
+		Field field = clazz.getDeclaredField(fieldName);
+
+		if (!field.isAccessible()) {
+			field.setAccessible(true);
+		}
+
+		return (T) field.get(instance);
 	}
 
 	public File getKernelWarRoot() {
@@ -140,56 +142,121 @@ public class Tomcat6WebappLoader extends WebappLoader {
 		}
 	}
 
-	Configurator loadConfigurator(ClassLoader classloader) {
+	Listener loadListener(ClassLoader classloader) {
 		if (classloader == null) {
 			classloader = Thread.currentThread().getContextClassLoader();
 		}
 
-		ServiceLoader<Configurator> serviceLoader = ServiceLoader.load(Configurator.class, classloader);
+		ServiceLoader<Listener> serviceLoader = ServiceLoader.load(Listener.class, classloader);
 
-		for (Configurator e : serviceLoader) {
+		for (Listener e : serviceLoader) {
 			return e;
 		}
 
-		throw new UnsupportedOperationException("No implementation class found for " + Configurator.class);
+		throw new UnsupportedOperationException("No implementation class found in phoenix-kernel war for "
+		      + Listener.class);
 	}
 
+	/**
+	 * For development only!
+	 * 
+	 * @param appProvider
+	 */
 	public void setApplicationWebappProvider(WebappProvider appProvider) {
 		m_appProvider = appProvider;
 	}
 
+	@Override
+	public void setContainer(Container container) {
+		super.setContainer(container);
+
+		Listener listener = loadListener(createBootstrapClassloader());
+
+		((StandardContext) container).addLifecycleListener(new Delegate(this, listener));
+	}
+
+	public void setDebug(String debug) {
+		m_debug = "true".equals(debug);
+	}
+
+	/**
+	 * For production only!
+	 * 
+	 * @param kernelDocBase
+	 */
+	public void setKernelDocBase(String kernelDocBase) {
+		m_kernelDocBase = kernelDocBase;
+	}
+
+	/**
+	 * For development only!
+	 * 
+	 * @param kernelProvider
+	 */
 	public void setKernelWebappProvider(WebappProvider kernelProvider) {
 		m_kernelProvider = kernelProvider;
 	}
 
 	@Override
 	public void start() throws LifecycleException {
-		init();
-
-		Configurator configurator = loadConfigurator(createBootstrapClassloader());
-
-		configurator.configure(this);
-
 		super.start();
 
 		m_webappClassloader = adjustWebappClassloader((WebappClassLoader) getClassLoader());
-		configurator.postConfigure(this);
 	}
 
-	public static interface Configurator {
-		/**
-		 * Configure the tomcat6 webapp loader before it starts.
-		 * 
-		 * @param loader
-		 */
-		public void configure(Tomcat6WebappLoader loader);
+	public static interface ClasspathMerger {
+		public List<File> merge(List<File> kernelEntries, List<File> appEntries);
+	}
 
-		/**
-		 * Configure the tomcat6 webapp loader after it starts.
-		 * 
-		 * @param loader
-		 */
-		public void postConfigure(Tomcat6WebappLoader loader);
+	public class Delegate implements LifecycleListener {
+		private Tomcat6WebappLoader m_loader;
+
+		private Listener m_listener;
+
+		public Delegate(Tomcat6WebappLoader loader, Listener listener) {
+			m_loader = loader;
+			m_listener = listener;
+		}
+
+		@Override
+		public void lifecycleEvent(LifecycleEvent event) {
+			String type = event.getType();
+
+			try {
+				if (Lifecycle.INIT_EVENT.equals(type)) {
+					m_listener.initializing(m_loader);
+				} else if (Lifecycle.BEFORE_START_EVENT.equals(type)) {
+					m_listener.beforeStarting(m_loader);
+				} else if (Lifecycle.START_EVENT.equals(type)) {
+					m_listener.starting(m_loader);
+				} else if (Lifecycle.AFTER_START_EVENT.equals(type)) {
+					m_listener.afterStarted(m_loader);
+				} else if (Lifecycle.STOP_EVENT.equals(type)) {
+					m_listener.stopping(m_loader);
+				} else if (Lifecycle.DESTROY_EVENT.equals(type)) {
+					m_listener.destroying(m_loader);
+				} else {
+					// ignore it
+				}
+			} catch (Throwable e) {
+				m_log.error(String.format("Error when dispatching lifecycle event(%s) to listener(%s)!", type, m_listener
+				      .getClass().getName()), e);
+			}
+		}
+	}
+
+	public static interface Listener {
+		public void afterStarted(Tomcat6WebappLoader loader);
+
+		public void beforeStarting(Tomcat6WebappLoader loader);
+
+		public void destroying(Tomcat6WebappLoader loader);
+
+		public void initializing(Tomcat6WebappLoader loader);
+
+		public void starting(Tomcat6WebappLoader loader);
+
+		public void stopping(Tomcat6WebappLoader loader);
 	}
 
 	public static interface WebappProvider {
