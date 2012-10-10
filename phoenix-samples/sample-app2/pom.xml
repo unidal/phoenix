@@ -11,7 +11,7 @@
 	<artifactId>sample-app2</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<name>sample-app2</name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
