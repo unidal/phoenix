@@ -1,10 +1,7 @@
 package com.dianping.phoenix.bootstrap.server;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
@@ -15,39 +12,9 @@ import org.apache.catalina.session.StandardManager;
 import org.apache.catalina.startup.Embedded;
 
 import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
-import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader.WebappProvider;
+import com.dianping.phoenix.bootstrap.WebappProvider;
 
 public abstract class AbstractTomcat6Bootstrap {
-	protected String getCatalinaHome() {
-		String catalinaHome = getClass().getResource("/tomcat6").getFile();
-
-		return catalinaHome;
-	}
-
-	protected String getContextPath() {
-		return "";
-	}
-
-	protected WebappProvider getKernelWebappProvider() throws IOException {
-		return new MavenWebappProvider("../phoenix-kernel", "phoenix-kernel");
-	}
-
-	protected int getPort() {
-		return 7463;
-	}
-
-	/**
-	 * For example,
-	 * 
-	 * <pre>
-	 * return new MavenWebappProvider(&quot;../sample-app1&quot;, &quot;sample-app1&quot;);
-	 * </pre>
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	protected abstract WebappProvider getWebappProvider() throws IOException;
-
 	protected void display(String requestUri) {
 		String url = "http://localhost:" + getPort() + requestUri;
 		String os = System.getProperty("os.name");
@@ -70,7 +37,33 @@ public abstract class AbstractTomcat6Bootstrap {
 		}
 	}
 
-	protected void startTomcat() throws Exception {
+	protected String getCatalinaHome() {
+		String catalinaHome = getClass().getResource("/tomcat6").getFile();
+
+		return catalinaHome;
+	}
+
+	protected String getContextPath() {
+		return "";
+	}
+
+	protected int getPort() {
+		return 7463;
+	}
+
+	protected void startTomcat(String kernelDocBase, String appDocBase) throws Exception {
+		startTomcat(null, null, kernelDocBase, appDocBase);
+	}
+
+	protected void startTomcat(WebappProvider kernelProvider, WebappProvider appProvider) throws Exception {
+		String kernelDocBase = kernelProvider.getWarRoot().getCanonicalPath();
+		String appDocBase = appProvider.getWarRoot().getCanonicalPath();
+
+		startTomcat(kernelProvider, appProvider, kernelDocBase, appDocBase);
+	}
+
+	private void startTomcat(WebappProvider kernelProvider, WebappProvider appProvider, String kernelDocBase,
+	      String appDocBase) throws Exception {
 		Embedded container = new Embedded();
 
 		container.setCatalinaHome(getCatalinaHome());
@@ -79,14 +72,12 @@ public abstract class AbstractTomcat6Bootstrap {
 		// create host
 		Host localHost = container.createHost("localHost", new File(".").getAbsolutePath());
 		Tomcat6WebappLoader loader = new Tomcat6WebappLoader(getClass().getClassLoader());
-		WebappProvider kernelProvider = getKernelWebappProvider();
-		WebappProvider appProvider = getWebappProvider();
-		File warRoot = appProvider.getWarRoot();
 
 		loader.setKernelWebappProvider(kernelProvider);
 		loader.setApplicationWebappProvider(appProvider);
+		loader.setKernelDocBase(kernelDocBase);
 
-		Context context = container.createContext("/" + getContextPath(), warRoot.getCanonicalPath());
+		Context context = container.createContext("/" + getContextPath(), appDocBase);
 		context.setLoader(loader);
 
 		// avoid write SESSIONS.ser to src/test/resources/
@@ -113,61 +104,5 @@ public abstract class AbstractTomcat6Bootstrap {
 
 		// start server
 		container.start();
-	}
-
-	static class DevClasspathBuilder {
-		public List<File> build(File libDir, File classesDir) {
-			List<File> list = new ArrayList<File>();
-
-			list.add(classesDir);
-
-			if (libDir.isDirectory()) {
-				String[] names = libDir.list();
-
-				if (names != null) {
-					for (String name : names) {
-						File jarFile = new File(libDir, name);
-
-						list.add(jarFile);
-					}
-				}
-			}
-
-			return list;
-		}
-	}
-
-	protected static class MavenWebappProvider implements WebappProvider {
-		private File m_classesDir;
-
-		private File m_libDir;
-
-		private File m_warRoot;
-
-		public MavenWebappProvider(String baseDir, String warName) throws IOException {
-			m_classesDir = new File(baseDir, "target/classes").getCanonicalFile();
-			m_libDir = new File(baseDir, "target/" + warName + "/WEB-INF/lib").getCanonicalFile();
-			m_warRoot = new File(baseDir, "src/main/webapp").getCanonicalFile();
-
-			if (!m_warRoot.exists()) {
-				throw new RuntimeException(String.format("Please make sure project at %s is a valid war "
-				      + "with src/main/webapp folder!", baseDir));
-			}
-
-			if (!m_libDir.exists()) {
-				throw new RuntimeException(String.format("You need to run 'mvn package' for project at %s once "
-				      + "before starting the server!", baseDir));
-			}
-		}
-
-		@Override
-		public List<File> getClasspathEntries() {
-			return new DevClasspathBuilder().build(m_libDir, m_classesDir);
-		}
-
-		@Override
-		public File getWarRoot() {
-			return m_warRoot;
-		}
 	}
 }

@@ -45,8 +45,6 @@ public class Tomcat6WebappLoader extends WebappLoader {
 
 	private ClassLoader m_webappClassloader;
 
-	private boolean m_debug = true;
-
 	private String m_kernelDocBase;
 
 	public Tomcat6WebappLoader() {
@@ -157,6 +155,22 @@ public class Tomcat6WebappLoader extends WebappLoader {
 		      + Listener.class);
 	}
 
+	void prepareWebappProviders(StandardContext ctx) {
+		try {
+			if (m_kernelProvider == null) {
+				m_kernelProvider = new StandardWebappProvider(m_kernelDocBase);
+			}
+
+			if (m_appProvider == null) {
+				String appDocBase = ctx.getDocBase();
+
+				m_appProvider = new StandardWebappProvider(appDocBase);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * For development only!
 	 * 
@@ -170,13 +184,15 @@ public class Tomcat6WebappLoader extends WebappLoader {
 	public void setContainer(Container container) {
 		super.setContainer(container);
 
+		prepareWebappProviders((StandardContext) container);
+
 		Listener listener = loadListener(createBootstrapClassloader());
 
 		((StandardContext) container).addLifecycleListener(new Delegate(this, listener));
 	}
 
 	public void setDebug(String debug) {
-		m_debug = "true".equals(debug);
+		// TODO
 	}
 
 	/**
@@ -257,11 +273,5 @@ public class Tomcat6WebappLoader extends WebappLoader {
 		public void starting(Tomcat6WebappLoader loader);
 
 		public void stopping(Tomcat6WebappLoader loader);
-	}
-
-	public static interface WebappProvider {
-		public List<File> getClasspathEntries();
-
-		public File getWarRoot();
 	}
 }
