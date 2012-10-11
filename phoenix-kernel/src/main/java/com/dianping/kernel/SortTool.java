@@ -19,7 +19,7 @@ public class SortTool {
 	private static final int getElementByName = 1;
 	private static final int getElementByClassName = 2;
 	
-	public static List<SortElement> sort(List<? extends SortElement> elementList){
+	public List<SortElement> sort(List<? extends SortElement> elementList){
 		
 		List<SortElementWrapper> allWrapperList = new ArrayList<SortElementWrapper>();
 		List<SortElementWrapper> beforeWrapperList = new ArrayList<SortElementWrapper>();
@@ -64,7 +64,7 @@ public class SortTool {
 		return null;
 	}
 	
-	private static List<SortElement> merge(List<SortElementWrapper> beforeWrapperList,
+	private List<SortElement> merge(List<SortElementWrapper> beforeWrapperList,
 			List<SortElementWrapper> duringWrapperList,
 			List<SortElementWrapper> afterWrapperList){
 		List<SortElement> resultList = new ArrayList<SortElement>();
@@ -82,7 +82,7 @@ public class SortTool {
 		return resultList;
 	}
 	
-	private static void mergeBeforeSortElement(List<SortElement> resultList,
+	private void mergeBeforeSortElement(List<SortElement> resultList,
 			SortElementWrapper sew){
 		SortElementWrapper beforeSew = sew.getBefore();
 		if(beforeSew != null){
@@ -91,7 +91,7 @@ public class SortTool {
 		}
 	}
 	
-	private static void mergeAfterSortElement(List<SortElement> resultList,
+	private void mergeAfterSortElement(List<SortElement> resultList,
 			SortElementWrapper sew){
 		SortElementWrapper afterSew = sew.getAfter();
 		if(afterSew != null){
@@ -100,7 +100,7 @@ public class SortTool {
 		}
 	}
 	
-	private static void segment(String rule_,SortElementWrapper wrapper,
+	private void segment(String rule_,SortElementWrapper wrapper,
 			List<SortElementWrapper> allWrapperList,
 			List<SortElementWrapper> beforeWrapperList,
 			List<SortElementWrapper> duringWrapperList,
@@ -148,7 +148,7 @@ public class SortTool {
 		}
 	}
 	
-	private static String getEffectiveRule(String rule_,
+	private String getEffectiveRule(String rule_,
 			List<SortElementWrapper> allWrapperList){
 		String rule = rule_;
 		List<String> rules = new ArrayList<String>();
@@ -177,7 +177,7 @@ public class SortTool {
 		return null;
 	}
 	
-	private static Integer formatNumber(String r){
+	private Integer formatNumber(String r){
 		String r_ = r.trim();
 		if(r_.indexOf(afterOperator) == 0 && r_.length() == 2){
 			r_ = r_.substring(1);
@@ -198,7 +198,7 @@ public class SortTool {
 		return null;
 	}
 	
-	private static SortElementWrapper matchRule(String r,List<SortElementWrapper> allWrapperList){
+	private SortElementWrapper matchRule(String r,List<SortElementWrapper> allWrapperList){
 		if(r.indexOf(nameFlag) > 0){
 			//r : "+/-:name"
 			String[] params = r.split(nameFlag);
@@ -209,7 +209,7 @@ public class SortTool {
 		}
 	}
 	
-	private static SortElementWrapper getElementWrapper(String param,
+	private SortElementWrapper getElementWrapper(String param,
 			List<SortElementWrapper> allWrapperList,
 			int getElementBy){
 		
@@ -234,7 +234,7 @@ public class SortTool {
 	 * @author bin.miao
 	 *
 	 */
-	public static interface SortElement{
+	public interface SortElement{
 		public String getRule();
 		public String getName();
 		public String getClassName();
@@ -245,7 +245,7 @@ public class SortTool {
 	 * @author bin.miao
 	 *
 	 */
-	private static class SortElementWrapper{
+	private class SortElementWrapper{
 		
 		private int idx = 0;
 		private SortElement element;
@@ -338,7 +338,7 @@ public class SortTool {
 		
 	}
 	
-	private static class BeforeOrAfterComparator implements Comparator<SortElementWrapper>{
+	private class BeforeOrAfterComparator implements Comparator<SortElementWrapper>{
 
 		@Override
 		public int compare(SortElementWrapper element1, SortElementWrapper element2) {
