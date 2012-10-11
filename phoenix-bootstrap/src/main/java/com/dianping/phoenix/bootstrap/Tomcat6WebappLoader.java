@@ -56,17 +56,11 @@ public class Tomcat6WebappLoader extends WebappLoader {
 
 	WebappClassLoader adjustWebappClassloader(WebappClassLoader classloader) {
 		try {
-			List<File> entries = new ArrayList<File>(256);
+			ClasspathBuilder builder = new DefaultClasspathBuilder();
+			List<URL> urls = builder.build(m_kernelProvider, m_appProvider);
 
-			entries.addAll(m_kernelProvider.getClasspathEntries());
-			entries.addAll(m_appProvider.getClasspathEntries());
-
-			for (File entry : entries) {
-				File file = entry.getCanonicalFile();
-
-				if (file.isDirectory() || file.getPath().endsWith(".jar")) {
-					classloader.addRepository(file.toURI().toURL().toExternalForm());
-				}
+			for (URL url : urls) {
+				classloader.addRepository(url.toExternalForm());
 			}
 
 			m_log.info(String.format("Webapp classpath: %s.", Arrays.asList(classloader.getURLs())));
@@ -220,11 +214,7 @@ public class Tomcat6WebappLoader extends WebappLoader {
 		m_webappClassloader = adjustWebappClassloader((WebappClassLoader) getClassLoader());
 	}
 
-	public static interface ClasspathMerger {
-		public List<File> merge(List<File> kernelEntries, List<File> appEntries);
-	}
-
-	public class Delegate implements LifecycleListener {
+	class Delegate implements LifecycleListener {
 		private Tomcat6WebappLoader m_loader;
 
 		private Listener m_listener;
