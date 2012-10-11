@@ -1,31 +1,229 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
-
+	
 	<filter>
-		<filter-name>DemoFilter0</filter-name>
+		<filter-name>Uncertain-DemoFilter1</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-:Null|-com.dianping.Null|+1</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>Before-DemoFilter1</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>+1</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>Before-DemoFilter2</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>+2</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>Before-DemoFilter3</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>+2</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>Before-DemoFilter4</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>+4</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>After-DemoFilter1</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-1</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>After-DemoFilter2</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-2</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>After-DemoFilter3</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-2</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>After-DemoFilter4</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-4</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>Uncertain-DemoFilter2</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-:Null|-com.dianping.Null|+1</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>Uncertain-DemoFilter3</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-:SampleFilter1|-com.dianping.Null|+1</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>Uncertain-DemoFilter4</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>+com.dianping.phoenix.samples.SampleFilter2|+1</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>Uncertain-DemoFilter5</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-com.dianping.phoenix.samples.SampleFilter3</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>Uncertain-DemoFilter6</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-:SampleFilter3</param-value>
+	  	</init-param>
+	</filter>
+	<filter>
+		<filter-name>Uncertain-DemoFilter7</filter-name>
+		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>+:SampleFilter3</param-value>
+	  	</init-param>
+	</filter>
+	
+	<filter>
+		<filter-name>NoInitParam-DemoFilter</filter-name>
 		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
 	</filter>
 	<filter>
-		<filter-name>DemoFilter1</filter-name>
+		<filter-name>Uncertain-DemoFilter_1</filter-name>
 		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-:NoInitParam-DemoFilter</param-value>
+	  	</init-param>
 	</filter>
 	<filter>
-		<filter-name>DemoFilter2</filter-name>
+		<filter-name>Uncertain-DemoFilter_2</filter-name>
 		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>-:After-DemoFilter4</param-value>
+	  	</init-param>
 	</filter>
+	
+	
 	<filter-mapping>
-		<filter-name>DemoFilter0</filter-name>
+		<filter-name>Uncertain-DemoFilter1</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>Before-DemoFilter4</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>DemoFilter1</filter-name>
+		<filter-name>Before-DemoFilter2</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>DemoFilter2</filter-name>
+		<filter-name>Before-DemoFilter3</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Before-DemoFilter1</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>After-DemoFilter4</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>After-DemoFilter2</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>After-DemoFilter3</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>After-DemoFilter1</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>Uncertain-DemoFilter2</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Uncertain-DemoFilter3</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Uncertain-DemoFilter4</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Uncertain-DemoFilter5</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Uncertain-DemoFilter6</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Uncertain-DemoFilter7</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>NoInitParam-DemoFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Uncertain-DemoFilter_1</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>Uncertain-DemoFilter_2</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	
 	<listener>
 		<listener-class>com.dianping.kernel.demo.DemoListener</listener-class>
 	</listener>

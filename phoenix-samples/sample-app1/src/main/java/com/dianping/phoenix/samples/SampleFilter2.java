@@ -1,4 +1,4 @@
-package com.dianping.kernel.demo;
+package com.dianping.phoenix.samples;
 
 import java.io.IOException;
 
@@ -9,13 +9,13 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-public class DemoFilter implements Filter {
+public class SampleFilter2 implements Filter {
 	private static int s_index;
 
 	private String m_id;
 
-	public DemoFilter() {
-		m_id = "DemoFilter" + s_index++;
+	public SampleFilter2() {
+		m_id = "SampleFilter" + s_index++;
 	}
 
 	@Override
