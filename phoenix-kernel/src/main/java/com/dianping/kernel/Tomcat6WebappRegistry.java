@@ -80,8 +80,10 @@ public class Tomcat6WebappRegistry{
     	for(FilterMap fm : filterMaps){
     		filterMapList.add(new FilterSortElement(fm));
     	}
+    	
+    	SortTool sortTool = new SortTool();
     	//Sort FilterMap
-    	List<SortElement> elementList = SortTool.sort(filterMapList);
+    	List<SortElement> elementList = sortTool.sort(filterMapList);
     	//Delete does not meet the conditions of the Filter 
     	for(FilterSortElement fse : filterMapList){
     		if(!elementList.contains(fse)){
