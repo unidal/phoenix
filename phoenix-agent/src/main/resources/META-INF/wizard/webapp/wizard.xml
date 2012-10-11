@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wizard>
+   <webapp package="com.dianping.phoenix" webres="true">
+      <module name="agent" path="agent">
+         <page name="home" title="Home" default="true" path="home">
+            <description>Home</description>
+         </page>
+         <page name="deploy" title="Deploy" path="deploy">
+            <description>Deploy</description>
+         </page>
+      </module>
+   </webapp>
+</wizard>
+

@@ -1,0 +1,43 @@
+<plexus>
+	<components>
+		<component>
+			<role>com.dianping.phoenix.agent.page.deploy.shell.Shell</role>
+			<implementation>com.dianping.phoenix.agent.page.deploy.shell.DefaultShell</implementation>
+		</component>
+		<component>
+			<role>com.site.web.mvc.model.ModuleRegistry</role>
+			<implementation>com.site.web.mvc.model.ModuleRegistry</implementation>
+			<configuration>
+				<modules>
+					<module default="true">com.dianping.phoenix.agent.AgentModule</module>
+				</modules>
+			</configuration>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.AgentModule</role>
+			<implementation>com.dianping.phoenix.agent.AgentModule</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.page.home.Handler</role>
+			<implementation>com.dianping.phoenix.agent.page.home.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.page.home.JspViewer</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.page.home.JspViewer</role>
+			<implementation>com.dianping.phoenix.agent.page.home.JspViewer</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.page.deploy.Handler</role>
+			<implementation>com.dianping.phoenix.agent.page.deploy.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.page.deploy.shell.Shell</role>
+				</requirement>
+			</requirements>
+		</component>
+	</components>
+</plexus>
