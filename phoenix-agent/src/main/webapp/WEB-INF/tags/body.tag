@@ -7,7 +7,7 @@
 <html lang="en">
 
 <head>
-<title>Egret - ${model.page.description}</title>
+<title>Phoenix - ${model.page.description}</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
@@ -24,7 +24,7 @@
 			<div class="container-fluid">
 				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span
 					class="icon-bar"></span> <span class="icon-bar"></span>
-				</a> <a class="brand" href="/egret/console">Egret</a>
+				</a> <a class="brand" href="/phoenix/console">Phoenix</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
 						<li><a href="${model.webapp}/${page.moduleName}console">Home</a></li>
@@ -42,7 +42,7 @@
 		<hr>
 
 		<footer>
-			<p> Egret@Dianping 2012</p>
+			<p> Phoenix@Dianping 2012</p>
 		</footer>
 
 	</div>

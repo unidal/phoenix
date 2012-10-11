@@ -1,4 +1,4 @@
-package com.dianping.egret;
+package com.dianping.phoenix;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

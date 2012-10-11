@@ -2,7 +2,7 @@
 	<components>
 		<component>
 			<role>com.dianping.phoenix.agent.page.deploy.shell.Shell</role>
-			<implementation>com.dianping.phoenix.agent.page.deploy.shell.DefaultShell</implementation>
+			<implementation>com.dianping.phoenix.agent.page.deploy.shell.FakeShell</implementation>
 		</component>
 		<component>
 			<role>com.site.web.mvc.model.ModuleRegistry</role>

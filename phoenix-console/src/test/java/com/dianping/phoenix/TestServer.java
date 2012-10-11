@@ -1,4 +1,4 @@
-package com.dianping.egret;
+package com.dianping.phoenix;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class TestServer extends JettyServer {
 
    @Override
    protected int getServerPort() {
-      return 3473;
+      return 3474;
    }
 
    @Override

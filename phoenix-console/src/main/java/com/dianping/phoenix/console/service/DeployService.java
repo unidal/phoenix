@@ -117,32 +117,30 @@ public class DeployService {
 		}
 
 		private boolean activate(String id, HostPlan plan) {
-			return true;
-//			return doAction(Action.ACTIVATE, id, plan);
+			return doAction(Action.ACTIVATE, id, plan);
 		}
 
 		private boolean commit(String id, HostPlan plan) {
-			return true;
-//			return doAction(Action.COMMIT, id, plan);
+			return doAction(Action.COMMIT, id, plan);
 		}
 
-//		private boolean doAction(Action action, String version, HostPlan plan) {
-//			DeployStep step = action.getDeployStep();
-//			String host = plan.getHost();
-//			String url = String.format("http://%s:3473/egret/agent/deploy?op=%s&version=%s", host, action.getName(),
-//			      version);
-//
-//			plan.setCurrentStep(step);
-//			plan.setStatus("doing");
-//
-//			if (openUrl(url)) {
-//				plan.setStatus("success");
-//				return true;
-//			} else {
-//				plan.setStatus("failed");
-//				return false;
-//			}
-//		}
+		private boolean doAction(Action action, String version, HostPlan plan) {
+			DeployStep step = action.getDeployStep();
+			String host = plan.getHost();
+			String url = String.format("http://%s:3473/phoenix/agent/deploy?op=%s&version=%s", host, action.getDeployStep().getName(),
+			      version);
+
+			plan.setCurrentStep(step);
+			plan.setStatus("doing");
+
+			if (openUrl(url)) {
+				plan.setStatus("success");
+				return true;
+			} else {
+				plan.setStatus("failed");
+				return false;
+			}
+		}
 
 		@Override
 		public String getName() {
@@ -186,13 +184,11 @@ public class DeployService {
 		}
 
 		private boolean prepare(String id, HostPlan plan) {
-			return true;
-//			return doAction(Action.PREPARE, id, plan);
+			return doAction(Action.PREPARE, id, plan);
 		}
 
 		private boolean rollback(String id, HostPlan plan) {
-			return true;
-//			return doAction(Action.ROLLBACK, id, plan);
+			return doAction(Action.ROLLBACK, id, plan);
 		}
 
 		@Override
@@ -248,22 +244,21 @@ public class DeployService {
 		}
 
 		private boolean test(String id, HostPlan plan) {
-			return true;
-//			DeployStep step = Action.TEST.getDeployStep();
+			DeployStep step = Action.TEST.getDeployStep();
 //			String host = plan.getHost();
 //			String url = String.format("http://%s:5050/egret-demo-1.0.0-SNAPSHOT/add.action?a=12&b=13", host);
-//
-//			plan.setCurrentStep(step);
-//			plan.setStatus("doing");
-//
-//			m_info.addMessage("Test: invoking URL: " + url);
-//
+
+			plan.setCurrentStep(step);
+			plan.setStatus("doing");
+
+			m_info.addMessage("Test: invoking URL: " + id);
+
 //			try {
 //				String content = Files.forIO().readFrom(new URL(url).openStream(), "utf-8");
 //
 //				if ("12+13=25".equals(content.trim())) {
-//					plan.setStatus("success");
-//					return true;
+					plan.setStatus("success");
+					return true;
 //				}
 //			} catch (Exception e) {
 //				m_info.addMessage(e.toString());

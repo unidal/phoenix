@@ -1,10 +1,8 @@
 <projects>
-	<project name="Demo">
+	<project name="Phoenix">
 		<owner>yong.you</owner>
 		<hosts>
-			<host>192.168.62.180</host>
-			<host>192.168.62.180</host>
-			<host>192.168.62.180</host>
+			<host>127.0.0.1</host>
 		</hosts>
 		<dependencyJars>
 			<dependencyJar>dpsf-net-1.7.0.jar</dependencyJar>

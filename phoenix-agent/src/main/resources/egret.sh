@@ -1,18 +1,10 @@
 cd `dirname $0`
-#echo "running egret with $1 $2"
 
 TOMCAT_HOME="/Users/marsqing/Projects/tmp/tomcat/"
 LIB_REPO_URL="ssh://git@192.168.8.22:58422/egretlib"
-
-if [ x$TOMCAT_HOME = "x" ]
-then
-	log "set TOMCAT_HOME first" "ERROR"
-	exit 1
-fi
-
-LIB_DIR=`pwd`/egret-lib/
+LIB_DIR=`pwd`/phoenix-lib-tmp/
+WEBAPP_DIR="/data/webapps/phoenix-kernel/current/phoenix-kernel.war"
 TOMCAT_DIR=$TOMCAT_HOME
-WEBAPP_DIR="$TOMCAT_DIR/webapps/egret-demo-1.0.0-SNAPSHOT/"
 
 function log {
 	level="INFO"
@@ -119,14 +111,5 @@ elif [ $1 = "rollback" ]
 then
 	rollback
 fi
-exit 111
 
 
-
-#bar=""
-#for((i=10;i<=100;i+=10))
-#do
-#	bar=$bar"="
-#	echo $bar $i%
-#	sleep 1
-#done

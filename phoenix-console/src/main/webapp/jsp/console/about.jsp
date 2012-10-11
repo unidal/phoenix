@@ -12,7 +12,7 @@
 
 	<div class="row-fluid">
 		<div class="hero-unit">
-			<h1>Egret@DP</h1>
+			<h1>Phoenix@DP</h1>
 			<p class="text-info">架构JAR发布工具</p>
 			<p class="text-info">统一替换架构某个产品的JAR包，在此过程中确保一些列的安全，包括正确性验证，失败回滚等</p>
 			<p>

@@ -12,6 +12,8 @@
 		<module>phoenix-bootstrap</module>
 		<module>phoenix-kernel</module>
 		<module>phoenix-samples</module>
+		<module>phoenix-console</module>
+		<module>phoenix-agent</module>
 	</modules>
         <build>
                 <pluginManagement>

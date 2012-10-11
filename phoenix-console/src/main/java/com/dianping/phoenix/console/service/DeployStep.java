@@ -7,7 +7,7 @@ public enum DeployStep {
 
 	TEST("test", 2, 20),
 
-	COMMIT_ROLLBACK("commit/rollback", 3, 20);
+	COMMIT_ROLLBACK("commit", 3, 20);
 
 	private String m_name;
 
