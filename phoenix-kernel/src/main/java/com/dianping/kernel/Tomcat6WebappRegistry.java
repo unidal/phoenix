@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.deploy.ApplicationParameter;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.startup.ContextConfig;
@@ -75,6 +76,25 @@ public class Tomcat6WebappRegistry{
 
 	
 	public void reorderWebappElements(){
+		reorderListener();
+		reorderFilter();
+	}
+	
+	private void reorderListener(){
+		String[] listeners = this.context.findApplicationListeners();
+		List<ListenerSortElement> listenerList = new ArrayList<ListenerSortElement>();
+    	for(String listener : listeners){
+    		listenerList.add(new ListenerSortElement(listener,this.context.findParameter(listener)));
+    	}
+    	SortTool sortTool = new SortTool();
+    	//Sort FilterMap
+    	List<SortElement> elementList = sortTool.sort(listenerList);
+    	for(int i=0;i<listeners.length;i++){
+    		listeners[i] = elementList.get(i).getClassName();
+    	}
+	}
+	
+	private void reorderFilter(){
 		FilterMap[] filterMaps = this.context.findFilterMaps();
     	List<FilterSortElement> filterMapList = new ArrayList<FilterSortElement>();
     	for(FilterMap fm : filterMaps){
@@ -97,6 +117,35 @@ public class Tomcat6WebappRegistry{
     	for(int i=0;i<filterMaps.length;i++){
     		filterMaps[i] = ((FilterSortElement)elementList.get(i)).getFilterMap();
     	}
+	}
+
+	public class ListenerSortElement implements SortElement{
+		
+		private String className;
+		private String rule;
+		
+		public ListenerSortElement(String className,String rule) {
+			this.className = className;
+			this.rule = rule;
+		}
+		@Override
+		public String getRule() {
+			// TODO Auto-generated method stub
+			return this.rule;
+		}
+
+		@Override
+		public String getName() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getClassName() {
+			// TODO Auto-generated method stub
+			return this.className;
+		}
+		
 	}
 	
 	public class FilterSortElement implements SortElement{

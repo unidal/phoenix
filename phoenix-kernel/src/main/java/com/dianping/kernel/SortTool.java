@@ -215,13 +215,13 @@ public class SortTool {
 		
 		for(SortElementWrapper wrapper : allWrapperList){
 			if(getElementByName == getElementBy 
-					&& wrapper.getElement().getName().equals(param)
+					&& param.equals(wrapper.getElement().getName())
 					//Relative position can only act on the App configuration
 					&& wrapper.getElement().getRule() == null){
 				return wrapper;
 			}
 			if(getElementByClassName == getElementBy 
-					&& wrapper.getElement().getClassName().equals(param)
+					&& param.equals(wrapper.getElement().getClassName())
 					//Relative position can only act on the App configuration
 					&& wrapper.getElement().getRule() == null){
 				return wrapper;
