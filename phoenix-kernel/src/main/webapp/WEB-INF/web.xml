@@ -2,6 +2,23 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	
+	<context-param>
+	    <param-name>com.dianping.kernel.demo.DemoListener1</param-name>
+	    <param-value>+1</param-value>
+	</context-param>
+	<context-param>
+	    <param-name>com.dianping.kernel.demo.DemoListener2</param-name>
+	    <param-value>+:Null|+com.dianping.Null|+com.dianping.phoenix.samples.SampleListener1</param-value>
+	</context-param>
+	<context-param>
+	    <param-name>com.dianping.kernel.demo.DemoListener3</param-name>
+	    <param-value>-1</param-value>
+	</context-param>
+	<context-param>
+	    <param-name>com.dianping.kernel.demo.DemoListener4</param-name>
+	    <param-value>-1</param-value>
+	</context-param>
+	<!-- Filter -->
 	<filter>
 		<filter-name>Uncertain-DemoFilter1</filter-name>
 		<filter-class>com.dianping.kernel.demo.DemoFilter</filter-class>
@@ -223,9 +240,19 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
-	
+	<!--Listener-->
 	<listener>
-		<listener-class>com.dianping.kernel.demo.DemoListener</listener-class>
+		<listener-class>com.dianping.kernel.demo.DemoListener3</listener-class>
 	</listener>
+	<listener>
+		<listener-class>com.dianping.kernel.demo.DemoListener4</listener-class>
+	</listener>
+	<listener>
+		<listener-class>com.dianping.kernel.demo.DemoListener1</listener-class>
+	</listener>
+	<listener>
+		<listener-class>com.dianping.kernel.demo.DemoListener2</listener-class>
+	</listener>
+	
 </web-app>
 
