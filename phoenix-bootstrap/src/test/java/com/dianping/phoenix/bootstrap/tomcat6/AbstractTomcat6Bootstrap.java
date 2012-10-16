@@ -1,4 +1,4 @@
-package com.dianping.phoenix.bootstrap.server;
+package com.dianping.phoenix.bootstrap.tomcat6;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -12,7 +12,7 @@ import org.apache.catalina.session.StandardManager;
 import org.apache.catalina.startup.Embedded;
 
 import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
-import com.dianping.phoenix.bootstrap.WebappProvider;
+import com.dianping.phoenix.spi.WebappProvider;
 
 public abstract class AbstractTomcat6Bootstrap {
 	protected void display(String requestUri) {
@@ -71,7 +71,8 @@ public abstract class AbstractTomcat6Bootstrap {
 
 		// create host
 		Host localHost = container.createHost("localHost", new File(".").getAbsolutePath());
-		Tomcat6WebappLoader loader = new Tomcat6WebappLoader(getClass().getClassLoader());
+		ClassLoader classloader = getClass().getClassLoader();
+		Tomcat6WebappLoader loader = new Tomcat6WebappLoader(classloader);
 
 		loader.setKernelWebappProvider(kernelProvider);
 		loader.setApplicationWebappProvider(appProvider);

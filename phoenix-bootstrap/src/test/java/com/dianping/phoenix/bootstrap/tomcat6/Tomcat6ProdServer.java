@@ -1,8 +1,7 @@
-package com.dianping.phoenix.bootstrap;
+package com.dianping.phoenix.bootstrap.tomcat6;
 
 import org.junit.Test;
 
-import com.dianping.phoenix.bootstrap.server.AbstractTomcat6Bootstrap;
 
 public class Tomcat6ProdServer extends AbstractTomcat6Bootstrap {
 	@Test

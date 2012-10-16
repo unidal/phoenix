@@ -23,6 +23,11 @@ import org.apache.catalina.loader.WebappLoader;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 
+import com.dianping.phoenix.spi.ClasspathBuilder;
+import com.dianping.phoenix.spi.WebappProvider;
+import com.dianping.phoenix.spi.internal.DefaultClasspathBuilder;
+import com.dianping.phoenix.spi.internal.StandardWebappProvider;
+
 /**
  * A WebappLoader that allows a customized classpath to be added through
  * configuration in context xml. Any additional classpath entry will be added to
@@ -176,13 +181,17 @@ public class Tomcat6WebappLoader extends WebappLoader {
 
 	@Override
 	public void setContainer(Container container) {
-		super.setContainer(container);
+		try {
+			super.setContainer(container);
+		} finally {
+			// in case of RuntimeException threw but following code will
+			// still be needed
+			prepareWebappProviders((StandardContext) container);
 
-		prepareWebappProviders((StandardContext) container);
+			Listener listener = loadListener(createBootstrapClassloader());
 
-		Listener listener = loadListener(createBootstrapClassloader());
-
-		((StandardContext) container).addLifecycleListener(new Delegate(this, listener));
+			((StandardContext) container).addLifecycleListener(new Delegate(this, listener));
+		}
 	}
 
 	public void setDebug(String debug) {

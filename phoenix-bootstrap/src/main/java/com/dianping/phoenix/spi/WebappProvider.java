@@ -1,4 +1,4 @@
-package com.dianping.phoenix.bootstrap;
+package com.dianping.phoenix.spi;
 
 import java.io.File;
 import java.util.List;

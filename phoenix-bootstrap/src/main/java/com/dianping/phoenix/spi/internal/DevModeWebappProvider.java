@@ -1,11 +1,11 @@
-package com.dianping.phoenix.bootstrap.server;
+package com.dianping.phoenix.spi.internal;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dianping.phoenix.bootstrap.WebappProvider;
+import com.dianping.phoenix.spi.WebappProvider;
 
 public class DevModeWebappProvider implements WebappProvider {
 	private File m_classesDir;
@@ -39,13 +39,11 @@ public class DevModeWebappProvider implements WebappProvider {
 		}
 
 		if (m_libDir.isDirectory()) {
-			String[] names = m_libDir.list();
+			File[] jarFiles = m_libDir.listFiles();
 
-			if (names != null) {
-				for (String name : names) {
-					File jarFile = new File(m_libDir, name);
-
-					list.add(jarFile);
+			if (jarFiles != null) {
+				for (File file : jarFiles) {
+					list.add(file);
 				}
 			}
 		}

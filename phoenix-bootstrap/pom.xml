@@ -13,6 +13,7 @@
 	<name>phoenix-bootstrap</name>
 	<packaging>jar</packaging>
 	<dependencies>
+		<!-- for tomcat6 -->
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>catalina</artifactId>
@@ -31,6 +32,24 @@
 			<version>6.0.29</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- for jboss4 -->
+		<!-- 
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jboss</artifactId>
+			<version>4.2.2.GA</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jboss-common</artifactId>
+			<version>4.2.2.GA</version>
+			<scope>provided</scope>
+		</dependency>
+		 	-->
+
+		<!-- for unit test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -40,6 +59,25 @@
 	</dependencies>
 	<build>
 		<finalName>phoenix-bootstrap</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.unidal.maven.plugins</groupId>
+				<artifactId>codegen-maven-plugin</artifactId>
+				<version>1.2.2</version>
+				<executions>
+					<execution>
+						<id>generate rule model</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>dal-model</goal>
+						</goals>
+						<configuration>
+							<manifest>${basedir}/src/main/resources/META-INF/dal/model/rule-manifest.xml</manifest>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 </project>
 
