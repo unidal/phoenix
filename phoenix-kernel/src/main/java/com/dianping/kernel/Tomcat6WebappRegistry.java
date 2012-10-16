@@ -85,7 +85,7 @@ public class Tomcat6WebappRegistry {
 		for (String listener : listeners) {
 			listenerList.add(new ListenerSortElement(listener, this.context.findParameter(listener)));
 		}
-		SortTool sortTool = new SortTool();
+		SortTool sortTool = new SortTool(false);
 		// Sort FilterMap
 		List<SortElement> elementList = sortTool.sort(listenerList);
 		for (int i = 0; i < listeners.length; i++) {

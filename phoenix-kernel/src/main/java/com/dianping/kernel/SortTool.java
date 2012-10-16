@@ -19,6 +19,16 @@ public class SortTool {
 	private static final int getElementByName = 1;
 	private static final int getElementByClassName = 2;
 	
+	private boolean discardNotMatch = true;
+	
+	public SortTool(){
+		this(true);
+	}
+	
+	public SortTool(boolean discardNotMatch){
+		this.discardNotMatch = discardNotMatch;
+	}
+	
 	public List<SortElement> sort(List<? extends SortElement> elementList){
 		
 		List<SortElementWrapper> allWrapperList = new ArrayList<SortElementWrapper>();
@@ -26,6 +36,7 @@ public class SortTool {
 		List<SortElementWrapper> duringWrapperList = new ArrayList<SortElementWrapper>();
 		List<SortElementWrapper> afterWrapperList = new ArrayList<SortElementWrapper>();
 		List<SortElementWrapper> uncertainWrapperList = new ArrayList<SortElementWrapper>();
+		List<SortElementWrapper> notMatchWrapperList = new ArrayList<SortElementWrapper>();
 		
 		if(elementList != null && elementList.size() > 0){
 			
@@ -53,20 +64,23 @@ public class SortTool {
 					}else if(r.startsWith(afterOperator)){
 						sew.addAfter(uncertainWrapper);
 					}else{
-						//TODO Warning
+						notMatchWrapperList.add(uncertainWrapper);
 					}
+				}else{
+					notMatchWrapperList.add(uncertainWrapper);
 				}
 			}
 			Collections.sort(beforeWrapperList,new BeforeOrAfterComparator());
 			Collections.sort(afterWrapperList,new BeforeOrAfterComparator());
-			return merge(beforeWrapperList,duringWrapperList,afterWrapperList);
+			return merge(beforeWrapperList,duringWrapperList,afterWrapperList,notMatchWrapperList);
 		}
 		return null;
 	}
 	
 	private List<SortElement> merge(List<SortElementWrapper> beforeWrapperList,
 			List<SortElementWrapper> duringWrapperList,
-			List<SortElementWrapper> afterWrapperList){
+			List<SortElementWrapper> afterWrapperList,
+			List<SortElementWrapper> notMatchWrapperList){
 		List<SortElement> resultList = new ArrayList<SortElement>();
 		for(SortElementWrapper sew : beforeWrapperList){
 			resultList.add(sew.getElement());
@@ -75,6 +89,11 @@ public class SortTool {
 			mergeBeforeSortElement(resultList,sew);
 			resultList.add(sew.getElement());
 			mergeAfterSortElement(resultList,sew);
+		}
+		if(!this.discardNotMatch){
+			for(SortElementWrapper sew : notMatchWrapperList){
+				resultList.add(sew.getElement());
+			}
 		}
 		for(SortElementWrapper sew : afterWrapperList){
 			resultList.add(sew.getElement());
@@ -230,6 +249,14 @@ public class SortTool {
 		return null;
 	}
 	
+	public boolean isDiscardNotMatch() {
+		return discardNotMatch;
+	}
+
+	public void setDiscardNotMatch(boolean discardNotMatch) {
+		this.discardNotMatch = discardNotMatch;
+	}
+
 	/**
 	 * @author bin.miao
 	 *
