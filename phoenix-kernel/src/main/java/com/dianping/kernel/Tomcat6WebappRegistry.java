@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.deploy.ApplicationParameter;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.startup.ContextConfig;
@@ -21,21 +20,22 @@ import org.xml.sax.SAXParseException;
 import com.dianping.kernel.SortTool.SortElement;
 import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
 
-public class Tomcat6WebappRegistry{
-	
+public class Tomcat6WebappRegistry {
+
 	private static final String INDEX = "_INDEX_";
-	
+
 	private Tomcat6WebappLoader loader;
+
 	private StandardContext context;
-	
-	public void init(Tomcat6WebappLoader loader){
+
+	public void init(Tomcat6WebappLoader loader) {
 		this.loader = loader;
 		Container container = loader.getContainer();
-		if(container instanceof StandardContext){
-			this.context = (StandardContext)container;
+		if (container instanceof StandardContext) {
+			this.context = (StandardContext) container;
 		}
 	}
-	
+
 	public void registerWebXml() throws Exception {
 		WebRuleSet webRuleSet = loader.getFieldValue(ContextConfig.class, "webRuleSet", null);
 		File webXml = new File(loader.getKernelWarRoot(), "WEB-INF/web.xml");
@@ -74,89 +74,88 @@ public class Tomcat6WebappRegistry{
 		}
 	}
 
-	
-	public void reorderWebappElements(){
+	public void reorderWebappElements() {
 		reorderListener();
 		reorderFilter();
 	}
-	
-	private void reorderListener(){
+
+	private void reorderListener() {
 		String[] listeners = this.context.findApplicationListeners();
 		List<ListenerSortElement> listenerList = new ArrayList<ListenerSortElement>();
-    	for(String listener : listeners){
-    		listenerList.add(new ListenerSortElement(listener,this.context.findParameter(listener)));
-    	}
-    	SortTool sortTool = new SortTool();
-    	//Sort FilterMap
-    	List<SortElement> elementList = sortTool.sort(listenerList);
-    	for(int i=0;i<listeners.length;i++){
-    		listeners[i] = elementList.get(i).getClassName();
-    	}
-	}
-	
-	private void reorderFilter(){
-		FilterMap[] filterMaps = this.context.findFilterMaps();
-    	List<FilterSortElement> filterMapList = new ArrayList<FilterSortElement>();
-    	for(FilterMap fm : filterMaps){
-    		filterMapList.add(new FilterSortElement(fm));
-    	}
-    	
-    	SortTool sortTool = new SortTool();
-    	//Sort FilterMap
-    	List<SortElement> elementList = sortTool.sort(filterMapList);
-    	//Delete does not meet the conditions of the Filter 
-    	for(FilterSortElement fse : filterMapList){
-    		if(!elementList.contains(fse)){
-    			this.context.removeFilterMap(fse.getFilterMap());
-    			this.context.removeFilterDef(fse.getFilterDef());
-    		}
-    	}
-    	
-    	filterMaps = this.context.findFilterMaps();
-    	//Set sorted result back
-    	for(int i=0;i<filterMaps.length;i++){
-    		filterMaps[i] = ((FilterSortElement)elementList.get(i)).getFilterMap();
-    	}
+		for (String listener : listeners) {
+			listenerList.add(new ListenerSortElement(listener, this.context.findParameter(listener)));
+		}
+		SortTool sortTool = new SortTool();
+		// Sort FilterMap
+		List<SortElement> elementList = sortTool.sort(listenerList);
+		for (int i = 0; i < listeners.length; i++) {
+			listeners[i] = elementList.get(i).getClassName();
+		}
 	}
 
-	public class ListenerSortElement implements SortElement{
-		
+	private void reorderFilter() {
+		FilterMap[] filterMaps = this.context.findFilterMaps();
+		List<FilterSortElement> filterMapList = new ArrayList<FilterSortElement>();
+		for (FilterMap fm : filterMaps) {
+			filterMapList.add(new FilterSortElement(fm));
+		}
+
+		SortTool sortTool = new SortTool();
+		// Sort FilterMap
+		List<SortElement> elementList = sortTool.sort(filterMapList);
+		// Delete does not meet the conditions of the Filter
+		for (FilterSortElement fse : filterMapList) {
+			if (!elementList.contains(fse)) {
+				this.context.removeFilterMap(fse.getFilterMap());
+				this.context.removeFilterDef(fse.getFilterDef());
+			}
+		}
+
+		filterMaps = this.context.findFilterMaps();
+		// Set sorted result back
+		for (int i = 0; i < filterMaps.length; i++) {
+			filterMaps[i] = ((FilterSortElement) elementList.get(i)).getFilterMap();
+		}
+	}
+
+	public class ListenerSortElement implements SortElement {
 		private String className;
+
 		private String rule;
-		
-		public ListenerSortElement(String className,String rule) {
+
+		public ListenerSortElement(String className, String rule) {
 			this.className = className;
 			this.rule = rule;
 		}
+
 		@Override
 		public String getRule() {
-			// TODO Auto-generated method stub
 			return this.rule;
 		}
 
 		@Override
 		public String getName() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getClassName() {
-			// TODO Auto-generated method stub
 			return this.className;
 		}
-		
+
 	}
-	
-	public class FilterSortElement implements SortElement{
+
+	public class FilterSortElement implements SortElement {
 
 		private FilterMap filterMap;
+
 		private FilterDef filterDef;
-		
-		public FilterSortElement(FilterMap filterMap){
+
+		public FilterSortElement(FilterMap filterMap) {
 			this.filterMap = filterMap;
 			this.filterDef = context.findFilterDef(this.filterMap.getFilterName());
 		}
+
 		@Override
 		public String getRule() {
 			return getInitParameter(INDEX);
@@ -164,7 +163,6 @@ public class Tomcat6WebappRegistry{
 
 		@Override
 		public String getName() {
-			// TODO Auto-generated method stub
 			return this.filterMap.getFilterName();
 		}
 
@@ -172,26 +170,25 @@ public class Tomcat6WebappRegistry{
 		public String getClassName() {
 			return this.filterDef.getFilterClass();
 		}
-		
-		public FilterMap getFilterMap(){
+
+		public FilterMap getFilterMap() {
 			return this.filterMap;
 		}
-		
+
 		public FilterDef getFilterDef() {
 			return filterDef;
 		}
-		private String getInitParameter(String paramName){
-			
-			Map map = this.filterDef.getParameterMap();
-	        if (map == null)
-	            return (null);
-	        else
-	            return ((String) map.get(paramName));
+
+		@SuppressWarnings("unchecked")
+      private String getInitParameter(String paramName) {
+			Map<String, String> map = this.filterDef.getParameterMap();
+
+			if (map == null)
+				return null;
+			else
+				return map.get(paramName);
 		}
-		
+
 	}
-	
-	
-	
-	
+
 }

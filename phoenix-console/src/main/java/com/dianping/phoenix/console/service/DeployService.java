@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.site.helper.Files;
 import com.site.helper.Threads;
 import com.site.helper.Threads.Task;
 
@@ -127,8 +126,8 @@ public class DeployService {
 		private boolean doAction(Action action, String version, HostPlan plan) {
 			DeployStep step = action.getDeployStep();
 			String host = plan.getHost();
-			String url = String.format("http://%s:3473/phoenix/agent/deploy?op=%s&version=%s", host, action.getDeployStep().getName(),
-			      version);
+			String url = String.format("http://%s:3473/phoenix/agent/deploy?op=%s&version=%s", host, action
+			      .getDeployStep().getName(), version);
 
 			plan.setCurrentStep(step);
 			plan.setStatus("doing");
@@ -245,30 +244,33 @@ public class DeployService {
 
 		private boolean test(String id, HostPlan plan) {
 			DeployStep step = Action.TEST.getDeployStep();
-//			String host = plan.getHost();
-//			String url = String.format("http://%s:5050/egret-demo-1.0.0-SNAPSHOT/add.action?a=12&b=13", host);
+			// String host = plan.getHost();
+			// String url =
+			// String.format("http://%s:5050/egret-demo-1.0.0-SNAPSHOT/add.action?a=12&b=13",
+			// host);
 
 			plan.setCurrentStep(step);
 			plan.setStatus("doing");
 
 			m_info.addMessage("Test: invoking URL: " + id);
 
-//			try {
-//				String content = Files.forIO().readFrom(new URL(url).openStream(), "utf-8");
-//
-//				if ("12+13=25".equals(content.trim())) {
-					plan.setStatus("success");
-					return true;
-//				}
-//			} catch (Exception e) {
-//				m_info.addMessage(e.toString());
-//				// ignore it
-//			} finally {
-//				m_info.addMessage("Test: end");
-//			}
-//
-//			plan.setStatus("failed");
-//			return false;
+			// try {
+			// String content = Files.forIO().readFrom(new URL(url).openStream(),
+			// "utf-8");
+			//
+			// if ("12+13=25".equals(content.trim())) {
+			plan.setStatus("success");
+			return true;
+			// }
+			// } catch (Exception e) {
+			// m_info.addMessage(e.toString());
+			// // ignore it
+			// } finally {
+			// m_info.addMessage("Test: end");
+			// }
+			//
+			// plan.setStatus("failed");
+			// return false;
 		}
 	}
 }

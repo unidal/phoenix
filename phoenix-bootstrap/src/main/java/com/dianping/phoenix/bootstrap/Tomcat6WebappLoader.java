@@ -88,7 +88,7 @@ public class Tomcat6WebappLoader extends WebappLoader {
 			}
 
 			m_log.info(String.format("Bootstrap classpath: %s.", urls));
-			return new URLClassLoader(urls.toArray(new URL[0]));
+			return new URLClassLoader(urls.toArray(new URL[0]), getClass().getClassLoader());
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to create bootstrap classloader!", e);
 		}
@@ -140,10 +140,6 @@ public class Tomcat6WebappLoader extends WebappLoader {
 	}
 
 	Listener loadListener(ClassLoader classloader) {
-		if (classloader == null) {
-			classloader = Thread.currentThread().getContextClassLoader();
-		}
-
 		ServiceLoader<Listener> serviceLoader = ServiceLoader.load(Listener.class, classloader);
 
 		for (Listener e : serviceLoader) {

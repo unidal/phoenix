@@ -1,6 +1,5 @@
 package com.dianping.phoenix.console.service;
 
-
 public enum Action {
 	PREPARE("prepare", DeployStep.PREPARE),
 
@@ -27,4 +26,7 @@ public enum Action {
 		return m_step;
 	}
 
+	public String getName() {
+		return m_name;
+	}
 }

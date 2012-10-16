@@ -75,8 +75,12 @@ public abstract class AbstractClasspathBuilder implements ClasspathBuilder {
 				int len = path.length();
 				int pos = path.lastIndexOf('/');
 
+				VersionParser parser = new VersionParser();
+				String[] result = parser.parse(path.substring(pos + 1, len - 4));
+
 				m_jar = true;
-				parse(path.substring(pos + 1, len - 4));
+				m_artifactId = result[0];
+				m_version = result[1];
 			}
 		}
 
@@ -94,30 +98,6 @@ public abstract class AbstractClasspathBuilder implements ClasspathBuilder {
 
 		public boolean isJar() {
 			return m_jar;
-		}
-
-		private void parse(String str) {
-			int fromIndex = str.length() - 1;
-
-			do {
-				int pos = str.lastIndexOf('-', fromIndex);
-
-				if (pos > 0) {
-					char ch = str.charAt(pos + 1);
-
-					if (Character.isDigit(ch)) {
-						String right = str.substring(pos + 1);
-
-						if (right.indexOf('.') > 0) { // for "a-1.1-1.jar"
-							m_version = right;
-							m_artifactId = str.substring(0, pos);
-							break;
-						}
-					}
-
-					fromIndex = pos - 1;
-				}
-			} while (fromIndex > 0);
 		}
 	}
 }

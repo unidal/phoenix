@@ -4,8 +4,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.dianping.phoenix.spi.internal.VersionComparator;
-
 public class VersionComparatorTest {
 	private void checkVersion(String v2, String v1) {
 		VersionComparator comparator = new VersionComparator();
