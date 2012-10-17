@@ -15,6 +15,7 @@ public class VersionParserTest {
 
 	@Test
 	public void testParse() {
+		checkVersion("dpsf-net-1.6.1", "dpsf-net", "1.6.1");
 		checkVersion("netty-3.2.7-Final", "netty", "3.2.7-Final");
 		checkVersion("myjar-1.6-rc1", "myjar", "1.6-rc1");
 		checkVersion("phoenix-kernel-1.6-beta", "phoenix-kernel", "1.6-beta");

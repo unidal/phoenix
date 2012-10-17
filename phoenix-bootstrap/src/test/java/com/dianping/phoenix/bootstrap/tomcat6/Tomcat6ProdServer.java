@@ -2,7 +2,6 @@ package com.dianping.phoenix.bootstrap.tomcat6;
 
 import org.junit.Test;
 
-
 public class Tomcat6ProdServer extends AbstractTomcat6Bootstrap {
 	@Test
 	public void startServer() throws Exception {

@@ -14,6 +14,7 @@ public class VersionComparatorTest {
 
 	@Test
 	public void testVersionCompatible() {
+		checkVersion("1.6.1", "1.7.2");
 		checkVersion("3.2.7-Final", "3.2.7");
 		checkVersion("3.2.7", "3.2.7.Final");
 		checkVersion("3.2.6", "3.2.7.Final");

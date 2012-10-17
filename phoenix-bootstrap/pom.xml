@@ -34,10 +34,9 @@
 		</dependency>
 
 		<!-- for jboss4 -->
-		<!-- 
 		<dependency>
 			<groupId>jboss</groupId>
-			<artifactId>jboss</artifactId>
+			<artifactId>jbossweb</artifactId>
 			<version>4.2.2.GA</version>
 			<scope>provided</scope>
 		</dependency>
@@ -47,7 +46,6 @@
 			<version>4.2.2.GA</version>
 			<scope>provided</scope>
 		</dependency>
-		 	-->
 
 		<!-- for unit test -->
 		<dependency>

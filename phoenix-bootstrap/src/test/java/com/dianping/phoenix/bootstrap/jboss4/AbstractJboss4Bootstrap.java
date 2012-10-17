@@ -1,4 +1,4 @@
-package com.dianping.phoenix.bootstrap.tomcat6;
+package com.dianping.phoenix.bootstrap.jboss4;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -12,10 +12,10 @@ import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.session.StandardManager;
 import org.apache.catalina.startup.Embedded;
 
-import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
+import com.dianping.phoenix.bootstrap.Jboss4WebappLoader;
 import com.dianping.phoenix.spi.WebappProvider;
 
-public abstract class AbstractTomcat6Bootstrap {
+public abstract class AbstractJboss4Bootstrap {
 	protected void display(String requestUri) {
 		String url = "http://localhost:" + getPort() + requestUri;
 		String os = System.getProperty("os.name");
@@ -39,10 +39,10 @@ public abstract class AbstractTomcat6Bootstrap {
 	}
 
 	protected String getCatalinaHome() {
-		URL home = getClass().getResource("/tomcat6");
+		URL home = getClass().getResource("/jboss4");
 
 		if (home == null) {
-			throw new RuntimeException("No /tomcat6 resources found!");
+			throw new RuntimeException("No /jboss4 resources found!");
 		} else {
 			return home.getFile();
 		}
@@ -56,18 +56,18 @@ public abstract class AbstractTomcat6Bootstrap {
 		return 7463;
 	}
 
-	protected void startTomcat(String kernelDocBase, String appDocBase) throws Exception {
-		startTomcat(null, null, kernelDocBase, appDocBase);
+	protected void startJboss(String kernelDocBase, String appDocBase) throws Exception {
+		startJboss(null, null, kernelDocBase, appDocBase);
 	}
 
-	protected void startTomcat(WebappProvider kernelProvider, WebappProvider appProvider) throws Exception {
+	protected void startJboss(WebappProvider kernelProvider, WebappProvider appProvider) throws Exception {
 		String kernelDocBase = kernelProvider.getWarRoot().getCanonicalPath();
 		String appDocBase = appProvider.getWarRoot().getCanonicalPath();
 
-		startTomcat(kernelProvider, appProvider, kernelDocBase, appDocBase);
+		startJboss(kernelProvider, appProvider, kernelDocBase, appDocBase);
 	}
 
-	private void startTomcat(WebappProvider kernelProvider, WebappProvider appProvider, String kernelDocBase,
+	private void startJboss(WebappProvider kernelProvider, WebappProvider appProvider, String kernelDocBase,
 	      String appDocBase) throws Exception {
 		Embedded container = new Embedded();
 
@@ -77,7 +77,7 @@ public abstract class AbstractTomcat6Bootstrap {
 		// create host
 		Host localHost = container.createHost("localHost", new File(".").getAbsolutePath());
 		ClassLoader classloader = getClass().getClassLoader();
-		Tomcat6WebappLoader loader = new Tomcat6WebappLoader(classloader);
+		Jboss4WebappLoader loader = new Jboss4WebappLoader(classloader);
 
 		loader.setKernelWebappProvider(kernelProvider);
 		loader.setApplicationWebappProvider(appProvider);

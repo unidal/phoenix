@@ -18,17 +18,17 @@ import org.apache.catalina.core.StandardContext;
  * &lt;/Context>
  * </pre>
  */
-public class Tomcat6WebappLoader extends AbstractCatalinaWebappLoader {
-	public Tomcat6WebappLoader() {
+public class Jboss4WebappLoader extends AbstractCatalinaWebappLoader {
+	public Jboss4WebappLoader() {
 	}
 
-	public Tomcat6WebappLoader(ClassLoader classloader) {
+	public Jboss4WebappLoader(ClassLoader classloader) {
 		super(classloader);
 	}
 
 	@Override
 	protected boolean shouldIgnoredByBootstrapClassloader(URL url) {
-		if (url.toExternalForm().contains("/jboss")) {
+		if (url.toExternalForm().contains("-6.0.29.jar")) {
 			return true; // no jboss
 		}
 
@@ -46,10 +46,10 @@ public class Tomcat6WebappLoader extends AbstractCatalinaWebappLoader {
 			Listener listener = loadListener(Listener.class, createBootstrapClassloader());
 
 			((StandardContext) container).addLifecycleListener( //
-			      new Delegate<Tomcat6WebappLoader, LifecycleHandler<Tomcat6WebappLoader>>(this, listener));
+			      new Delegate<Jboss4WebappLoader, LifecycleHandler<Jboss4WebappLoader>>(this, listener));
 		}
 	}
 
-	public static interface Listener extends LifecycleHandler<Tomcat6WebappLoader> {
+	public static interface Listener extends LifecycleHandler<Jboss4WebappLoader> {
 	}
 }

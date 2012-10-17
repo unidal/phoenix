@@ -10,12 +10,10 @@ public class Tomcat6WebappListener implements Listener {
 	public void initializing(Tomcat6WebappLoader loader) {
 		System.out.println(String.format("Kernel war root: %s", loader.getKernelWarRoot()));
 		System.out.println(String.format("War root: %s", loader.getWarRoot()));
-		System.out.println(String.format("ServletContext: %s", loader.getServletContext()));
 	}
 
 	@Override
 	public void beforeStarting(Tomcat6WebappLoader loader) {
-
 	}
 
 	@Override
@@ -37,11 +35,9 @@ public class Tomcat6WebappListener implements Listener {
 
 	@Override
 	public void stopping(Tomcat6WebappLoader loader) {
-
 	}
 
 	@Override
 	public void destroying(Tomcat6WebappLoader loader) {
-
 	}
 }
