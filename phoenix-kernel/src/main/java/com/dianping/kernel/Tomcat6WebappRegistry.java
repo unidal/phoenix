@@ -37,7 +37,7 @@ public class Tomcat6WebappRegistry {
 	}
 
 	public void registerWebXml() throws Exception {
-		WebRuleSet webRuleSet = loader.getFieldValue(ContextConfig.class, "webRuleSet", null);
+		WebRuleSet webRuleSet = loader.getFieldValue(null, ContextConfig.class, "webRuleSet");
 		File webXml = new File(loader.getKernelWarRoot(), "WEB-INF/web.xml");
 		InputSource source = new InputSource(new FileInputStream(webXml));
 		StandardContext ctx = (StandardContext) loader.getContainer();

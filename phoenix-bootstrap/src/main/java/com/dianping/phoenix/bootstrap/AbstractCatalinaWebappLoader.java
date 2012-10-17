@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.jar.JarFile;
 
 import javax.servlet.ServletContext;
 
@@ -50,11 +51,13 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 
 	WebappClassLoader adjustWebappClassloader(WebappClassLoader classloader) {
 		try {
+			clearLoadedJars(classloader);
+
 			ClasspathBuilder builder = new DefaultClasspathBuilder();
 			List<URL> urls = builder.build(m_kernelProvider, m_appProvider);
 
 			for (URL url : urls) {
-				classloader.addRepository(url.toExternalForm());
+				super.addRepository(url.toExternalForm());
 			}
 
 			if (m_debug) {
@@ -64,6 +67,37 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		} catch (Exception e) {
 			throw new RuntimeException("Error when adjusting webapp classloader!", e);
 		}
+	}
+
+	void clearLoadedJars(WebappClassLoader classloader) throws Exception {
+		List<String> loaderRepositories = getFieldValue(this, WebappLoader.class, "loaderRepositories");
+		URL[] repositoryURLs = getFieldValue(classloader, "repositoryURLs");
+		// JarFile[] jarFiles = getFieldValue(classloader, "jarFiles");
+		// String[] jarNames = getFieldValue(classloader, "jarNames");
+		// File[] jarRealFiles = getFieldValue(classloader, "jarRealFiles");
+		// String[] paths = getFieldValue(classloader, "paths");
+
+		for (int i = loaderRepositories.size() - 1; i >= 0; i--) {
+			String repository = loaderRepositories.get(i);
+
+			if (repository.endsWith(".jar")) {
+				loaderRepositories.remove(i);
+			}
+		}
+
+		List<URL> urls = new ArrayList<URL>();
+
+		for (URL url : repositoryURLs) {
+			if (!url.toExternalForm().endsWith(".jar")) {
+				urls.add(url);
+			}
+		}
+
+		setFieldValue(classloader, "repositoryURLs", urls.toArray(new URL[0]));
+		setFieldValue(classloader, "jarFiles", new JarFile[0]);
+		setFieldValue(classloader, "jarNames", new String[0]);
+		setFieldValue(classloader, "jarRealFiles", new File[0]);
+		setFieldValue(classloader, "paths", new String[0]);
 	}
 
 	ClassLoader createBootstrapClassloader() {
@@ -85,8 +119,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			ClassLoader classloader = getClass().getClassLoader();
 
 			if (classloader instanceof URLClassLoader) {
-				Object ucp = getFieldValue(classloader.getClass().getSuperclass(), "ucp", classloader);
-				List<URL> pathes = getFieldValue(ucp.getClass(), "path", ucp);
+				Object ucp = getFieldValue(classloader, classloader.getClass().getSuperclass(), "ucp");
+				List<URL> pathes = getFieldValue(ucp, ucp.getClass(), "path");
 				int len = pathes.size();
 
 				for (int i = len - 1; i >= 0; i--) {
@@ -109,7 +143,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T getFieldValue(Class<?> clazz, String fieldName, Object instance) throws Exception {
+	public <T> T getFieldValue(Object instance, Class<?> clazz, String fieldName) throws Exception {
 		Field field = clazz.getDeclaredField(fieldName);
 
 		if (!field.isAccessible()) {
@@ -117,6 +151,10 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		}
 
 		return (T) field.get(instance);
+	}
+
+	public <T> T getFieldValue(Object instance, String fieldName) throws Exception {
+		return getFieldValue(instance, instance.getClass(), fieldName);
 	}
 
 	public File getKernelWarRoot() {
@@ -156,8 +194,6 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			throw new IllegalStateException("WebappClassLoader is not ready at this time!");
 		}
 	}
-
-	protected abstract boolean shouldIgnoredByBootstrapClassloader(URL url);
 
 	protected <T> T loadListener(Class<T> listenerClass, ClassLoader classloader) {
 		ServiceLoader<T> serviceLoader = ServiceLoader.load(listenerClass, classloader);
@@ -199,6 +235,20 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		m_debug = "true".equals(debug);
 	}
 
+	public void setFieldValue(Object instance, Class<?> clazz, String fieldName, Object value) throws Exception {
+		Field field = clazz.getDeclaredField(fieldName);
+
+		if (!field.isAccessible()) {
+			field.setAccessible(true);
+		}
+
+		field.set(instance, value);
+	}
+
+	public void setFieldValue(Object instance, String fieldName, Object value) throws Exception {
+		setFieldValue(instance, instance.getClass(), fieldName, value);
+	}
+
 	/**
 	 * For production only!
 	 * 
@@ -216,6 +266,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	public void setKernelWebappProvider(WebappProvider kernelProvider) {
 		m_kernelProvider = kernelProvider;
 	}
+
+	protected abstract boolean shouldIgnoredByBootstrapClassloader(URL url);
 
 	@Override
 	public void start() throws LifecycleException {

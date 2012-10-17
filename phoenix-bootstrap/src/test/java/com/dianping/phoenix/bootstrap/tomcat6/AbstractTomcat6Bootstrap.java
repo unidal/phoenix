@@ -91,7 +91,7 @@ public abstract class AbstractTomcat6Bootstrap {
 		manager.setPathname(new File("target/session").getCanonicalFile().getPath());
 
 		context.setManager(manager);
-		context.setReloadable(true);
+		context.setReloadable(false);
 
 		localHost.addChild(context);
 
