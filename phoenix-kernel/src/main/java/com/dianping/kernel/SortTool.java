@@ -3,7 +3,9 @@ package com.dianping.kernel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author bin.miao
@@ -36,7 +38,7 @@ public class SortTool {
 		List<SortElementWrapper> duringWrapperList = new ArrayList<SortElementWrapper>();
 		List<SortElementWrapper> afterWrapperList = new ArrayList<SortElementWrapper>();
 		List<SortElementWrapper> uncertainWrapperList = new ArrayList<SortElementWrapper>();
-		List<SortElementWrapper> notMatchWrapperList = new ArrayList<SortElementWrapper>();
+		Set<SortElementWrapper> notMatchWrapperSet = new HashSet<SortElementWrapper>();
 		
 		if(elementList != null && elementList.size() > 0){
 			
@@ -53,7 +55,8 @@ public class SortTool {
 						beforeWrapperList,
 						duringWrapperList,
 						afterWrapperList,
-						uncertainWrapperList);
+						uncertainWrapperList,
+						notMatchWrapperSet);
 			}
 			for(SortElementWrapper uncertainWrapper : uncertainWrapperList){
 				String r = uncertainWrapper.getRuleStr();
@@ -64,15 +67,15 @@ public class SortTool {
 					}else if(r.startsWith(afterOperator)){
 						sew.addAfter(uncertainWrapper);
 					}else{
-						notMatchWrapperList.add(uncertainWrapper);
+						notMatchWrapperSet.add(uncertainWrapper);
 					}
 				}else{
-					notMatchWrapperList.add(uncertainWrapper);
+					notMatchWrapperSet.add(uncertainWrapper);
 				}
 			}
 			Collections.sort(beforeWrapperList,new BeforeOrAfterComparator());
 			Collections.sort(afterWrapperList,new BeforeOrAfterComparator());
-			return merge(beforeWrapperList,duringWrapperList,afterWrapperList,notMatchWrapperList);
+			return merge(beforeWrapperList,duringWrapperList,afterWrapperList,notMatchWrapperSet);
 		}
 		return null;
 	}
@@ -80,7 +83,7 @@ public class SortTool {
 	private List<SortElement> merge(List<SortElementWrapper> beforeWrapperList,
 			List<SortElementWrapper> duringWrapperList,
 			List<SortElementWrapper> afterWrapperList,
-			List<SortElementWrapper> notMatchWrapperList){
+			Set<SortElementWrapper> notMatchWrapperSet){
 		List<SortElement> resultList = new ArrayList<SortElement>();
 		for(SortElementWrapper sew : beforeWrapperList){
 			resultList.add(sew.getElement());
@@ -91,7 +94,7 @@ public class SortTool {
 			mergeAfterSortElement(resultList,sew);
 		}
 		if(!this.discardNotMatch){
-			for(SortElementWrapper sew : notMatchWrapperList){
+			for(SortElementWrapper sew : notMatchWrapperSet){
 				resultList.add(sew.getElement());
 			}
 		}
@@ -124,7 +127,8 @@ public class SortTool {
 			List<SortElementWrapper> beforeWrapperList,
 			List<SortElementWrapper> duringWrapperList,
 			List<SortElementWrapper> afterWrapperList,
-			List<SortElementWrapper> uncertainWrapperList){
+			List<SortElementWrapper> uncertainWrapperList,
+			Set<SortElementWrapper> notMatchWrapperSet){
 		String rule = rule_;
 		if(rule != null){
 			rule = rule_.trim();
@@ -144,10 +148,10 @@ public class SortTool {
 								beforeWrapperList,
 								duringWrapperList,
 								afterWrapperList,
-								uncertainWrapperList);
+								uncertainWrapperList,
+								notMatchWrapperSet);
 					}else{
-//						allWrapperList.remove(wrapper);
-						//TODO Warning
+						notMatchWrapperSet.add(wrapper);
 					}
 					
 				}else{
