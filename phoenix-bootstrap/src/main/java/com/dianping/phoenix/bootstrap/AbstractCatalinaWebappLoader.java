@@ -153,8 +153,9 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		return (T) field.get(instance);
 	}
 
-	public <T> T getFieldValue(Object instance, String fieldName) throws Exception {
-		return getFieldValue(instance, instance.getClass(), fieldName);
+	@SuppressWarnings("unchecked")
+   public <T> T getFieldValue(Object instance, String fieldName) throws Exception {
+		return (T) getFieldValue(instance, instance.getClass(), fieldName);
 	}
 
 	public File getKernelWarRoot() {
