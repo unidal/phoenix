@@ -339,24 +339,12 @@ public class SortTool {
 			return this.ruleStr;
 		}
 		
-		public boolean isRuleNumber(){
-			return this.isRuleNumber;
-		}
-
 		public int getIdx() {
 			return idx;
 		}
 
-		public void setIdx(int idx) {
-			this.idx = idx;
-		}
-
 		public SortElement getElement() {
 			return element;
-		}
-
-		public void setElement(SortElement element) {
-			this.element = element;
 		}
 
 		public SortElementWrapper getBefore() {
