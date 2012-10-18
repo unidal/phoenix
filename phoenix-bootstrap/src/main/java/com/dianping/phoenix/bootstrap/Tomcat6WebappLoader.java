@@ -4,6 +4,7 @@ import java.net.URL;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.core.StandardContext;
+import org.apache.juli.logging.Log;
 
 /**
  * A WebappLoader that allows a customized classpath to be added through
@@ -48,6 +49,10 @@ public class Tomcat6WebappLoader extends AbstractCatalinaWebappLoader {
 			((StandardContext) container).addLifecycleListener( //
 			      new Delegate<Tomcat6WebappLoader, LifecycleHandler<Tomcat6WebappLoader>>(this, listener));
 		}
+	}
+	
+	public Log getLog() {
+		return super.getLog();
 	}
 
 	public static interface Listener extends LifecycleHandler<Tomcat6WebappLoader> {
