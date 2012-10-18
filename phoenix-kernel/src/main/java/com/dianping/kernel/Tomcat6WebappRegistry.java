@@ -18,6 +18,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
 import com.dianping.kernel.SortTool.SortElement;
+import com.dianping.phoenix.bootstrap.Constants;
 import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
 
 public class Tomcat6WebappRegistry {
@@ -38,7 +39,15 @@ public class Tomcat6WebappRegistry {
 
 	public void registerWebXml() throws Exception {
 		WebRuleSet webRuleSet = loader.getFieldValue(null, ContextConfig.class, "webRuleSet");
-		File webXml = new File(loader.getKernelWarRoot(), "WEB-INF/web.xml");
+		
+		File webXml = null;
+		String webXmlPath = System.getProperty(Constants.WEB_XML_PATH_KEY);
+		if(webXmlPath != null){
+			webXml = new File(webXmlPath);
+		}else{
+			webXml = new File(loader.getKernelWarRoot(), "WEB-INF/web.xml");
+		}
+		
 		InputSource source = new InputSource(new FileInputStream(webXml));
 		StandardContext ctx = (StandardContext) loader.getContainer();
 		Digester digester = ContextConfig.createWebXmlDigester(ctx.getXmlNamespaceAware(), ctx.getXmlValidation());
