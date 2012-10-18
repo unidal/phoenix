@@ -8,7 +8,7 @@
 	</context-param>
 	<context-param>
 	    <param-name>com.dianping.kernel.demo.DemoListener2</param-name>
-	    <param-value>+:Null|+com.dianping.Null|+com.dianping.phoenix.samples.SampleListener1</param-value>
+	    <param-value>+:Null|+com.dianping.Null|+com.dianping.phoenix.samples.SampleListener12</param-value>
 	</context-param>
 	<context-param>
 	    <param-name>com.dianping.kernel.demo.DemoListener3</param-name>
