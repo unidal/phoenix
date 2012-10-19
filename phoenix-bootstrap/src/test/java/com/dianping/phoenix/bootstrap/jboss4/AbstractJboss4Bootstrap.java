@@ -92,7 +92,7 @@ public abstract class AbstractJboss4Bootstrap {
 		if (webXml.startsWith("/") || webXml.contains(":/")) {
 			loader.setWebXml(new File(webXml));
 		} else {
-			loader.setWebXml(new File(appDocBase, webXml));
+			loader.setWebXml(new File(kernelDocBase, webXml));
 		}
 
 		Context context = container.createContext("/" + getContextPath(), appDocBase);
