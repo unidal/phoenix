@@ -56,6 +56,10 @@ public abstract class AbstractTomcat6Bootstrap {
 		return 7463;
 	}
 
+	protected String getWebXml() {
+		return "WEB-INF/web.xml";
+	}
+
 	protected void startTomcat(String kernelDocBase, String appDocBase) throws Exception {
 		startTomcat(null, null, kernelDocBase, appDocBase);
 	}
@@ -82,6 +86,14 @@ public abstract class AbstractTomcat6Bootstrap {
 		loader.setKernelWebappProvider(kernelProvider);
 		loader.setApplicationWebappProvider(appProvider);
 		loader.setKernelDocBase(kernelDocBase);
+
+		String webXml = getWebXml();
+
+		if (webXml.startsWith("/") || webXml.contains(":/")) {
+			loader.setWebXml(new File(webXml));
+		} else {
+			loader.setWebXml(new File(appDocBase, webXml));
+		}
 
 		Context context = container.createContext("/" + getContextPath(), appDocBase);
 		context.setLoader(loader);

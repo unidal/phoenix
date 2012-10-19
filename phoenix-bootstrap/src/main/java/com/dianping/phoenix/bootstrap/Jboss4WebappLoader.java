@@ -26,15 +26,6 @@ public class Jboss4WebappLoader extends AbstractCatalinaWebappLoader {
 		super(classloader);
 	}
 
-	@Override
-	protected boolean shouldIgnoredByBootstrapClassloader(URL url) {
-		if (url.toExternalForm().contains("-6.0.29.jar")) {
-			return true; // no jboss
-		}
-
-		return false;
-	}
-
 	public void setContainer(Container container) {
 		try {
 			super.setContainer(container);
@@ -48,6 +39,15 @@ public class Jboss4WebappLoader extends AbstractCatalinaWebappLoader {
 			((StandardContext) container).addLifecycleListener( //
 			      new Delegate<Jboss4WebappLoader, LifecycleHandler<Jboss4WebappLoader>>(this, listener));
 		}
+	}
+
+	@Override
+	protected boolean shouldIgnoredByBootstrapClassloader(URL url) {
+		if (url.toExternalForm().contains("-6.0.29.jar")) {
+			return true; // no jboss
+		}
+
+		return false;
 	}
 
 	public static interface Listener extends LifecycleHandler<Jboss4WebappLoader> {

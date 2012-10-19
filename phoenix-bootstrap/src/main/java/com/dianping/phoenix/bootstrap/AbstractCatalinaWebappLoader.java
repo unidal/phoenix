@@ -40,6 +40,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 
 	private String m_kernelDocBase;
 
+	private File m_webXml;
+
 	private boolean m_debug = true;
 
 	public AbstractCatalinaWebappLoader() {
@@ -154,7 +156,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	}
 
 	@SuppressWarnings("unchecked")
-   public <T> T getFieldValue(Object instance, String fieldName) throws Exception {
+	public <T> T getFieldValue(Object instance, String fieldName) throws Exception {
 		return (T) getFieldValue(instance, instance.getClass(), fieldName);
 	}
 
@@ -162,7 +164,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		return m_kernelProvider.getWarRoot();
 	}
 
-	protected Log getLog() {
+	public Log getLog() {
 		return m_log;
 	}
 
@@ -194,6 +196,10 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		} else {
 			throw new IllegalStateException("WebappClassLoader is not ready at this time!");
 		}
+	}
+
+	public File getWebXml() {
+		return m_webXml;
 	}
 
 	protected <T> T loadListener(Class<T> listenerClass, ClassLoader classloader) {
@@ -266,6 +272,10 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	 */
 	public void setKernelWebappProvider(WebappProvider kernelProvider) {
 		m_kernelProvider = kernelProvider;
+	}
+
+	public void setWebXml(File webXml) {
+		m_webXml = webXml;
 	}
 
 	protected abstract boolean shouldIgnoredByBootstrapClassloader(URL url);

@@ -56,6 +56,10 @@ public abstract class AbstractJboss4Bootstrap {
 		return 7463;
 	}
 
+	protected String getWebXml() {
+		return "WEB-INF/web.xml";
+	}
+
 	protected void startJboss(String kernelDocBase, String appDocBase) throws Exception {
 		startJboss(null, null, kernelDocBase, appDocBase);
 	}
@@ -82,6 +86,14 @@ public abstract class AbstractJboss4Bootstrap {
 		loader.setKernelWebappProvider(kernelProvider);
 		loader.setApplicationWebappProvider(appProvider);
 		loader.setKernelDocBase(kernelDocBase);
+
+		String webXml = getWebXml();
+
+		if (webXml.startsWith("/") || webXml.contains(":/")) {
+			loader.setWebXml(new File(webXml));
+		} else {
+			loader.setWebXml(new File(appDocBase, webXml));
+		}
 
 		Context context = container.createContext("/" + getContextPath(), appDocBase);
 		context.setLoader(loader);

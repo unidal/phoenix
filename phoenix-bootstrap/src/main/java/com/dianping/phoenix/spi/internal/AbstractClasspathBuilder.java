@@ -73,7 +73,7 @@ public abstract class AbstractClasspathBuilder implements ClasspathBuilder {
 
 			if (path.endsWith(".jar")) {
 				int len = path.length();
-				int pos = path.lastIndexOf('/');
+				int pos = path.lastIndexOf(File.separatorChar);
 
 				VersionParser parser = new VersionParser();
 				String[] result = parser.parse(path.substring(pos + 1, len - 4));

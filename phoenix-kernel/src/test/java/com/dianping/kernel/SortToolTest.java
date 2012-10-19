@@ -141,6 +141,20 @@ public class SortToolTest {
 	}
 	
 	@Test
+	public void sortDiscardTest(){
+		sortElementList.add(uncertain5);
+		
+		expectedElementList.add(app1);
+		expectedElementList.add(app2);
+		expectedElementList.add(uncertain5);
+		expectedElementList.add(app3);
+		
+		
+		List<SortElement>  sel = new SortTool().sort(sortElementList);
+		Assert.assertArrayEquals(expectedElementList.toArray(), sel.toArray());
+	}
+	
+	@Test
 	public void MultiRuleSortTest(){
 		sortElementList.add(uncertain1);
 		sortElementList.add(uncertain2);

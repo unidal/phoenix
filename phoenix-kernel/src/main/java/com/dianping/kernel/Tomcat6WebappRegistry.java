@@ -38,7 +38,8 @@ public class Tomcat6WebappRegistry {
 
 	public void registerWebXml() throws Exception {
 		WebRuleSet webRuleSet = loader.getFieldValue(null, ContextConfig.class, "webRuleSet");
-		File webXml = new File(loader.getKernelWarRoot(), "WEB-INF/web.xml");
+		
+		File webXml = loader.getWebXml();
 		InputSource source = new InputSource(new FileInputStream(webXml));
 		StandardContext ctx = (StandardContext) loader.getContainer();
 		Digester digester = ContextConfig.createWebXmlDigester(ctx.getXmlNamespaceAware(), ctx.getXmlValidation());
@@ -78,28 +79,62 @@ public class Tomcat6WebappRegistry {
 		reorderListener();
 		reorderFilter();
 	}
-
+	
 	private void reorderListener() {
 		String[] listeners = this.context.findApplicationListeners();
 		List<ListenerSortElement> listenerList = new ArrayList<ListenerSortElement>();
+		this.loader.getLog().info("Re-match combinations before the listeners::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		for (String listener : listeners) {
-			listenerList.add(new ListenerSortElement(listener, this.context.findParameter(listener)));
+			String rule = this.context.findParameter(listener);
+			this.loader.getLog().info("listener::"+listener+"   rule::"+rule);
+			listenerList.add(new ListenerSortElement(listener, rule));
 		}
-		SortTool sortTool = new SortTool(false);
+		this.loader.getLog().info("Re-match combinations before the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		
+		SortTool sortTool = new SortTool();
 		// Sort FilterMap
 		List<SortElement> elementList = sortTool.sort(listenerList);
-		for (int i = 0; i < listeners.length; i++) {
-			listeners[i] = elementList.get(i).getClassName();
+		// Get discard Listener
+		List<String> discardListenerList = new ArrayList<String>();
+		BeforeSort:for(String listener : listeners){
+			AfterSort:for(SortElement se : elementList){
+				if(listener.equals(se.getClassName())){
+					continue BeforeSort;
+				}
+			}
+			discardListenerList.add(listener);
 		}
+		
+		//Remove discard Listener
+		for(String dlisten : discardListenerList){
+			this.loader.getLog().warn("----No match is found for the listener::"
+					+dlisten
+					+" and rule::"
+					+this.context.findParameter(dlisten));
+			this.context.removeApplicationListener(dlisten);
+		}
+		
+		listeners = this.context.findApplicationListeners();
+		this.loader.getLog().info("Re-match combinations after the listeners::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		for (int i = 0; i < elementList.size(); i++) {
+			String listener = elementList.get(i).getClassName();
+			String rule = this.context.findParameter(listener);
+			this.loader.getLog().info("listener::"+listener+"   rule::"+rule);
+			listeners[i] = listener;
+		}
+		this.loader.getLog().info("Re-match combinations after the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	}
 
 	private void reorderFilter() {
 		FilterMap[] filterMaps = this.context.findFilterMaps();
 		List<FilterSortElement> filterMapList = new ArrayList<FilterSortElement>();
+		this.loader.getLog().info("Re-match combinations before the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		for (FilterMap fm : filterMaps) {
-			filterMapList.add(new FilterSortElement(fm));
+			FilterSortElement fse = new FilterSortElement(fm);
+			filterMapList.add(fse);
+			this.loader.getLog().info("filterName::"+fse.getName()+"   rule::"+fse.getRule());
 		}
-
+		this.loader.getLog().info("Re-match combinations before the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		SortTool sortTool = new SortTool();
 		// Sort FilterMap
 		List<SortElement> elementList = sortTool.sort(filterMapList);
@@ -108,14 +143,19 @@ public class Tomcat6WebappRegistry {
 			if (!elementList.contains(fse)) {
 				this.context.removeFilterMap(fse.getFilterMap());
 				this.context.removeFilterDef(fse.getFilterDef());
+				this.loader.getLog().warn("----No match is found for the filterName::"+fse.getName()+"   rule::"+fse.getRule());
 			}
 		}
 
 		filterMaps = this.context.findFilterMaps();
+		this.loader.getLog().info("Re-match combinations after the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		// Set sorted result back
 		for (int i = 0; i < filterMaps.length; i++) {
-			filterMaps[i] = ((FilterSortElement) elementList.get(i)).getFilterMap();
+			FilterSortElement fse = (FilterSortElement) elementList.get(i);
+			filterMaps[i] = fse.getFilterMap();
+			this.loader.getLog().info("filterName::"+fse.getName()+"   rule::"+fse.getRule());
 		}
+		this.loader.getLog().info("Re-match combinations after the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	}
 
 	public class ListenerSortElement implements SortElement {
