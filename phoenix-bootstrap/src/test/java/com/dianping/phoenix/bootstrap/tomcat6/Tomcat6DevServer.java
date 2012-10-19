@@ -9,7 +9,7 @@ import com.dianping.phoenix.spi.internal.DevModeWebappProvider;
 public class Tomcat6DevServer extends AbstractTomcat6Bootstrap {
 	@Override
 	protected String getWebXml() {
-		URL webXml = getClass().getResource("/WEB-INF/web.xml");
+		URL webXml = getClass().getResource("web.xml");
 
 		if (webXml != null) {
 			return webXml.getPath();

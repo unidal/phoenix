@@ -8,6 +8,7 @@ public class Jboss4WebappListener implements Listener {
 
 	@Override
 	public void initializing(Jboss4WebappLoader loader) {
+		System.out.println(String.format("Web xml: %s", loader.getWebXml()));
 		System.out.println(String.format("Kernel war root: %s", loader.getKernelWarRoot()));
 		System.out.println(String.format("War root: %s", loader.getWarRoot()));
 	}
