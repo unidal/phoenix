@@ -85,7 +85,7 @@ else
 	exit 1
 fi
 log "Errors in catalina.out" w
-grep -E "ERROR|SEVERE" $TOMCAT_HOME/logs/catalina.out
+grep -Ei "ERROR|SEVERE" $TOMCAT_HOME/logs/catalina.out
 
 log "Starting test web app..." i f f
 i=0
