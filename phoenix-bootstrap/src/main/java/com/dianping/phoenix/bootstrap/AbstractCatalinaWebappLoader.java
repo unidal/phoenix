@@ -263,6 +263,10 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	 */
 	public void setKernelDocBase(String kernelDocBase) {
 		m_kernelDocBase = kernelDocBase;
+
+		if (m_webXml == null) {
+			m_webXml = new File(kernelDocBase, "WEB-INF/web.xml");
+		}
 	}
 
 	/**
