@@ -1,11 +1,11 @@
 TOMCAT_HOME=/Users/marsqing/Downloads/apache-tomcat-6.0.35/
-SHOPPIC_WAR=/Users/marsqing/Projects/shoppic-service/shoppic-remote-service/target/shoppic-service-dev-3.3.5.war
-MAX_HTTP_TRY=30
+SHOPPIC_WAR=/Users/marsqing/Projects/shoppic-service/shoppic-remote-service/target/shoppic-service.war
 
+MAX_HTTP_TRY=30
 LOG_HOME=/data/applogs/
-PHOENIX_KERNEL_WAR=./phoenix-kernel/target/phoenix-kernel.war
+PHOENIX_KERNEL_WAR=../phoenix-kernel/target/phoenix-kernel.war
 PHOENIX_KERNEL_TARGET=/data/webapps/phoenix-kernel/
-PHOENIX_BOOTSTRAP_JAR=./phoenix-bootstrap/target/phoenix-bootstrap.jar
+PHOENIX_BOOTSTRAP_JAR=../phoenix-bootstrap/target/phoenix-bootstrap.jar
 export CATALINA_PID=/data/tomcat6.pid
 
 # argements:
@@ -34,10 +34,18 @@ function log {
 }
 
 # package phoenix
-#cwd=`pwd`
-#log "Packaging phoenix..." i f f
-#mvn -Dmaven.test.skip package >/dev/null
-#log "Package done" i t
+cwd=`pwd`
+if [ $# -eq 0 ];then
+	cd ..
+	log "Packaging phoenix..." i f f
+	mvn -Dmaven.test.skip clean package > maven.log
+	if [ $? -ne 0 ];then
+		log "Error package phoenix" e t
+		exit 1
+	fi
+	log "Package done" i t
+	cd $cwd
+fi
 
 # copy phoenix kernel, bootstrap and custom web.xml to the right place
 rm -rf $PHOENIX_KERNEL_TARGET
@@ -55,7 +63,7 @@ mkdir -p $TOMCAT_HOME/conf/Catalina/localhost/
 cat <<-END > $TOMCAT_HOME/conf/Catalina/localhost/shoppic.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Context docBase="$SHOPPIC_WAR">
-   <Loader className="com.dianping.phoenix.bootstrap.Tomcat6WebappLoader" kernelDocBase="$PHOENIX_KERNEL_TARGET/xx" debug="true" />
+   <Loader className="com.dianping.phoenix.bootstrap.Tomcat6WebappLoader" kernelDocBase="$PHOENIX_KERNEL_TARGET" debug="true" />
  </Context>
 END
 
@@ -74,10 +82,10 @@ if [ $ps_result_row -eq 2 ];then
 	log "Tomcat successfully started" i t
 else
 	log "Tomcat failed to start" e t
-	log "Errors in catalina.out" w
-	grep -E "ERROR|SEVERE" $TOMCAT_HOME/logs/catalina.out
 	exit 1
 fi
+log "Errors in catalina.out" w
+grep -E "ERROR|SEVERE" $TOMCAT_HOME/logs/catalina.out
 
 log "Starting test web app..." i f f
 i=0
