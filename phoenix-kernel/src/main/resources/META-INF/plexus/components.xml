@@ -1,6 +1,10 @@
 <plexus>
 	<components>
 		<component>
+			<role>com.dianping.kernel.console.page.classpath.ArtifactResolver</role>
+			<implementation>com.dianping.kernel.console.page.classpath.ArtifactResolver</implementation>
+		</component>
+		<component>
 			<role>com.site.web.mvc.model.ModuleRegistry</role>
 			<implementation>com.site.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
@@ -25,6 +29,26 @@
 		<component>
 			<role>com.dianping.kernel.console.page.home.JspViewer</role>
 			<implementation>com.dianping.kernel.console.page.home.JspViewer</implementation>
+		</component>
+		<component>
+			<role>com.dianping.kernel.console.page.classpath.Handler</role>
+			<implementation>com.dianping.kernel.console.page.classpath.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.kernel.console.page.classpath.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.kernel.console.page.classpath.ArtifactResolver</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.kernel.console.page.classpath.JspViewer</role>
+			<implementation>com.dianping.kernel.console.page.classpath.JspViewer</implementation>
+		</component>
+		<component>
+			<role>com.dianping.kernel.console.page.classpath.ArtifactResolver</role>
+			<implementation>com.dianping.kernel.console.page.classpath.ArtifactResolver</implementation>
 		</component>
 	</components>
 </plexus>

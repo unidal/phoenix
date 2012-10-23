@@ -5,7 +5,9 @@ import com.site.web.mvc.annotation.ModuleMeta;
 
 public enum ConsolePage implements Page {
 
-   HOME("home", "home", "Home", "Home", true);
+   HOME("home", "home", "Home", "Home", true),
+
+   CLASSPATH("classpath", "classpath", "Classpath", "Classpath", true);
 
    private String m_name;
 
