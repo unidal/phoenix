@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>com.site.common</groupId>
 			<artifactId>web-framework</artifactId>
-			<version>1.0.15</version>
+			<version>1.0.16</version>
 		</dependency>
 		<dependency>
 			<groupId>com.site.common</groupId>
