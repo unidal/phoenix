@@ -27,6 +27,11 @@ public class Tomcat6WebappListener implements Listener {
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Error when registering %s/web.xml!", loader.getWarRoot()), e);
 		}
+		try {	
+			this.tomcat6WebappRegistry.registerResources();
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Error when registering %s/resources!", loader.getWarRoot()), e);
+		}
 	}
 
 	@Override
