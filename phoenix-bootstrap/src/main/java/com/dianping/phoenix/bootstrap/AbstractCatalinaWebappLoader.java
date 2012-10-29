@@ -65,6 +65,13 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			if (m_debug) {
 				m_log.info(String.format("Webapp classpath: %s.", Arrays.asList(classloader.getURLs())));
 			}
+
+			Container container = getContainer();
+			ServletContext ctx = ((StandardContext) container).getServletContext();
+
+			// pass two war roots to application
+			ctx.setAttribute("phoenix.kernelWebAppProvider", m_kernelProvider);
+			ctx.setAttribute("phoenix.appWebAppProvider", m_appProvider);
 			return classloader;
 		} catch (Exception e) {
 			throw new RuntimeException("Error when adjusting webapp classloader!", e);

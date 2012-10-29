@@ -16,7 +16,7 @@ public class TestServer extends JettyServer {
       TestServer server = new TestServer();
 
       server.startServer();
-      server.showReport();
+      server.startWebapp();
       server.stopServer();
    }
 
@@ -27,6 +27,7 @@ public class TestServer extends JettyServer {
    }
 
    @Override
+   
    protected String getContextPath() {
       return "/kernel";
    }
@@ -42,9 +43,9 @@ public class TestServer extends JettyServer {
    }
 
    @Test
-   public void showReport() throws Exception {
+   public void startWebapp() throws Exception {
       // open the page in the default browser
-      display("/kernel/console");
+      display("/kernel/console/classpath");
       waitForAnyKey();
    }
 }
