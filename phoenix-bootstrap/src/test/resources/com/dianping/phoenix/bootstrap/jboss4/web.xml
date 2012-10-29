@@ -18,6 +18,21 @@
 	    <param-name>com.dianping.kernel.demo.DemoListener4</param-name>
 	    <param-value>-1</param-value>
 	</context-param>
+	
+	<servlet>
+		<servlet-name>mvc-servlet</servlet-name>
+		<servlet-class>com.site.web.MVC</servlet-class>
+		<init-param>
+			<param-name>cat-client-xml</param-name>
+			<param-value>/data/appdatas/cat/client.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>mvc-servlet</servlet-name>
+		<url-pattern>/console/*</url-pattern>
+	</servlet-mapping>
+	
 	<!-- Filter -->
 	<filter>
 		<filter-name>Uncertain-DemoFilter1</filter-name>

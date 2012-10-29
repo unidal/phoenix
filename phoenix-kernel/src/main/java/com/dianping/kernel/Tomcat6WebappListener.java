@@ -4,7 +4,7 @@ import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
 import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader.Listener;
 
 public class Tomcat6WebappListener implements Listener {
-	private Tomcat6WebappRegistry tomcat6WebappRegistry;
+	private Tomcat6WebappPatcher patcher;
 
 	@Override
 	public void initializing(Tomcat6WebappLoader loader) {
@@ -19,16 +19,16 @@ public class Tomcat6WebappListener implements Listener {
 
 	@Override
 	public void starting(Tomcat6WebappLoader loader) {
-		this.tomcat6WebappRegistry = new Tomcat6WebappRegistry();
-		this.tomcat6WebappRegistry.init(loader);
+		this.patcher = new Tomcat6WebappPatcher();
+		this.patcher.init(loader);
 
 		try {
-			this.tomcat6WebappRegistry.registerWebXml();
+			this.patcher.loadKernelWebXml();
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Error when registering %s/web.xml!", loader.getWarRoot()), e);
 		}
 		try {	
-			this.tomcat6WebappRegistry.registerResources();
+			this.patcher.mergeWebResources();
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Error when registering %s/resources!", loader.getWarRoot()), e);
 		}
@@ -36,7 +36,7 @@ public class Tomcat6WebappListener implements Listener {
 
 	@Override
 	public void afterStarted(Tomcat6WebappLoader loader) {
-		this.tomcat6WebappRegistry.reorderWebappElements();
+		this.patcher.sortWebXmlElements();
 	}
 
 	@Override

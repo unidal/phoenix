@@ -281,7 +281,6 @@ public class SortTool {
 		private int idx = 0;
 		private SortElement element;
 		
-		private boolean isRuleNumber = false;
 		private String ruleStr = null;
 		private int ruleNum = 0;
 		
@@ -323,7 +322,6 @@ public class SortTool {
 		
 		public void setRule(int ruleNum){
 			this.ruleNum = ruleNum;
-			this.isRuleNumber = true;
 		}
 		
 		public int getRuleNum(){
@@ -332,7 +330,6 @@ public class SortTool {
 		
 		public void setRule(String ruleStr){
 			this.ruleStr = ruleStr;
-			this.isRuleNumber = false;
 		}
 		
 		public String getRuleStr(){

@@ -4,7 +4,7 @@ import com.dianping.phoenix.bootstrap.Jboss4WebappLoader;
 import com.dianping.phoenix.bootstrap.Jboss4WebappLoader.Listener;
 
 public class Jboss4WebappListener implements Listener {
-	private Jboss4WebappRegistry jboss4WebappRegistry;
+	private Jboss4WebappPatcher patcher;
 
 	@Override
 	public void initializing(Jboss4WebappLoader loader) {
@@ -20,19 +20,24 @@ public class Jboss4WebappListener implements Listener {
 
 	@Override
 	public void starting(Jboss4WebappLoader loader) {
-		this.jboss4WebappRegistry = new Jboss4WebappRegistry();
-		this.jboss4WebappRegistry.init(loader);
+		this.patcher = new Jboss4WebappPatcher();
+		this.patcher.init(loader);
 
 		try {
-			this.jboss4WebappRegistry.registerWebXml();
+			this.patcher.loadKernelWebXml();
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Error when registering %s/web.xml!", loader.getWarRoot()), e);
+		}
+		try {	
+			this.patcher.mergeWebResources();
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Error when registering %s/resources!", loader.getWarRoot()), e);
 		}
 	}
 
 	@Override
 	public void afterStarted(Jboss4WebappLoader loader) {
-		this.jboss4WebappRegistry.reorderWebappElements();
+		this.patcher.sortWebXmlElements();
 	}
 
 	@Override
