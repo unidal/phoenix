@@ -1,5 +1,6 @@
-TOMCAT_HOME=/Users/marsqing/Downloads/apache-tomcat-6.0.35/
-SHOPPIC_WAR=/Users/marsqing/Projects/shoppic-service/shoppic-remote-service/target/shoppic-service.war
+user=`whoami`
+TOMCAT_HOME=/Users/$user/Downloads/apache-tomcat-6.0.35/
+SHOPPIC_WAR=/Users/$user/Projects/shoppic-service.war/
 
 MAX_HTTP_TRY=30
 LOG_HOME=/data/applogs/
@@ -7,6 +8,10 @@ PHOENIX_KERNEL_WAR=../phoenix-kernel/target/phoenix-kernel.war
 PHOENIX_KERNEL_TARGET=/data/webapps/phoenix-kernel/
 PHOENIX_BOOTSTRAP_JAR=../phoenix-bootstrap/target/phoenix-bootstrap.jar
 export CATALINA_PID=/data/tomcat6.pid
+
+if [ -d misc ];then
+	cd misc	
+fi
 
 # argements:
 #	message
@@ -38,7 +43,7 @@ cwd=`pwd`
 if [ $# -eq 0 ];then
 	cd ..
 	log "Packaging phoenix..." i f f
-	mvn -Dmaven.test.skip clean package > maven.log
+	mvn -Dmaven.test.skip clean package > misc/maven.log
 	if [ $? -ne 0 ];then
 		log "Error package phoenix" e t
 		exit 1
@@ -75,7 +80,7 @@ rm -rf $TOMCAT_HOME/logs/*
 # start tomcat
 log "Starting tomcat..." i f f
 $TOMCAT_HOME/bin/startup.sh >/dev/null
-sleep 5
+sleep 1
 tomcat_pid=`cat $CATALINA_PID`
 ps_result_row=`ps -p $tomcat_pid | wc -l`
 if [ $ps_result_row -eq 2 ];then
@@ -84,8 +89,6 @@ else
 	log "Tomcat failed to start" e t
 	exit 1
 fi
-log "Errors in catalina.out" w
-grep -Ei "ERROR|SEVERE" $TOMCAT_HOME/logs/catalina.out
 
 log "Starting test web app..." i f f
 i=0
@@ -109,7 +112,11 @@ if [ $shoppic_started == "true" ]; then
 	if [ x$res_code == "x200" ];then
 		level="i"
 	fi
-	log $res_code $level t
+	log "HTTP response code is $res_code" $level t
 else
 	log "shoppic failed to start after $MAX_HTTP_TRY seconds" e t
 fi
+
+#log "Errors in catalina.out" w
+log "Press Ctrl-C to exit"
+tail -f $TOMCAT_HOME/logs/catalina.out | grep -E "ERROR|Error|SEVERE"
