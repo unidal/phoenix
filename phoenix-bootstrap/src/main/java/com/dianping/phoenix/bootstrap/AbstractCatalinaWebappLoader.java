@@ -74,10 +74,6 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	void clearLoadedJars(WebappClassLoader classloader) throws Exception {
 		List<String> loaderRepositories = getFieldValue(this, WebappLoader.class, "loaderRepositories");
 		URL[] repositoryURLs = getFieldValue(classloader, "repositoryURLs");
-		// JarFile[] jarFiles = getFieldValue(classloader, "jarFiles");
-		// String[] jarNames = getFieldValue(classloader, "jarNames");
-		// File[] jarRealFiles = getFieldValue(classloader, "jarRealFiles");
-		// String[] paths = getFieldValue(classloader, "paths");
 
 		for (int i = loaderRepositories.size() - 1; i >= 0; i--) {
 			String repository = loaderRepositories.get(i);
@@ -99,6 +95,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		setFieldValue(classloader, "jarFiles", new JarFile[0]);
 		setFieldValue(classloader, "jarNames", new String[0]);
 		setFieldValue(classloader, "jarRealFiles", new File[0]);
+		setFieldValue(classloader, "repositories", new String[0]);
+		setFieldValue(classloader, "files", new File[0]);
 		setFieldValue(classloader, "paths", new String[0]);
 	}
 
