@@ -89,8 +89,6 @@ else
 	log "Tomcat failed to start" e t
 	exit 1
 fi
-#log "Errors in catalina.out" w
-tail -f $TOMCAT_HOME/logs/catalina.out | grep -E "ERROR|Error|SEVERE" &
 
 log "Starting test web app..." i f f
 i=0
@@ -114,7 +112,11 @@ if [ $shoppic_started == "true" ]; then
 	if [ x$res_code == "x200" ];then
 		level="i"
 	fi
-	log $res_code $level t
+	log "HTTP response code is $res_code" $level t
 else
 	log "shoppic failed to start after $MAX_HTTP_TRY seconds" e t
 fi
+
+#log "Errors in catalina.out" w
+log "Press Ctrl-C to exit"
+tail -f $TOMCAT_HOME/logs/catalina.out | grep -E "ERROR|Error|SEVERE"
