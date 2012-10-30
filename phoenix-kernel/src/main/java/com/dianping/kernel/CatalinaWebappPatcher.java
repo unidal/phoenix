@@ -13,7 +13,6 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.startup.ContextConfig;
-import org.apache.catalina.startup.WebRuleSet;
 import org.apache.naming.resources.FileDirContext;
 import org.apache.naming.resources.ProxyDirContext;
 import org.apache.tomcat.util.digester.Digester;
@@ -22,36 +21,23 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
 import com.dianping.kernel.SortTool.SortElement;
-import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
+import com.dianping.phoenix.bootstrap.AbstractCatalinaWebappLoader;
 
-public class Tomcat6WebappPatcher {
-
+public class CatalinaWebappPatcher implements WebappPatcher {
 	private static final String INDEX = "_INDEX_";
 
-	private Tomcat6WebappLoader loader;
+	private AbstractCatalinaWebappLoader m_loader;
 
-	private StandardContext context;
+	private StandardContext m_context;
 
-	public void init(Tomcat6WebappLoader loader) {
-		this.loader = loader;
-		Container container = loader.getContainer();
-		if (container instanceof StandardContext) {
-			this.context = (StandardContext) container;
-		}
-	}
-
-	public void loadKernelWebXml() throws Exception {
-		WebRuleSet webRuleSet = loader.getFieldValue(null, ContextConfig.class,
-				"webRuleSet");
-
-		File webXml = loader.getWebXml();
+	public void applyKernelWebXml() throws Exception {
+		File webXml = m_loader.getWebXml();
 		InputSource source = new InputSource(new FileInputStream(webXml));
-		StandardContext ctx = (StandardContext) loader.getContainer();
-		Digester digester = ContextConfig.createWebXmlDigester(
-				ctx.getXmlNamespaceAware(), ctx.getXmlValidation());
+		StandardContext ctx = m_context;
+		Digester digester = ContextConfig.createWebXmlDigester(ctx.getXmlNamespaceAware(), ctx.getXmlValidation());
 
 		ctx.setReplaceWelcomeFiles(true);
-		digester.setClassLoader(loader.getWebappClassLoader());
+		digester.setClassLoader(m_loader.getWebappClassLoader());
 		digester.setUseContextClassLoader(false);
 		digester.push(ctx);
 		digester.setErrorHandler(new ContextErrorHandler());
@@ -59,93 +45,76 @@ public class Tomcat6WebappPatcher {
 		try {
 			digester.parse(source);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Error when parsing %s!",
-					webXml), e);
+			throw new RuntimeException(String.format("Error when parsing %s!", webXml), e);
 		} finally {
-			webRuleSet.recycle();
 			digester.reset();
 			source.getByteStream().close();
 		}
 	}
 
-	public void mergeWebResources() throws Exception {
+	public void init(AbstractCatalinaWebappLoader loader) {
+		m_loader = loader;
+		Container container = loader.getContainer();
 
-		ProxyDirContext proxyDirContext = (ProxyDirContext) this.context
-				.getResources();
-		DirContext dirContext = proxyDirContext.getDirContext();
-		FileDirContext kernelFileDirContext = new FileDirContext(
-				dirContext.getEnvironment());
-		kernelFileDirContext.setDocBase(this.loader.getKernelWarRoot()
-				.getAbsolutePath());
-		CompositeDirContext kernelProxyDirContext = new CompositeDirContext(
-				dirContext, kernelFileDirContext);
-
-		this.loader.setFieldValue(proxyDirContext, "dirContext",
-				kernelProxyDirContext);
+		if (container instanceof StandardContext) {
+			m_context = (StandardContext) container;
+		}
 	}
 
-	private void sortFilter() {
-		FilterMap[] filterMaps = this.context.findFilterMaps();
+	public void mergeWebResources() throws Exception {
+		ProxyDirContext proxyDirContext = (ProxyDirContext) m_context.getResources();
+		DirContext dirContext = proxyDirContext.getDirContext();
+		FileDirContext kernelFileDirContext = new FileDirContext(dirContext.getEnvironment());
+		kernelFileDirContext.setDocBase(m_loader.getKernelWarRoot().getAbsolutePath());
+		CompositeDirContext kernelProxyDirContext = new CompositeDirContext(dirContext, kernelFileDirContext);
+
+		m_loader.setFieldValue(proxyDirContext, "dirContext", kernelProxyDirContext);
+	}
+
+	protected void sortFilter() {
+		FilterMap[] filterMaps = m_context.findFilterMaps();
 		List<FilterSortElement> filterMapList = new ArrayList<FilterSortElement>();
-		this.loader
-				.getLog()
-				.info("Re-match combinations before the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		m_loader.getLog().info("Re-match combinations before the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		for (FilterMap fm : filterMaps) {
 			FilterSortElement fse = new FilterSortElement(fm);
 			filterMapList.add(fse);
-			this.loader.getLog().info(
-					"filterName::" + fse.getName() + "   rule::"
-							+ fse.getRule());
+			m_loader.getLog().info("filterName::" + fse.getName() + "   rule::" + fse.getRule());
 		}
-		this.loader
-				.getLog()
-				.info("Re-match combinations before the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		m_loader.getLog().info("Re-match combinations before the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		SortTool sortTool = new SortTool();
 		// Sort FilterMap
 		List<SortElement> elementList = sortTool.sort(filterMapList);
 		// Delete does not meet the conditions of the Filter
 		for (FilterSortElement fse : filterMapList) {
 			if (!elementList.contains(fse)) {
-				this.context.removeFilterMap(fse.getFilterMap());
-				this.context.removeFilterDef(fse.getFilterDef());
-				this.loader.getLog().warn(
-						"----No match is found for the filterName::"
-								+ fse.getName() + "   rule::" + fse.getRule());
+				m_context.removeFilterMap(fse.getFilterMap());
+				m_context.removeFilterDef(fse.getFilterDef());
+				m_loader.getLog().warn(
+				      "----No match is found for the filterName::" + fse.getName() + "   rule::" + fse.getRule());
 			}
 		}
 
-		filterMaps = this.context.findFilterMaps();
-		this.loader
-				.getLog()
-				.info("Re-match combinations after the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		filterMaps = m_context.findFilterMaps();
+		m_loader.getLog().info("Re-match combinations after the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		// Set sorted result back
 		for (int i = 0; i < filterMaps.length; i++) {
 			FilterSortElement fse = (FilterSortElement) elementList.get(i);
 			filterMaps[i] = fse.getFilterMap();
-			this.loader.getLog().info(
-					"filterName::" + fse.getName() + "   rule::"
-							+ fse.getRule());
+			m_loader.getLog().info("filterName::" + fse.getName() + "   rule::" + fse.getRule());
 		}
-		this.loader
-				.getLog()
-				.info("Re-match combinations after the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		m_loader.getLog().info("Re-match combinations after the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	}
 
-	private void sortListener() {
-		String[] listeners = this.context.findApplicationListeners();
+	protected void sortListener() {
+		String[] listeners = m_context.findApplicationListeners();
 		List<ListenerSortElement> listenerList = new ArrayList<ListenerSortElement>();
-		this.loader
-				.getLog()
-				.info("Re-match combinations before the listeners::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		m_loader.getLog().info("Re-match combinations before the listeners::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		for (String listener : listeners) {
-			String rule = this.context.findParameter(listener);
-			this.loader.getLog().info(
-					"listener::" + listener + "   rule::" + rule);
+			String rule = m_context.findParameter(listener);
+			m_loader.getLog().info("listener::" + listener + "   rule::" + rule);
 			listenerList.add(new ListenerSortElement(listener, rule));
 		}
-		this.loader
-				.getLog()
-				.info("Re-match combinations before the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		m_loader.getLog().info("Re-match combinations before the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
 		SortTool sortTool = new SortTool();
 		// Sort FilterMap
@@ -163,27 +132,20 @@ public class Tomcat6WebappPatcher {
 
 		// Remove discard Listener
 		for (String dlisten : discardListenerList) {
-			this.loader.getLog().warn(
-					"----No match is found for the listener::" + dlisten
-							+ " and rule::"
-							+ this.context.findParameter(dlisten));
-			this.context.removeApplicationListener(dlisten);
+			m_loader.getLog().warn(
+			      "----No match is found for the listener::" + dlisten + " and rule::" + m_context.findParameter(dlisten));
+			m_context.removeApplicationListener(dlisten);
 		}
 
-		listeners = this.context.findApplicationListeners();
-		this.loader
-				.getLog()
-				.info("Re-match combinations after the listeners::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		listeners = m_context.findApplicationListeners();
+		m_loader.getLog().info("Re-match combinations after the listeners::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		for (int i = 0; i < elementList.size(); i++) {
 			String listener = elementList.get(i).getClassName();
-			String rule = this.context.findParameter(listener);
-			this.loader.getLog().info(
-					"listener::" + listener + "   rule::" + rule);
+			String rule = m_context.findParameter(listener);
+			m_loader.getLog().info("listener::" + listener + "   rule::" + rule);
 			listeners[i] = listener;
 		}
-		this.loader
-				.getLog()
-				.info("Re-match combinations after the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		m_loader.getLog().info("Re-match combinations after the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	}
 
 	public void sortWebXmlElements() {
@@ -206,15 +168,13 @@ public class Tomcat6WebappPatcher {
 	}
 
 	public class FilterSortElement implements SortElement {
-
 		private FilterMap filterMap;
 
 		private FilterDef filterDef;
 
 		public FilterSortElement(FilterMap filterMap) {
 			this.filterMap = filterMap;
-			this.filterDef = context.findFilterDef(this.filterMap
-					.getFilterName());
+			this.filterDef = m_context.findFilterDef(this.filterMap.getFilterName());
 		}
 
 		@Override
@@ -249,7 +209,6 @@ public class Tomcat6WebappPatcher {
 		public String getRule() {
 			return getInitParameter(INDEX);
 		}
-
 	}
 
 	public class ListenerSortElement implements SortElement {
@@ -276,7 +235,5 @@ public class Tomcat6WebappPatcher {
 		public String getRule() {
 			return this.rule;
 		}
-
 	}
-
 }

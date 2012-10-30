@@ -4,7 +4,20 @@ import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
 import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader.Listener;
 
 public class Tomcat6WebappListener implements Listener {
-	private Tomcat6WebappPatcher patcher;
+	private CatalinaWebappPatcher m_patcher;
+
+	@Override
+	public void afterStarted(Tomcat6WebappLoader loader) {
+		m_patcher.sortWebXmlElements();
+	}
+
+	@Override
+	public void beforeStarting(Tomcat6WebappLoader loader) {
+	}
+
+	@Override
+	public void destroying(Tomcat6WebappLoader loader) {
+	}
 
 	@Override
 	public void initializing(Tomcat6WebappLoader loader) {
@@ -14,36 +27,23 @@ public class Tomcat6WebappListener implements Listener {
 	}
 
 	@Override
-	public void beforeStarting(Tomcat6WebappLoader loader) {
-	}
-
-	@Override
 	public void starting(Tomcat6WebappLoader loader) {
-		this.patcher = new Tomcat6WebappPatcher();
-		this.patcher.init(loader);
+		m_patcher = new CatalinaWebappPatcher();
+		m_patcher.init(loader);
 
 		try {
-			this.patcher.loadKernelWebXml();
+			m_patcher.applyKernelWebXml();
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Error when registering %s/web.xml!", loader.getWarRoot()), e);
 		}
-		try {	
-			this.patcher.mergeWebResources();
+		try {
+			m_patcher.mergeWebResources();
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Error when registering %s/resources!", loader.getWarRoot()), e);
 		}
 	}
 
 	@Override
-	public void afterStarted(Tomcat6WebappLoader loader) {
-		this.patcher.sortWebXmlElements();
-	}
-
-	@Override
 	public void stopping(Tomcat6WebappLoader loader) {
-	}
-
-	@Override
-	public void destroying(Tomcat6WebappLoader loader) {
 	}
 }

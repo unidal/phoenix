@@ -27,6 +27,13 @@ public class Handler implements PageHandler<Context> {
 	@Inject
 	private ArtifactResolver m_artifactResolver;
 
+	// cache artifacts for performance since it's unchangeable
+	private List<Artifact> m_artifacts;
+
+	private List<Artifact> m_kernelArtifacts;
+
+	private List<Artifact> m_appArtifacts;
+
 	private List<Artifact> buildArtifacts(ClassLoader loader) {
 		if (loader instanceof URLClassLoader) {
 			URLClassLoader ucl = (URLClassLoader) loader;
@@ -49,6 +56,13 @@ public class Handler implements PageHandler<Context> {
 					artifacts.add(new Artifact(path));
 				}
 			}
+
+			Collections.sort(artifacts, new Comparator<Artifact>() {
+				@Override
+				public int compare(Artifact a1, Artifact a2) {
+					return a1.compareTo(a2);
+				}
+			});
 
 			return artifacts;
 		} else {
@@ -91,26 +105,27 @@ public class Handler implements PageHandler<Context> {
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
 		ServletContext servletContext = ctx.getServletContext();
-		WebappProvider kernelProvider = (WebappProvider) servletContext.getAttribute("phoenix.kernelWebAppProvider");
-		WebappProvider appProvider = (WebappProvider) servletContext.getAttribute("phoenix.appWebAppProvider");
+		WebappProvider kernelProvider = (WebappProvider) servletContext.getAttribute("phoenix.kernelWebappProvider");
+		WebappProvider appProvider = (WebappProvider) servletContext.getAttribute("phoenix.appWebappProvider");
 		boolean mixedMode = kernelProvider != null && appProvider != null;
-		List<Artifact> artifacts = buildArtifacts(getClass().getClassLoader());
 
-		Collections.sort(artifacts, new Comparator<Artifact>() {
-			@Override
-			public int compare(Artifact a1, Artifact a2) {
-				return a1.compareTo(a2);
-			}
-		});
+		if (m_artifacts == null) {
+			m_artifacts = buildArtifacts(getClass().getClassLoader());
+		}
 
 		model.setMixedMode(mixedMode);
-		model.setArtifacts(artifacts);
 		model.setAction(Action.VIEW);
 		model.setPage(ConsolePage.CLASSPATH);
+		model.setArtifacts(m_artifacts);
 
 		if (mixedMode) {
-			model.setKernelArtifacts(buildArtifacts(kernelProvider));
-			model.setAppArtifacts(buildArtifacts(appProvider));
+			if (m_kernelArtifacts == null || m_appArtifacts == null) {
+				m_kernelArtifacts = buildArtifacts(kernelProvider);
+				m_appArtifacts = buildArtifacts(appProvider);
+			}
+
+			model.setKernelArtifacts(m_kernelArtifacts);
+			model.setAppArtifacts(m_appArtifacts);
 		}
 
 		m_jspViewer.view(ctx, model);
