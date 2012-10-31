@@ -41,7 +41,7 @@ mkdir -p $wartmp
 log "Retriving $groupId:$artifactId:$version:$type from maven repo" i f f
 ./maven.sh $wartmp $groupId $artifactId $version $type >> test.log
 mkdir $wartmp/$artifactId
-ls $wartmp/*.$type >/dev/null
+ls $wartmp/*.$type >/dev/null 2>&1
 if [ $? -eq 0 ];then
 	log "Successfullt retrive $groupId:$artifactId:$version:$type from maven repo" i t
 else
@@ -142,14 +142,18 @@ while [ $i -lt $MAX_HTTP_TRY ]; do
 	fi
 done
 
+exit_code=0
 if [ $biz_started == "true" ]; then
 	res_code=`curl -I http://127.0.0.1:8080/index.jsp 2>/dev/null | head -n1 | awk '{print $2}'`
 	level="e"
 	if [ x$res_code == "x200" ];then
 		level="i"
+	else
+		exit_code=1
 	fi
 	log "HTTP response code is $res_code" $level t
 else
+	exit_code=1
 	log "$artifactId failed to start after $MAX_HTTP_TRY seconds" e t
 fi
 
@@ -160,3 +164,4 @@ then
 	log "Press Ctrl-C to exit"
 	tail -f $TOMCAT_HOME/logs/catalina.out | grep -E "ERROR|Error|SEVERE"
 fi
+exit $exit_code
