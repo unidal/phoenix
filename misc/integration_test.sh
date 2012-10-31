@@ -14,6 +14,8 @@ fi
 if [ ! -e $TOMCAT_HOME/bin/startup.sh ];then
 	log "TOMCAT_HOME does not point to a valid tomcat installation" e t
 	exit 1
+else
+	log "Using tomcat at $TOMCAT_HOME"
 fi
 
 if [ ! -e ../phoenix-kernel ];then
@@ -62,9 +64,9 @@ uname=`uname`
 # package phoenix
 cd ..
 if [ uname == "Linux" ];then
-	file_latest_mtime=`find -E phoenix-bootstrap phoenix-kernel -regex ".*.java|.*.xml" -type f -printf "%T@\n" | sort -n | tail -1`
+	file_latest_mtime=`find -E phoenix-bootstrap phoenix-kernel -regex ".*src/main/.*|.*.xml" -type f -printf "%T@\n" | sort -n | tail -1`
 else
-	file_latest_mtime=`find -E phoenix-bootstrap phoenix-kernel -regex ".*.java|.*.xml" -type f -exec stat -f "%m" {} \; | sort -n | tail -1`
+	file_latest_mtime=`find -E phoenix-bootstrap phoenix-kernel -regex ".*src/main/.*|.*.xml" -type f -exec stat -f "%m" {} \; | sort -n | tail -1`
 fi
 file_latest_mtime=`echo $file_latest_mtime | awk -F "." '{print $1}'`
 
@@ -83,7 +85,7 @@ if [ 1$file_latest_mtime -gt 1$kernel_latest_mtime ];then
 	fi
 	log "Package done" i t
 else
-	log "No new file found in phoenix-kernel phoenix-bootstrap, skip packaging"
+	log "No new file found in phoenix-kernel or phoenix-bootstrap, skip packaging"
 fi
 cd - >/dev/null
 
@@ -97,8 +99,9 @@ cp -rf $PHOENIX_BOOTSTRAP_JAR $TOMCAT_HOME/lib/
 jps |awk '$2=="Bootstrap"{cmd=sprintf("kill -9 %s", $1);system(cmd)}'
 
 # generate context xml file
+rm -rf $TOMCAT_HOME/webapps/ROOT
 mkdir -p $TOMCAT_HOME/conf/Catalina/localhost/
-cat <<-END > $TOMCAT_HOME/conf/Catalina/localhost/shoppic.xml
+cat <<-END > $TOMCAT_HOME/conf/Catalina/localhost/ROOT.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Context docBase="$BIZ_WAR">
    <Loader className="com.dianping.phoenix.bootstrap.Tomcat6WebappLoader" kernelDocBase="$PHOENIX_KERNEL_TARGET" debug="true" />
@@ -123,37 +126,37 @@ else
 	exit 1
 fi
 
-log "Starting test web app..." i f f
+log "Start testing web app..." i f f
 i=0
-shoppic_started="false"
+biz_started="false"
 while [ $i -lt $MAX_HTTP_TRY ]; do 
 	i=$((i+1))
-	curl -I http://127.0.0.1:8080/shoppic/index.jsp >/dev/null 2>&1
+	curl -I http://127.0.0.1:8080/index.jsp >/dev/null 2>&1
 	if [ $? == 7 ]; then
 		echo -n "."
 		sleep 1
 	else
-		shoppic_started="true"
+		biz_started="true"
 		echo ""
 		break
 	fi
 done
 
-if [ $shoppic_started == "true" ]; then
-	res_code=`curl -I http://127.0.0.1:8080/shoppic/index.jsp 2>/dev/null | head -n1 | awk '{print $2}'`
+if [ $biz_started == "true" ]; then
+	res_code=`curl -I http://127.0.0.1:8080/index.jsp 2>/dev/null | head -n1 | awk '{print $2}'`
 	level="e"
 	if [ x$res_code == "x200" ];then
 		level="i"
 	fi
 	log "HTTP response code is $res_code" $level t
 else
-	log "shoppic failed to start after $MAX_HTTP_TRY seconds" e t
+	log "$artifactId failed to start after $MAX_HTTP_TRY seconds" e t
 fi
 
 #log "Errors in catalina.out" w
-log "Press Ctrl-C to exit"
 grep -E "ERROR|Error|SEVERE" $TOMCAT_HOME/logs/catalina.out
 if [ $forkGrep == "t" ];
 then
+	log "Press Ctrl-C to exit"
 	tail -f $TOMCAT_HOME/logs/catalina.out | grep -E "ERROR|Error|SEVERE"
 fi
