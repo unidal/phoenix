@@ -7,12 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.naming.directory.DirContext;
+import javax.servlet.ServletContext;
 
 import org.apache.catalina.Container;
+import org.apache.catalina.core.ContainerBase;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.startup.ContextConfig;
+import org.apache.catalina.util.LifecycleSupport;
 import org.apache.naming.resources.FileDirContext;
 import org.apache.naming.resources.ProxyDirContext;
 import org.apache.tomcat.util.digester.Digester;
@@ -21,6 +24,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
 import com.dianping.kernel.SortTool.SortElement;
+import com.dianping.phoenix.Constants;
 import com.dianping.phoenix.bootstrap.AbstractCatalinaWebappLoader;
 
 public class CatalinaWebappPatcher implements WebappPatcher {
@@ -29,11 +33,13 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 	private AbstractCatalinaWebappLoader m_loader;
 
 	private StandardContext m_context;
-
+	
+	private ProxyStandardContext m_proxyContext;
+	
 	public void applyKernelWebXml() throws Exception {
 		File webXml = m_loader.getWebXml();
 		InputSource source = new InputSource(new FileInputStream(webXml));
-		StandardContext ctx = m_context;
+		StandardContext ctx = m_proxyContext;
 		Digester digester = ContextConfig.createWebXmlDigester(ctx.getXmlNamespaceAware(), ctx.getXmlValidation());
 
 		ctx.setReplaceWelcomeFiles(true);
@@ -52,13 +58,20 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		}
 	}
 
-	public void init(AbstractCatalinaWebappLoader loader) {
+	public void init(AbstractCatalinaWebappLoader loader) throws Exception{
 		m_loader = loader;
 		Container container = loader.getContainer();
 
 		if (container instanceof StandardContext) {
 			m_context = (StandardContext) container;
+			m_proxyContext = new ProxyStandardContext(m_context,this.m_loader.getLog());
+			LifecycleSupport lifecycle = this.m_loader.getFieldValue(this.m_context, ContainerBase.class,"lifecycle");
+			this.m_loader.setFieldValue(lifecycle, "lifecycle", this.m_proxyContext);
 		}
+	}
+	
+	public void release(){
+		this.m_proxyContext.finished(true);
 	}
 
 	public void mergeWebResources() throws Exception {
@@ -152,7 +165,7 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		sortListener();
 		sortFilter();
 	}
-
+	
 	protected static class ContextErrorHandler implements ErrorHandler {
 		public void error(SAXParseException exception) {
 			exception.printStackTrace();
