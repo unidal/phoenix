@@ -21,13 +21,14 @@ import org.junit.runners.Parameterized.Parameters;
 public class BizWarTest {
 	private BizWar war;
 
-	public BizWarTest(BizWar war) {
+	public BizWarTest(String artifact, BizWar war) {
 		this.war = war;
 	}
 
+//	@Parameters(name = "{0}")
 	@Parameters
-	public static Collection<BizWar[]> getBizWarToTest() {
-		Collection<BizWar[]> wars = new ArrayList<BizWar[]>();
+	public static Collection<Object[]> getBizWarToTest() {
+		Collection<Object[]> wars = new ArrayList<Object[]>();
 		InputStream warsIn = BizWarTest.class.getResourceAsStream("wars.properties");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(warsIn));
 		String line;
@@ -41,7 +42,7 @@ public class BizWarTest {
 				if (parts.length != 3) {
 					throw new RuntimeException(String.format("wars.properties has invalid line: %s", line));
 				}
-				BizWar[] war = new BizWar[] { new BizWar(parts[0], parts[1], parts[2]) };
+				Object[] war = new Object[] { parts[1], new BizWar(parts[0], parts[1], parts[2]) };
 				wars.add(war);
 			}
 		} catch (IOException e) {
@@ -57,7 +58,7 @@ public class BizWarTest {
 		File testClassesDir = new File(this.getClass().getClassLoader().getResource(".").getPath());
 		File phoenixBaseDir = testClassesDir.getParentFile().getParentFile().getParentFile();
 		DefaultExecutor executor = new DefaultExecutor();
-		CommandLine cmd = new CommandLine(phoenixBaseDir + "/misc/integration_test_junit.sh");
+		CommandLine cmd = new CommandLine(phoenixBaseDir + "/misc/integration_test.sh");
 		cmd.addArgument(war.getGroupId());
 		cmd.addArgument(war.getArtifactId());
 		cmd.addArgument(war.getVersion());
