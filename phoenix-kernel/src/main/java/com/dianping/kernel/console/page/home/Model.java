@@ -1,7 +1,7 @@
 package com.dianping.kernel.console.page.home;
 
+import com.dianping.kernel.console.ApplicationModel;
 import com.dianping.kernel.console.ConsolePage;
-import com.dianping.kernel.state.ApplicationModel;
 import com.site.web.mvc.ViewModel;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {

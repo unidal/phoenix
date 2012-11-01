@@ -8,7 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dianping.kernel.SortTool.SortElement;
+import com.dianping.kernel.plugin.SortTool;
+import com.dianping.kernel.plugin.SortTool.SortElement;
 
 public class SortToolTest {
 	

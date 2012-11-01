@@ -1,4 +1,4 @@
-package com.dianping.kernel.state;
+package com.dianping.kernel.console;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;

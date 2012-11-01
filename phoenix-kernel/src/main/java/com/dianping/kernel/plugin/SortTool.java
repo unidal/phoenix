@@ -1,4 +1,4 @@
-package com.dianping.kernel;
+package com.dianping.kernel.plugin;
 
 import java.util.ArrayList;
 import java.util.Collections;

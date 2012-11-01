@@ -1,4 +1,4 @@
-package com.dianping.kernel;
+package com.dianping.kernel.plugin;
 
 public interface WebappPatcher {
 	public void applyKernelWebXml() throws Exception;

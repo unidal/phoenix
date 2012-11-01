@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 
+import com.dianping.kernel.console.ApplicationModel;
 import com.dianping.kernel.console.ConsolePage;
-import com.dianping.kernel.state.ApplicationModel;
 import com.site.lookup.annotation.Inject;
 import com.site.web.mvc.PageHandler;
 import com.site.web.mvc.annotation.InboundActionMeta;

@@ -1,4 +1,4 @@
-package com.dianping.kernel;
+package com.dianping.kernel.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.naming.directory.DirContext;
-import javax.servlet.ServletContext;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.core.ContainerBase;
@@ -23,8 +22,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
-import com.dianping.kernel.SortTool.SortElement;
-import com.dianping.phoenix.Constants;
+import com.dianping.kernel.plugin.SortTool.SortElement;
 import com.dianping.phoenix.bootstrap.AbstractCatalinaWebappLoader;
 
 public class CatalinaWebappPatcher implements WebappPatcher {
@@ -58,20 +56,20 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		}
 	}
 
+	public void finish(){
+		m_proxyContext.finish();
+	}
+	
 	public void init(AbstractCatalinaWebappLoader loader) throws Exception{
 		m_loader = loader;
 		Container container = loader.getContainer();
 
 		if (container instanceof StandardContext) {
 			m_context = (StandardContext) container;
-			m_proxyContext = new ProxyStandardContext(m_context,this.m_loader.getLog());
-			LifecycleSupport lifecycle = this.m_loader.getFieldValue(this.m_context, ContainerBase.class,"lifecycle");
-			this.m_loader.setFieldValue(lifecycle, "lifecycle", this.m_proxyContext);
+			m_proxyContext = new ProxyStandardContext(m_context,m_loader.getLog());
+			LifecycleSupport lifecycle = m_loader.getFieldValue(m_context, ContainerBase.class,"lifecycle");
+			m_loader.setFieldValue(lifecycle, "lifecycle", m_proxyContext);
 		}
-	}
-	
-	public void release(){
-		this.m_proxyContext.finished(true);
 	}
 
 	public void mergeWebResources() throws Exception {
