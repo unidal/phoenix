@@ -35,7 +35,7 @@ type=war
 rm -f test.log
 
 # retrive war from maven repo
-wartmp=wartmp/$groupId/$artifactId/$version
+wartmp=target/wartmp/$groupId/$artifactId/$version
 rm -rf $wartmp
 mkdir -p $wartmp
 log "Retriving $groupId:$artifactId:$version:$type from maven repo" i f f

@@ -19,7 +19,7 @@ fi
 
 
 cwd=`pwd`
-tmpdir=maventmp/$groupId/$artifactId/$version
+tmpdir=target/maventmp/$groupId/$artifactId/$version
 rm -rf $tmpdir
 mkdir -p $tmpdir
 cd $tmpdir
