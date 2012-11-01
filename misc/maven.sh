@@ -56,6 +56,6 @@ cat <<-END > pom.xml
 </project>
 END
 mvn -Dmaven.test.skip clean dependency:copy-dependencies
-cp target/*.$type $targetDir
+cp target/*.$type $targetDir >/dev/null 2>&1
 cd $cwd
 rm -rf $tmpdir
