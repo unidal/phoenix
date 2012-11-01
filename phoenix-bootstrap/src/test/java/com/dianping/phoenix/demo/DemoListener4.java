@@ -1,9 +1,9 @@
-package com.dianping.kernel.demo;
+package com.dianping.phoenix.demo;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-public class DemoListener1 implements ServletContextListener {
+public class DemoListener4 implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		System.out.println("DemoListener"+this.getClass().getName()+" Init");

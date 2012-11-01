@@ -1,4 +1,4 @@
-package com.dianping.kernel.demo;
+package com.dianping.phoenix.demo;
 
 import java.io.IOException;
 
