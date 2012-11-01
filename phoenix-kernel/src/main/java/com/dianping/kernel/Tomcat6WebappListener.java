@@ -8,11 +8,19 @@ public class Tomcat6WebappListener implements Listener {
 
 	@Override
 	public void afterStarted(Tomcat6WebappLoader loader) {
+		m_patcher.release();
 		m_patcher.sortWebXmlElements();
 	}
 
 	@Override
 	public void beforeStarting(Tomcat6WebappLoader loader) {
+		m_patcher = new CatalinaWebappPatcher();
+		
+		try{
+			m_patcher.init(loader);;
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Error when patching %s initCatalinaWebappPatcher!", loader.getWarRoot()), e);
+		}
 	}
 
 	@Override
@@ -28,18 +36,15 @@ public class Tomcat6WebappListener implements Listener {
 
 	@Override
 	public void starting(Tomcat6WebappLoader loader) {
-		m_patcher = new CatalinaWebappPatcher();
-		m_patcher.init(loader);
-
 		try {
 			m_patcher.applyKernelWebXml();
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Error when registering %s/web.xml!", loader.getWarRoot()), e);
+			throw new RuntimeException(String.format("Error when patching %s/web.xml!", loader.getWarRoot()), e);
 		}
 		try {
 			m_patcher.mergeWebResources();
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Error when registering %s/resources!", loader.getWarRoot()), e);
+			throw new RuntimeException(String.format("Error when patching %s/resources!", loader.getWarRoot()), e);
 		}
 	}
 
