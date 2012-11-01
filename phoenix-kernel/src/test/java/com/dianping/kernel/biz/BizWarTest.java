@@ -34,6 +34,9 @@ public class BizWarTest {
 
 		try {
 			while ((line = reader.readLine()) != null) {
+				if(line.trim().length() == 0 || line.trim().startsWith("#")) {
+					continue;
+				}
 				String[] parts = line.trim().split("\\s+");
 				if (parts.length != 3) {
 					throw new RuntimeException(String.format("wars.properties has invalid line: %s", line));
