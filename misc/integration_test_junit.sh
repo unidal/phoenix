@@ -129,7 +129,7 @@ i=0
 biz_started="false"
 while [ $i -lt $MAX_HTTP_TRY ]; do 
 	i=$((i+1))
-	curl -I http://127.0.0.1:8080/index.jsp >/dev/null 2>&1
+	curl -I http://127.0.0.1:8080/console >/dev/null 2>&1
 	if [ $? == 7 ]; then
 		echo "attempt $i"
 		sleep 1
@@ -141,7 +141,7 @@ done
 
 exit_code=0
 if [ $biz_started == "true" ]; then
-	res_code=`curl -I http://127.0.0.1:8080/index.jsp 2>/dev/null | head -n1 | awk '{print $2}'`
+	res_code=`curl -I http://127.0.0.1:8080/console 2>/dev/null | head -n1 | awk '{print $2}'`
 	level="e"
 	if [ x$res_code == "x200" ];then
 		level="i"

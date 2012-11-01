@@ -19,11 +19,33 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class BizWarTest {
-
 	private BizWar war;
 
 	public BizWarTest(BizWar war) {
 		this.war = war;
+	}
+
+	@Parameters
+	public static Collection<BizWar[]> getBizWarToTest() {
+		Collection<BizWar[]> wars = new ArrayList<BizWar[]>();
+		InputStream warsIn = BizWarTest.class.getResourceAsStream("wars.properties");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(warsIn));
+		String line;
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				String[] parts = line.trim().split("\\s+");
+				if (parts.length != 3) {
+					throw new RuntimeException(String.format("wars.properties has invalid line: %s", line));
+				}
+				BizWar[] war = new BizWar[] { new BizWar(parts[0], parts[1], parts[2]) };
+				wars.add(war);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("wars.properties not found", e);
+		}
+
+		return wars;
 	}
 
 	@Test
@@ -39,28 +61,5 @@ public class BizWarTest {
 		cmd.addArgument("f");
 		int exitCode = executor.execute(cmd);
 		Assert.assertEquals(0, exitCode);
-	}
-
-	@Parameters
-	public static Collection<BizWar[]> getBizWarToTest() {
-		Collection<BizWar[]> wars = new ArrayList<BizWar[]>();
-		
-		InputStream warsIn = BizWarTest.class.getClassLoader().getResourceAsStream("wars.properties");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(warsIn));
-		String line;
-		try {
-			while((line = reader.readLine()) != null) {
-				String[] parts = line.trim().split("\\s+");
-				if(parts.length != 3) {
-					throw new RuntimeException(String.format("wars.properties has invalid line: %s", line));
-				}
-				BizWar[] war = new BizWar[] { new BizWar(parts[0], parts[1], parts[2]) };
-				wars.add(war);
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("wars.properties not found", e);
-		}
-		
-		return wars;
 	}
 }
