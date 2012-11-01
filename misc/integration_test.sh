@@ -32,14 +32,16 @@ if [ $# -ge 4 ];then
 fi
 type=war
 
-rm -f test.log
+phoenix_log=target/test.log
+mkdir -p `dirname $phoenix_log`
+rm -f $phoenix_log
 
 # retrive war from maven repo
 wartmp=target/wartmp/$groupId/$artifactId/$version
 rm -rf $wartmp
 mkdir -p $wartmp
 log "Retriving $groupId:$artifactId:$version:$type from maven repo" i f f
-./maven.sh $wartmp $groupId $artifactId $version $type >> test.log
+./maven.sh $wartmp $groupId $artifactId $version $type >> $phoenix_log
 mkdir $wartmp/$artifactId
 ls $wartmp/*.$type >/dev/null 2>&1
 if [ $? -eq 0 ];then
@@ -48,7 +50,7 @@ else
 	log "Failed to retrive $groupId:$artifactId:$version:$type from maven repo" e t
 	exit 1
 fi
-unzip $wartmp/*.$type -d $wartmp/$artifactId >>test.log
+unzip $wartmp/*.$type -d $wartmp/$artifactId >>$phoenix_log
 
 BIZ_WAR=$cwd/$wartmp/$artifactId
 
