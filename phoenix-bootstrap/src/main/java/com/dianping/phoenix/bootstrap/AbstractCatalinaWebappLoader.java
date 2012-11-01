@@ -30,7 +30,13 @@ import com.dianping.phoenix.spi.internal.DefaultClasspathBuilder;
 import com.dianping.phoenix.spi.internal.StandardWebappProvider;
 
 public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
-	private static Log m_log = LogFactory.getLog(AbstractCatalinaWebappLoader.class);
+	public static final String PHOENIX_WEBAPP_LOADER = "phoenix.webapp.loader";
+
+	public static final String PHOENIX_WEBAPP_PROVIDER_APP = "phoenix.webapp.provider.app";
+
+	public static final String PHOENIX_WEBAPP_PROVIDER_KERNEL = "phoenix.webapp.provider.kernel";
+
+	private static final Log m_log = LogFactory.getLog(AbstractCatalinaWebappLoader.class);
 
 	private WebappProvider m_appProvider;
 
@@ -70,9 +76,9 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			ServletContext ctx = ((StandardContext) container).getServletContext();
 
 			// pass followings to application
-			ctx.setAttribute("phoenix.webappLoader", this);
-			ctx.setAttribute("phoenix.kernelWebappProvider", m_kernelProvider);
-			ctx.setAttribute("phoenix.appWebappProvider", m_appProvider);
+			ctx.setAttribute(PHOENIX_WEBAPP_LOADER, this);
+			ctx.setAttribute(PHOENIX_WEBAPP_PROVIDER_KERNEL, m_kernelProvider);
+			ctx.setAttribute(PHOENIX_WEBAPP_PROVIDER_APP, m_appProvider);
 			return classloader;
 		} catch (Exception e) {
 			throw new RuntimeException("Error when adjusting webapp classloader!", e);

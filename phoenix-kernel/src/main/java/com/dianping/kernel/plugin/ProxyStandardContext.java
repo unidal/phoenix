@@ -47,7 +47,7 @@ import org.apache.catalina.util.CharsetMapper;
 import org.apache.juli.logging.Log;
 import org.apache.tomcat.util.http.mapper.Mapper;
 
-import com.dianping.phoenix.Constants;
+import com.dianping.kernel.Constants;
 
 public class ProxyStandardContext extends StandardContext {
 	private static final long serialVersionUID = 1L;
@@ -1132,18 +1132,18 @@ public class ProxyStandardContext extends StandardContext {
 		String methodName = element.getMethodName();
 
 		if (methodName.equals("addWatchedResource")) {
-			if (m_servletContext.getAttribute(Constants.PHOENIX_WEB_DESCRIPTION_DEFAULT) == null) {
+			if (m_servletContext.getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_DEFAULT) == null) {
 				m_subContext = new StandardContext();
 				m_subContext.setDocBase(m_standardContext.getDocBase());
-				m_servletContext.setAttribute(Constants.PHOENIX_WEB_DESCRIPTION_DEFAULT, m_subContext);
-			} else if (m_servletContext.getAttribute(Constants.PHOENIX_WEB_DESCRIPTION_APP) == null) {
+				m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_DEFAULT, m_subContext);
+			} else if (m_servletContext.getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_APP) == null) {
 				m_subContext = new StandardContext();
 				m_subContext.setDocBase(m_standardContext.getDocBase());
-				m_servletContext.setAttribute(Constants.PHOENIX_WEB_DESCRIPTION_APP, m_subContext);
-			} else if (m_servletContext.getAttribute(Constants.PHOENIX_WEB_DESCRIPTION_KERNEL) == null) {
+				m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_APP, m_subContext);
+			} else if (m_servletContext.getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL) == null) {
 				m_subContext = new StandardContext();
 				m_subContext.setDocBase(m_standardContext.getDocBase());
-				m_servletContext.setAttribute(Constants.PHOENIX_WEB_DESCRIPTION_KERNEL, m_subContext);
+				m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL, m_subContext);
 			}
 		}
 

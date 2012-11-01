@@ -1,5 +1,8 @@
 package com.dianping.kernel.console.page.classpath;
 
+import static com.dianping.phoenix.bootstrap.AbstractCatalinaWebappLoader.PHOENIX_WEBAPP_PROVIDER_APP;
+import static com.dianping.phoenix.bootstrap.AbstractCatalinaWebappLoader.PHOENIX_WEBAPP_PROVIDER_KERNEL;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -105,8 +108,8 @@ public class Handler implements PageHandler<Context> {
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
 		ServletContext servletContext = ctx.getServletContext();
-		WebappProvider kernelProvider = (WebappProvider) servletContext.getAttribute("phoenix.kernelWebappProvider");
-		WebappProvider appProvider = (WebappProvider) servletContext.getAttribute("phoenix.appWebappProvider");
+		WebappProvider kernelProvider = (WebappProvider) servletContext.getAttribute(PHOENIX_WEBAPP_PROVIDER_KERNEL);
+		WebappProvider appProvider = (WebappProvider) servletContext.getAttribute(PHOENIX_WEBAPP_PROVIDER_APP);
 		boolean mixedMode = kernelProvider != null && appProvider != null;
 
 		if (m_artifacts == null) {
