@@ -39,7 +39,6 @@ function init {
 	type=war
 
 	MAX_HTTP_TRY=30
-	LOG_HOME=/data/applogs/
 	PHOENIX_KERNEL_WAR=../phoenix-kernel/target/phoenix-kernel.war
 	PHOENIX_KERNEL_TARGET=/data/webapps/phoenix-kernel/
 	PHOENIX_BOOTSTRAP_JAR=../phoenix-bootstrap/target/phoenix-bootstrap.jar
@@ -121,7 +120,6 @@ function restart_tomcat {
 
 
 	# clear dirs
-	rm -rf $LOG_HOME/*
 	rm -rf $TOMCAT_HOME/logs/*
 
 	# start tomcat
