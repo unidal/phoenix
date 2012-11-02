@@ -3,7 +3,7 @@ package com.dianping.kernel.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dianping.kernel.console.page.classpath.ArtifactResolver;
+import com.dianping.kernel.inspect.page.classpath.ArtifactResolver;
 import com.site.lookup.configuration.AbstractResourceConfigurator;
 import com.site.lookup.configuration.Component;
 

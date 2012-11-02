@@ -1,11 +1,14 @@
 <wizard package="com.dianping.kernel">
    <webapp package="com.dianping.kernel" name="kernel" webres="false" cat="false" plugin-management="false">
-      <module name="console" path="console" default="true">
+      <module name="inspect" path="inspect" default="true">
          <page name="home" title="Home" default="true" path="home">
             <description>Home</description>
          </page>
          <page name="classpath" title="Classpath" path="classpath">
             <description>Classpath</description>
+         </page>
+         <page name="descriptor" title="Descriptor" path="descriptor">
+            <description>Descriptor</description>
          </page>
       </module>
    </webapp>

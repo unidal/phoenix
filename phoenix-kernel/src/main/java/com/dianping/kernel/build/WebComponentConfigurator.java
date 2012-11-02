@@ -3,7 +3,7 @@ package com.dianping.kernel.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dianping.kernel.console.ConsoleModule;
+import com.dianping.kernel.inspect.InspectModule;
 
 import com.site.lookup.configuration.Component;
 import com.site.web.configuration.AbstractWebComponentsConfigurator;
@@ -14,7 +14,7 @@ class WebComponentConfigurator extends AbstractWebComponentsConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
-		defineModuleRegistry(all, ConsoleModule.class, ConsoleModule.class);
+		defineModuleRegistry(all, InspectModule.class, InspectModule.class);
 
 		return all;
 	}

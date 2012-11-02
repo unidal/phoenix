@@ -1131,7 +1131,13 @@ public class ProxyStandardContext extends StandardContext {
 		StackTraceElement element = trace[2];
 		String methodName = element.getMethodName();
 
-		if (methodName.equals("addWatchedResource")) {
+		
+		if (methodName.equals("addWatchedResource")) { // to work around NullPointerException
+			m_subContext = new StandardContext();
+			m_subContext.setDocBase(m_standardContext.getDocBase());
+		}
+		
+		if (methodName.equals("setPublicId")) {
 			if (m_servletContext.getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_DEFAULT) == null) {
 				m_subContext = new StandardContext();
 				m_subContext.setDocBase(m_standardContext.getDocBase());
@@ -1145,6 +1151,8 @@ public class ProxyStandardContext extends StandardContext {
 				m_subContext.setDocBase(m_standardContext.getDocBase());
 				m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL, m_subContext);
 			}
+
+			m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_ALL, m_standardContext);
 		}
 
 		Method[] methods = StandardContext.class.getMethods();

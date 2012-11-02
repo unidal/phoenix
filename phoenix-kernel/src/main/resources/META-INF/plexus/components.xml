@@ -1,54 +1,67 @@
 <plexus>
 	<components>
 		<component>
-			<role>com.dianping.kernel.console.page.classpath.ArtifactResolver</role>
-			<implementation>com.dianping.kernel.console.page.classpath.ArtifactResolver</implementation>
+			<role>com.dianping.kernel.inspect.page.classpath.ArtifactResolver</role>
+			<implementation>com.dianping.kernel.inspect.page.classpath.ArtifactResolver</implementation>
 		</component>
 		<component>
 			<role>com.site.web.mvc.model.ModuleRegistry</role>
 			<implementation>com.site.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
 				<modules>
-					<module default="true">com.dianping.kernel.console.ConsoleModule</module>
+					<module default="true">com.dianping.kernel.inspect.InspectModule</module>
 				</modules>
 			</configuration>
 		</component>
 		<component>
-			<role>com.dianping.kernel.console.ConsoleModule</role>
-			<implementation>com.dianping.kernel.console.ConsoleModule</implementation>
+			<role>com.dianping.kernel.inspect.InspectModule</role>
+			<implementation>com.dianping.kernel.inspect.InspectModule</implementation>
 		</component>
 		<component>
-			<role>com.dianping.kernel.console.page.home.Handler</role>
-			<implementation>com.dianping.kernel.console.page.home.Handler</implementation>
+			<role>com.dianping.kernel.inspect.page.home.Handler</role>
+			<implementation>com.dianping.kernel.inspect.page.home.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.kernel.console.page.home.JspViewer</role>
+					<role>com.dianping.kernel.inspect.page.home.JspViewer</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.kernel.console.page.home.JspViewer</role>
-			<implementation>com.dianping.kernel.console.page.home.JspViewer</implementation>
+			<role>com.dianping.kernel.inspect.page.home.JspViewer</role>
+			<implementation>com.dianping.kernel.inspect.page.home.JspViewer</implementation>
 		</component>
 		<component>
-			<role>com.dianping.kernel.console.page.classpath.Handler</role>
-			<implementation>com.dianping.kernel.console.page.classpath.Handler</implementation>
+			<role>com.dianping.kernel.inspect.page.classpath.Handler</role>
+			<implementation>com.dianping.kernel.inspect.page.classpath.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.kernel.console.page.classpath.JspViewer</role>
+					<role>com.dianping.kernel.inspect.page.classpath.JspViewer</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.kernel.console.page.classpath.ArtifactResolver</role>
+					<role>com.dianping.kernel.inspect.page.classpath.ArtifactResolver</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.kernel.console.page.classpath.JspViewer</role>
-			<implementation>com.dianping.kernel.console.page.classpath.JspViewer</implementation>
+			<role>com.dianping.kernel.inspect.page.classpath.JspViewer</role>
+			<implementation>com.dianping.kernel.inspect.page.classpath.JspViewer</implementation>
 		</component>
 		<component>
-			<role>com.dianping.kernel.console.page.classpath.ArtifactResolver</role>
-			<implementation>com.dianping.kernel.console.page.classpath.ArtifactResolver</implementation>
+			<role>com.dianping.kernel.inspect.page.classpath.ArtifactResolver</role>
+			<implementation>com.dianping.kernel.inspect.page.classpath.ArtifactResolver</implementation>
+		</component>
+		<component>
+			<role>com.dianping.kernel.inspect.page.descriptor.Handler</role>
+			<implementation>com.dianping.kernel.inspect.page.descriptor.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.kernel.inspect.page.descriptor.JspViewer</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.kernel.inspect.page.descriptor.JspViewer</role>
+			<implementation>com.dianping.kernel.inspect.page.descriptor.JspViewer</implementation>
 		</component>
 	</components>
 </plexus>

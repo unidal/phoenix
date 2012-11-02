@@ -2,7 +2,7 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<listener>
-		<listener-class>com.dianping.kernel.servlet.ConsoleListener</listener-class>
+		<listener-class>com.dianping.kernel.servlet.InspectListener</listener-class>
 	</listener>
 	<servlet>
 		<servlet-name>mvc-servlet</servlet-name>
@@ -15,7 +15,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>mvc-servlet</servlet-name>
-		<url-pattern>/console/*</url-pattern>
+		<url-pattern>/inspect/*</url-pattern>
 	</servlet-mapping>
 </web-app>
 

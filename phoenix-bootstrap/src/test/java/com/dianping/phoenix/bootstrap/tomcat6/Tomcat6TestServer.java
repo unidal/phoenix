@@ -24,7 +24,7 @@ public class Tomcat6TestServer extends AbstractTomcat6Bootstrap {
 		DevModeWebappProvider appProvider = new DevModeWebappProvider("../phoenix-samples/sample-app1", "sample-app1");
 
 		startTomcat(kernelProvider, appProvider);
-		display("/console");
+		display("/inspect");
 
 		System.out.println("Press any key to stop the server ...");
 		System.in.read();

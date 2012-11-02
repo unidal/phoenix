@@ -43,8 +43,8 @@ public class Jboss4WebappLoader extends AbstractCatalinaWebappLoader {
 
 	@Override
 	protected boolean shouldIgnoredByBootstrapClassloader(URL url) {
-		if (url.toExternalForm().contains("-6.0.29.jar")) {
-			return true; // no jboss
+		if (url.toExternalForm().contains("/catalina") || url.toExternalForm().contains("/coyate")) {
+			return true; // no tomcat6
 		}
 
 		return false;

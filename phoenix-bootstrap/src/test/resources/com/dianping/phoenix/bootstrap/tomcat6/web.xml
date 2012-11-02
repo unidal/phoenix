@@ -30,7 +30,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>mvc-servlet</servlet-name>
-		<url-pattern>/console/*</url-pattern>
+		<url-pattern>/inspect/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- Filter -->
@@ -266,6 +266,10 @@
 	</listener>
 	<listener>
 		<listener-class>com.dianping.phoenix.demo.DemoListener2</listener-class>
+	</listener>
+	
+	<listener>
+		<listener-class>com.dianping.kernel.servlet.InspectListener</listener-class>
 	</listener>
 </web-app>
 
