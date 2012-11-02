@@ -75,7 +75,7 @@
 	  	</init-param>
 	</filter>
 	<filter>
-		<filter-name>After-DemoFilter1</filter-name>
+		<filter-name>After-DemoFilter4</filter-name>
 		<filter-class>com.dianping.phoenix.demo.DemoFilter</filter-class>
 	 	<init-param>
 		    <param-name>_INDEX_</param-name>
@@ -99,7 +99,7 @@
 	  	</init-param>
 	</filter>
 	<filter>
-		<filter-name>After-DemoFilter4</filter-name>
+		<filter-name>After-DemoFilter1</filter-name>
 		<filter-class>com.dianping.phoenix.demo.DemoFilter</filter-class>
 	 	<init-param>
 		    <param-name>_INDEX_</param-name>
