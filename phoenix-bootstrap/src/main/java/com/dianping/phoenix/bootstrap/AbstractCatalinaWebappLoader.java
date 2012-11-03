@@ -1,6 +1,7 @@
 package com.dianping.phoenix.bootstrap;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -228,6 +229,10 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	protected void prepareWebappProviders(StandardContext ctx) {
 		try {
 			if (m_kernelProvider == null) {
+				if (m_kernelDocBase == null) {
+					throw new RuntimeException("No kernelDocBase property was set in the context!");
+				}
+
 				m_kernelProvider = new StandardWebappProvider(m_kernelDocBase);
 			}
 
@@ -236,8 +241,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 
 				m_appProvider = new StandardWebappProvider(appDocBase);
 			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException("Error when preparing webapp provider!", e);
 		}
 	}
 
