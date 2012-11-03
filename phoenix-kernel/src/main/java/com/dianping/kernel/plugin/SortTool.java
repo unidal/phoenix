@@ -359,16 +359,9 @@ public class SortTool {
 		@Override
 		public int compare(SortElementWrapper element1, SortElementWrapper element2) {
 			int result = 0;
-			if(element1.getRuleNum() > 0 && element2.getRuleNum() > 0){
-				result = element1.getRuleNum() - element2.getRuleNum();
-				if(result == 0){
-					result = element1.getIdx() - element2.getIdx();
-				}
-			}else if(element1.getRuleNum() < 0 && element2.getRuleNum() < 0){
-				result = element2.getRuleNum() - element1.getRuleNum();
-				if(result == 0){
-					result = element1.getIdx() - element2.getIdx();
-				}
+			result = element1.getRuleNum() - element2.getRuleNum();
+			if(result == 0){
+				result = element1.getIdx() - element2.getIdx();
 			}
 			return result;
 		}
