@@ -33,6 +33,10 @@ public class BizWarTest {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(warsIn));
 		String line;
 
+		if(System.getProperty("os.name").toLowerCase().contains("windows")) {
+			System.out.println("Windows is not supported yet, skip test");
+		}
+		
 		try {
 			while ((line = reader.readLine()) != null) {
 				if(line.trim().length() == 0 || line.trim().startsWith("#")) {
@@ -59,10 +63,10 @@ public class BizWarTest {
 		File phoenixBaseDir = testClassesDir.getParentFile().getParentFile().getParentFile();
 		DefaultExecutor executor = new DefaultExecutor();
 		CommandLine cmd = new CommandLine(phoenixBaseDir + "/misc/integration_test.sh");
-		cmd.addArgument(war.getGroupId());
-		cmd.addArgument(war.getArtifactId());
-		cmd.addArgument(war.getVersion());
-		cmd.addArgument("f");
+		cmd.addArgument("-g" + war.getGroupId());
+		cmd.addArgument("-a" + war.getArtifactId());
+		cmd.addArgument("-v" + war.getVersion());
+		cmd.addArgument("-ctomcat");
 		int exitCode = executor.execute(cmd);
 		Assert.assertEquals(0, exitCode);
 	}

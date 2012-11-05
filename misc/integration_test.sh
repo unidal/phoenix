@@ -5,18 +5,50 @@ cwd=`pwd`
 source util_junit.sh
 source self_check.sh
 source qa_check.sh
+user=`whoami`
+uname=`uname`
+
+TOMCAT_HOME=${TOMCAT_HOME:="/Users/$user/Downloads/apache-tomcat-6.0.35/"}
+JBOSS_HOME=${JBOSS_HOME:="/Users/$user/Downloads/jboss-4.2.2.GA/"}
 
 function check_arguments {
-	if [ $# -lt 3 ];then
-		log "usage: integration_test.sh groupId artifactId version [forkGrep]" e t
+	container=jboss
+	while getopts "g:a:v:c:" option;do
+		case $option in
+                g)      groupId=$OPTARG;;
+                a)      artifactId=$OPTARG;;
+                v)      version=$OPTARG;;
+                c)      container=$OPTARG;;
+                \?)     usage;;
+        esac
+	done
+	forkGrep=f
+	type=war
+
+	if [[ x$groupId == x || x$artifactId == x || x$version == x ]];then
+		log "usage: `basename $0`  -g groupId -a artifactId -v version [-c container]" e t
+		exit 1
+	fi
+	
+	if [[ x$container != xjboss && x$container != xtomcat ]];then
+		log "container should be tomcat or jboss" e t
 		exit 1
 	fi
 
-	if [ ! -e $TOMCAT_HOME/bin/startup.sh ];then
-		log "TOMCAT_HOME does not point to a valid tomcat installation" e t
-		exit 1
+	log "Testing: groupId=$groupId, artifactId=$artifactId, version=$version, container=$container"
+
+	if [ x$container == xtomcat ];then
+		if [ ! -e $TOMCAT_HOME/bin/startup.sh ];then
+			log "TOMCAT_HOME does not point to a valid tomcat installation" e t
+			exit 1
+		else
+			log "Using tomcat at $TOMCAT_HOME"
+		fi
 	else
-		log "Using tomcat at $TOMCAT_HOME"
+		if [ ! -e $JBOSS_HOME/bin/run.sh ];then
+			log "JBOSS_HOME does not point to a valid jboss installation" e t
+			exit 1
+		fi
 	fi
 
 	if [ ! -e ../phoenix-kernel ];then
@@ -26,35 +58,21 @@ function check_arguments {
 }
 
 function init {
-	user=`whoami`
-	TOMCAT_HOME=${TOMCAT_HOME:="/Users/$user/Downloads/apache-tomcat-6.0.35/"}
-
-	groupId=$1
-	artifactId=$2
-	version=$3
-	forkGrep=t
-	if [ $# -ge 4 ];then
-		forkGrep=$4
-	fi
-	type=war
 
 	MAX_HTTP_TRY=30
 	PHOENIX_KERNEL_WAR=../phoenix-kernel/target/phoenix-kernel.war
-	PHOENIX_KERNEL_TARGET=/data/webapps/phoenix-kernel/
+	PHOENIX_KERNEL_TARGET=target/data/webapps/phoenix-kernel/
 	PHOENIX_BOOTSTRAP_JAR=../phoenix-bootstrap/target/phoenix-bootstrap.jar
-	export CATALINA_PID=/data/tomcat6.pid
-
-	uname=`uname`
+	export CATALINA_PID=target/data/tomcat6.pid
 }
 
-function retrive_war_from_maven {
+function retrive_and_unpack_war_from_maven {
 	# retrive war from maven repo
 	wartmp=target/wartmp/$groupId/$artifactId/$version
 	rm -rf $wartmp
 	mkdir -p $wartmp
 	log "Retriving $groupId:$artifactId:$version:$type from maven repo" i f f
 	./maven.sh $wartmp $groupId $artifactId $version $type
-	mkdir $wartmp/$artifactId
 	ls $wartmp/*.$type >/dev/null 2>&1
 	if [ $? -eq 0 ];then
 		log "Successfullt retrive $groupId:$artifactId:$version:$type from maven repo" i t
@@ -62,14 +80,32 @@ function retrive_war_from_maven {
 		log "Failed to retrive $groupId:$artifactId:$version:$type from maven repo" e t
 		exit 1
 	fi
-	unzip $wartmp/*.$type -d $wartmp/$artifactId >/dev/null
+
+	if [ x$container == xtomcat ];then
+		mkdir $wartmp/$artifactId
+		unzip $wartmp/*.$type -d $wartmp/$artifactId >/dev/null
+	else
+		jboss_biz_war_dir=$JBOSS_HOME/server/default/deploy/phoenix-biz.war	
+		rm -rf $jboss_biz_war_dir
+		mkdir -p $jboss_biz_war_dir
+		unzip $wartmp/*.$type -d $jboss_biz_war_dir >/dev/null
+		if [ ! -e $jboss_biz_war_dir/WEB-INF/jboss-web.xml ];then
+			cat <<-END > $jboss_biz_war_dir/WEB-INF/jboss-web.xml
+				<!DOCTYPE jboss-web PUBLIC "-//JBoss//DTD Web Application 5.0//EN"
+				" http://www.jboss.org/j2ee/dtd/jboss-web_5_0.dtd">
+				<jboss-web>
+						<context-root>/</context-root>
+				</jboss-web>
+			END
+		fi
+	fi
 }
 
 function package_phoenix {
 	# package phoenix
 	cd ..
 	if [ uname == "Linux" ];then
-		file_latest_mtime=`find -E phoenix-bootstrap phoenix-kernel -regex ".*src/main/.*|.*.xml" -type f -printf "%T@\n" | sort -n | tail -1`
+		file_latest_mtime=`find phoenix-bootstrap phoenix-kernel -regextype posix-extended -regex ".*src/main/.*|.*.xml" -type f -printf "%T@\n" | sort -n | tail -1`
 	else
 		file_latest_mtime=`find -E phoenix-bootstrap phoenix-kernel -regex ".*src/main/.*|.*.xml" -type f -exec stat -f "%m" {} \; | sort -n | tail -1`
 	fi
@@ -100,22 +136,56 @@ function install_phoenix {
 	rm -rf $PHOENIX_KERNEL_TARGET
 	mkdir -p $PHOENIX_KERNEL_TARGET
 	unzip $PHOENIX_KERNEL_WAR -d $PHOENIX_KERNEL_TARGET >/dev/null
-	cp -rf $PHOENIX_BOOTSTRAP_JAR $TOMCAT_HOME/lib/
+	if [ x$container == xtomcat ];then
+		cp -rf $PHOENIX_BOOTSTRAP_JAR $TOMCAT_HOME/lib/
+	else
+		cp -rf $PHOENIX_BOOTSTRAP_JAR $JBOSS_HOME/server/default/lib/
+	fi
+}
+
+function restart_container {
+	if [ x$container == xtomcat ];then
+		restart_tomcat
+	else
+		restart_jboss
+	fi
+}
+
+function kill_jboss {
+	jps -lvm | awk -v tocheck=$JBOSS_HOME '$2=="org.jboss.Main" && index($0, tocheck)>0{cmd=sprintf("kill -9 %s", $1);system(cmd)}'
+}
+
+function kill_tomcat {
+	jps -lvm | awk -v tocheck=$TOMCAT_HOME '$2=="org.apache.catalina.startup.Bootstrap" && index($0, tocheck)>0{cmd=sprintf("kill -9 %s", $1);system(cmd)}'
+}
+
+function restart_jboss {
+	kill_tomcat
+	kill_jboss
+	$JBOSS_HOME/bin/run.sh &
 }
 
 function restart_tomcat {
-	# stop all tomcat
-	jps |awk '$2=="Bootstrap"{cmd=sprintf("kill -9 %s", $1);system(cmd)}'
+	kill_tomcat
+	kill_jboss
+
+	cp $TOMCAT_HOME/conf/context.xml $TOMCAT_HOME/conf/context.xml.bak
+	cat <<-END > $TOMCAT_HOME/conf/context.xml
+		<?xml version='1.0' encoding='utf-8'?>
+		<Context>
+			<WatchedResource>WEB-INF/web.xml</WatchedResource>
+		</Context>
+	END
 
 	# generate context xml file
 	BIZ_WAR=$cwd/$wartmp/$artifactId
 	rm -rf $TOMCAT_HOME/webapps/ROOT
 	mkdir -p $TOMCAT_HOME/conf/Catalina/localhost/
 	cat <<-END > $TOMCAT_HOME/conf/Catalina/localhost/ROOT.xml
-	<?xml version="1.0" encoding="UTF-8"?>
-	<Context docBase="$BIZ_WAR">
-	   <Loader className="com.dianping.phoenix.bootstrap.Tomcat6WebappLoader" kernelDocBase="$PHOENIX_KERNEL_TARGET" debug="true" />
-	 </Context>
+		<?xml version="1.0" encoding="UTF-8"?>
+		<Context docBase="$BIZ_WAR">
+			<Loader className="com.dianping.phoenix.bootstrap.Tomcat6WebappLoader" kernelDocBase="$cwd/$PHOENIX_KERNEL_TARGET" />
+		 </Context>
 	END
 
 
@@ -138,9 +208,9 @@ function restart_tomcat {
 
 init "$@"
 check_arguments "$@"
-retrive_war_from_maven "$@"
+retrive_and_unpack_war_from_maven "$@"
 package_phoenix "$@"
 install_phoenix "$@"
-restart_tomcat "$@"
+restart_container "$@"
 self_check_war "$@"
 qa_check_war "$@"
