@@ -31,9 +31,9 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 	private AbstractCatalinaWebappLoader m_loader;
 
 	private StandardContext m_context;
-	
-	private ProxyStandardContext m_proxyContext;
-	
+
+	private StandardContext m_proxyContext;
+
 	public void applyKernelWebXml() throws Exception {
 		File webXml = m_loader.getWebXml();
 		InputSource source = new InputSource(new FileInputStream(webXml));
@@ -56,18 +56,18 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		}
 	}
 
-	public void finish(){
-		m_proxyContext.finish();
+	public void finish() {
+		m_loader.finish();
 	}
-	
-	public void init(AbstractCatalinaWebappLoader loader) throws Exception{
+
+	public void init(AbstractCatalinaWebappLoader loader) throws Exception {
 		m_loader = loader;
 		Container container = loader.getContainer();
 
 		if (container instanceof StandardContext) {
 			m_context = (StandardContext) container;
-			m_proxyContext = new ProxyStandardContext(m_context,m_loader.getLog());
-			LifecycleSupport lifecycle = m_loader.getFieldValue(m_context, ContainerBase.class,"lifecycle");
+			m_proxyContext = loader.getStandardContext();
+			LifecycleSupport lifecycle = m_loader.getFieldValue(m_context, ContainerBase.class, "lifecycle");
 			m_loader.setFieldValue(lifecycle, "lifecycle", m_proxyContext);
 		}
 	}
@@ -163,7 +163,7 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		sortListener();
 		sortFilter();
 	}
-	
+
 	protected static class ContextErrorHandler implements ErrorHandler {
 		public void error(SAXParseException exception) {
 			exception.printStackTrace();

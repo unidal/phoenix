@@ -1,4 +1,4 @@
-package com.dianping.kernel.plugin;
+package com.dianping.phoenix.bootstrap;
 
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -44,12 +44,9 @@ import org.apache.catalina.deploy.MessageDestinationRef;
 import org.apache.catalina.deploy.NamingResources;
 import org.apache.catalina.deploy.SecurityConstraint;
 import org.apache.catalina.util.CharsetMapper;
-import org.apache.juli.logging.Log;
 import org.apache.tomcat.util.http.mapper.Mapper;
 
-import com.dianping.kernel.Constants;
-
-public class ProxyStandardContext extends StandardContext {
+public class Tomcat6StandardContext extends StandardContext {
 	private static final long serialVersionUID = 1L;
 
 	private StandardContext m_standardContext;
@@ -60,12 +57,9 @@ public class ProxyStandardContext extends StandardContext {
 
 	private boolean m_isFinished;
 
-	private Log m_log;
-
-	public ProxyStandardContext(StandardContext context, Log log) {
+	public Tomcat6StandardContext(StandardContext context) {
 		m_standardContext = context;
 		m_servletContext = m_standardContext.getServletContext();
-		m_log = log;
 	}
 
 	@Override
@@ -799,12 +793,6 @@ public class ProxyStandardContext extends StandardContext {
 	}
 
 	@Override
-	public Log getLogger() {
-
-		return m_standardContext.getLogger();
-	}
-
-	@Override
 	public LoginConfig getLoginConfig() {
 
 		return m_standardContext.getLoginConfig();
@@ -1131,25 +1119,25 @@ public class ProxyStandardContext extends StandardContext {
 		StackTraceElement element = trace[2];
 		String methodName = element.getMethodName();
 
-		
-		if (methodName.equals("addWatchedResource")) { // to work around NullPointerException
+		if (methodName.equals("addWatchedResource")) { // to work around
+			                                            // NullPointerException
 			m_subContext = new StandardContext();
 			m_subContext.setDocBase(m_standardContext.getDocBase());
 		}
-		
+
 		if (methodName.equals("setPublicId")) {
 			if (m_servletContext.getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_DEFAULT) == null) {
 				m_subContext = new StandardContext();
 				m_subContext.setDocBase(m_standardContext.getDocBase());
-				m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_DEFAULT,m_subContext);
+				m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_DEFAULT, m_subContext);
 			} else if (m_servletContext.getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_APP) == null) {
 				m_subContext = new StandardContext();
 				m_subContext.setDocBase(m_standardContext.getDocBase());
-				m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_APP,m_subContext);
+				m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_APP, m_subContext);
 			} else if (m_servletContext.getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL) == null) {
 				m_subContext = new StandardContext();
 				m_subContext.setDocBase(m_standardContext.getDocBase());
-				m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL,m_subContext);
+				m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL, m_subContext);
 			}
 
 			m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_ALL, m_standardContext);
@@ -1162,11 +1150,12 @@ public class ProxyStandardContext extends StandardContext {
 			try {
 				method.invoke(m_subContext, args);
 			} catch (Exception e) {
-				m_log.warn(String.format("Error when invoking method(%s) of %s", methodName, StandardContext.class), e);
+				getLogger().warn(String.format("Error when invoking method(%s) of %s", methodName, StandardContext.class),
+				      e);
 			}
 		} else {
-			m_log.warn(String.format("No method(%s) found with %s arguments in %s", methodName, args.length,
-			      StandardContext.class));
+			getLogger().warn(String.format("No method(%s) found with %s arguments in %s", //
+			      methodName, args.length, StandardContext.class));
 		}
 	}
 

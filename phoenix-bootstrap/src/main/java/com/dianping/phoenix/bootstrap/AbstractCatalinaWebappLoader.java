@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ServiceLoader;
-import java.util.jar.JarFile;
 
 import javax.servlet.ServletContext;
 
@@ -22,8 +21,6 @@ import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.loader.WebappClassLoader;
 import org.apache.catalina.loader.WebappLoader;
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
 
 import com.dianping.phoenix.spi.ClasspathBuilder;
 import com.dianping.phoenix.spi.WebappProvider;
@@ -36,8 +33,6 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	public static final String PHOENIX_WEBAPP_PROVIDER_APP = "phoenix.webapp.provider.app";
 
 	public static final String PHOENIX_WEBAPP_PROVIDER_KERNEL = "phoenix.webapp.provider.kernel";
-
-	private static final Log m_log = LogFactory.getLog(AbstractCatalinaWebappLoader.class);
 
 	private WebappProvider m_appProvider;
 
@@ -58,7 +53,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		super(classloader);
 	}
 
-	WebappClassLoader adjustWebappClassloader(WebappClassLoader classloader) {
+	protected WebappClassLoader adjustWebappClassloader(WebappClassLoader classloader) {
 		try {
 			clearLoadedJars(classloader);
 
@@ -70,7 +65,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			}
 
 			if (m_debug) {
-				m_log.info(String.format("Webapp classpath: %s.", Arrays.asList(classloader.getURLs())));
+				getLog().info(String.format("Webapp classpath: %s.", Arrays.asList(classloader.getURLs())));
 			}
 
 			Container container = getContainer();
@@ -86,36 +81,9 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		}
 	}
 
-	void clearLoadedJars(WebappClassLoader classloader) throws Exception {
-		List<String> loaderRepositories = getFieldValue(this, WebappLoader.class, "loaderRepositories");
-		URL[] repositoryURLs = getFieldValue(classloader, "repositoryURLs");
+	protected abstract void clearLoadedJars(WebappClassLoader classloader) throws Exception;
 
-		for (int i = loaderRepositories.size() - 1; i >= 0; i--) {
-			String repository = loaderRepositories.get(i);
-
-			if (repository.endsWith(".jar")) {
-				loaderRepositories.remove(i);
-			}
-		}
-
-		List<URL> urls = new ArrayList<URL>();
-
-		for (URL url : repositoryURLs) {
-			if (!url.toExternalForm().endsWith(".jar")) {
-				urls.add(url);
-			}
-		}
-
-		setFieldValue(classloader, "repositoryURLs", urls.toArray(new URL[0]));
-		setFieldValue(classloader, "jarFiles", new JarFile[0]);
-		setFieldValue(classloader, "jarNames", new String[0]);
-		setFieldValue(classloader, "jarRealFiles", new File[0]);
-		setFieldValue(classloader, "repositories", new String[0]);
-		setFieldValue(classloader, "files", new File[0]);
-		setFieldValue(classloader, "paths", new String[0]);
-	}
-
-	ClassLoader createBootstrapClassloader() {
+	protected ClassLoader createBootstrapClassloader() {
 		try {
 			List<URL> urls = new ArrayList<URL>();
 
@@ -128,7 +96,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			}
 
 			if (m_debug) {
-				m_log.info(String.format("Bootstrap classpath: %s.", urls));
+				getLog().info(String.format("Bootstrap classpath: %s.", urls));
 			}
 
 			ClassLoader classloader = getClass().getClassLoader();
@@ -145,7 +113,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 						pathes.remove(i);
 
 						if (m_debug) {
-							m_log.info("Entry " + path + " ignored!");
+							getLog().info("Entry " + path + " ignored!");
 						}
 					}
 				}
@@ -177,9 +145,11 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		return m_kernelProvider.getWarRoot();
 	}
 
-	public Log getLog() {
-		return m_log;
-	}
+	public abstract Log getLog();
+
+	public abstract StandardContext getStandardContext();
+	
+	public abstract void finish();
 
 	public ServletContext getServletContext() {
 		Container container = super.getContainer();
@@ -358,5 +328,23 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		public void starting(T loader);
 
 		public void stopping(T loader);
+	}
+
+	public static interface Log {
+		public void debug(Object msg);
+
+		public void debug(Object msg, Throwable e);
+
+		public void error(Object obj);
+
+		public void error(Object obj, Throwable e);
+
+		public void info(Object msg);
+
+		public void info(Object obj, Throwable e);
+
+		public void warn(Object obj);
+
+		public void warn(Object obj, Throwable e);
 	}
 }
