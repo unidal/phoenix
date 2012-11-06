@@ -63,18 +63,5 @@
 			<role>com.dianping.kernel.inspect.page.descriptor.JspViewer</role>
 			<implementation>com.dianping.kernel.inspect.page.descriptor.JspViewer</implementation>
 		</component>
-		<component>
-			<role>com.dianping.kernel.console.page.webxml.Handler</role>
-			<implementation>com.dianping.kernel.console.page.webxml.Handler</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.kernel.console.page.webxml.JspViewer</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.kernel.console.page.webxml.JspViewer</role>
-			<implementation>com.dianping.kernel.console.page.webxml.JspViewer</implementation>
-		</component>
 	</components>
 </plexus>

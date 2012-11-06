@@ -19,11 +19,11 @@ public class Model extends ViewModel<InspectPage, Action, Context> {
 	public DescriptorModel getAllModel() {
 		return m_allModel;
 	}
-
+	
 	public DescriptorModel getAppModel() {
 		return m_appModel;
 	}
-
+	
 	@Override
 	public Action getDefaultAction() {
 		return Action.VIEW;
@@ -39,6 +39,7 @@ public class Model extends ViewModel<InspectPage, Action, Context> {
 
 	public void setAllModel(DescriptorModel allModel) {
 		m_allModel = allModel;
+		m_allModel.setModel(this);
 	}
 
 	public void setAppModel(DescriptorModel appModel) {
