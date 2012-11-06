@@ -12,10 +12,28 @@
 <table border="1">
 	<tr>
 		<th>Name</th>
+		<th>From Container</th>
+		<th>From App</th>
+		<th>From Phoenix</th>
 	</tr>
 	<c:forEach var="welcomeFile" items="${all.welcomeFiles}">
 		<tr>
-			<td>${welcomeFile}</td>
+			<td>${welcomeFile.key}</td>
+			<td align="center">
+				<c:if test="${welcomeFile.fromWhere==1}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			<td align="center">
+				<c:if test="${welcomeFile.fromWhere==2}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			<td align="center">
+				<c:if test="${welcomeFile.fromWhere==3}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
 		</tr>
 	</c:forEach>
 </table>
@@ -24,10 +42,28 @@
 <table border="1">
 	<tr>
 		<th>Listener Class</th>
+		<th>From Container</th>
+		<th>From App</th>
+		<th>From Phoenix</th>
 	</tr>
 	<c:forEach var="listener" items="${all.listeners}">
 		<tr>
 			<td><label title="index: ${listener.value}">${listener.key}</label></td>
+			<td align="center">
+				<c:if test="${listener.fromWhere==1}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			<td align="center">
+				<c:if test="${listener.fromWhere==2}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			<td align="center">
+				<c:if test="${listener.fromWhere==3}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
 		</tr>
 	</c:forEach>
 </table>
@@ -38,6 +74,10 @@
 		<th>Name</th>
 		<th>Servlet Class</th>
 		<th>URL Pattern</th>
+		<th>From Container</th>
+		<th>From App</th>
+		<th>From Phoenix</th>
+		
 	</tr>
 	<c:forEach var="servlet" items="${all.servlets}">
 		<c:set var="pattern" value="${servlet.key}" />
@@ -50,6 +90,22 @@ init-parameters: ${initParameters}
 ">${not empty wrapper.jspFile ? wrapper.jspFile : wrapper.name}</label></td>
 			<td>${wrapper.servletClass}</td>
 			<td>${pattern}</td>
+			<td align="center">
+				<c:if test="${servlet.value.fromWhere==1}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			<td align="center">
+				<c:if test="${servlet.value.fromWhere==2}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			<td align="center">
+				<c:if test="${servlet.value.fromWhere==3}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			
 		</tr>
 	</c:forEach>
 </table>
@@ -60,6 +116,9 @@ init-parameters: ${initParameters}
 		<th>Name</th>
 		<th>Filter Class</th>
 		<th>URL Pattern</th>
+		<th>From Container</th>
+		<th>From App</th>
+		<th>From Phoenix</th>
 	</tr>
 	<c:forEach var="filter" items="${all.filters}">
 		<c:set var="def" value="${filter.key}" />
@@ -75,6 +134,21 @@ init-parameters: ${def.parameterMap}
 			<td><c:forEach var="pattern" items="${map.URLPatterns}">
 					${pattern}<br>
 				</c:forEach></td>
+			<td align="center">
+				<c:if test="${filter.fromWhere==1}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			<td align="center">
+				<c:if test="${filter.fromWhere==2}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			<td align="center">
+				<c:if test="${filter.fromWhere==3}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
 		</tr>
 	</c:forEach>
 </table>
