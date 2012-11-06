@@ -12,7 +12,7 @@
 		<th>Group Id</th>
 		<th>Artifact Id</th>
 		<th>Version (from app)</th>
-		<th>Version (from kernel)</th>
+		<th>Version (from phoenix)</th>
 	</tr>
 	<c:forEach var="artifact" items="${model.artifacts}">
 		<tr>
