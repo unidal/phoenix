@@ -57,6 +57,14 @@ public class DescriptorModel {
 
 		return files;
 	}
+	
+	public List<Mapping<String,String>> getParameters() {
+		List<Mapping<String,String>> parameterMaps = new ArrayList<Mapping<String,String>>();
+		for(String name : m_ctx.findParameters()){
+			parameterMaps.add(new Mapping<String,String>(name,m_ctx.findParameter(name),parameterFromWhere(m_model,name)));
+		}
+		return parameterMaps;
+	}
 
 	public List<Mapping<String, Mapping<Wrapper, Map<String, String>>>> getServlets() {
 		List<Mapping<String, Mapping<Wrapper, Map<String, String>>>> servlets = new ArrayList<Mapping<String, Mapping<Wrapper, Map<String, String>>>>();
@@ -121,6 +129,17 @@ public class DescriptorModel {
 		return FROM_CONTAINER;
 	}
 	
+	private int parameterFromWhere(Model model,String name){
+		if(model.getDefaultModel().containsParameter(name)){
+			return FROM_CONTAINER;
+		}else if(model.getAppModel().containsParameter(name)){
+			return FROM_APP;
+		}else if(model.getKernelModel().containsParameter(name)){
+			return FROM_KERNEL;
+		}
+		return FROM_CONTAINER;
+	}
+	
 	boolean containsListener(String listenerClassName){
 		String[] listeners = m_ctx.findApplicationListeners();
 		for(String listener : listeners){
@@ -140,6 +159,11 @@ public class DescriptorModel {
 			}
 		}
 		return false;
+	}
+	
+	boolean containsParameter(String name){
+		
+		return m_ctx.findParameter(name) != null;
 	}
 	
 	boolean containsFilter(String filterName){

@@ -27,10 +27,10 @@ public class SortToolTest {
 	SortElementTestImpl before3 = new SortElementTestImpl("+2","before3","com.dianping.before3");
 	SortElementTestImpl before1 = new SortElementTestImpl("+1","before1","com.dianping.before1");
 	
-	SortElementTestImpl after4 = new SortElementTestImpl("-3","after4","com.dianping.after4");
+	SortElementTestImpl after4 = new SortElementTestImpl("-1","after4","com.dianping.after4");
 	SortElementTestImpl after2 = new SortElementTestImpl("-2","after2","com.dianping.after2");
 	SortElementTestImpl after3 = new SortElementTestImpl("-2","after3","com.dianping.after3");
-	SortElementTestImpl after1 = new SortElementTestImpl("-1","after1","com.dianping.after1");
+	SortElementTestImpl after1 = new SortElementTestImpl("-4","after1","com.dianping.after1");
 	
 	SortElementTestImpl uncertain2 = new SortElementTestImpl("-com.dianping.Null|+1","uncertain2","com.dianping.uncertain2");
 	SortElementTestImpl uncertain3 = new SortElementTestImpl("-:app1|-com.dianping.Null|+1","uncertain3","com.dianping.uncertain3");

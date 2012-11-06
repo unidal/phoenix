@@ -38,6 +38,38 @@
 	</c:forEach>
 </table>
 
+<h2>Context Parameter</h2>
+<table border="1">
+	<tr>
+		<th>Name</th>
+		<th>Value</th>
+		<th>From Container</th>
+		<th>From App</th>
+		<th>From Phoenix</th>
+	</tr>
+	<c:forEach var="parameter" items="${all.parameters}">
+		<tr>
+			<td>${parameter.key}</td>
+			<td>${parameter.value}</td>
+			<td align="center">
+				<c:if test="${parameter.fromWhere==1}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			<td align="center">
+				<c:if test="${parameter.fromWhere==2}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+			<td align="center">
+				<c:if test="${parameter.fromWhere==3}">
+			       <input type='checkbox' disabled checked />
+				</c:if>
+			</td>
+		</tr>
+	</c:forEach>
+</table>
+
 <h2>Listener</h2>
 <table border="1">
 	<tr>
