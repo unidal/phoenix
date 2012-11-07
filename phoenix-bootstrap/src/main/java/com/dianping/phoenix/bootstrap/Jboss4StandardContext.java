@@ -45,6 +45,7 @@ import org.apache.catalina.deploy.NamingResources;
 import org.apache.catalina.deploy.SecurityConstraint;
 import org.apache.catalina.util.CharsetMapper;
 import org.apache.tomcat.util.http.mapper.Mapper;
+import org.jboss.logging.Logger;
 
 public class Jboss4StandardContext extends StandardContext {
 	private static final long serialVersionUID = 1L;
@@ -156,7 +157,7 @@ public class Jboss4StandardContext extends StandardContext {
 
 	@Override
 	public void addNotificationListener(NotificationListener listener, NotificationFilter filter, Object object)
-	      throws IllegalArgumentException {
+			throws IllegalArgumentException {
 
 		m_standardContext.addNotificationListener(listener, filter, object);
 	}
@@ -1071,12 +1072,6 @@ public class Jboss4StandardContext extends StandardContext {
 		StackTraceElement element = trace[2];
 		String methodName = element.getMethodName();
 
-		if (methodName.equals("addWatchedResource")) { // to work around
-			                                            // NullPointerException
-			m_subContext = new StandardContext();
-			m_subContext.setDocBase(m_standardContext.getDocBase());
-		}
-
 		if (methodName.equals("setPublicId")) {
 			if (m_servletContext.getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_DEFAULT) == null) {
 				m_subContext = new StandardContext();
@@ -1095,20 +1090,32 @@ public class Jboss4StandardContext extends StandardContext {
 			m_servletContext.setAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_ALL, m_standardContext);
 		}
 
-		Method[] methods = StandardContext.class.getMethods();
-		Method method = findMethod(methods, methodName, args);
+		if (m_subContext != null) {
+			Method[] methods = StandardContext.class.getMethods();
+			Method method = findMethod(methods, methodName, args);
 
-		if (method != null) {
-			try {
-				method.invoke(m_subContext, args);
-			} catch (Exception e) {
-				getLogger().warn(String.format("Error when invoking method(%s) of %s", methodName, StandardContext.class),
-				      e);
+			if (method != null) {
+				try {
+					method.invoke(m_subContext, args);
+				} catch (Exception e) {
+					getLog().warn(
+							String.format("Error when invoking method(%s) of %s", methodName, StandardContext.class), e);
+				}
+			} else {
+				getLog().warn(
+						String.format("No method(%s) found with %s arguments in %s", methodName, args.length,
+								StandardContext.class));
 			}
-		} else {
-			getLogger().warn(
-			      String.format("No method(%s) found with %s arguments in %s", methodName, args.length,
-			            StandardContext.class));
+		}
+	}
+
+	private Logger getLog() {
+		try {
+			Method m = getClass().getMethod("getLogger");
+
+			return (Logger) m.invoke(this);
+		} catch (Exception e) {
+			throw new RuntimeException("Error when calling getLogger().");
 		}
 	}
 
@@ -1340,7 +1347,7 @@ public class Jboss4StandardContext extends StandardContext {
 
 	@Override
 	public void removeNotificationListener(NotificationListener listener, NotificationFilter filter, Object object)
-	      throws ListenerNotFoundException {
+			throws ListenerNotFoundException {
 
 		m_standardContext.removeNotificationListener(listener, filter, object);
 	}

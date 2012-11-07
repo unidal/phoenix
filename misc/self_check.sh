@@ -35,7 +35,7 @@ function self_check_war {
 	if [ $forkGrep == "t" ];
 	then
 		log "Press Ctrl-C to exit"
-		tail -f $TOMCAT_HOME/logs/catalina.out | grep -E "ERROR|Error|SEVERE"
+		tail -f $TOMCAT_HOME/logs/catalina.out | grep -i -E "ERROR|SEVERE"
 	fi
 	exit $exit_code
 }

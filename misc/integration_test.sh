@@ -1,5 +1,6 @@
 
 
+
 cd `dirname $0`
 cwd=`pwd`
 source util_junit.sh
@@ -162,6 +163,14 @@ function kill_tomcat {
 function restart_jboss {
 	kill_tomcat
 	kill_jboss
+
+	cat <<-END > $jboss_biz_war_dir/WEB-INF/context.xml
+		<?xml version="1.0" encoding="UTF-8"?>
+		<Context>
+			<Loader className="com.dianping.phoenix.bootstrap.Jboss4WebappLoader" kernelDocBase="$cwd/$PHOENIX_KERNEL_TARGET" />
+		 </Context>
+	END
+
 	$JBOSS_HOME/bin/run.sh &
 }
 
