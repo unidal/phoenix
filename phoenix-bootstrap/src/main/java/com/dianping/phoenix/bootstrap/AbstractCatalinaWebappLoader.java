@@ -269,7 +269,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		m_webXml = webXml;
 	}
 
-	protected abstract boolean shouldIgnoredByBootstrapClassloader(URL url);
+	public abstract boolean shouldIgnoredByBootstrapClassloader(URL url);
 
 	@Override
 	public void start() throws LifecycleException {

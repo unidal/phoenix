@@ -41,8 +41,9 @@ public class Jboss4WebappLoader extends AbstractCatalinaWebappLoader {
 	protected void clearLoadedJars(WebappClassLoader classloader) throws Exception {
 		List<String> loaderRepositories = getFieldValue(this, WebappLoader.class, "loaderRepositories");
 		URL[] repositoryURLs = getFieldValue(classloader, "repositoryURLs");
+		int len = loaderRepositories == null ? 0 : loaderRepositories.size();
 
-		for (int i = loaderRepositories.size() - 1; i >= 0; i--) {
+		for (int i = len - 1; i >= 0; i--) {
 			String repository = loaderRepositories.get(i);
 
 			if (repository.endsWith(".jar")) {
@@ -137,8 +138,8 @@ public class Jboss4WebappLoader extends AbstractCatalinaWebappLoader {
 	}
 
 	@Override
-	protected boolean shouldIgnoredByBootstrapClassloader(URL url) {
-		if (url.toExternalForm().contains("/catalina") || url.toExternalForm().contains("/coyate")) {
+	public boolean shouldIgnoredByBootstrapClassloader(URL url) {
+		if (url.toExternalForm().contains("/catalina") || url.toExternalForm().contains("/coyote")) {
 			return true; // no tomcat6
 		}
 

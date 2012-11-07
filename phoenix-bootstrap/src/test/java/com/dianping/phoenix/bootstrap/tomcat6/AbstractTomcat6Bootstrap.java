@@ -3,6 +3,8 @@ package com.dianping.phoenix.bootstrap.tomcat6;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.List;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
@@ -16,6 +18,23 @@ import com.dianping.phoenix.bootstrap.Tomcat6WebappLoader;
 import com.dianping.phoenix.spi.WebappProvider;
 
 public abstract class AbstractTomcat6Bootstrap {
+	protected void cleanupClassloader(Tomcat6WebappLoader loader, ClassLoader classloader) throws Exception {
+		if (classloader instanceof URLClassLoader) {
+			Object ucp = loader.getFieldValue(classloader, URLClassLoader.class, "ucp");
+			List<URL> paths = loader.getFieldValue(ucp, "path");
+			int size = paths.size();
+
+			for (int i = size - 1; i >= 0; i--) {
+				URL path = paths.get(i);
+
+				if (loader.shouldIgnoredByBootstrapClassloader(path)) {
+					paths.remove(i);
+					System.out.println(String.format("Entry(%s) removed from bootstrap classpath!", path));
+				}
+			}
+		}
+	}
+
 	protected void display(String requestUri) {
 		String url = "http://localhost:" + getPort() + requestUri;
 		String os = System.getProperty("os.name");
@@ -73,6 +92,11 @@ public abstract class AbstractTomcat6Bootstrap {
 
 	private void startTomcat(WebappProvider kernelProvider, WebappProvider appProvider, String kernelDocBase,
 	      String appDocBase) throws Exception {
+		ClassLoader classloader = getClass().getClassLoader();
+		Tomcat6WebappLoader loader = new Tomcat6WebappLoader(classloader);
+
+		cleanupClassloader(loader, classloader);
+
 		Embedded container = new Embedded();
 
 		container.setCatalinaHome(getCatalinaHome());
@@ -80,8 +104,6 @@ public abstract class AbstractTomcat6Bootstrap {
 
 		// create host
 		Host localHost = container.createHost("localHost", new File(".").getAbsolutePath());
-		ClassLoader classloader = getClass().getClassLoader();
-		Tomcat6WebappLoader loader = new Tomcat6WebappLoader(classloader);
 
 		loader.setKernelWebappProvider(kernelProvider);
 		loader.setApplicationWebappProvider(appProvider);

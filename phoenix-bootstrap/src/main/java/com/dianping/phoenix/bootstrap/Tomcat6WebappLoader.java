@@ -137,7 +137,7 @@ public class Tomcat6WebappLoader extends AbstractCatalinaWebappLoader {
 	}
 
 	@Override
-	protected boolean shouldIgnoredByBootstrapClassloader(URL url) {
+	public boolean shouldIgnoredByBootstrapClassloader(URL url) {
 		if (url.toExternalForm().contains("/jboss-common") || url.toExternalForm().contains("/jbossweb")) {
 			return true; // no jboss
 		}
