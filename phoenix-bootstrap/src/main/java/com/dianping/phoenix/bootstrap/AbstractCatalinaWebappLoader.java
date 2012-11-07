@@ -102,8 +102,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			ClassLoader classloader = getClass().getClassLoader();
 
 			if (classloader instanceof URLClassLoader) {
-				Object ucp = getFieldValue(classloader, classloader.getClass().getSuperclass(), "ucp");
-				List<URL> pathes = getFieldValue(ucp, ucp.getClass(), "path");
+				Object ucp = getFieldValue(classloader, URLClassLoader.class, "ucp");
+				List<URL> pathes = getFieldValue(ucp, "path");
 				int len = pathes.size();
 
 				for (int i = len - 1; i >= 0; i--) {
@@ -148,7 +148,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	public abstract Log getLog();
 
 	public abstract StandardContext getStandardContext();
-	
+
 	public abstract void finish();
 
 	public ServletContext getServletContext() {
