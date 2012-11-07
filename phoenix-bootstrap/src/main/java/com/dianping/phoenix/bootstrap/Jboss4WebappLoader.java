@@ -53,9 +53,11 @@ public class Jboss4WebappLoader extends AbstractCatalinaWebappLoader {
 
 		List<URL> urls = new ArrayList<URL>();
 
-		for (URL url : repositoryURLs) {
-			if (!url.toExternalForm().endsWith(".jar")) {
-				urls.add(url);
+		if (repositoryURLs != null) {
+			for (URL url : repositoryURLs) {
+				if (!url.toExternalForm().endsWith(".jar")) {
+					urls.add(url);
+				}
 			}
 		}
 
