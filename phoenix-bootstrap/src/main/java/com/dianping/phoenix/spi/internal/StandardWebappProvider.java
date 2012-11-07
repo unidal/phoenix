@@ -21,7 +21,7 @@ public class StandardWebappProvider implements WebappProvider {
 		m_libDir = new File(warRoot, "WEB-INF/lib");
 		m_warRoot = warRoot;
 
-		if (!m_warRoot.exists() || !new File(warRoot, "web.xml").exists()) {
+		if (!m_warRoot.exists() || !new File(warRoot, "WEB-INF/web.xml").exists()) {
 			throw new RuntimeException(String.format("Please make sure webapp at %s is a valid war!", warRoot));
 		}
 	}
