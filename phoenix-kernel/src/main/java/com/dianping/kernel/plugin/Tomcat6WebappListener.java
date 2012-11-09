@@ -10,6 +10,7 @@ public class Tomcat6WebappListener implements Listener {
 	public void afterStarted(Tomcat6WebappLoader loader) {
 		m_patcher.finish();
 		m_patcher.sortWebXmlElements();
+		m_patcher.filterWebXmlElements();
 	}
 
 	@Override
