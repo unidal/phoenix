@@ -1,4 +1,4 @@
-package com.dianping.kernel.inspect.page.descriptor;
+package com.dianping.kernel.inspect.page.description;
 
 import com.dianping.kernel.inspect.InspectPage;
 import com.site.web.mvc.ActionContext;
@@ -27,7 +27,7 @@ public class Payload implements ActionPayload<InspectPage, Action> {
 
 	@Override
 	public void setPage(String page) {
-		m_page = InspectPage.getByName(page, InspectPage.DESCRIPTOR);
+		m_page = InspectPage.getByName(page, InspectPage.DESCRIPTION);
 	}
 
 	@Override

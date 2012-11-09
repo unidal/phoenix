@@ -51,17 +51,17 @@
 			<implementation>com.dianping.kernel.inspect.page.classpath.ArtifactResolver</implementation>
 		</component>
 		<component>
-			<role>com.dianping.kernel.inspect.page.descriptor.Handler</role>
-			<implementation>com.dianping.kernel.inspect.page.descriptor.Handler</implementation>
+			<role>com.dianping.kernel.inspect.page.description.Handler</role>
+			<implementation>com.dianping.kernel.inspect.page.description.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.kernel.inspect.page.descriptor.JspViewer</role>
+					<role>com.dianping.kernel.inspect.page.description.JspViewer</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.kernel.inspect.page.descriptor.JspViewer</role>
-			<implementation>com.dianping.kernel.inspect.page.descriptor.JspViewer</implementation>
+			<role>com.dianping.kernel.inspect.page.description.JspViewer</role>
+			<implementation>com.dianping.kernel.inspect.page.description.JspViewer</implementation>
 		</component>
 	</components>
 </plexus>

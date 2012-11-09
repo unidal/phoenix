@@ -1,8 +1,11 @@
 <%@ page contentType="text/html; charset=utf-8"%>
+<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<jsp:useBean id="ctx" type="com.dianping.kernel.inspect.page.descriptor.Context" scope="request" />
-<jsp:useBean id="payload" type="com.dianping.kernel.inspect.page.descriptor.Payload" scope="request" />
-<jsp:useBean id="model" type="com.dianping.kernel.inspect.page.descriptor.Model" scope="request" />
+<jsp:useBean id="ctx" type="com.dianping.kernel.inspect.page.description.Context" scope="request" />
+<jsp:useBean id="payload" type="com.dianping.kernel.inspect.page.description.Payload" scope="request" />
+<jsp:useBean id="model" type="com.dianping.kernel.inspect.page.description.Model" scope="request" />
+
+<a:layout>
 
 <c:set var="kernel" value="${model.kernelModel}" />
 <c:set var="app" value="${model.appModel}" />
@@ -184,3 +187,5 @@ init-parameters: ${def.parameterMap}
 		</tr>
 	</c:forEach>
 </table>
+
+</a:layout>

@@ -1,4 +1,4 @@
-package com.dianping.kernel.inspect.page.descriptor;
+package com.dianping.kernel.inspect.page.description;
 
 public enum Action implements com.site.web.mvc.Action {
 	VIEW("view");

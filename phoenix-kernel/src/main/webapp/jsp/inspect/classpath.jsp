@@ -1,8 +1,11 @@
 <%@ page contentType="text/html; charset=utf-8"%>
+<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:useBean id="ctx" type="com.dianping.kernel.inspect.page.classpath.Context" scope="request" />
 <jsp:useBean id="payload" type="com.dianping.kernel.inspect.page.classpath.Payload" scope="request" />
 <jsp:useBean id="model" type="com.dianping.kernel.inspect.page.classpath.Model" scope="request" />
+
+<a:layout>
 
 <c:set var="kernel" value="${model.kernelArtifacts}" />
 <c:set var="app" value="${model.appArtifacts}" />
@@ -11,8 +14,8 @@
 	<tr>
 		<th>Group Id</th>
 		<th>Artifact Id</th>
-		<th>Version (from app)</th>
-		<th>Version (from phoenix)</th>
+		<th>Version (From App)</th>
+		<th>Version (From Phoenix)</th>
 	</tr>
 	<c:forEach var="artifact" items="${model.artifacts}">
 		<tr>
@@ -35,3 +38,5 @@
 		</tr>
 	</c:forEach>
 </table>
+
+</a:layout>

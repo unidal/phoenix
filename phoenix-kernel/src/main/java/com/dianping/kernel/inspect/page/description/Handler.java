@@ -1,4 +1,4 @@
-package com.dianping.kernel.inspect.page.descriptor;
+package com.dianping.kernel.inspect.page.description;
 
 import static com.dianping.kernel.Constants.PHOENIX_WEBAPP_DESCRIPTOR_ALL;
 import static com.dianping.kernel.Constants.PHOENIX_WEBAPP_DESCRIPTOR_APP;
@@ -33,13 +33,13 @@ public class Handler implements PageHandler<Context> {
 
 	@Override
 	@PayloadMeta(Payload.class)
-	@InboundActionMeta(name = "descriptor")
+	@InboundActionMeta(name = "desc")
 	public void handleInbound(Context ctx) throws ServletException, IOException {
 		// display only, no action here
 	}
 
 	@Override
-	@OutboundActionMeta(name = "descriptor")
+	@OutboundActionMeta(name = "desc")
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
 		ServletContext sc = ctx.getServletContext();
@@ -65,7 +65,7 @@ public class Handler implements PageHandler<Context> {
 		}
 
 		model.setAction(Action.VIEW);
-		model.setPage(InspectPage.DESCRIPTOR);
+		model.setPage(InspectPage.DESCRIPTION);
 		model.setDefaultModel(m_defaultModel);
 		model.setAppModel(m_appModel);
 		model.setKernelModel(m_kernelModel);

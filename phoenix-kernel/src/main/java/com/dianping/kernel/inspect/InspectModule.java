@@ -11,7 +11,7 @@ com.dianping.kernel.inspect.page.home.Handler.class,
 
 com.dianping.kernel.inspect.page.classpath.Handler.class,
 
-com.dianping.kernel.inspect.page.descriptor.Handler.class
+com.dianping.kernel.inspect.page.description.Handler.class
 })
 public class InspectModule extends AbstractModule {
 
