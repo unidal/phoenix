@@ -36,6 +36,8 @@ public class Handler implements PageHandler<Context> {
 	private List<Artifact> m_kernelArtifacts;
 
 	private List<Artifact> m_appArtifacts;
+	
+	private List<Artifact> m_containerArtifacts;
 
 	private List<Artifact> buildArtifacts(ClassLoader loader) {
 		if (loader instanceof URLClassLoader) {
@@ -68,6 +70,47 @@ public class Handler implements PageHandler<Context> {
 			});
 
 			return artifacts;
+		} else {
+			throw new RuntimeException("Not supported classloader: " + loader.getClass());
+		}
+	}
+	
+	private List<Artifact> buildContainerArtifacts(List<Artifact> artifacts,ClassLoader loader) {
+		if (loader instanceof URLClassLoader) {
+			URLClassLoader ucl = (URLClassLoader) loader;
+			URL[] urls = ucl.getURLs();
+
+			for (URL url : urls) {
+				String path = url.getPath();
+
+				if (path.endsWith(".jar")) {
+					int off = path.lastIndexOf(':');
+					Artifact artifact = m_artifactResolver.resolve(new File(path));
+
+					if (artifact == null) {
+						artifact = new Artifact(path);
+					} 
+					artifacts.add(artifact);
+					artifact.setFromContainer();
+				} else {
+					Artifact artifact = new Artifact(path);
+					artifacts.add(artifact);
+					artifact.setFromContainer();
+				}
+			}
+
+			Collections.sort(artifacts, new Comparator<Artifact>() {
+				@Override
+				public int compare(Artifact a1, Artifact a2) {
+					return a1.compareTo(a2);
+				}
+			});
+			if(loader.getParent() instanceof URLClassLoader){
+				return buildContainerArtifacts(artifacts,loader.getParent());
+			}else{
+				return artifacts;
+			}
+			
 		} else {
 			throw new RuntimeException("Not supported classloader: " + loader.getClass());
 		}
@@ -125,10 +168,13 @@ public class Handler implements PageHandler<Context> {
 			if (m_kernelArtifacts == null || m_appArtifacts == null) {
 				m_kernelArtifacts = buildArtifacts(kernelProvider);
 				m_appArtifacts = buildArtifacts(appProvider);
+				m_containerArtifacts = buildContainerArtifacts(new ArrayList<Artifact>(),getClass().getClassLoader().getParent());
+				m_artifacts.addAll(m_containerArtifacts);
 			}
 
 			model.setKernelArtifacts(m_kernelArtifacts);
 			model.setAppArtifacts(m_appArtifacts);
+			model.setContainerArtifacts(m_containerArtifacts);
 		}
 
 		m_jspViewer.view(ctx, model);

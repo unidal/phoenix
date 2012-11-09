@@ -13,6 +13,8 @@ public class Model extends ViewModel<InspectPage, Action, Context> {
 	private Map<String, Artifact> m_kernelArtifacts;
 
 	private Map<String, Artifact> m_appArtifacts;
+	
+	private Map<String, Artifact> m_containerArtifacts;
 
 	private boolean m_mixedMode;
 
@@ -36,6 +38,10 @@ public class Model extends ViewModel<InspectPage, Action, Context> {
 	public Map<String, Artifact> getKernelArtifacts() {
 		return m_kernelArtifacts;
 	}
+	
+	public Map<String, Artifact> getContainerArtifacts() {
+		return m_containerArtifacts;
+	}
 
 	public boolean isMixedMode() {
 		return m_mixedMode;
@@ -58,6 +64,14 @@ public class Model extends ViewModel<InspectPage, Action, Context> {
 
 		for (Artifact artifact : kernelArtifacts) {
 			m_kernelArtifacts.put(artifact.getKey(), artifact);
+		}
+	}
+	
+	public void setContainerArtifacts(List<Artifact> containerArtifacts) {
+		m_containerArtifacts = new HashMap<String, Artifact>();
+
+		for (Artifact artifact : containerArtifacts) {
+			m_containerArtifacts.put(artifact.getKey(), artifact);
 		}
 	}
 

@@ -24,6 +24,7 @@ import org.apache.catalina.loader.WebappLoader;
 
 import com.dianping.phoenix.spi.ClasspathBuilder;
 import com.dianping.phoenix.spi.WebappProvider;
+import com.dianping.phoenix.spi.internal.ContainerWebappProvider;
 import com.dianping.phoenix.spi.internal.DefaultClasspathBuilder;
 import com.dianping.phoenix.spi.internal.StandardWebappProvider;
 
@@ -37,7 +38,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	private WebappProvider m_appProvider;
 
 	private WebappProvider m_kernelProvider;
-
+	
 	private ClassLoader m_webappClassloader;
 
 	private String m_kernelDocBase;

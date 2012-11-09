@@ -27,7 +27,41 @@ public class ArtifactResolver implements LogEnabled {
 		return new Artifact(jarFile.getCanonicalPath(), groupId, parts[0], parts[1]);
 	}
 
-	private Artifact buildArtifactFromPom(File jarFile, String name) throws IOException {
+	private Artifact buildArtifactFromManifest(File jarFile, String name) throws IOException {
+		JarFile jar = new JarFile(jarFile);
+		ZipEntry entry = jar.getEntry(name);
+		InputStream is = jar.getInputStream(entry);
+		Properties p = new Properties();
+
+		p.load(is);
+		jar.close();
+
+		String groupId = p.getProperty("Implementation-Vendor-Id");
+		String artifactId = "";
+		String version = p.getProperty("Implementation-Version");
+		
+		if(groupId == null){
+			groupId = p.getProperty("Implementation-Title");
+		}
+		
+		String fileName = jarFile.getName();
+		String[] parts = m_parser.parse(fileName.substring(0, fileName.length() - 4));
+		
+		if(version != null){
+			if(version.equals(parts[1])){
+				artifactId = parts[0];
+			}else{
+				artifactId = fileName.substring(0, fileName.length() - 4);
+			}
+		}else{
+			artifactId = parts[0];
+			version = parts[1];
+		}
+
+		return new Artifact(jarFile.getPath(), groupId, artifactId, version);
+	}
+	
+	private Artifact buildArtifactFromPom(File jarFile,String name) throws IOException {
 		JarFile jar = new JarFile(jarFile);
 		ZipEntry entry = jar.getEntry(name);
 		InputStream is = jar.getInputStream(entry);
@@ -74,26 +108,57 @@ public class ArtifactResolver implements LogEnabled {
 			}
 		});
 	}
+	
+	private String getManifestProperties(File jarFile) {
+		return Scanners.forJar().scanForOne(jarFile, new IMatcher<File>() {
+			@Override
+			public boolean isDirEligible() {
+				return false;
+			}
+
+			@Override
+			public boolean isFileElegible() {
+				return true;
+			}
+
+			@Override
+			public Direction matches(File base, String path) {
+				if (path.equals("META-INF/MANIFEST.MF")) {
+					return Direction.MATCHED;
+				} else {
+					return Direction.NEXT;
+				}
+			}
+		});
+	}
 
 	public Artifact resolve(File jarFile) {
 		if (!jarFile.isFile()) {
 			return null;
 		}
 
-		String name = getPomProperties(jarFile);
+		String pomName = getPomProperties(jarFile);
 
-		if (name != null) {
+		if (pomName != null) {
 			try {
-				return buildArtifactFromPom(jarFile, name);
+				return buildArtifactFromPom(jarFile, pomName);
 			} catch (Exception e) {
-				m_logger.warn(String.format("Unable to read entry(%s) out of jar(%s)!", name, jarFile), e);
+				m_logger.warn(String.format("Unable to read entry(%s) out of jar(%s)!", pomName, jarFile), e);
 			}
-		} else {
+		}
+		String manifestName = getManifestProperties(jarFile);
+		if(manifestName != null){
 			try {
-				return buildArtifactFromPath(jarFile);
+				return buildArtifactFromManifest(jarFile, manifestName);
 			} catch (Exception e) {
-				m_logger.warn(String.format("Unable to build artifact from path(%s)!", jarFile), e);
+				m_logger.warn(String.format("Unable to read entry(%s) out of jar(%s)!", manifestName, jarFile), e);
 			}
+		}
+
+		try {
+			return buildArtifactFromPath(jarFile);
+		} catch (Exception e) {
+			m_logger.warn(String.format("Unable to build artifact from path(%s)!", jarFile), e);
 		}
 
 		return null;
