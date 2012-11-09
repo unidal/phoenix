@@ -84,12 +84,6 @@
 			<version>6.0.35</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>jasper</artifactId>
-			<version>6.0.35</version>
-			<scope>test</scope>
-		</dependency>
 
 		<!-- for jboss4 -->
 		<dependency>
@@ -105,6 +99,25 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- jetty -->
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<version>6.1.14</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>jasper</artifactId>
+			<version>6.0.35</version>
+			<scope>test</scope>
+		</dependency> -->
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jsp-2.1</artifactId>
+			<version>6.1.14</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -115,17 +128,6 @@
 			<groupId>com.site.common</groupId>
 			<artifactId>test-framework</artifactId>
 			<version>1.0.3</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>6.1.14</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jsp-2.1</artifactId>
-			<version>6.1.14</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

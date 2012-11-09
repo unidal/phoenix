@@ -1,4 +1,4 @@
-package com.dianping.kernel.inspect.page.descriptor;
+package com.dianping.kernel.inspect.page.description;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

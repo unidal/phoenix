@@ -1,7 +1,7 @@
-package com.dianping.kernel.inspect.page.descriptor;
+package com.dianping.kernel.inspect.page.description;
 
 public enum JspFile {
-	VIEW("/jsp/inspect/descriptor.jsp"),
+	VIEW("/jsp/inspect/description.jsp"),
 
 	;
 

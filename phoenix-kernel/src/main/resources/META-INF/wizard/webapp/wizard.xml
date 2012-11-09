@@ -7,8 +7,8 @@
          <page name="classpath" title="Classpath" path="classpath">
             <description>Classpath</description>
          </page>
-         <page name="descriptor" title="Descriptor" path="descriptor">
-            <description>Descriptor</description>
+         <page name="description" title="Description" path="desc">
+            <description>Description</description>
          </page>
       </module>
    </webapp>

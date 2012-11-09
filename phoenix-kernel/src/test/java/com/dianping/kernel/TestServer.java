@@ -45,7 +45,7 @@ public class TestServer extends JettyServer {
    @Test
    public void startWebapp() throws Exception {
       // open the page in the default browser
-      display("/kernel/inspect/classpath");
+      display("/kernel/inspect");
       waitForAnyKey();
    }
 }

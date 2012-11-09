@@ -36,14 +36,13 @@ public class Handler implements PageHandler<Context> {
 	private List<Artifact> m_kernelArtifacts;
 
 	private List<Artifact> m_appArtifacts;
-	
+
 	private List<Artifact> m_containerArtifacts;
 
-	private List<Artifact> buildArtifacts(ClassLoader loader) {
+	private List<Artifact> buildArtifacts(List<Artifact> artifacts, ClassLoader loader, boolean recursive) {
 		if (loader instanceof URLClassLoader) {
 			URLClassLoader ucl = (URLClassLoader) loader;
 			URL[] urls = ucl.getURLs();
-			List<Artifact> artifacts = new ArrayList<Artifact>(urls.length);
 
 			for (URL url : urls) {
 				String path = url.getPath();
@@ -52,50 +51,14 @@ public class Handler implements PageHandler<Context> {
 					int off = path.lastIndexOf(':');
 					Artifact artifact = m_artifactResolver.resolve(new File(path.substring(off + 1)));
 
-					if (artifact != null) {
-						artifacts.add(artifact);
-					} else {
-						artifacts.add(new Artifact(path)); // something wrong?
-					}
-				} else {
-					artifacts.add(new Artifact(path));
-				}
-			}
-
-			Collections.sort(artifacts, new Comparator<Artifact>() {
-				@Override
-				public int compare(Artifact a1, Artifact a2) {
-					return a1.compareTo(a2);
-				}
-			});
-
-			return artifacts;
-		} else {
-			throw new RuntimeException("Not supported classloader: " + loader.getClass());
-		}
-	}
-	
-	private List<Artifact> buildContainerArtifacts(List<Artifact> artifacts,ClassLoader loader) {
-		if (loader instanceof URLClassLoader) {
-			URLClassLoader ucl = (URLClassLoader) loader;
-			URL[] urls = ucl.getURLs();
-
-			for (URL url : urls) {
-				String path = url.getPath();
-
-				if (path.endsWith(".jar")) {
-					int off = path.lastIndexOf(':');
-					Artifact artifact = m_artifactResolver.resolve(new File(path));
-
 					if (artifact == null) {
 						artifact = new Artifact(path);
-					} 
+					}
+
 					artifacts.add(artifact);
-					artifact.setFromContainer();
 				} else {
 					Artifact artifact = new Artifact(path);
 					artifacts.add(artifact);
-					artifact.setFromContainer();
 				}
 			}
 
@@ -105,12 +68,12 @@ public class Handler implements PageHandler<Context> {
 					return a1.compareTo(a2);
 				}
 			});
-			if(loader.getParent() instanceof URLClassLoader){
-				return buildContainerArtifacts(artifacts,loader.getParent());
-			}else{
+
+			if (recursive && loader.getParent() instanceof URLClassLoader) {
+				return buildArtifacts(artifacts, loader.getParent(), recursive);
+			} else {
 				return artifacts;
 			}
-			
 		} else {
 			throw new RuntimeException("Not supported classloader: " + loader.getClass());
 		}
@@ -156,7 +119,7 @@ public class Handler implements PageHandler<Context> {
 		boolean mixedMode = kernelProvider != null && appProvider != null;
 
 		if (m_artifacts == null) {
-			m_artifacts = buildArtifacts(getClass().getClassLoader());
+			m_artifacts = buildArtifacts(new ArrayList<Artifact>(), getClass().getClassLoader(), false);
 		}
 
 		model.setMixedMode(mixedMode);
@@ -166,9 +129,16 @@ public class Handler implements PageHandler<Context> {
 
 		if (mixedMode) {
 			if (m_kernelArtifacts == null || m_appArtifacts == null) {
+				ClassLoader parentClassloader = getClass().getClassLoader().getParent();
+
 				m_kernelArtifacts = buildArtifacts(kernelProvider);
 				m_appArtifacts = buildArtifacts(appProvider);
-				m_containerArtifacts = buildContainerArtifacts(new ArrayList<Artifact>(),getClass().getClassLoader().getParent());
+				m_containerArtifacts = buildArtifacts(new ArrayList<Artifact>(), parentClassloader, true);
+
+				for (Artifact artifact : m_containerArtifacts) {
+					artifact.setFromContainer(true);
+				}
+
 				m_artifacts.addAll(m_containerArtifacts);
 			}
 

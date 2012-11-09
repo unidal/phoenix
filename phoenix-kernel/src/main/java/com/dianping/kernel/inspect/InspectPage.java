@@ -7,9 +7,9 @@ public enum InspectPage implements Page {
 
    HOME("home", "home", "Home", "Home", true),
 
-   CLASSPATH("classpath", "classpath", "Classpath", "Classpath", true),
+   CLASSPATH("classpath", "classpath", "Classpath", "webapp classpath", true),
 
-   DESCRIPTOR("descriptor", "descriptor", "Descriptor", "Descriptor", true);
+   DESCRIPTION("description", "desc", "Description", "web.xml", true);
 
    private String m_name;
 

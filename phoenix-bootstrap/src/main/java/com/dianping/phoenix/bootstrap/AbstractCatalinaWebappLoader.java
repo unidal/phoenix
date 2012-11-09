@@ -24,7 +24,6 @@ import org.apache.catalina.loader.WebappLoader;
 
 import com.dianping.phoenix.spi.ClasspathBuilder;
 import com.dianping.phoenix.spi.WebappProvider;
-import com.dianping.phoenix.spi.internal.ContainerWebappProvider;
 import com.dianping.phoenix.spi.internal.DefaultClasspathBuilder;
 import com.dianping.phoenix.spi.internal.StandardWebappProvider;
 
