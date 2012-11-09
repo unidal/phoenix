@@ -80,20 +80,20 @@ public class ArtifactResolver implements LogEnabled {
 			return null;
 		}
 
-		String name = getPomProperties(jarFile);
+		String pomName = getPomProperties(jarFile);
 
-		if (name != null) {
+		if (pomName != null) {
 			try {
-				return buildArtifactFromPom(jarFile, name);
+				return buildArtifactFromPom(jarFile, pomName);
 			} catch (Exception e) {
-				m_logger.warn(String.format("Unable to read entry(%s) out of jar(%s)!", name, jarFile), e);
+				m_logger.warn(String.format("Unable to read entry(%s) out of jar(%s)!", pomName, jarFile), e);
 			}
-		} else {
-			try {
-				return buildArtifactFromPath(jarFile);
-			} catch (Exception e) {
-				m_logger.warn(String.format("Unable to build artifact from path(%s)!", jarFile), e);
-			}
+		}
+
+		try {
+			return buildArtifactFromPath(jarFile);
+		} catch (Exception e) {
+			m_logger.warn(String.format("Unable to build artifact from path(%s)!", jarFile), e);
 		}
 
 		return null;

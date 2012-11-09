@@ -11,10 +11,12 @@ public class Artifact implements Comparable<Artifact> {
 
 	private String m_path;
 
+	private boolean isFromContainer = false;
+
 	public Artifact(String path) {
 		m_path = path;
 		m_artifactId = isFromKernel() ? new File(path).getName() + "(phoenix-kernel)" : new File(path).getName();
-		m_version = "&lt;none&gt;";
+		m_version = "&lt;dir&gt;";
 	}
 
 	public Artifact(String path, String groupId, String artifactId, String version) {
@@ -87,6 +89,14 @@ public class Artifact implements Comparable<Artifact> {
 
 	public boolean isFromKernel() {
 		return m_path.contains("/phoenix-kernel/");
+	}
+
+	public boolean isFromContainer() {
+		return isFromContainer;
+	}
+
+	public void setFromContainer(boolean fromContianer) {
+		isFromContainer = fromContianer;
 	}
 
 	@Override

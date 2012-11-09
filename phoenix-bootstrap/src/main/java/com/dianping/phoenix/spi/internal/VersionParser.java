@@ -29,10 +29,14 @@ public class VersionParser {
 				if (pos < 0) {
 					result[0] = str;
 					result[1] = "";
-				} else {
+				} else if (pos + 1 < str.length() && Character.isDigit(str.charAt(pos + 1))) {
 					result[0] = str.substring(0, pos);
 					result[1] = str.substring(pos + 1);
+				} else {
+					result[0] = str;
+					result[1] = "";
 				}
+
 				break;
 			}
 		} while (fromIndex > 0);

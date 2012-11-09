@@ -37,11 +37,12 @@ public class Handler implements PageHandler<Context> {
 
 	private List<Artifact> m_appArtifacts;
 
-	private List<Artifact> buildArtifacts(ClassLoader loader) {
+	private List<Artifact> m_containerArtifacts;
+
+	private List<Artifact> buildArtifacts(List<Artifact> artifacts, ClassLoader loader, boolean recursive) {
 		if (loader instanceof URLClassLoader) {
 			URLClassLoader ucl = (URLClassLoader) loader;
 			URL[] urls = ucl.getURLs();
-			List<Artifact> artifacts = new ArrayList<Artifact>(urls.length);
 
 			for (URL url : urls) {
 				String path = url.getPath();
@@ -50,13 +51,14 @@ public class Handler implements PageHandler<Context> {
 					int off = path.lastIndexOf(':');
 					Artifact artifact = m_artifactResolver.resolve(new File(path.substring(off + 1)));
 
-					if (artifact != null) {
-						artifacts.add(artifact);
-					} else {
-						artifacts.add(new Artifact(path)); // something wrong?
+					if (artifact == null) {
+						artifact = new Artifact(path);
 					}
+
+					artifacts.add(artifact);
 				} else {
-					artifacts.add(new Artifact(path));
+					Artifact artifact = new Artifact(path);
+					artifacts.add(artifact);
 				}
 			}
 
@@ -67,7 +69,11 @@ public class Handler implements PageHandler<Context> {
 				}
 			});
 
-			return artifacts;
+			if (recursive && loader.getParent() instanceof URLClassLoader) {
+				return buildArtifacts(artifacts, loader.getParent(), recursive);
+			} else {
+				return artifacts;
+			}
 		} else {
 			throw new RuntimeException("Not supported classloader: " + loader.getClass());
 		}
@@ -113,7 +119,7 @@ public class Handler implements PageHandler<Context> {
 		boolean mixedMode = kernelProvider != null && appProvider != null;
 
 		if (m_artifacts == null) {
-			m_artifacts = buildArtifacts(getClass().getClassLoader());
+			m_artifacts = buildArtifacts(new ArrayList<Artifact>(), getClass().getClassLoader(), false);
 		}
 
 		model.setMixedMode(mixedMode);
@@ -123,12 +129,22 @@ public class Handler implements PageHandler<Context> {
 
 		if (mixedMode) {
 			if (m_kernelArtifacts == null || m_appArtifacts == null) {
+				ClassLoader parentClassloader = getClass().getClassLoader().getParent();
+
 				m_kernelArtifacts = buildArtifacts(kernelProvider);
 				m_appArtifacts = buildArtifacts(appProvider);
+				m_containerArtifacts = buildArtifacts(new ArrayList<Artifact>(), parentClassloader, true);
+
+				for (Artifact artifact : m_containerArtifacts) {
+					artifact.setFromContainer(true);
+				}
+
+				m_artifacts.addAll(m_containerArtifacts);
 			}
 
 			model.setKernelArtifacts(m_kernelArtifacts);
 			model.setAppArtifacts(m_appArtifacts);
+			model.setContainerArtifacts(m_containerArtifacts);
 		}
 
 		m_jspViewer.view(ctx, model);

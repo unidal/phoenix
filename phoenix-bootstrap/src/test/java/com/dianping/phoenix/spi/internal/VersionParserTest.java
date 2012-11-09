@@ -25,5 +25,6 @@ public class VersionParserTest {
 		checkVersion("phoenix-kernel-1.5.3-1", "phoenix-kernel", "1.5.3-1");
 		checkVersion("json-20090211", "json", "20090211");
 		checkVersion("sqljdbc-4", "sqljdbc", "4");
+		checkVersion("jasper-el", "jasper-el", "");
 	}
 }

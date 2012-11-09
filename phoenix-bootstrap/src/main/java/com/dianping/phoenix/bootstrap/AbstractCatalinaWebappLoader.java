@@ -37,7 +37,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	private WebappProvider m_appProvider;
 
 	private WebappProvider m_kernelProvider;
-
+	
 	private ClassLoader m_webappClassloader;
 
 	private String m_kernelDocBase;
