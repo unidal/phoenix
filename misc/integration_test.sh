@@ -14,29 +14,42 @@ JBOSS_HOME=${JBOSS_HOME:="/Users/$user/Downloads/jboss-4.2.2.GA/"}
 
 function check_arguments {
 	container=jboss
-	while getopts "g:a:v:c:" option;do
+	while getopts "g:a:v:c:w:" option;do
 		case $option in
                 g)      groupId=$OPTARG;;
                 a)      artifactId=$OPTARG;;
                 v)      version=$OPTARG;;
                 c)      container=$OPTARG;;
+				w)		war=$OPTARG;;
                 \?)     usage;;
         esac
 	done
 	forkGrep=f
 	type=war
 
-	if [[ x$groupId == x || x$artifactId == x || x$version == x ]];then
-		log "usage: `basename $0`  -g groupId -a artifactId -v version [-c container]" e t
-		exit 1
+	if [ x$war == x ];then
+		if [[ x$groupId == x || x$artifactId == x || x$version == x ]];then
+			log "usage: `basename $0`  -g groupId -a artifactId -v version [-c container]" e t
+			exit 1
+		fi
+		log "Testing: groupId=$groupId, artifactId=$artifactId, version=$version, container=$container"
+	else
+		if [ ! -e $war ];then
+			log "$war is not found" e t
+			exit 1
+		fi
+		groupId=local
+		artifactId=`basename $war`
+		no_war_len=$((${#artifactId}-4))
+		artifactId=${artifactId:0:$no_war_len}
+		version=1.0
+		log "Testing: war=$war"
 	fi
 	
 	if [[ x$container != xjboss && x$container != xtomcat ]];then
 		log "container should be tomcat or jboss" e t
 		exit 1
 	fi
-
-	log "Testing: groupId=$groupId, artifactId=$artifactId, version=$version, container=$container"
 
 	if [ x$container == xtomcat ];then
 		if [ ! -e $TOMCAT_HOME/bin/startup.sh ];then
@@ -65,21 +78,19 @@ function init {
 	PHOENIX_KERNEL_TARGET=target/data/webapps/phoenix-kernel/
 	PHOENIX_BOOTSTRAP_JAR=../phoenix-bootstrap/target/phoenix-bootstrap.jar
 	export CATALINA_PID=target/data/tomcat6.pid
+	
+	rm -rf target
 }
 
-function retrive_and_unpack_war_from_maven {
-	# retrive war from maven repo
+function retrive_and_unpack_war {
 	wartmp=target/wartmp/$groupId/$artifactId/$version
 	rm -rf $wartmp
 	mkdir -p $wartmp
-	log "Retriving $groupId:$artifactId:$version:$type from maven repo" i f f
-	./maven.sh $wartmp $groupId $artifactId $version $type
-	ls $wartmp/*.$type >/dev/null 2>&1
-	if [ $? -eq 0 ];then
-		log "Successfullt retrive $groupId:$artifactId:$version:$type from maven repo" i t
+
+	if [ x$war == x ];then
+		retrive_and_unpack_war_from_maven "$@"
 	else
-		log "Failed to retrive $groupId:$artifactId:$version:$type from maven repo" e t
-		exit 1
+		retrive_and_unpack_war_from_local "$@"
 	fi
 
 	if [ x$container == xtomcat ];then
@@ -99,6 +110,23 @@ function retrive_and_unpack_war_from_maven {
 				</jboss-web>
 			END
 		fi
+	fi
+}
+
+function retrive_and_unpack_war_from_local {
+	cp $war $wartmp/
+}
+
+function retrive_and_unpack_war_from_maven {
+	# retrive war from maven repo
+	log "Retriving $groupId:$artifactId:$version:$type from maven repo" i f f
+	./maven.sh $wartmp $groupId $artifactId $version $type
+	ls $wartmp/*.$type >/dev/null 2>&1
+	if [ $? -eq 0 ];then
+		log "Successfullt retrive $groupId:$artifactId:$version:$type from maven repo" i t
+	else
+		log "Failed to retrive $groupId:$artifactId:$version:$type from maven repo" e t
+		exit 1
 	fi
 }
 
@@ -217,7 +245,7 @@ function restart_tomcat {
 
 init "$@"
 check_arguments "$@"
-retrive_and_unpack_war_from_maven "$@"
+retrive_and_unpack_war "$@"
 package_phoenix "$@"
 install_phoenix "$@"
 restart_container "$@"
