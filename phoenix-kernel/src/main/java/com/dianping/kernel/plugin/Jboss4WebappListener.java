@@ -10,6 +10,7 @@ public class Jboss4WebappListener implements Listener {
 	public void afterStarted(Jboss4WebappLoader loader) {
 		m_patcher.finish();
 		m_patcher.sortWebXmlElements();
+		m_patcher.filterWebXmlElements();
 	}
 
 	@Override

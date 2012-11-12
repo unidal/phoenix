@@ -28,12 +28,32 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<servlet>
+		<servlet-name>null-servlet</servlet-name>
+		<servlet-class>com.dianping.test.servlet.Null</servlet-class>
+	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>mvc-servlet</servlet-name>
 		<url-pattern>/inspect/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>null-servlet</servlet-name>
+		<url-pattern>/null-servlet/*</url-pattern>
+	</servlet-mapping>
+	
 
 	<!-- Filter -->
+	
+	
+	<filter>
+		<filter-name>Null-Filter</filter-name>
+		<filter-class>com.dianping.test.filter.Null</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>+1</param-value>
+	  	</init-param>
+	</filter>
 	<filter>
 		<filter-name>Uncertain-DemoFilter1</filter-name>
 		<filter-class>com.dianping.phoenix.demo.DemoFilter</filter-class>
@@ -177,6 +197,10 @@
 	</filter>
 	
 	<filter-mapping>
+		<filter-name>Null-Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
 		<filter-name>Uncertain-DemoFilter1</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
@@ -255,6 +279,9 @@
 	</filter-mapping>
 	
 	<!--Listener-->
+	<listener>
+		<listener-class>com.dianping.test.listener.Null</listener-class>
+	</listener>
 	<listener>
 		<listener-class>com.dianping.phoenix.demo.DemoListener3</listener-class>
 	</listener>
