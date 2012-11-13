@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.naming.directory.DirContext;
 
 import org.apache.catalina.Container;
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.ContainerBase;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.FilterDef;
@@ -24,6 +25,7 @@ import org.xml.sax.SAXParseException;
 
 import com.dianping.kernel.plugin.SortTool.SortElement;
 import com.dianping.phoenix.bootstrap.AbstractCatalinaWebappLoader;
+import com.dianping.phoenix.bootstrap.Constants;
 
 public class CatalinaWebappPatcher implements WebappPatcher {
 	private static final String INDEX = "_INDEX_";
@@ -107,13 +109,39 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 
 		filterMaps = m_context.findFilterMaps();
 		m_loader.getLog().info("Re-match combinations after the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		
 		// Set sorted result back
 		for (int i = 0; i < filterMaps.length; i++) {
 			FilterSortElement fse = (FilterSortElement) elementList.get(i);
 			filterMaps[i] = fse.getFilterMap();
 			m_loader.getLog().info("filterName::" + fse.getName() + "   rule::" + fse.getRule());
 		}
+		
 		m_loader.getLog().info("Re-match combinations after the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+	}
+	
+	/**
+	 * Check filter for kernel
+	 */
+	private void filterWebFilter(){
+		List<FilterMap> fmList = new ArrayList<FilterMap>();
+		FilterMap[] filterMaps = m_context.findFilterMaps();
+		StandardContext kernelContext = (StandardContext)m_context.getServletContext().getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL);
+		for (FilterMap fm : filterMaps) {
+			FilterDef fd = kernelContext.findFilterDef(fm.getFilterName());
+			if(fd != null){
+				try {
+					m_loader.getWebappClassLoader().loadClass(fd.getFilterClass());
+				} catch (ClassNotFoundException e) {
+					fmList.add(fm);
+				}
+			}
+		}
+		for(FilterMap filterMap : fmList){
+			m_context.removeFilterDef(m_context.findFilterDef(filterMap.getFilterName()));
+			m_context.removeFilterMap(filterMap);
+			m_loader.getLog().warn("filterName::" + filterMap.getFilterName() + " is filtered for this App" );
+		}
 	}
 
 	protected void sortListener() {
@@ -156,12 +184,64 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 			m_loader.getLog().info("listener::" + listener + "   rule::" + rule);
 			listeners[i] = listener;
 		}
+		
 		m_loader.getLog().info("Re-match combinations after the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+	}
+	
+	public void filterWebListener(){
+		//Check listener for kernel
+		List<String> lisList = new ArrayList<String>();
+		StandardContext kernelContext = (StandardContext)m_context.getServletContext().getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL);
+		String[] listeners = m_context.findApplicationListeners();
+		String[] kernelListeners = kernelContext.findApplicationListeners();
+		for (String listener : listeners) {
+			for(String kernelListener : kernelListeners){
+				if(listener.equals(kernelListener)){
+					try {
+						m_loader.getWebappClassLoader().loadClass(listener);
+					} catch (ClassNotFoundException e) {
+						lisList.add(listener);
+					}
+				}
+			}
+		}
+		for(String lis : lisList){
+			m_context.removeApplicationListener(lis);
+			m_loader.getLog().warn("listenerName::" + lis + " is filtered for this App" );
+		}
+	}
+	
+	public void filterWebServlet(){
+		//Check listener for kernel
+		List<String> servList = new ArrayList<String>();
+		StandardContext kernelContext = (StandardContext)m_context.getServletContext().getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL);
+		String[] patterns = m_context.findServletMappings();
+		for (String pattern : patterns) {
+			String name = kernelContext.findServletMapping(pattern);
+			if(name != null){
+				Wrapper wrapper = (Wrapper)m_context.findChild(name);
+				try {
+					m_loader.getWebappClassLoader().loadClass(wrapper.getServletClass());
+				} catch (ClassNotFoundException e) {
+					servList.add(pattern);
+				}
+			}
+		}
+		for(String serv : servList){
+			m_context.removeServletMapping(serv);
+			m_loader.getLog().warn("servletName::" + m_context.findServletMapping(serv) + " is filtered for this App" );
+		}
 	}
 
 	public void sortWebXmlElements() {
 		sortListener();
 		sortFilter();
+	}
+	
+	public void filterWebXmlElements() {
+		filterWebFilter();
+		filterWebListener();
+		filterWebServlet();
 	}
 
 	protected static class ContextErrorHandler implements ErrorHandler {
