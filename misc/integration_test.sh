@@ -72,14 +72,11 @@ function check_arguments {
 }
 
 function init {
-
 	MAX_HTTP_TRY=30
 	PHOENIX_KERNEL_WAR=../phoenix-kernel/target/phoenix-kernel.war
 	PHOENIX_KERNEL_TARGET=target/data/webapps/phoenix-kernel/
 	PHOENIX_BOOTSTRAP_JAR=../phoenix-bootstrap/target/phoenix-bootstrap.jar
 	export CATALINA_PID=target/data/tomcat6.pid
-	
-	rm -rf target
 }
 
 function retrive_and_unpack_war {
