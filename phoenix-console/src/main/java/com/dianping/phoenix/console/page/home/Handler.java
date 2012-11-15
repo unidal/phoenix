@@ -56,6 +56,7 @@ public class Handler implements PageHandler<Context> {
 		switch (action) {
 		case HOME:
 			List<Project> projects = m_projectService.search(payload.getKeyword());
+
 			model.setProjects(projects);
 			break;
 		case PROJECT:

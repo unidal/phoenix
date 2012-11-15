@@ -1,12 +1,48 @@
 <plexus>
 	<components>
 		<component>
+			<role>com.dianping.phoenix.console.service.StatusReporter</role>
+			<implementation>com.dianping.phoenix.console.service.DefaultStatusReporter</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.service.WarService</role>
+			<implementation>com.dianping.phoenix.console.service.DefaultWarService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.StatusReporter</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.service.GitService</role>
+			<implementation>com.dianping.phoenix.console.service.DefaultGitService</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.service.VersionManager</role>
+			<implementation>com.dianping.phoenix.console.service.DefaultVersionManager</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.service.VersionService</role>
+			<implementation>com.dianping.phoenix.console.service.DefaultVersionService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.WarService</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.GitService</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.VersionManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.phoenix.console.service.ProjectService</role>
-			<implementation>com.dianping.phoenix.console.service.ProjectService</implementation>
+			<implementation>com.dianping.phoenix.console.service.DefaultProjectService</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.console.service.DeployService</role>
-			<implementation>com.dianping.phoenix.console.service.DeployService</implementation>
+			<implementation>com.dianping.phoenix.console.service.DefaultDeployService</implementation>
 		</component>
 		<component>
 			<role>com.site.web.mvc.model.ModuleRegistry</role>
@@ -39,14 +75,6 @@
 		<component>
 			<role>com.dianping.phoenix.console.page.home.JspViewer</role>
 			<implementation>com.dianping.phoenix.console.page.home.JspViewer</implementation>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.console.service.ProjectService</role>
-			<implementation>com.dianping.phoenix.console.service.ProjectService</implementation>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.console.service.DeployService</role>
-			<implementation>com.dianping.phoenix.console.service.DeployService</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.console.page.deploy.Handler</role>
