@@ -13,7 +13,7 @@ Prerequisite:
 
 Installation: 
 
-	git clone git@github.com:dianping/phoenix.git'
+	git clone git@github.com:dianping/phoenix.git
 
 	cd phoenix/phoenix-samples/
 	mvn install
