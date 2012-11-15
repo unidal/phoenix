@@ -7,18 +7,20 @@
 <html lang="en">
 
 <head>
-<title>Egret - ${model.page.description}</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
-<meta name="author" content="">
-<res:cssSlot id="head-css"/>
-<res:jsSlot id="head-js"/>
-<res:useCss value='${res.css.local.bootstrap_css}' target="head-css"/>
-<res:useCss value='${res.css.local.body_css}' target="head-css"/>
+	<title>Phoenix - ${model.page.description}</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<res:cssSlot id="head-css"/>
+	<res:jsSlot id="head-js"/>
+	<res:useCss value='${res.css.local.bootstrap_css}' target="head-css"/>
+	<res:useCss value="${res.js.local['bootstrap-responsive.css']}" target="head-css"/>
+	<res:useCss value='${res.css.local.body_css}' target="head-css"/>
+	<res:useCss value='${res.css.local.phoenix_css}' target="head-css"/>
 </head>
 
-<body>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container-fluid">
@@ -36,15 +38,14 @@
 		</div>
 	</div>
 
-	<div class="container-fluid">
-		<jsp:doBody />
-
-		<hr>
-
-		<footer>
-			<p> Phoenix@Dianping 2012</p>
-		</footer>
-
+	<div class="container-fluid" style="min-height:574px;">
+		<div class="row-fluid">
+			<div class="span12"><jsp:doBody /></div>
+		</div>
+	</div>
+	
+	<div class="container">
+		<footer><center>©2012 Dianping Phoenix Team, Mail: <a href="mailto:www@dianping.com">www@dianping.com</a></center></footer>
 	</div>
 	<!--/.fluid-container-->
 
