@@ -1,0 +1,67 @@
+
+.pagination {
+	margin : 0 0;
+}
+
+.pagination a {
+	line-height : 23px;
+}
+
+table.table-page {
+	margin-bottom: 8px !important;
+}
+
+.z6, .u6 {
+	width: 9px;
+	height: 9px;
+	background-image: url(../img/small-pic0.png);	
+	vertical-align: middle;
+	margin-left: 3px;
+}
+
+.z6 {
+	background-position: 0 -22px;
+}
+
+.u6 {
+	background-position: -20px -22px;
+}
+
+.a-f-e {
+	position: relative;
+	display: inline-block;
+}
+
+table.lion tr:hover td.lion-label {
+	background-color: #f5f5f5 !important;
+}
+
+table.lion td select, td textarea, td input {
+	margin-bottom: 0px !important;
+}
+
+table.lion td label {
+	display : inline;
+	vertical-align: middle;
+	margin-left: 5px;
+}
+
+table.lion td *+input[type="radio"], table.lion td *+input[type="checkbox"],
+.form-horizontal .controls *+input[type="radio"] {
+	margin-left : 20px;
+}
+
+table.lion td {
+	vertical-align: middle;
+}
+
+table.lion input[type="radio"], input[type="checkbox"] {
+	margin : 0 0;
+}
+
+.nohover tbody tr:hover td,
+.nohover tbody tr:hover th {
+  background-color: white !important;
+}
+
+
