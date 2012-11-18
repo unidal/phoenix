@@ -6,7 +6,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.eclipse.jgit.api.Git;
 
-import com.site.helper.Files;
+import org.unidal.helper.Files;
 
 public class DefaultGitService implements GitService, Initializable {
 	private File m_workingDir = new File("target/gitrepo");

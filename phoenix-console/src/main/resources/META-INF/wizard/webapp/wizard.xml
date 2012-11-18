@@ -2,7 +2,7 @@
 <wizard>
    <webapp package="com.dianping.phoenix" webres="true">
       <module name="console" path="console">
-         <page name="home" title="Home" default="true" path="home">
+         <page name="home" title="Home" path="home" default="true">
             <description>Home</description>
          </page>
          <page name="deploy" title="Deploy" path="deploy">

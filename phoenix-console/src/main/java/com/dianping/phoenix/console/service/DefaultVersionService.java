@@ -2,7 +2,7 @@ package com.dianping.phoenix.console.service;
 
 import java.io.File;
 
-import com.site.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Inject;
 
 public class DefaultVersionService implements VersionService {
 	@Inject
