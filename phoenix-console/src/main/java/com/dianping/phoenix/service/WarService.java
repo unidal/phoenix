@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.service;
+package com.dianping.phoenix.service;
 
 import java.io.File;
 import java.io.IOException;

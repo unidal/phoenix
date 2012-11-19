@@ -1,4 +1,5 @@
-package com.dianping.phoenix.console.service;
+package com.dianping.phoenix.service;
+
 
 public class DefaultStatusReporter implements StatusReporter {
 	@Override

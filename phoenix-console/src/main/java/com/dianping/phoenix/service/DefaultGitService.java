@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.service;
+package com.dianping.phoenix.service;
 
 import java.io.File;
 
@@ -11,6 +11,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
+
 
 public class DefaultGitService implements GitService, Initializable {
 	@Inject
