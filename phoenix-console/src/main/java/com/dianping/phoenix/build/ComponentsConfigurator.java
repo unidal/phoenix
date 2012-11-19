@@ -3,6 +3,8 @@ package com.dianping.phoenix.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jgit.lib.ProgressMonitor;
+
 import com.dianping.phoenix.console.service.DefaultDeployService;
 import com.dianping.phoenix.console.service.DefaultGitService;
 import com.dianping.phoenix.console.service.DefaultProjectService;
@@ -12,6 +14,7 @@ import com.dianping.phoenix.console.service.DefaultVersionService;
 import com.dianping.phoenix.console.service.DefaultWarService;
 import com.dianping.phoenix.console.service.DeployService;
 import com.dianping.phoenix.console.service.GitService;
+import com.dianping.phoenix.console.service.PhoenixProgressMonitor;
 import com.dianping.phoenix.console.service.ProjectService;
 import com.dianping.phoenix.console.service.StatusReporter;
 import com.dianping.phoenix.console.service.VersionManager;
@@ -26,10 +29,13 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(C(StatusReporter.class, DefaultStatusReporter.class));
+		all.add(C(ProgressMonitor.class, PhoenixProgressMonitor.class) //
+				.req(StatusReporter.class));
 		all.add(C(WarService.class, DefaultWarService.class) //
 				.req(StatusReporter.class));
 		all.add(C(GitService.class, DefaultGitService.class) //
-				.req(StatusReporter.class));
+				.req(StatusReporter.class)
+				.req(ProgressMonitor.class));
 		all.add(C(VersionManager.class, DefaultVersionManager.class));
 		all.add(C(VersionService.class, DefaultVersionService.class) //
 				.req(WarService.class, GitService.class, VersionManager.class));

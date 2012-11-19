@@ -5,6 +5,15 @@
 			<implementation>com.dianping.phoenix.console.service.DefaultStatusReporter</implementation>
 		</component>
 		<component>
+			<role>org.eclipse.jgit.lib.ProgressMonitor</role>
+			<implementation>com.dianping.phoenix.console.service.PhoenixProgressMonitor</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.StatusReporter</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.phoenix.console.service.WarService</role>
 			<implementation>com.dianping.phoenix.console.service.DefaultWarService</implementation>
 			<requirements>
@@ -19,6 +28,9 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.console.service.StatusReporter</role>
+				</requirement>
+				<requirement>
+					<role>org.eclipse.jgit.lib.ProgressMonitor</role>
 				</requirement>
 			</requirements>
 		</component>
