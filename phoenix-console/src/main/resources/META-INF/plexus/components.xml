@@ -16,6 +16,11 @@
 		<component>
 			<role>com.dianping.phoenix.console.service.GitService</role>
 			<implementation>com.dianping.phoenix.console.service.DefaultGitService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.StatusReporter</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.console.service.VersionManager</role>

@@ -29,11 +29,12 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(StatusReporter.class, DefaultStatusReporter.class));
 		all.add(C(WarService.class, DefaultWarService.class) //
-		      .req(StatusReporter.class));
-		all.add(C(GitService.class, DefaultGitService.class));
+				.req(StatusReporter.class));
+		all.add(C(GitService.class, DefaultGitService.class) //
+				.req(StatusReporter.class));
 		all.add(C(VersionManager.class, DefaultVersionManager.class));
 		all.add(C(VersionService.class, DefaultVersionService.class) //
-		      .req(WarService.class, GitService.class, VersionManager.class));
+				.req(WarService.class, GitService.class, VersionManager.class));
 
 		all.add(C(ProjectService.class, DefaultProjectService.class));
 		all.add(C(DeployService.class, DefaultDeployService.class));
