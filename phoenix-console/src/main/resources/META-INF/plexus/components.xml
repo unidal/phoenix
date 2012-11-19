@@ -9,26 +9,21 @@
 			<implementation>com.dianping.phoenix.console.service.DefaultDeployService</implementation>
 		</component>
 		<component>
-<<<<<<< HEAD
 			<role>com.dianping.phoenix.service.StatusReporter</role>
 			<implementation>com.dianping.phoenix.service.DefaultStatusReporter</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.service.WarService</role>
-			<implementation>com.dianping.phoenix.service.DefaultWarService</implementation>
-=======
 			<role>org.eclipse.jgit.lib.ProgressMonitor</role>
 			<implementation>com.dianping.phoenix.console.service.PhoenixProgressMonitor</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.console.service.StatusReporter</role>
+					<role>com.dianping.phoenix.service.StatusReporter</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.console.service.WarService</role>
-			<implementation>com.dianping.phoenix.console.service.DefaultWarService</implementation>
->>>>>>> 34f74b317b37a96cf6da246cc51e32e74bf2e3fa
+			<role>com.dianping.phoenix.service.WarService</role>
+			<implementation>com.dianping.phoenix.service.DefaultWarService</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.service.StatusReporter</role>
@@ -114,21 +109,21 @@
 		</component>
 		<component>
 			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
-			<role-hint>version</role-hint>
-			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
-			<configuration>
-				<logical-table-name>version</logical-table-name>
-				<physical-table-name>version</physical-table-name>
-				<data-source-name>phoenix</data-source-name>
-			</configuration>
-		</component>
-		<component>
-			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
 			<role-hint>deployment-details</role-hint>
 			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
 			<configuration>
 				<logical-table-name>deployment-details</logical-table-name>
 				<physical-table-name>deployment_details</physical-table-name>
+				<data-source-name>phoenix</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>version</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<logical-table-name>version</logical-table-name>
+				<physical-table-name>version</physical-table-name>
 				<data-source-name>phoenix</data-source-name>
 			</configuration>
 		</component>
@@ -142,8 +137,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.console.dal.deploy.VersionDao</role>
-			<implementation>com.dianping.phoenix.console.dal.deploy.VersionDao</implementation>
+			<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+			<implementation>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.dal.jdbc.QueryEngine</role>
@@ -151,8 +146,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
-			<implementation>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</implementation>
+			<role>com.dianping.phoenix.console.dal.deploy.VersionDao</role>
+			<implementation>com.dianping.phoenix.console.dal.deploy.VersionDao</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.dal.jdbc.QueryEngine</role>
