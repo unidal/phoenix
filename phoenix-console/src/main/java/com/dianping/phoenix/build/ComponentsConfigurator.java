@@ -3,6 +3,7 @@ package com.dianping.phoenix.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -28,15 +29,22 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(StatusReporter.class, DefaultStatusReporter.class));
 		all.add(C(WarService.class, DefaultWarService.class) //
-				.req(StatusReporter.class));
+		      .req(StatusReporter.class));
 		all.add(C(GitService.class, DefaultGitService.class) //
-				.req(StatusReporter.class));
+		      .req(StatusReporter.class));
 		all.add(C(VersionManager.class, DefaultVersionManager.class));
 		all.add(C(VersionService.class, DefaultVersionService.class) //
-				.req(WarService.class, GitService.class, VersionManager.class));
+		      .req(WarService.class, GitService.class, VersionManager.class));
 
 		all.add(C(ProjectService.class, DefaultProjectService.class));
 		all.add(C(DeployService.class, DefaultDeployService.class));
+
+		// setup datasource configuration manager
+		all.add(C(JdbcDataSourceConfigurationManager.class) //
+		      .config(E("datasourceFile").value("/data/appdatas/phoenix/datasources.xml")));
+
+		// Phoenix database
+		all.addAll(new PhoenixDatabaseConfigurator().defineComponents());
 
 		// Please keep it as last
 		all.addAll(new WebComponentConfigurator().defineComponents());
