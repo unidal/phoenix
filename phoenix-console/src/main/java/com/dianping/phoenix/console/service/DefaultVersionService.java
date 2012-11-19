@@ -15,9 +15,9 @@ public class DefaultVersionService implements VersionService {
 	private VersionManager m_versionManager;
 
 	@Override
-	public void createVersion(String version, String description) throws Exception {
+	public void createVersion(String version, String description)
+			throws Exception {
 		File gitDir = m_gitService.getWorkingDir();
-
 		m_gitService.pull();
 		m_gitService.clearWorkingDir();
 		m_warService.downloadAndExtractTo(version, gitDir);
