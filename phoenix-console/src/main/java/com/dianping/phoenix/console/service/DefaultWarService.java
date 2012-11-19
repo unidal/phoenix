@@ -6,8 +6,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.zip.ZipInputStream;
 
-import com.site.helper.Files;
-import com.site.lookup.annotation.Inject;
+import org.unidal.helper.Files;
+import org.unidal.lookup.annotation.Inject;
 
 public class DefaultWarService implements WarService {
 	@Inject

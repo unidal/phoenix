@@ -9,9 +9,8 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-
-import com.site.helper.Files;
-import com.site.lookup.annotation.Inject;
+import org.unidal.helper.Files;
+import org.unidal.lookup.annotation.Inject;
 
 public class DefaultGitService implements GitService, Initializable {
 	@Inject
@@ -72,14 +71,13 @@ public class DefaultGitService implements GitService, Initializable {
 
 		try {
 			if (!gitRepo.exists()) {
-				m_reporter.log(String.format("Cloning repo from %s ... ",
-						m_gitURL));
+				m_reporter.log(String.format("Cloning repo from %s ... ", m_gitURL));
 				FileRepositoryBuilder builder = new FileRepositoryBuilder();
 				Repository repository = builder.setGitDir(gitRepo)
 						.readEnvironment().findGitDir().build();
 
 				m_git = new Git(repository);
-				CloneCommand clone = m_git.cloneRepository();
+				CloneCommand clone = Git.cloneRepository();
 				clone.setProgressMonitor(m_monitor);
 				clone.setBare(false);
 				clone.setDirectory(m_workingDir);
@@ -98,17 +96,14 @@ public class DefaultGitService implements GitService, Initializable {
 				// "+refs/heads/*:refs/remotes/origin/*");
 				// storedConfig.setString("remote", "origin", "url", m_gitURL);
 				// storedConfig.save();
-				m_reporter.log(String.format("Cloned repo from %s ... ",
-						m_gitURL));
+				m_reporter.log(String.format("Cloned repo from %s ... ", m_gitURL));
 			} else {
 				m_git = Git.open(m_workingDir);
 			}
 
 		} catch (Exception e) {
-			throw new InitializationException(
-					String.format(
-							"Error when initializing git repository(%s)!",
-							m_workingDir), e);
+			throw new InitializationException(String.format("Error when initializing git repository(%s)!", m_workingDir),
+			      e);
 		}
 
 	}

@@ -57,13 +57,19 @@
       	<artifactId>commons-exec</artifactId>
       	<version>1.1</version>
       </dependency>
+      <dependency>
+      	<groupId>org.mockito</groupId>
+      	<artifactId>mockito-all</artifactId>
+      	<version>1.9.0</version>
+      	<scope>test</scope>
+      </dependency>
    </dependencies>
    <build>
 		<plugins>
 			<plugin>
 				<groupId>org.unidal.maven.plugins</groupId>
 				<artifactId>codegen-maven-plugin</artifactId>
-				<version>1.1.7</version>
+				<version>2.0.0</version>
 				<executions>
 					<execution>
 						<id>generate projects model</id>
@@ -72,7 +78,10 @@
 							<goal>dal-model</goal>
 						</goals>
 						<configuration>
-							<manifest>${basedir}/src/main/resources/META-INF/dal/model/projects-manifest.xml</manifest>
+							<manifest>
+							${basedir}/src/main/resources/META-INF/dal/model/projects-manifest.xml,
+							${basedir}/src/main/resources/META-INF/dal/model/response-manifest.xml,
+							</manifest>
 						</configuration>
 					</execution>
 					<execution>

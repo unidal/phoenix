@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jgit.lib.ProgressMonitor;
-
+import org.unidal.lookup.configuration.AbstractResourceConfigurator;
+import org.unidal.lookup.configuration.Component;
 import com.dianping.phoenix.console.service.DefaultDeployService;
 import com.dianping.phoenix.console.service.DefaultGitService;
 import com.dianping.phoenix.console.service.DefaultProjectService;
@@ -20,8 +21,6 @@ import com.dianping.phoenix.console.service.StatusReporter;
 import com.dianping.phoenix.console.service.VersionManager;
 import com.dianping.phoenix.console.service.VersionService;
 import com.dianping.phoenix.console.service.WarService;
-import com.site.lookup.configuration.AbstractResourceConfigurator;
-import com.site.lookup.configuration.Component;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	@Override

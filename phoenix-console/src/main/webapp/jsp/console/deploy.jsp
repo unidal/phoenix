@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8"%>
-<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
+<%@ taglib prefix="a" uri="http://www.dianping.com/phoenix/console"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 <jsp:useBean id="ctx"
@@ -9,7 +9,7 @@
 <jsp:useBean id="model"
 	type="com.dianping.phoenix.console.page.deploy.Model" scope="request" />
 
-<a:body>
+<a:layout>
 	<div class="row-fluid">
 		<div class="span4">
 			<div class="page-header">
@@ -76,4 +76,4 @@
 	<res:jsSlot id="deploy-js" />
 	<res:useCss value='${res.css.local.deploy_css}' target="head-css" />
 	<res:cssSlot id="deploy-css" />
-</a:body>
+</a:layout>

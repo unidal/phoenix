@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.site.helper.Threads;
-import com.site.helper.Threads.Task;
+import org.unidal.helper.Threads;
+import org.unidal.helper.Threads.Task;
 
 public class DefaultDeployService implements DeployService {
 	private Map<String, DeployInfo> m_infos = new HashMap<String, DeployInfo>();
