@@ -1,8 +1,9 @@
-package com.dianping.phoenix.console.service;
+package com.dianping.phoenix.service;
 
 import java.io.File;
 
 import org.unidal.lookup.annotation.Inject;
+
 
 public class DefaultVersionService implements VersionService {
 	@Inject
@@ -23,7 +24,7 @@ public class DefaultVersionService implements VersionService {
 		m_warService.downloadAndExtractTo(version, gitDir);
 		m_gitService.commit(version, description);
 		m_gitService.push();
-		m_versionManager.createVersion(version, description);
+		m_versionManager.createVersion(version, description, null, null);
 	}
 
 	@Override
