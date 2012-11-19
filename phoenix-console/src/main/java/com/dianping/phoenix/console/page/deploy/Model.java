@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.service.HostPlan;
-import com.site.web.mvc.ViewModel;
+import org.unidal.web.mvc.ViewModel;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private List<String> m_hosts;

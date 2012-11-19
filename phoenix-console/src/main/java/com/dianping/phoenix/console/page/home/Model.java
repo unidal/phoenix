@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.model.entity.Project;
-import com.site.web.mvc.ViewModel;
+import org.unidal.web.mvc.ViewModel;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private List<Project> m_projects;

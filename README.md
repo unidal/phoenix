@@ -1,6 +1,43 @@
 Phoenix
 =======
-Phoenix is a powerful custmized container for java application server(eg. JBoss, Jetty, Tomcat), created and maintained by [Frankie Wu](http://github.com/unidal), [marsqing](http://github.com/marsqing), [Bin Miao](http://github.com/firefox007) and [Figo Yang](http://github.com/figoyang).
+Phoenix is a powerful custmized container for java application server(eg. JBoss, Jetty, Tomcat), created and maintained by [Frankie Wu](http://github.com/unidal), [marsqing](http://github.com/marsqing), [Bin Miao](http://github.com/firefox007), [Figo Yang](http://github.com/figoyang) and [Jian Liu](http://github.com/liuliliujian).
+
+Get Started
+-----------
+
+Prerequisite: 
+
+* JDK 1.6.0 or above
+* Maven 3.0.3 or above 
+* Tomcat 6 or JBoss 4
+
+Installation: 
+
+	git clone git@github.com:dianping/phoenix.git
+
+	cd phoenix/phoenix-samples/
+	mvn install
+	cd ..
+
+Run with Tomcat:
+
+	export TOMCAT_HOME={TOMCAT_HOME}
+	misc/integration_test.sh -g com.dianping.platform -a sample-app1 -v 0.1-SNAPSHOT -c tomcat
+
+Run with JBoss: 
+
+	export JBOSS_HOME={JBOSS_HOME}
+	misc/integration_test.sh -g com.dianping.platform -a sample-app1 -v 0.1-SNAPSHOT -c jboss
+	
+Check:
+
+	open http://localhost:8080
+	open http://localhost:8080/inspect/home
+
+Attentions:
+
+* Using DianPing private maven repository
+* Currently only tested under Mac OSX 10.8
 
 Author
 ------
@@ -16,6 +53,9 @@ Author
 * Figo Yang
 	* <http://weibo.com/figoyang>
 	* <http://github.com/figoyang>
+* Jian Liu
+	* <http://weibo.com/1947958763>
+	* <http://github.com/liuliliujian> 
 
 Copyright and license
 ---------------------

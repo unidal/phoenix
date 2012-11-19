@@ -1,0 +1,16 @@
+<wizard package="com.dianping.phoenix">
+   <jdbc package="com.dianping.phoenix.console.dal" name="phoenix">
+      <datasource>
+         <driver>com.mysql.jdbc.Driver</driver>
+         <url>jdbc:mysql://localhost:3306/phoenix</url>
+         <user>root</user>
+         <password></password>
+         <properties>useUnicode=true&amp;autoReconnect=true</properties>
+      </datasource>
+      <group name="deploy" package="com.dianping.phoenix.console.dal.deploy">
+         <table name="deployment"/>
+         <table name="version"/>
+         <table name="deployment_details"/>
+      </group>
+   </jdbc>
+</wizard>

@@ -1,0 +1,13 @@
+<response>
+	<status>okay</status>
+	<message>internal error</message>
+	<ip>127.0.0.1</ip>
+	<container name="jboss" version="4.2.2" status="up">
+		<install-path>/jboss</install-path>
+	</container>
+	<war name="kernel" version="1.0.0">
+		<lib group-id="junit" artifact-id="junit" version="4.8.1" />
+		<lib group-id="junit" artifact-id="junit" version="4.8.1" />
+	</war>
+	<war name="shop-web" />
+</response>

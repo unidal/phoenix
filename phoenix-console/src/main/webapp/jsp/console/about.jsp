@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8"%>
-<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
+<%@ taglib prefix="a" uri="http://www.dianping.com/phoenix/console"%>
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 <jsp:useBean id="ctx"
 	type="com.dianping.phoenix.console.page.home.Context" scope="request" />
@@ -8,7 +8,7 @@
 <jsp:useBean id="model"
 	type="com.dianping.phoenix.console.page.home.Model" scope="request" />
 
-<a:body>
+<a:layout>
 
 	<div class="row-fluid">
 		<div class="hero-unit">
@@ -42,4 +42,4 @@
 	</div>
 	<!--/row-->
 
-</a:body>
+</a:layout>

@@ -3,9 +3,10 @@ package com.dianping.phoenix.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.lookup.configuration.Component;
+import org.unidal.web.configuration.AbstractWebComponentsConfigurator;
+
 import com.dianping.phoenix.console.ConsoleModule;
-import com.site.lookup.configuration.Component;
-import com.site.web.configuration.AbstractWebComponentsConfigurator;
 
 class WebComponentConfigurator extends AbstractWebComponentsConfigurator {
 	@SuppressWarnings("unchecked")

@@ -9,7 +9,7 @@
 <jsp:useBean id="model"
 	type="com.dianping.phoenix.console.page.home.Model" scope="request" />
 
-<a:body>
+<a:layout>
 	<!-- 
 	<div class="container-fluid">
 		<div class="row-fluid">
@@ -838,4 +838,4 @@
 		</div>
 	</div>
 	 -->
-</a:body>
+</a:layout>

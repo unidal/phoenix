@@ -1,16 +1,154 @@
 <plexus>
 	<components>
 		<component>
+			<role>com.dianping.phoenix.console.service.StatusReporter</role>
+			<implementation>com.dianping.phoenix.console.service.DefaultStatusReporter</implementation>
+		</component>
+		<component>
+			<role>org.eclipse.jgit.lib.ProgressMonitor</role>
+			<implementation>com.dianping.phoenix.console.service.PhoenixProgressMonitor</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.StatusReporter</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.service.WarService</role>
+			<implementation>com.dianping.phoenix.console.service.DefaultWarService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.StatusReporter</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.service.GitService</role>
+			<implementation>com.dianping.phoenix.console.service.DefaultGitService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.StatusReporter</role>
+				</requirement>
+				<requirement>
+					<role>org.eclipse.jgit.lib.ProgressMonitor</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.service.VersionManager</role>
+			<implementation>com.dianping.phoenix.console.service.DefaultVersionManager</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.service.VersionService</role>
+			<implementation>com.dianping.phoenix.console.service.DefaultVersionService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.WarService</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.GitService</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.service.VersionManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.phoenix.console.service.ProjectService</role>
-			<implementation>com.dianping.phoenix.console.service.ProjectService</implementation>
+			<implementation>com.dianping.phoenix.console.service.DefaultProjectService</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.console.service.DeployService</role>
-			<implementation>com.dianping.phoenix.console.service.DeployService</implementation>
+			<implementation>com.dianping.phoenix.console.service.DefaultDeployService</implementation>
 		</component>
 		<component>
-			<role>com.site.web.mvc.model.ModuleRegistry</role>
-			<implementation>com.site.web.mvc.model.ModuleRegistry</implementation>
+			<role>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</role>
+			<implementation>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.datasource.DataSource</role>
+			<role-hint>phoenix</role-hint>
+			<implementation>org.unidal.dal.jdbc.datasource.JdbcDataSource</implementation>
+			<configuration>
+				<id>phoenix</id>
+				<maximum-pool-size>3</maximum-pool-size>
+				<connection-timeout>1s</connection-timeout>
+				<idle-timeout>10m</idle-timeout>
+				<statement-cache-size>1000</statement-cache-size>
+				<properties>
+					<driver>com.mysql.jdbc.Driver</driver>
+					<URL>jdbc:mysql://localhost:3306/phoenix</URL>
+					<user>root</user>
+					<password></password>
+					<connectionProperties><![CDATA[useUnicode=true&autoReconnect=true]]></connectionProperties>
+				</properties>
+			</configuration>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>deployment</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<logical-table-name>deployment</logical-table-name>
+				<physical-table-name>deployment</physical-table-name>
+				<data-source-name>phoenix</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>version</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<logical-table-name>version</logical-table-name>
+				<physical-table-name>version</physical-table-name>
+				<data-source-name>phoenix</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>deployment-details</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<logical-table-name>deployment-details</logical-table-name>
+				<physical-table-name>deployment_details</physical-table-name>
+				<data-source-name>phoenix</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.dal.deploy.DeploymentDao</role>
+			<implementation>com.dianping.phoenix.console.dal.deploy.DeploymentDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.dal.deploy.VersionDao</role>
+			<implementation>com.dianping.phoenix.console.dal.deploy.VersionDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+			<implementation>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
+			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
 				<modules>
 					<module default="true">com.dianping.phoenix.console.ConsoleModule</module>
@@ -39,14 +177,6 @@
 		<component>
 			<role>com.dianping.phoenix.console.page.home.JspViewer</role>
 			<implementation>com.dianping.phoenix.console.page.home.JspViewer</implementation>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.console.service.ProjectService</role>
-			<implementation>com.dianping.phoenix.console.service.ProjectService</implementation>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.console.service.DeployService</role>
-			<implementation>com.dianping.phoenix.console.service.DeployService</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.console.page.deploy.Handler</role>
