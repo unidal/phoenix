@@ -41,13 +41,11 @@
 							<thead>
 								<tr>
 									<th>
+										<input type="checkbox" id="pc-${id}" class="category-check"/>
 										Machine
-										<input type="checkbox" id="pc-${id}" class="category-check"
-										/><label for="pc-${id}" class="help-inline" style="margin-bottom: 0px;vertical-align: bottom;">全选</label>
 									</th>
 									<th>Kernel</th>
 									<th>App</th>
-									<th>OP</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -58,7 +56,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -67,7 +64,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -76,7 +72,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -85,7 +80,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -94,7 +88,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -103,7 +96,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -112,7 +104,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -121,7 +112,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -130,7 +120,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -139,7 +128,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -148,7 +136,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -157,7 +144,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -166,7 +152,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -175,7 +160,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -184,7 +168,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -193,7 +176,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -202,7 +184,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -211,7 +192,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -220,7 +200,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 								<tr>
 									<td>
@@ -229,7 +208,6 @@
 									</td>
 									<td>1.0</td>
 									<td>2.0.3</td>
-									<td><li class="icon-arrow-right"></li></td>
 								</tr>
 							</tbody>
 						</table>
@@ -312,12 +290,9 @@
 					<br />
 					<div class="row-fluid">
 						<button type="submit" class="btn btn-primary">Deploy</button>
-						<select name="plan">
-							<c:forEach var="plan" items="${model.deployPlans}">
-								<option>${plan}</option>
-							</c:forEach>
-						</select>
-						<input type="checkbox" name="hosts" value="127.0.0.1" checked="checked">
+						<!-- TODO: 需要移除 -->
+						<input type="hidden" name="plan" value="pigeon1.6.1">
+						<input type="hidden" name="hosts" value="127.0.0.1">
 					</div>
 				</form>
 			</div>
@@ -325,12 +300,12 @@
 		
 		<br />
 		<div class="row-fluid">
-			<div class="span3" style="min-height: 0px;">
-				<strong>Disable</strong>：禁用选定的依赖包
+			<div class="span6" style="min-height: 0px;">
+				<strong>Tips：</strong>点击上面机器所在行，针对该机器编辑依赖项规则，Disable：禁用选定的依赖包
 			</div>
 		</div>
 		<div class="row-fluid">
-			<div class="span8 thumbnail" style="height:225px;overflow-y: auto;">
+			<div class="span12 thumbnail" style="height:225px;overflow-y: auto;">
 				<table class="table table-striped table-condensed">
 					<thead>
 						<tr>
@@ -539,6 +514,5 @@
 				</table>
 			</div>
 		</div>
-		
 	</div>
 </a:layout>

@@ -7,7 +7,9 @@ public enum ConsolePage implements Page {
 
    HOME("home", "home", "Home", "Home", true),
 
-   DEPLOY("deploy", "deploy", "Deploy", "Deploy", true);
+   DEPLOY("deploy", "deploy", "Deploy", "Deploy", true),
+
+   VERSION("version", "version", "Version", "Version", true);
 
    private String m_name;
 

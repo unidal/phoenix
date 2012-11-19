@@ -38,12 +38,12 @@
 		</div>
 	</div>
 
-	<div class="container-fluid" style="min-height:574px;">
+	<div class="container-fluid" style="min-height:524px;">
 		<div class="row-fluid">
 			<div class="span12"><jsp:doBody /></div>
 		</div>
 	</div>
-	
+	<br />
 	<div class="container">
 		<footer><center>©2012 Dianping Phoenix Team, Mail: <a href="mailto:www@dianping.com">www@dianping.com</a></center></footer>
 	</div>
