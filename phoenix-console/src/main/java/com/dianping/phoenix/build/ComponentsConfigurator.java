@@ -3,14 +3,25 @@ package com.dianping.phoenix.build;
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< HEAD
 import org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
 import com.dianping.phoenix.console.dal.deploy.VersionDao;
+=======
+import org.eclipse.jgit.lib.ProgressMonitor;
+import org.unidal.lookup.configuration.AbstractResourceConfigurator;
+import org.unidal.lookup.configuration.Component;
+>>>>>>> 34f74b317b37a96cf6da246cc51e32e74bf2e3fa
 import com.dianping.phoenix.console.service.DefaultDeployService;
 import com.dianping.phoenix.console.service.DefaultProjectService;
 import com.dianping.phoenix.console.service.DeployService;
+<<<<<<< HEAD
+=======
+import com.dianping.phoenix.console.service.GitService;
+import com.dianping.phoenix.console.service.PhoenixProgressMonitor;
+>>>>>>> 34f74b317b37a96cf6da246cc51e32e74bf2e3fa
 import com.dianping.phoenix.console.service.ProjectService;
 import com.dianping.phoenix.service.DefaultGitService;
 import com.dianping.phoenix.service.DefaultStatusReporter;
@@ -32,6 +43,21 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
+<<<<<<< HEAD
+=======
+		all.add(C(StatusReporter.class, DefaultStatusReporter.class));
+		all.add(C(ProgressMonitor.class, PhoenixProgressMonitor.class) //
+				.req(StatusReporter.class));
+		all.add(C(WarService.class, DefaultWarService.class) //
+				.req(StatusReporter.class));
+		all.add(C(GitService.class, DefaultGitService.class) //
+				.req(StatusReporter.class)
+				.req(ProgressMonitor.class));
+		all.add(C(VersionManager.class, DefaultVersionManager.class));
+		all.add(C(VersionService.class, DefaultVersionService.class) //
+				.req(WarService.class, GitService.class, VersionManager.class));
+
+>>>>>>> 34f74b317b37a96cf6da246cc51e32e74bf2e3fa
 		all.add(C(ProjectService.class, DefaultProjectService.class));
 		all.add(C(DeployService.class, DefaultDeployService.class));
 
