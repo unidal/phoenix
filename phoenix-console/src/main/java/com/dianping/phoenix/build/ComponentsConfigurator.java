@@ -3,7 +3,6 @@ package com.dianping.phoenix.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -38,11 +37,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(ProjectService.class, DefaultProjectService.class));
 		all.add(C(DeployService.class, DefaultDeployService.class));
-
-      // move following line to top-level project if necessary
-      all.add(C(JdbcDataSourceConfigurationManager.class));
-
-      all.addAll(new PhoenixDatabaseConfigurator().defineComponents());
 
 		// Please keep it as last
 		all.addAll(new WebComponentConfigurator().defineComponents());
