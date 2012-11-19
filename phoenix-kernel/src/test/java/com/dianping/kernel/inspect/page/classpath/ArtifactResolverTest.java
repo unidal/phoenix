@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4;
 
 import com.dianping.kernel.inspect.page.classpath.Artifact;
 import com.dianping.kernel.inspect.page.classpath.ArtifactResolver;
-import com.site.lookup.ComponentTestCase;
+import org.unidal.lookup.ComponentTestCase;
 
 @RunWith(JUnit4.class)
 public class ArtifactResolverTest extends ComponentTestCase {
@@ -25,8 +25,8 @@ public class ArtifactResolverTest extends ComponentTestCase {
 		int pos = path.lastIndexOf('!');
 		Artifact artifact = resolver.resolve(new File(path.substring(off + 1, pos)));
 
-		Assert.assertEquals("com.site.common", artifact.getGroupId());
-		Assert.assertEquals("lookup", artifact.getArtifactId());
-		Assert.assertEquals("1.1.4", artifact.getVersion());
+		Assert.assertEquals("org.unidal.framework", artifact.getGroupId());
+		Assert.assertEquals("foundation-service", artifact.getArtifactId());
+		Assert.assertEquals("2.0.0", artifact.getVersion());
 	}
 }

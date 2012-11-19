@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.dianping.phoenix.agent.page.deploy.shell.FakeShell;
 import com.dianping.phoenix.agent.page.deploy.shell.Shell;
-import com.site.lookup.configuration.AbstractResourceConfigurator;
-import com.site.lookup.configuration.Component;
+import org.unidal.lookup.configuration.AbstractResourceConfigurator;
+import org.unidal.lookup.configuration.Component;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	@Override

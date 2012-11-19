@@ -1,7 +1,7 @@
 package com.dianping.phoenix.agent.page.home;
 
 import com.dianping.phoenix.agent.AgentPage;
-import com.site.web.mvc.ViewModel;
+import org.unidal.web.mvc.ViewModel;
 
 public class Model extends ViewModel<AgentPage, Action, Context> {
 	public Model(Context ctx) {

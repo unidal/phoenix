@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.dianping.kernel.inspect.InspectPage;
-import com.site.web.mvc.ViewModel;
+import org.unidal.web.mvc.ViewModel;
 
 public class Model extends ViewModel<InspectPage, Action, Context> {
 	private List<Artifact> m_artifacts;

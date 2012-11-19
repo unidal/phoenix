@@ -1,7 +1,7 @@
 package com.dianping.phoenix.agent.page.home;
 
 import com.dianping.phoenix.agent.AgentPage;
-import com.site.web.mvc.view.BaseJspViewer;
+import org.unidal.web.mvc.view.BaseJspViewer;
 
 public class JspViewer extends BaseJspViewer<AgentPage, Action, Context, Model> {
 	@Override

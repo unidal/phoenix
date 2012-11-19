@@ -1,7 +1,7 @@
 package com.dianping.kernel.inspect.page.home;
 
 import com.dianping.kernel.inspect.InspectPage;
-import com.site.web.mvc.view.BaseJspViewer;
+import org.unidal.web.mvc.view.BaseJspViewer;
 
 public class JspViewer extends BaseJspViewer<InspectPage, Action, Context, Model> {
 	@Override

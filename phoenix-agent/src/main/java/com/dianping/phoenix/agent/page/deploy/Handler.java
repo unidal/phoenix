@@ -17,11 +17,11 @@ import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.war.Artifact;
 import com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTask;
 import com.dianping.phoenix.agent.page.deploy.shell.Shell;
-import com.site.lookup.annotation.Inject;
-import com.site.web.mvc.PageHandler;
-import com.site.web.mvc.annotation.InboundActionMeta;
-import com.site.web.mvc.annotation.OutboundActionMeta;
-import com.site.web.mvc.annotation.PayloadMeta;
+import org.unidal.lookup.annotation.Inject;
+import org.unidal.web.mvc.PageHandler;
+import org.unidal.web.mvc.annotation.InboundActionMeta;
+import org.unidal.web.mvc.annotation.OutboundActionMeta;
+import org.unidal.web.mvc.annotation.PayloadMeta;
 
 public class Handler implements PageHandler<Context> {
 	@Inject

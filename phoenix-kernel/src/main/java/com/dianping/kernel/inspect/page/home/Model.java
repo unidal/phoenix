@@ -2,7 +2,7 @@ package com.dianping.kernel.inspect.page.home;
 
 import com.dianping.kernel.GlobalModel;
 import com.dianping.kernel.inspect.InspectPage;
-import com.site.web.mvc.ViewModel;
+import org.unidal.web.mvc.ViewModel;
 
 public class Model extends ViewModel<InspectPage, Action, Context> {
 	private GlobalModel m_applicationModel;
