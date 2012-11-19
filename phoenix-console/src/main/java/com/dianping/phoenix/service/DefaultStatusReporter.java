@@ -4,7 +4,7 @@ package com.dianping.phoenix.service;
 public class DefaultStatusReporter implements StatusReporter {
 	@Override
 	public void updateState(String state) {
-
+		System.out.println(state);
 	}
 
 	@Override

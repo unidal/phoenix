@@ -8,6 +8,7 @@ import org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
+import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.console.dal.deploy.VersionDao;
 import com.dianping.phoenix.console.service.DefaultDeployService;
 import com.dianping.phoenix.console.service.DefaultProjectService;
@@ -34,6 +35,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
+		all.add(C(ConfigManager.class));
+
 		all.add(C(ProjectService.class, DefaultProjectService.class));
 		all.add(C(DeployService.class, DefaultDeployService.class));
 
@@ -58,9 +61,9 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(ProgressMonitor.class, PhoenixProgressMonitor.class) //
 		      .req(StatusReporter.class));
 		all.add(C(WarService.class, DefaultWarService.class) //
-		      .req(StatusReporter.class));
+		      .req(ConfigManager.class, StatusReporter.class));
 		all.add(C(GitService.class, DefaultGitService.class) //
-		      .req(StatusReporter.class).req(ProgressMonitor.class));
+		      .req(ConfigManager.class, StatusReporter.class, ProgressMonitor.class));
 		all.add(C(VersionManager.class, DefaultVersionManager.class) //
 		      .req(VersionDao.class));
 		all.add(C(VersionService.class, DefaultVersionService.class) //

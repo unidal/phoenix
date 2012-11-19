@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model model-package="com.dianping.phoenix.configure" enable-sax-parser="true">
+	<entity name="git" class-name="GitConfig">
+		<element name="local-dir" value-type="String" default-value="target/git" />
+	</entity>
+</model>
+

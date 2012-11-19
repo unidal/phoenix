@@ -12,15 +12,20 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.phoenix.configure.ConfigManager;
 
 public class DefaultGitService implements GitService, Initializable {
 	@Inject
+	private ConfigManager m_configManager;
+
+	@Inject
 	private StatusReporter m_reporter;
+
 	@Inject
 	private ProgressMonitor m_monitor;
 
 	private File m_workingDir = new File("target/gitrepo");
-	private String m_gitURL = "git@github.com:firefox007/phoenix_test.git";
+
 	private Git m_git;
 
 	@Override
@@ -46,7 +51,7 @@ public class DefaultGitService implements GitService, Initializable {
 		// Add
 		m_reporter.log(String.format("Adding to git for tag(%s) ... ", tag));
 		m_git.add().addFilepattern(".").call();
-		m_reporter.log(String.format("Added to git for tag(%s) ... ", tag));
+		m_reporter.log(String.format("Adding to git for tag(%s) ... DONE", tag));
 
 		// Commit
 		m_reporter.log(String.format("Commiting to git for tag(%s) ... ", tag));
@@ -72,10 +77,10 @@ public class DefaultGitService implements GitService, Initializable {
 
 		try {
 			if (!gitRepo.exists()) {
-				m_reporter.log(String.format("Cloning repo from %s ... ", m_gitURL));
+				String gitURL = m_configManager.getGitOriginUrl();
+				m_reporter.log(String.format("Cloning repo from %s ... ", gitURL));
 				FileRepositoryBuilder builder = new FileRepositoryBuilder();
-				Repository repository = builder.setGitDir(gitRepo)
-						.readEnvironment().findGitDir().build();
+				Repository repository = builder.setGitDir(gitRepo).readEnvironment().findGitDir().build();
 
 				m_git = new Git(repository);
 				CloneCommand clone = Git.cloneRepository();
@@ -83,21 +88,10 @@ public class DefaultGitService implements GitService, Initializable {
 				clone.setBare(false);
 				clone.setDirectory(m_workingDir);
 				clone.setCloneAllBranches(true);
-				clone.setURI(m_gitURL);
+				clone.setURI(gitURL);
 				clone.call();
-				// m_git = Git.init().setDirectory(m_workingDir).call();
-				// Repository repository = m_git.getRepository();
-				// FileBasedConfig storedConfig = (FileBasedConfig) repository
-				// .getConfig();
-				// storedConfig.setString("branch", "master", "remote",
-				// "origin");
-				// storedConfig.setString("branch", "master", "merge",
-				// "refs/heads/master");
-				// storedConfig.setString("remote", "origin", "fetch",
-				// "+refs/heads/*:refs/remotes/origin/*");
-				// storedConfig.setString("remote", "origin", "url", m_gitURL);
-				// storedConfig.save();
-				m_reporter.log(String.format("Cloned repo from %s ... ", m_gitURL));
+
+				m_reporter.log(String.format("Cloned repo from %s ... ", gitURL));
 			} else {
 				m_git = Git.open(m_workingDir);
 			}

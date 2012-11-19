@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="config" root="true">
+    <element name="war-url-pattern" value-type="String" />
+    <entity-ref name="git" />
+  </entity>
+  <entity name="git">
+    <element name="origin-url" value-type="String" />
+    <element name="local-dir" value-type="String" />
+  </entity>
+</model>
+

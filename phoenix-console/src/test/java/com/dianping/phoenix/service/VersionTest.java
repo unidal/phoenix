@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.service;
+package com.dianping.phoenix.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
