@@ -1,3 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<entities do-package="com.dianping.phoenix.console.dal.deploy" gen="true" />
+<entities do-package="com.dianping.phoenix.console.dal.deploy" gen="true" >
+<entity name="version" table="version" alias="v">
+    <member name="release-notes" field="release_notes" value-type="String" length="200" nullable="false" />
+    <member name="status" field="status" value-type="int" length="10" nullable="false" />
+    <member name="created-by" field="created_by" value-type="String" length="64" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
+    <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" insert-expr="NOW()" update-expr="NOW()" />
+    <query-defs>
+      <query name="find-by-domain-version" type="SELECT">
+        <param name="domain" />
+        <param name="version" />
+        <statement><![CDATA[
+        SELECT <FIELDS/> 
+        FROM <TABLE/> 
+        WHERE <FIELD name='domain'/> = ${domain}
+        	AND <FIELD name='version'/> = ${version}
+        	AND <FIELD name='status'/> = 0
+        ]]></statement>
+      </query>
+      <query name="delete-by-PK" type="DELETE" enabled="false"/>
+    </query-defs>
+  </entity>
+</entities>
 

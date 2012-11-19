@@ -4,51 +4,71 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jgit.lib.ProgressMonitor;
+import org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
+
+import com.dianping.phoenix.console.dal.deploy.VersionDao;
 import com.dianping.phoenix.console.service.DefaultDeployService;
-import com.dianping.phoenix.console.service.DefaultGitService;
 import com.dianping.phoenix.console.service.DefaultProjectService;
-import com.dianping.phoenix.console.service.DefaultStatusReporter;
-import com.dianping.phoenix.console.service.DefaultVersionManager;
-import com.dianping.phoenix.console.service.DefaultVersionService;
-import com.dianping.phoenix.console.service.DefaultWarService;
 import com.dianping.phoenix.console.service.DeployService;
-import com.dianping.phoenix.console.service.GitService;
 import com.dianping.phoenix.console.service.PhoenixProgressMonitor;
 import com.dianping.phoenix.console.service.ProjectService;
-import com.dianping.phoenix.console.service.StatusReporter;
-import com.dianping.phoenix.console.service.VersionManager;
-import com.dianping.phoenix.console.service.VersionService;
-import com.dianping.phoenix.console.service.WarService;
+import com.dianping.phoenix.service.DefaultGitService;
+import com.dianping.phoenix.service.DefaultStatusReporter;
+import com.dianping.phoenix.service.DefaultVersionManager;
+import com.dianping.phoenix.service.DefaultVersionService;
+import com.dianping.phoenix.service.DefaultWarService;
+import com.dianping.phoenix.service.GitService;
+import com.dianping.phoenix.service.StatusReporter;
+import com.dianping.phoenix.service.VersionManager;
+import com.dianping.phoenix.service.VersionService;
+import com.dianping.phoenix.service.WarService;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
+	public static void main(String[] args) {
+		generatePlexusComponentsXmlFile(new ComponentsConfigurator());
+	}
+
 	@Override
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
-		all.add(C(StatusReporter.class, DefaultStatusReporter.class));
-		all.add(C(ProgressMonitor.class, PhoenixProgressMonitor.class) //
-				.req(StatusReporter.class));
-		all.add(C(WarService.class, DefaultWarService.class) //
-				.req(StatusReporter.class));
-		all.add(C(GitService.class, DefaultGitService.class) //
-				.req(StatusReporter.class)
-				.req(ProgressMonitor.class));
-		all.add(C(VersionManager.class, DefaultVersionManager.class));
-		all.add(C(VersionService.class, DefaultVersionService.class) //
-				.req(WarService.class, GitService.class, VersionManager.class));
-
 		all.add(C(ProjectService.class, DefaultProjectService.class));
 		all.add(C(DeployService.class, DefaultDeployService.class));
 
-		// Please keep it as last
-		all.addAll(new WebComponentConfigurator().defineComponents());
+		defineServiceComponents(all);
+		defineDatabaseComponents(all);
+		defineWebComponents(all);
 
 		return all;
 	}
 
-	public static void main(String[] args) {
-		generatePlexusComponentsXmlFile(new ComponentsConfigurator());
+	private void defineDatabaseComponents(List<Component> all) {
+		// setup datasource configuration manager
+		all.add(C(JdbcDataSourceConfigurationManager.class) //
+		      .config(E("datasourceFile").value("/data/appdatas/phoenix/datasources.xml")));
+
+		// Phoenix database
+		all.addAll(new PhoenixDatabaseConfigurator().defineComponents());
+	}
+
+	private void defineServiceComponents(List<Component> all) {
+		all.add(C(StatusReporter.class, DefaultStatusReporter.class));
+		all.add(C(ProgressMonitor.class, PhoenixProgressMonitor.class) //
+		      .req(StatusReporter.class));
+		all.add(C(WarService.class, DefaultWarService.class) //
+		      .req(StatusReporter.class));
+		all.add(C(GitService.class, DefaultGitService.class) //
+		      .req(StatusReporter.class).req(ProgressMonitor.class));
+		all.add(C(VersionManager.class, DefaultVersionManager.class) //
+		      .req(VersionDao.class));
+		all.add(C(VersionService.class, DefaultVersionService.class) //
+		      .req(WarService.class, GitService.class, VersionManager.class));
+	}
+
+	private void defineWebComponents(List<Component> all) {
+		// Please keep it as last
+		all.addAll(new WebComponentConfigurator().defineComponents());
 	}
 }

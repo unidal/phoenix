@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.service;
+package com.dianping.phoenix.service;
 
 public interface StatusReporter {
 	public void updateState(String state);
