@@ -1,16 +1,11 @@
 package com.dianping.phoenix.agent.core;
 
-import java.io.InputStream;
+import java.io.Reader;
 
-public interface Agent {
+import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 
-	public enum Status {
-		INIT, STARTED, PROCESSING, DONE, COMMIT, ROLLBACK
-	}
+public interface Agent extends Transactional, TaskProcessor {
+
+	Reader getLog(TransactionId txId);
 	
-	void startTransaction(long txId, String desc, EventTracker tracker) throws IllegalStateException;
-	void process(Task task);
-	void commit();
-	void rollback();
-	InputStream getLog(long txId);
 }

@@ -1,4 +1,4 @@
-package com.dianping.phoenix.agent.core;
+package com.dianping.phoenix.agent.core.event;
 
 public interface EventTracker {
 

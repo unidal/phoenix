@@ -1,7 +1,5 @@
 package com.dianping.phoenix.agent.core;
 
-public interface Event {
+public class StatusReporter {
 
-	String getMsg();
-	
 }

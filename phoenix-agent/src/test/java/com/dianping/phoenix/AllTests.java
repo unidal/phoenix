@@ -7,8 +7,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-// add test classes here
-
 })
 public class AllTests {
 
