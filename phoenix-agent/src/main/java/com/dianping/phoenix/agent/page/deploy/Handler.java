@@ -18,15 +18,16 @@ import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.war.Artifact;
 import com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTask;
 import com.dianping.phoenix.agent.page.deploy.shell.Shell;
-import com.site.lookup.annotation.Inject;
-import com.site.web.mvc.PageHandler;
-import com.site.web.mvc.annotation.InboundActionMeta;
-import com.site.web.mvc.annotation.OutboundActionMeta;
-import com.site.web.mvc.annotation.PayloadMeta;
+import org.unidal.lookup.annotation.Inject;
+import org.unidal.web.mvc.PageHandler;
+import org.unidal.web.mvc.annotation.InboundActionMeta;
+import org.unidal.web.mvc.annotation.OutboundActionMeta;
+import org.unidal.web.mvc.annotation.PayloadMeta;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
 	private Shell m_shell;
+
 	Agent agent = new DefaultAgent();
 
 	@Override
@@ -42,7 +43,7 @@ public class Handler implements PageHandler<Context> {
 		Payload payload = ctx.getPayload();
 
 		final OutputStream resOut = ctx.getHttpServletResponse().getOutputStream();
-		
+
 		EventTracker eventTracker = new AbstractEventTracker() {
 
 			@Override
@@ -67,12 +68,12 @@ public class Handler implements PageHandler<Context> {
 				}
 
 			}
-			
+
 		};
 		TransactionId txId = new TransactionId(11L);
 		Artifact artifactToUpdate = new Artifact("user-web", "1.0");
 		Task task = new WarUpdateTask(artifactToUpdate, "1.1");
 		Transaction tx = new Transaction(task, txId, eventTracker, new InMemoryTransactionLog());
-		agent.submit(tx );
+		agent.submit(tx);
 	}
 }

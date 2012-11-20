@@ -11,8 +11,8 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 
 import com.dianping.phoenix.spi.internal.VersionParser;
-import com.site.helper.Scanners;
-import com.site.helper.Scanners.IMatcher;
+import org.unidal.helper.Scanners;
+import org.unidal.helper.Scanners.IMatcher;
 
 public class ArtifactResolver implements LogEnabled {
 	private Logger m_logger;

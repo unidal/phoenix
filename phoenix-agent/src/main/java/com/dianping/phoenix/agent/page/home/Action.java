@@ -1,6 +1,6 @@
 package com.dianping.phoenix.agent.page.home;
 
-public enum Action implements com.site.web.mvc.Action {
+public enum Action implements org.unidal.web.mvc.Action {
 	VIEW("view");
 
 	private String m_name;

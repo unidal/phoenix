@@ -26,16 +26,16 @@ public class DefaultVersionManager implements VersionManager {
 			throw new RuntimeException(String.format("Error when removing kernel version(%s)!", version), e);
 		}
 
-		Version proto = m_dao.createLocal();
-
-		proto.setDomain(KERNEL);
-		proto.setVersion(version);
-		proto.setDescription(description);
-		proto.setReleaseNotes(releaseNotes);
-		proto.setCreatedBy(createdBy);
-		proto.setStatus(0);
-
 		try {
+			Version proto = m_dao.createLocal();
+
+			proto.setDomain(KERNEL);
+			proto.setVersion(version);
+			proto.setDescription(description);
+			proto.setReleaseNotes(releaseNotes);
+			proto.setCreatedBy(createdBy);
+			proto.setStatus(0);
+
 			m_dao.insert(proto);
 		} catch (DalException e) {
 			throw new RuntimeException(String.format("Error when inserting kernel version(%s)!", version), e);

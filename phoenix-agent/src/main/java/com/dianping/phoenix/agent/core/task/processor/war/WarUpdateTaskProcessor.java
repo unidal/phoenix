@@ -1,14 +1,10 @@
 package com.dianping.phoenix.agent.core.task.processor.war;
 
-import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
-import org.apache.commons.exec.PumpStreamHandler;
 
 import com.dianping.phoenix.agent.core.Transaction;
 import com.dianping.phoenix.agent.core.TransactionId;
@@ -47,7 +43,7 @@ public class WarUpdateTaskProcessor extends AbstractSerialTaskProcessor {
 	}
 
 	private boolean runShellCmd(OutputStream outputCollector) throws ExecuteException, IOException {
-		
+		return false;
 	}
 
 	@Override

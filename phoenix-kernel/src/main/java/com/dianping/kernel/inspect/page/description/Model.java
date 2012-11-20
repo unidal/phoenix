@@ -1,7 +1,7 @@
 package com.dianping.kernel.inspect.page.description;
 
 import com.dianping.kernel.inspect.InspectPage;
-import com.site.web.mvc.ViewModel;
+import org.unidal.web.mvc.ViewModel;
 
 public class Model extends ViewModel<InspectPage, Action, Context> {
 	private DescriptorModel m_defaultModel;

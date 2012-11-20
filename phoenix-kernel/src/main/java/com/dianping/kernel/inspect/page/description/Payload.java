@@ -1,9 +1,9 @@
 package com.dianping.kernel.inspect.page.description;
 
 import com.dianping.kernel.inspect.InspectPage;
-import com.site.web.mvc.ActionContext;
-import com.site.web.mvc.ActionPayload;
-import com.site.web.mvc.payload.annotation.FieldMeta;
+import org.unidal.web.mvc.ActionContext;
+import org.unidal.web.mvc.ActionPayload;
+import org.unidal.web.mvc.payload.annotation.FieldMeta;
 
 public class Payload implements ActionPayload<InspectPage, Action> {
 	private InspectPage m_page;
