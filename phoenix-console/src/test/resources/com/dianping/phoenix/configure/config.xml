@@ -1,7 +1,7 @@
 <config>
 	<war-url-pattern>http://192.168.8.45:8080/artifactory/dianping-snapshots/com/dianping/platform/phoenix-kernel/%s/phoenix-kernel-%1$s.war</war-url-pattern>
 	<git>
-		<origin-url>git@github.com:firefox007/phoenix_test.git</origin-url>
+		<origin-url>ssh://git@10.1.4.81:58422/kernel.git</origin-url>
 		<local-dir>target/gitrepo</local-dir>
 	</git>
 </config>

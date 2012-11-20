@@ -11,4 +11,6 @@ public interface VersionManager {
 	public void removeVersion(String version) throws Exception;
 
 	public List<Version> getActiveVersions() throws Exception;
+	
+	public void setWarService(WarService warService);
 }

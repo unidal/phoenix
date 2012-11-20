@@ -19,15 +19,35 @@ public class ConfigManager implements Initializable {
 
 	public String getGitOriginUrl() {
 		if (m_config == null) {
-			throw new RuntimeException("ConfigManager is not initialized properly!");
+			throw new RuntimeException(
+					"ConfigManager is not initialized properly!");
 		} else {
 			return m_config.getGit().getOriginUrl();
 		}
 	}
 
+	public String getGitPassword() {
+		if (m_config == null) {
+			throw new RuntimeException(
+					"ConfigManager is not initialized properly!");
+		} else {
+			return m_config.getGit().getPassword();
+		}
+	}
+
+	public String getGitUserName() {
+		if (m_config == null) {
+			throw new RuntimeException(
+					"ConfigManager is not initialized properly!");
+		} else {
+			return m_config.getGit().getUserName();
+		}
+	}
+
 	public String getGitWorkingDir() {
 		if (m_config == null) {
-			throw new RuntimeException("ConfigManager is not initialized properly!");
+			throw new RuntimeException(
+					"ConfigManager is not initialized properly!");
 		} else {
 			return m_config.getGit().getLocalDir();
 		}
@@ -35,7 +55,8 @@ public class ConfigManager implements Initializable {
 
 	public String getWarUrl(String version) {
 		if (m_config == null) {
-			throw new RuntimeException("ConfigManager is not initialized properly!");
+			throw new RuntimeException(
+					"ConfigManager is not initialized properly!");
 		} else {
 			return String.format(m_config.getWarUrlPattern(), version);
 		}
@@ -59,7 +80,8 @@ public class ConfigManager implements Initializable {
 				m_config.setGit(new GitConfig());
 			}
 		} catch (Exception e) {
-			throw new InitializationException(String.format("Unable to load configuration file(%s)!", m_configFile), e);
+			throw new InitializationException(String.format(
+					"Unable to load configuration file(%s)!", m_configFile), e);
 		}
 	}
 
