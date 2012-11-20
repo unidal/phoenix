@@ -11,12 +11,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
-	<meta name="author" content="">
+	<link rel="shortcut icon" href="${model.webapp}/img/favicon.png">
 	<res:cssSlot id="head-css"/>
 	<res:jsSlot id="head-js"/>
 	<res:useCss value='${res.css.local.bootstrap_css}' target="head-css"/>
 	<res:useCss value="${res.js.local['bootstrap-responsive.css']}" target="head-css"/>
-	<res:useCss value='${res.css.local.body_css}' target="head-css"/>
 	<res:useCss value='${res.css.local.phoenix_css}' target="head-css"/>
 </head>
 
@@ -26,7 +25,11 @@
 			<div class="container-fluid">
 				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span
 					class="icon-bar"></span> <span class="icon-bar"></span>
-				</a> <a class="brand" href="/phoenix/console">Phoenix</a>
+				</a> 
+				
+				<div class="pull-right">
+					<img height="39" alt="Phoenix" src="${model.webapp}/img/phoenix21.png">
+				</div>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
 						<li><a href="${model.webapp}/${page.moduleName}console">Home</a></li>

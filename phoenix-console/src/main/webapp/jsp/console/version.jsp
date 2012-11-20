@@ -22,7 +22,7 @@
 					<thead>
 						<tr>
 							<th>Version</th>
-							<th>Desc<i class="icon-refresh pull-right"></i></th>
+							<th>Desc<!-- <i class="icon-refresh pull-right"></i> --></th>
 						</tr>
 					</thead>
 					<tbody>
