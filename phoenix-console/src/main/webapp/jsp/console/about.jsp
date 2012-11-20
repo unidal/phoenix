@@ -13,13 +13,15 @@
 	<div class="row-fluid">
 		<div class="hero-unit">
 			<h1>Phoenix@DP</h1>
-			<p class="text-info">架构JAR发布工具</p>
-			<p class="text-info">统一替换架构某个产品的JAR包，在此过程中确保一些列的安全，包括正确性验证，失败回滚等</p>
+			<p class="text-info">架构JAR包发布工具</p>
+			<p class="text-info">统一替换架构产品的JAR包，在此过程中确保一系列的安全，包括正确性验证，失败回滚等</p>
 			<p>
-				Designed by <span class="label label-success">老吴</span><span
-					class="label label-warning">老马</span><span
-					class="label label-important">尤勇</span><span
-					class="label label-info">一鸣</span>
+				Designed by 
+				<span class="label label-inverse">老吴</span>
+				<span class="label label-success">Figo</span>
+				<span class="label label-important">向彬</span>
+				<span class="label label-warning">老马</span>
+				<span class="label label-info">Danson</span>
 			</p>
 		</div>
 		<div class="row-fluid">

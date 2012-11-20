@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.service;
+package com.dianping.phoenix.service;
 
 import java.io.File;
 
@@ -8,22 +8,20 @@ import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.TextProgressMonitor;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
 
+
 public class DefaultGitService implements GitService, Initializable {
 	@Inject
 	private StatusReporter m_reporter;
+	@Inject
+	private ProgressMonitor m_monitor;
 
 	private File m_workingDir = new File("target/gitrepo");
-
-	private String m_gitURL = "git@github.com:firefox007/policedog.git";
-
+	private String m_gitURL = "git@github.com:firefox007/phoenix_test.git";
 	private Git m_git;
-
-	private ProgressMonitor m_monitor = new TextProgressMonitor();
 
 	@Override
 	public void clearWorkingDir() throws Exception {
@@ -76,7 +74,8 @@ public class DefaultGitService implements GitService, Initializable {
 			if (!gitRepo.exists()) {
 				m_reporter.log(String.format("Cloning repo from %s ... ", m_gitURL));
 				FileRepositoryBuilder builder = new FileRepositoryBuilder();
-				Repository repository = builder.setGitDir(m_workingDir).readEnvironment().findGitDir().build();
+				Repository repository = builder.setGitDir(gitRepo)
+						.readEnvironment().findGitDir().build();
 
 				m_git = new Git(repository);
 				CloneCommand clone = Git.cloneRepository();
