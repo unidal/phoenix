@@ -102,7 +102,7 @@
                      <goal>plexus</goal>
                   </goals>
                   <configuration>
-                     <className>com.dianping.phoenix.build.ComponentsConfigurator</className>
+                     <className>null.build.ComponentsConfigurator</className>
                   </configuration>
                </execution>
                <execution>
