@@ -1,17 +1,24 @@
 package com.dianping.phoenix.console.page.version;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 
-import com.dianping.phoenix.console.ConsolePage;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
+import com.dianping.phoenix.console.ConsolePage;
+import com.dianping.phoenix.console.dal.deploy.Version;
+import com.dianping.phoenix.service.VersionManager;
+
 public class Handler implements PageHandler<Context> {
+	@Inject
+	private VersionManager m_manager;
+
 	@Inject
 	private JspViewer m_jspViewer;
 
@@ -19,7 +26,21 @@ public class Handler implements PageHandler<Context> {
 	@PayloadMeta(Payload.class)
 	@InboundActionMeta(name = "version")
 	public void handleInbound(Context ctx) throws ServletException, IOException {
-		// display only, no action here
+		Payload payload = ctx.getPayload();
+
+		if (payload.getAction() == Action.ADD) {
+			String version = payload.getVersion();
+			String description = payload.getDescription();
+			String releaseNotes = "No release notes here";
+			String createdBy = "phoenix";
+
+			try {
+				m_manager.createVersion(version, description, releaseNotes, createdBy);
+			} catch (Exception e) {
+				e.printStackTrace();
+				ctx.addError("version.add", e);
+			}
+		}
 	}
 
 	@Override
@@ -27,8 +48,17 @@ public class Handler implements PageHandler<Context> {
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
 
+		try {
+			List<Version> versions = m_manager.getActiveVersions();
+
+			model.setVersions(versions);
+		} catch (Exception e) {
+			ctx.addError("version.active", e);
+		}
+
 		model.setAction(Action.VIEW);
 		model.setPage(ConsolePage.VERSION);
+
 		m_jspViewer.view(ctx, model);
 	}
 }

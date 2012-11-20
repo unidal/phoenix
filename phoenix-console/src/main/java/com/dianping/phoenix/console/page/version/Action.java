@@ -1,7 +1,9 @@
 package com.dianping.phoenix.console.page.version;
 
 public enum Action implements org.unidal.web.mvc.Action {
-	VIEW("view");
+	VIEW("view"),
+	
+	ADD("add");
 
 	private String m_name;
 

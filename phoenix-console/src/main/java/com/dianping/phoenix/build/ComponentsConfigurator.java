@@ -18,12 +18,10 @@ import com.dianping.phoenix.console.service.ProjectService;
 import com.dianping.phoenix.service.DefaultGitService;
 import com.dianping.phoenix.service.DefaultStatusReporter;
 import com.dianping.phoenix.service.DefaultVersionManager;
-import com.dianping.phoenix.service.DefaultVersionService;
 import com.dianping.phoenix.service.DefaultWarService;
 import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.StatusReporter;
 import com.dianping.phoenix.service.VersionManager;
-import com.dianping.phoenix.service.VersionService;
 import com.dianping.phoenix.service.WarService;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
@@ -65,9 +63,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(GitService.class, DefaultGitService.class) //
 		      .req(ConfigManager.class, StatusReporter.class, ProgressMonitor.class));
 		all.add(C(VersionManager.class, DefaultVersionManager.class) //
-		      .req(VersionDao.class));
-		all.add(C(VersionService.class, DefaultVersionService.class) //
-		      .req(WarService.class, GitService.class, VersionManager.class));
+		      .req(WarService.class, GitService.class, VersionDao.class));
 	}
 
 	private void defineWebComponents(List<Component> all) {

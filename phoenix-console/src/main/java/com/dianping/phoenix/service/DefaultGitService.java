@@ -2,8 +2,6 @@ package com.dianping.phoenix.service;
 
 import java.io.File;
 
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ProgressMonitor;
@@ -14,7 +12,7 @@ import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.configure.ConfigManager;
 
-public class DefaultGitService implements GitService, Initializable {
+public class DefaultGitService implements GitService {
 	@Inject
 	private ConfigManager m_configManager;
 
@@ -30,6 +28,10 @@ public class DefaultGitService implements GitService, Initializable {
 
 	@Override
 	public void clearWorkingDir() throws Exception {
+		if (m_git == null) {
+			throw new IllegalStateException("Please call setup() to initiailize git first!");
+		}
+
 		m_reporter.log("Clearing git ... ");
 
 		String[] names = m_workingDir.list();
@@ -48,6 +50,10 @@ public class DefaultGitService implements GitService, Initializable {
 
 	@Override
 	public void commit(String tag, String description) throws Exception {
+		if (m_git == null) {
+			throw new IllegalStateException("Please call setup() to initiailize git first!");
+		}
+
 		// Add
 		m_reporter.log(String.format("Adding to git for tag(%s) ... ", tag));
 		m_git.add().addFilepattern(".").call();
@@ -70,12 +76,41 @@ public class DefaultGitService implements GitService, Initializable {
 	}
 
 	@Override
-	public void initialize() throws InitializationException {
-		File gitRepo = new File(m_workingDir, ".git");
+	public void pull() throws Exception {
+		if (m_git == null) {
+			throw new IllegalStateException("Please call setup() to initiailize git first!");
+		}
 
-		m_workingDir.mkdirs();
+		m_reporter.log("Pulling from git ... ");
+		m_git.pull().setProgressMonitor(m_monitor).call();
+		m_reporter.log("Pulled from git ... ");
+	}
 
-		try {
+	@Override
+	public void push() throws Exception {
+		if (m_git == null) {
+			throw new IllegalStateException("Please call setup() to initiailize git first!");
+		}
+
+		// Push heads
+		m_reporter.log("Pushing to git heads ... ");
+		m_git.push().setProgressMonitor(m_monitor).setPushAll().call();
+		m_reporter.log("Pushed to git heads ... ");
+
+		// Push heads
+		m_reporter.log("Pushing to git tags ... ");
+		m_git.push().setPushTags().setProgressMonitor(m_monitor).call();
+		m_reporter.log("Pushed to git tags ... ");
+	}
+
+	@Override
+	public synchronized void setup() throws Exception {
+		if (m_git == null) {
+			m_workingDir = new File(m_configManager.getGitWorkingDir());
+			m_workingDir.mkdirs();
+
+			File gitRepo = new File(m_workingDir, ".git");
+
 			if (!gitRepo.exists()) {
 				String gitURL = m_configManager.getGitOriginUrl();
 				m_reporter.log(String.format("Cloning repo from %s ... ", gitURL));
@@ -95,31 +130,6 @@ public class DefaultGitService implements GitService, Initializable {
 			} else {
 				m_git = Git.open(m_workingDir);
 			}
-
-		} catch (Exception e) {
-			throw new InitializationException(String.format("Error when initializing git repository(%s)!", m_workingDir),
-			      e);
 		}
-
-	}
-
-	@Override
-	public void pull() throws Exception {
-		m_reporter.log("Pulling from git ... ");
-		m_git.pull().setProgressMonitor(m_monitor).call();
-		m_reporter.log("Pulled from git ... ");
-	}
-
-	@Override
-	public void push() throws Exception {
-		// Push heads
-		m_reporter.log("Pushing to git heads ... ");
-		m_git.push().setProgressMonitor(m_monitor).setPushAll().call();
-		m_reporter.log("Pushed to git heads ... ");
-
-		// Push heads
-		m_reporter.log("Pushing to git tags ... ");
-		m_git.push().setPushTags().setProgressMonitor(m_monitor).call();
-		m_reporter.log("Pushed to git tags ... ");
 	}
 }
