@@ -16,6 +16,7 @@ import org.mockito.stubbing.Answer;
 import com.dianping.phoenix.agent.core.event.Event;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
+import com.dianping.phoenix.agent.core.log.TransactionLog;
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.Task.Status;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
@@ -41,7 +42,7 @@ public class DefaultAgentTest {
 				trackerCalled.set(true);
 			}
 		};
-		Transaction tx = new Transaction(mock(WarUpdateTask.class), new TransactionId(1L), true, eventTracker);
+		Transaction tx = new Transaction(mock(WarUpdateTask.class), new TransactionId(1L), eventTracker, mock(TransactionLog.class));
 		agent.submit(tx);
 		Assert.assertTrue(trackerCalled.get());
 	}
@@ -56,10 +57,10 @@ public class DefaultAgentTest {
 			public void onEvent(Event event) {
 			}
 		};
-		Transaction tx = new Transaction(task, txId, true, eventTracker );
+		Transaction tx = new Transaction(task, txId, eventTracker, mock(TransactionLog.class));
 		agent.submit(tx);
 		char[] buf = new char[4096];
-		agent.getLog(txId).read(buf);
+		agent.getLog(txId, 0).read(buf);
 		Assert.assertTrue(buf.length > 0);
 	}
 
@@ -67,7 +68,7 @@ public class DefaultAgentTest {
 	public void testTrackLifecycleEvent() {
 		Task task = mock(Task.class);
 		TransactionId txId = new TransactionId(1L);
-		Transaction tx = new Transaction(task, txId, true, null);
+		Transaction tx = new Transaction(task, txId, null, mock(TransactionLog.class));
 		TaskProcessor taskProcessor = mock(TaskProcessor.class);
 		final List<Status> statusHolder = new ArrayList<Task.Status>();
 		doAnswer(new Answer<Object>() {

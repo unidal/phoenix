@@ -4,38 +4,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.dianping.phoenix.agent.core.Transaction;
 import com.dianping.phoenix.agent.core.TransactionId;
-import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.task.Task.Status;
 
 public abstract class AbstractSerialTaskProcessor implements TaskProcessor {
 
 	private Map<TransactionId, Transaction> txId2Tx = new ConcurrentHashMap<TransactionId, Transaction>();
+	private Lock lock = new ReentrantLock();
 
 	protected abstract void doProcess(Transaction tx);
-	
+
 	@Override
 	public void submit(Transaction tx) {
+		if (lock.tryLock()) {
+			try {
+				registerTransaction(tx);
 
-		EventTracker eventTracker = tx.getEventTracker();
-		if (!idle()) {
-			eventTracker.onEvent(new LifecycleEvent("some task is running", Status.REJECTED));
-			return;
-		}
-		registerTransaction(tx);
-		
-		doProcess(tx);
-		
-		if (tx.isAutoCommit()) {
-			commit(tx.getTxId());
-		}
-	}
+				try {
+					doProcess(tx);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
 
-	private boolean idle() {
-		return txId2Tx.isEmpty();
+				deRegisterTask(tx.getTxId());
+			} catch (Exception e) {
+				// TODO: handle exception
+			} finally {
+				lock.unlock();
+			}
+		} else {
+			tx.getEventTracker().onEvent(new LifecycleEvent("some task is running", Status.REJECTED));
+		}
+
 	}
 
 	private void registerTransaction(Transaction tx) {
@@ -47,18 +52,8 @@ public abstract class AbstractSerialTaskProcessor implements TaskProcessor {
 	}
 
 	@Override
-	public void rollback(TransactionId txId) {
-		deRegisterTask(txId);
-	}
-
-	@Override
-	public void commit(TransactionId txId) {
-		deRegisterTask(txId);
-	}
-
-	@Override
 	public List<Transaction> currentTransactions() {
 		return new ArrayList<Transaction>(txId2Tx.values());
 	}
-	
+
 }
