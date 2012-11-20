@@ -12,18 +12,6 @@ import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 public class ShellCmdTaskProcessor implements TaskProcessor {
 
 	@Override
-	public void commit(TransactionId txId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void rollback(TransactionId txId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void submit(Transaction tx) {
 		ShellCmdTask shellCmdTask = (ShellCmdTask) tx.getTask();
 		Random rnd = new Random();
@@ -43,6 +31,12 @@ public class ShellCmdTaskProcessor implements TaskProcessor {
 	public List<Transaction> currentTransactions() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean cancel(TransactionId txId) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

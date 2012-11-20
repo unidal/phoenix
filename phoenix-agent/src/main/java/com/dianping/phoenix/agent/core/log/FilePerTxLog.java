@@ -14,59 +14,48 @@ import org.apache.log4j.Logger;
 
 import com.dianping.phoenix.agent.core.TransactionId;
 
-public class PropertyFileBasedLog implements TransactionLog {
+public class FilePerTxLog implements TransactionLog {
 
-	private final static Logger logger = Logger.getLogger(PropertyFileBasedLog.class);
-	
+	private final static Logger logger = Logger.getLogger(FilePerTxLog.class);
+
 	private final static String LOG_ROOT = "/Volumes/HDD2/tmp/log/";
 	private final static String ENCODING = "UTF-8";
-	
+
 	private File txId2File(TransactionId txId) throws IOException {
 		String normalizedTxId = txId.toReadableFormat();
-		if(normalizedTxId.length() < 2) {
+		if (normalizedTxId.length() < 2) {
 			normalizedTxId = "00" + normalizedTxId;
 		}
 		String prefixDir = normalizedTxId.substring(0, 2) + "/";
 		String fileName = normalizedTxId.substring(2) + ".log";
 		File file = new File(LOG_ROOT + prefixDir + fileName);
-		if(!file.getParentFile().exists()) {
+		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
 		}
-		if(!file.exists()) {
+		if (!file.exists()) {
 			file.createNewFile();
 		}
 		return file;
 	}
-	
+
 	@Override
-	public void log(TransactionId txId, String log) {
-		Writer writer = null;
-		OutputStream fout;
-		try {
-			fout = new FileOutputStream(txId2File(txId), true);
-			writer = new OutputStreamWriter(fout, ENCODING);
-			writer.write(log);
-			writer.close();
-			fout.close();
-		} catch (Exception e) {
-			logger.error(String.format("can not write to file %s", txId), e);
-		}
+	public OutputStream getOutputStream(TransactionId txId) throws IOException {
+		return new FileOutputStream(txId2File(txId), true);
 	}
 
 	@Override
-	public void close(TransactionId txId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Reader getLog(TransactionId txId) {
+	public Reader getLog(TransactionId txId, int offset) {
 		try {
 			return new InputStreamReader(new FileInputStream(txId2File(txId)), ENCODING);
 		} catch (Exception e) {
 			logger.error(String.format("can not open file %s", txId), e);
 			return null;
 		}
+	}
+
+	@Override
+	public Writer getWriter(TransactionId txId) throws IOException {
+		return new OutputStreamWriter(getOutputStream(txId), ENCODING);
 	}
 
 }

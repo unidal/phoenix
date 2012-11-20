@@ -1,0 +1,11 @@
+package com.dianping.phoenix.agent.core.shell;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+public interface ScriptExecutor {
+
+	int exec(String scriptPath, OutputStream stdOut, OutputStream stdErr) throws IOException;
+	void kill();
+	
+}

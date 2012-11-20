@@ -1,5 +1,6 @@
 package com.dianping.phoenix.agent.core;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.dianping.phoenix.agent.core.event.Event;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.EventTrackerChain;
-import com.dianping.phoenix.agent.core.event.MessageEvent;
 import com.dianping.phoenix.agent.core.log.InMemoryTransactionLog;
 import com.dianping.phoenix.agent.core.log.TransactionLog;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
@@ -33,7 +33,12 @@ public class DefaultAgent implements Agent {
 
 			@Override
 			public void onEvent(Event event) {
-				txLog.log(txId, event.getMsg());
+				try {
+					txLog.getWriter(txId).write(event.getMsg());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		eventTrackerChain.add(tx.getEventTracker());
@@ -44,36 +49,24 @@ public class DefaultAgent implements Agent {
 		taskProcessor.submit(tx);
 	}
 
-	@Override
-	public void commit(TransactionId txId) {
-		eventTrackerChain.onEvent(new MessageEvent("commit " + txId));
-		TaskProcessor taskProcessor = txId2Processor.get(txId);
-		if(taskProcessor == null) {
-			// TODO: 
-		} else {
-			taskProcessor.commit(txId);
-		}
-	}
 
 	@Override
-	public void rollback(TransactionId txId) {
-		eventTrackerChain.onEvent(new MessageEvent("rollback " + txId));
-		TaskProcessor taskProcessor = txId2Processor.get(txId);
-		if(taskProcessor == null) {
-			// TODO: 
-		} else {
-			taskProcessor.rollback(txId);
-		}
-	}
-
-	@Override
-	public Reader getLog(TransactionId txId) {
-		return txLog.getLog(txId);
+	public Reader getLog(TransactionId txId, int offset) throws IOException {
+		return txLog.getLog(txId, offset);
 	}
 
 	@Override
 	public List<Transaction> currentTransactions() {
 		return TaskProcessorFactory.getInstance().currentTransactions();
+	}
+
+	@Override
+	public boolean cancel(TransactionId txId) {
+		TaskProcessor processor = txId2Processor.get(txId);
+		if(processor != null) {
+			return processor.cancel(txId);
+		}
+		return true;
 	}
 
 }

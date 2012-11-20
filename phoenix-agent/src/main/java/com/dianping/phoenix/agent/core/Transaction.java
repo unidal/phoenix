@@ -1,20 +1,21 @@
 package com.dianping.phoenix.agent.core;
 
 import com.dianping.phoenix.agent.core.event.EventTracker;
+import com.dianping.phoenix.agent.core.log.TransactionLog;
 import com.dianping.phoenix.agent.core.task.Task;
 
 public class Transaction {
 
 	private Task task;
 	private TransactionId txId;
-	private boolean autoCommit;
 	private EventTracker eventTracker;
+	private TransactionLog txLog;
 
-	public Transaction(Task task, TransactionId txId, boolean autoCommit, EventTracker eventTracker) {
+	public Transaction(Task task, TransactionId txId, EventTracker eventTracker, TransactionLog txLog) {
 		this.task = task;
 		this.txId = txId;
-		this.autoCommit = autoCommit;
 		this.eventTracker = eventTracker;
+		this.txLog = txLog;
 	}
 
 	public Task getTask() {
@@ -25,14 +26,14 @@ public class Transaction {
 		return txId;
 	}
 
-	public boolean isAutoCommit() {
-		return autoCommit;
-	}
-
 	public EventTracker getEventTracker() {
 		return eventTracker;
 	}
-	
+
+	public TransactionLog getTxLog() {
+		return txLog;
+	}
+
 	public void setEventTracker(EventTracker eventTracker) {
 		this.eventTracker = eventTracker;
 	}
