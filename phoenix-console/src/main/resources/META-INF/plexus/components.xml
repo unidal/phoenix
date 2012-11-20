@@ -202,5 +202,18 @@
 			<role>com.dianping.phoenix.console.page.deploy.JspViewer</role>
 			<implementation>com.dianping.phoenix.console.page.deploy.JspViewer</implementation>
 		</component>
+		<component>
+			<role>com.dianping.phoenix.console.page.version.Handler</role>
+			<implementation>com.dianping.phoenix.console.page.version.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.page.version.JspViewer</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.page.version.JspViewer</role>
+			<implementation>com.dianping.phoenix.console.page.version.JspViewer</implementation>
+		</component>
 	</components>
 </plexus>

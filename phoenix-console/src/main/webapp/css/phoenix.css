@@ -64,4 +64,8 @@ table.lion input[type="radio"], input[type="checkbox"] {
   background-color: white !important;
 }
 
+.terminal-like {
+	color: #00dd11;
+	background-color: #000;
+}
 
