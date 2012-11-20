@@ -1,5 +1,7 @@
 package com.dianping.phoenix.agent.core;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -9,6 +11,7 @@ import com.dianping.phoenix.agent.core.event.Event;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.event.MessageEvent;
+import com.dianping.phoenix.agent.core.log.TransactionLog;
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.Task.Status;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
@@ -82,13 +85,8 @@ public class ConsoleTest {
 		tasks.add(new ShellCmdTask("ps ax"));
 		
 		for (Task task : tasks) {
-			Transaction tx = new Transaction(task, generateTxId(), false, eventTracker);
+			Transaction tx = new Transaction(task, generateTxId(), eventTracker, mock(TransactionLog.class));
 			agent.submit(tx);
-			if(taskSuccess.get()) {
-				agent.commit(tx.getTxId());
-			} else {
-				agent.rollback(tx.getTxId());
-			}
 		}
 		
 	}

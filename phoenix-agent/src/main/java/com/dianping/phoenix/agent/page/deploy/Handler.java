@@ -13,6 +13,7 @@ import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.event.MessageEvent;
+import com.dianping.phoenix.agent.core.log.InMemoryTransactionLog;
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.war.Artifact;
 import com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTask;
@@ -26,6 +27,7 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 public class Handler implements PageHandler<Context> {
 	@Inject
 	private Shell m_shell;
+
 	Agent agent = new DefaultAgent();
 
 	@Override
@@ -41,55 +43,37 @@ public class Handler implements PageHandler<Context> {
 		Payload payload = ctx.getPayload();
 
 		final OutputStream resOut = ctx.getHttpServletResponse().getOutputStream();
-		
-		switch (payload.getAction()) {
-		case PREPARE:
-			System.out.println("prepare");
-			EventTracker eventTracker = new AbstractEventTracker() {
 
-				@Override
-				protected void onLifecycleEvent(LifecycleEvent event) {
-					try {
-						resOut.write(event.getStatus().toString().getBytes());
-						resOut.write("<br/>".getBytes());
-						resOut.flush();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+		EventTracker eventTracker = new AbstractEventTracker() {
+
+			@Override
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				try {
+					resOut.write(event.getStatus().toString().getBytes());
+					resOut.write("<br/>".getBytes());
+					resOut.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			protected void onMessageEvent(MessageEvent event) {
+				try {
+					resOut.write(event.getMsg().getBytes());
+					resOut.write("<br/>".getBytes());
+					resOut.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 
-				@Override
-				protected void onMessageEvent(MessageEvent event) {
-					try {
-						resOut.write(event.getMsg().getBytes());
-						resOut.write("<br/>".getBytes());
-						resOut.flush();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+			}
 
-				}
-				
-			};
-			TransactionId txId = new TransactionId(11L);
-			Artifact artifactToUpdate = new Artifact("user-web", "1.0");
-			Task task = new WarUpdateTask(artifactToUpdate, "1.1");
-			Transaction tx = new Transaction(task, txId, true, eventTracker);
-			agent.submit(tx );
-//			m_shell.prepare(payload.getVersion(), resOut);
-			break;
-		case ACTIVATE:
-			System.out.println("activate");
-//			m_shell.activate(resOut);
-			break;
-		case COMMIT:
-//			m_shell.commit(resOut);
-			break;
-		case ROLLBACK:
-//			m_shell.rollback(payload.getVersion(), resOut);
-			break;
-		default:
-			break;
-		}
+		};
+		TransactionId txId = new TransactionId(11L);
+		Artifact artifactToUpdate = new Artifact("user-web", "1.0");
+		Task task = new WarUpdateTask(artifactToUpdate, "1.1");
+		Transaction tx = new Transaction(task, txId, eventTracker, new InMemoryTransactionLog());
+		agent.submit(tx);
 	}
 }
