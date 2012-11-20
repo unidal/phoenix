@@ -29,8 +29,9 @@
 				</a> <a class="brand" href="/phoenix/console">Phoenix</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li><a href="${model.webapp}/${page.moduleName}console">Home</a></li>
-						<li><a href="${model.webapp}/${page.moduleName}console?op=about">About</a></li>
+						<li><a href="${model.moduleUri}/home">Home</a></li>
+						<li><a href="${model.moduleUri}/version">Version</a></li>
+						<li><a href="${model.moduleUri}?op=about">About</a></li>
 					</ul>
 				</div>
 				<!--/.nav-collapse -->

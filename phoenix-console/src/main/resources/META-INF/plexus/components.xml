@@ -57,22 +57,13 @@
 			<implementation>com.dianping.phoenix.service.DefaultVersionManager</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.console.dal.deploy.VersionDao</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.service.VersionService</role>
-			<implementation>com.dianping.phoenix.service.DefaultVersionService</implementation>
-			<requirements>
-				<requirement>
 					<role>com.dianping.phoenix.service.WarService</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.service.GitService</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.service.VersionManager</role>
+					<role>com.dianping.phoenix.console.dal.deploy.VersionDao</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -216,6 +207,9 @@
 			<role>com.dianping.phoenix.console.page.version.Handler</role>
 			<implementation>com.dianping.phoenix.console.page.version.Handler</implementation>
 			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.service.VersionManager</role>
+				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.version.JspViewer</role>
 				</requirement>
