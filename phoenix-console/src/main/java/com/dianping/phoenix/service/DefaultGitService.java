@@ -9,6 +9,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.util.FS;
 import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
 
@@ -119,15 +120,25 @@ public class DefaultGitService implements GitService {
 			m_workingDir.mkdirs();
 
 			File gitRepo = new File(m_workingDir, ".git");
+			File phoenixHome = new File("src/main/resources/git");
 
 			if (!gitRepo.exists()) {
 				String gitURL = m_configManager.getGitOriginUrl();
 				m_reporter.log(String.format("Cloning repo from %s ... ",
 						gitURL));
 				FileRepositoryBuilder builder = new FileRepositoryBuilder();
-				Repository repository = builder.setGitDir(gitRepo)
-						.readEnvironment().findGitDir().build();
-				builder.getFS().setUserHome(new File("src/main/resources/git"));
+				builder.setGitDir(gitRepo)
+				.readEnvironment().findGitDir();
+				
+				FS fs = builder.getFS();
+				if(fs == null){
+					fs = FS.DETECTED;
+				}
+				fs.setUserHome(phoenixHome);
+				
+				Repository repository = builder.build();
+				
+				
 				m_git = new Git(repository);
 				CloneCommand clone = Git.cloneRepository();
 				clone.setProgressMonitor(m_monitor);
@@ -137,13 +148,13 @@ public class DefaultGitService implements GitService {
 				clone.setURI(gitURL);
 				try {
 					clone.call();
-				} finally {
+				}catch(Exception e){
 					Files.forDir().delete(new File(m_workingDir, ".git"), true);
 				}
 				m_reporter.log(String.format("Cloning repo from %s ... DONE.",
 						gitURL));
 			} else {
-				m_git = Git.open(m_workingDir);
+				m_git = Git.open(m_workingDir,FS.DETECTED.setUserHome(phoenixHome));
 			}
 		}
 	}
