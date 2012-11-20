@@ -24,8 +24,6 @@ public class DefaultGitService implements GitService {
 	@Inject
 	private ProgressMonitor m_monitor;
 
-	private CredentialsProvider m_credentialsProvider;
-
 	private File m_workingDir = new File("target/gitrepo");
 
 	private Git m_git;
@@ -92,8 +90,7 @@ public class DefaultGitService implements GitService {
 		}
 
 		m_reporter.log("Pulling from git ... ");
-		m_git.pull().setProgressMonitor(m_monitor)
-				.setCredentialsProvider(m_credentialsProvider).call();
+		m_git.pull().setProgressMonitor(m_monitor).call();
 		m_reporter.log("Pulling from git ... DONE.");
 	}
 
@@ -106,24 +103,18 @@ public class DefaultGitService implements GitService {
 
 		// Push heads
 		m_reporter.log("Pushing to git heads ... ");
-		m_git.push().setProgressMonitor(m_monitor)
-				.setCredentialsProvider(m_credentialsProvider).setPushAll()
-				.call();
+		m_git.push().setProgressMonitor(m_monitor).setPushAll().call();
 		m_reporter.log("Pushing to git heads ... DONE.");
 
 		// Push heads
 		m_reporter.log("Pushing to git tags ... ");
-		m_git.push().setPushTags().setProgressMonitor(m_monitor)
-				.setCredentialsProvider(m_credentialsProvider).call();
+		m_git.push().setPushTags().setProgressMonitor(m_monitor).call();
 		m_reporter.log("Pushing to git tags ... DONE");
 	}
 
 	@Override
 	public synchronized void setup() throws Exception {
 		if (m_git == null) {
-			m_credentialsProvider = new UsernamePasswordCredentialsProvider(
-					m_configManager.getGitUserName(),
-					m_configManager.getGitPassword());
 			m_workingDir = new File(m_configManager.getGitWorkingDir());
 			m_workingDir.mkdirs();
 
@@ -136,11 +127,11 @@ public class DefaultGitService implements GitService {
 				FileRepositoryBuilder builder = new FileRepositoryBuilder();
 				Repository repository = builder.setGitDir(gitRepo)
 						.readEnvironment().findGitDir().build();
+				builder.getFS().setUserHome(new File("src/main/resources/git"));
 				m_git = new Git(repository);
 				CloneCommand clone = Git.cloneRepository();
 				clone.setProgressMonitor(m_monitor);
 				clone.setBare(false);
-				clone.setCredentialsProvider(m_credentialsProvider);
 				clone.setDirectory(m_workingDir);
 				clone.setCloneAllBranches(true);
 				clone.setURI(gitURL);

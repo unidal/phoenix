@@ -26,24 +26,6 @@ public class ConfigManager implements Initializable {
 		}
 	}
 
-	public String getGitPassword() {
-		if (m_config == null) {
-			throw new RuntimeException(
-					"ConfigManager is not initialized properly!");
-		} else {
-			return m_config.getGit().getPassword();
-		}
-	}
-
-	public String getGitUserName() {
-		if (m_config == null) {
-			throw new RuntimeException(
-					"ConfigManager is not initialized properly!");
-		} else {
-			return m_config.getGit().getUserName();
-		}
-	}
-
 	public String getGitWorkingDir() {
 		if (m_config == null) {
 			throw new RuntimeException(
