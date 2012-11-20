@@ -7,9 +7,11 @@ public interface GitService {
 
 	public void commit(String tag, String description) throws Exception;
 
+	public File getWorkingDir();
+
 	public void pull() throws Exception;
 
 	public void push() throws Exception;
 
-	public File getWorkingDir();
+	public void setup() throws Exception;
 }

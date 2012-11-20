@@ -22,58 +22,16 @@
 					<thead>
 						<tr>
 							<th>Version</th>
-							<th>Desc<!-- <i class="icon-refresh pull-right"></i> --></th>
+							<th>Description<i class="icon-refresh pull-right"></i></th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>0.0.0.3</td>
-							<td>升级lion-client版本到2.0.0, pigeon版本到1.8.0</td>
-						</tr>
-						<tr>
-							<td>0.0.0.3</td>
-							<td>升级swallow版本到2.0.0</td>
-						</tr>
-						<tr>
-							<td>0.0.0.2</td>
-							<td>升级pigeon版本到1.7.4</td>
-						</tr>
-						<tr>
-							<td>0.0.0.1</td>
-							<td>第一个统一版本</td>
-						</tr>
-						<tr>
-							<td>0.0.0.3</td>
-							<td>升级lion-client版本到2.0.0, pigeon版本到1.8.0</td>
-						</tr>
-						<tr>
-							<td>0.0.0.3</td>
-							<td>升级swallow版本到2.0.0</td>
-						</tr>
-						<tr>
-							<td>0.0.0.2</td>
-							<td>升级pigeon版本到1.7.4</td>
-						</tr>
-						<tr>
-							<td>0.0.0.1</td>
-							<td>第一个统一版本</td>
-						</tr>
-						<tr>
-							<td>0.0.0.3</td>
-							<td>升级lion-client版本到2.0.0, pigeon版本到1.8.0</td>
-						</tr>
-						<tr>
-							<td>0.0.0.3</td>
-							<td>升级swallow版本到2.0.0</td>
-						</tr>
-						<tr>
-							<td>0.0.0.2</td>
-							<td>升级pigeon版本到1.7.4</td>
-						</tr>
-						<tr>
-							<td>0.0.0.1</td>
-							<td>第一个统一版本</td>
-						</tr>
+						<c:forEach var="version" items="${model.versions}">
+							<tr>
+								<td>${version.version}</td>
+								<td>${version.description}</td>
+							</tr>
+						</c:forEach>
 					</tbody>
 				</table>
 			</div>
@@ -136,9 +94,12 @@
 		
 		<div class="row-fluid">
 			<div class="span12 thumbnail">
-				Version：<input type="text" style="margin-bottom: 0px;">&nbsp;&nbsp;&nbsp;
-				Desc：<input type="text" style="margin-bottom: 0px;" class="input-xxlarge">
+				<form method="get">
+				<input type="hidden" name="op" value="add">
+				Version：<input type="text" name="version" value="${payload.version}">&nbsp;&nbsp;&nbsp;
+				Description：<input type="text" name="desc" value="${payload.description}" class="input-xxlarge">
 				<button type="submit" class="btn btn-primary">&nbsp;创建&nbsp; </button>
+				</form>
 			</div>
 		</div>
 		<br />
