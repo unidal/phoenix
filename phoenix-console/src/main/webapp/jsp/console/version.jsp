@@ -37,7 +37,7 @@
 							<tr class="version_row">
 								<td>${version.version}</td>
 								<td>
-									${version.description}
+									${version.description} <font color="white">${version.id}</font>
 									<span class="pull-right hide btn_container">
 										<button version="${version.version}" class="btn btn-mini2 pull-right" name="btn_del" type="button">删除</button>
 									</span>
@@ -51,8 +51,8 @@
 				<table class="table table-striped table-condensed lion">
 					<thead>
 						<tr>
-							<th>Group</th>
-							<th>Artifact</th>
+							<th>Group Id</th>
+							<th>Artifact Id</th>
 							<th>Version</th>
 						</tr>
 					</thead>

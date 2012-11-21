@@ -5,7 +5,7 @@
     <entity-ref name="git" />
   </entity>
   <entity name="git" class-name="GitConfig">
-    <element name="origin-url" value-type="String" default-value="git@github.com:firefox007/phoenix_test.git" />
+    <element name="origin-url" value-type="String" default-value="ssh://git@10.1.4.81:58422/phoenix-kernel.git" />
     <element name="local-dir" value-type="String" default-value="target/git" />
   </entity>
 </model>
