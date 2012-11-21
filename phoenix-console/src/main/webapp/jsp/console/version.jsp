@@ -29,7 +29,7 @@
 						<c:forEach var="version" items="${model.versions}">
 							<tr>
 								<td>${version.version}</td>
-								<td>${version.description}</td>
+								<td>${version.description} <font color="white">${version.id}</font></td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -39,8 +39,8 @@
 				<table class="table table-striped table-condensed lion">
 					<thead>
 						<tr>
-							<th>Group</th>
-							<th>Artifact</th>
+							<th>Group Id</th>
+							<th>Artifact Id</th>
 							<th>Version</th>
 						</tr>
 					</thead>

@@ -18,7 +18,7 @@
 							<td width="200">shop-web</td>
 							<th width="100">Owner</th>
 							<td width="200">jianbing.xu</td>
-							<th width="100">Desc</th>
+							<th width="100">Description</th>
 							<td>图片前台web应用</td>
 						</tr>
 					</tbody>
@@ -26,15 +26,9 @@
 			</div>
 		</div>
 		
+		<form>
 		<div class="row-fluid">
 			<div class="span3">
-				<!-- 
-				<div class="row-fluid">
-					<div class="span12" style="min-height: 0px;">
-						<li class="icon-arrow-right"></li>：右侧显示选定机器上该项目的依赖包情况
-					</div>
-				</div>
-				 -->
 				<div class="row-fluid">
 					<div class="span12 thumbnail" style="height:280px;overflow-y: auto;">
 						<table class="table table-striped table-condensed lion">
@@ -51,7 +45,7 @@
 							<tbody>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_1">
+										<input type="checkbox" name="hosts" value="192.168.8.40" id="machine_1">
 										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_1">192.168.8.40</label><div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -59,7 +53,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_2">
+										<input type="checkbox" name="hosts" value="192.168.8.41" id="machine_2">
 										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_2">192.168.8.41</label><div class="u6 a-f-e" title="忙碌"></div>
 									</td>
 									<td>1.0</td>
@@ -67,7 +61,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_3">
+										<input type="checkbox" name="hosts" id="machine_3">
 										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_3">192.168.8.42</label><div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -75,7 +69,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_4">
+										<input type="checkbox" name="hosts" id="machine_4">
 										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_4">192.168.8.43</label><div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -83,7 +77,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_5">
+										<input type="checkbox" name="hosts" id="machine_5">
 										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_5">192.168.8.44</label><div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -91,7 +85,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_6">
+										<input type="checkbox" name="hosts" id="machine_6">
 										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_6">192.168.8.40</label><div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -99,7 +93,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_7">
+										<input type="checkbox" name="hosts" id="machine_7">
 										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_7">192.168.8.40</label><div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -107,7 +101,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_8">
+										<input type="checkbox" name="hosts" id="machine_8">
 										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_8">192.168.8.40</label><div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -115,7 +109,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_9">
+										<input type="checkbox" name="hosts" id="machine_9">
 										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_9">192.168.8.40</label><div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -123,7 +117,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_10">
+										<input type="checkbox" name="hosts" id="machine_10">
 										192.168.8.41<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -131,7 +125,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_11">
+										<input type="checkbox" name="hosts" id="machine_11">
 										192.168.8.42<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -139,7 +133,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_12">
+										<input type="checkbox" name="hosts" id="machine_12">
 										192.168.8.43<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -147,7 +141,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_13">
+										<input type="checkbox" name="hosts" id="machine_13">
 										192.168.8.40<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -155,7 +149,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_14">
+										<input type="checkbox" name="hosts" id="machine_14">
 										192.168.8.41<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -163,7 +157,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_15">
+										<input type="checkbox" name="hosts" id="machine_15">
 										192.168.8.42<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -171,7 +165,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_16">
+										<input type="checkbox" name="hosts" id="machine_16">
 										192.168.8.43<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -179,7 +173,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_17">
+										<input type="checkbox" name="hosts" id="machine_17">
 										192.168.8.40<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -187,7 +181,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_18">
+										<input type="checkbox" name="hosts" id="machine_18">
 										192.168.8.41<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -195,7 +189,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_19">
+										<input type="checkbox" name="hosts" id="machine_19">
 										192.168.8.42<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -203,7 +197,7 @@
 								</tr>
 								<tr>
 									<td>
-										<input type="checkbox" name="machine_sel" id="machine_20">
+										<input type="checkbox" name="hosts" id="machine_20">
 										192.168.8.43<div class="z6 a-f-e" title="在线"></div>
 									</td>
 									<td>1.0</td>
@@ -223,7 +217,7 @@
 								<tr>
 									<th width="15%">Kernel Version</th>
 									<td>
-										<select name="KernelVersion">
+										<select name="plan.version">
 											<option>1.0.0</option>
 											<option>1.0.1</option>
 											<option>1.0.2</option>
@@ -240,63 +234,59 @@
 				</div>
 			
 				<h3>Deploy policy</h3>
-				<form class="form-horizontal" method="get">
-					<input type="hidden" name="op" value="deploy"/>
-					<div class="row-fluid">
-						<div class="span12 thumbnail">
-							 <table class="table table-condensed lion nohover" style="margin:0 0 0;border-bottom:1px solid #DDD;">
-							 	<thead>
-								    <tr>
-										<th colspan="3">
-											<label for="pc-${id}" class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">部署方式</strong></label>
-										</th>
-								    </tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td width="190">
-											<input type="radio" id="deploy_1" name="deploy_type" checked="checked"><label for="deploy_1">1 -> 1 -> 1 -> 1 ( 每次一台 )</label>
-										</td>
-										<td width="190">
-											<input type="radio" id="deploy_2" name="deploy_type"><label for="deploy_2">1 -> 2 -> 2 -> 2 ( 每次两台 )</label>
-										</td>
-										<td>
-											<input type="radio" id="deploy_3" name="deploy_type"><label for="deploy_3">1 -> 2 -> 4 -> 6 ( +2递增 )</label>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<table class="table table-condensed lion nohover" style="margin:0 0 0;border-bottom:1px solid #DDD;">
-							 	<thead>
-								    <tr>
-										<th colspan="3">
-											<label for="pc-${id}" class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">错误处理</strong></label>
-										</th>
-								    </tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td width="180">
-											<input type="radio" id="error_1" name="error_type" checked="checked"><label for="error_1">终断后续发布</label>
-										</td>
-										<td>
-											<input type="radio" id="error_2" name="error_type"><label for="error_2">继续后续发布</label>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+				<input type="hidden" name="op" value="deploy"/>
+				<div class="row-fluid">
+					<div class="span12 thumbnail">
+						 <table class="table table-condensed lion nohover" style="margin:0 0 0;border-bottom:1px solid #DDD;">
+						 	<thead>
+							    <tr>
+									<th colspan="3">
+										<label for="pc-${id}" class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">部署方式</strong></label>
+									</th>
+							    </tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="190">
+										<input type="radio" id="deploy_1" name="plan.policy" value="1" checked="checked"><label for="deploy_1">1 -> 1 -> 1 -> 1 ( 每次一台 )</label>
+									</td>
+									<td width="190">
+										<input type="radio" id="deploy_2" name="plan.policy" value="2"><label for="deploy_2">1 -> 2 -> 2 -> 2 ( 每次两台 )</label>
+									</td>
+									<td>
+										<input type="radio" id="deploy_3" name="plan.policy" value="3"><label for="deploy_3">1 -> 2 -> 4 -> 6 ( +2递增 )</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="table table-condensed lion nohover" style="margin:0 0 0;border-bottom:1px solid #DDD;">
+						 	<thead>
+							    <tr>
+									<th colspan="3">
+										<label for="pc-${id}" class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">错误处理</strong></label>
+									</th>
+							    </tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="180">
+										<input type="radio" id="error_1" name="plan.abortOnError" value="true" checked="checked"><label for="error_1">终断后续发布</label>
+									</td>
+									<td>
+										<input type="radio" id="error_2" name="plan.abortOnError" value="false"><label for="error_2">继续后续发布</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-					<br />
-					<div class="row-fluid">
-						<button type="submit" class="btn btn-primary">Deploy</button>
-						<!-- TODO: 需要移除 -->
-						<input type="hidden" name="plan" value="pigeon1.6.1">
-						<input type="hidden" name="hosts" value="127.0.0.1">
-					</div>
-				</form>
+				</div>
+				<br />
+				<div class="row-fluid">
+					<button type="submit" class="btn btn-primary">Deploy</button>
+				</div>
 			</div>
 		</div>
+		</form>
 		
 		<br />
 		<div class="row-fluid">

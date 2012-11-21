@@ -68,6 +68,10 @@
 			</requirements>
 		</component>
 		<component>
+			<role>com.dianping.phoenix.service.DeploymentService</role>
+			<implementation>com.dianping.phoenix.service.DefaultDeploymentService</implementation>
+		</component>
+		<component>
 			<role>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</role>
 			<implementation>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</implementation>
 			<configuration>
@@ -176,10 +180,7 @@
 					<role>com.dianping.phoenix.console.page.home.JspViewer</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.console.service.ProjectService</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.console.service.DeployService</role>
+					<role>com.dianping.phoenix.service.DeploymentService</role>
 				</requirement>
 			</requirements>
 		</component>

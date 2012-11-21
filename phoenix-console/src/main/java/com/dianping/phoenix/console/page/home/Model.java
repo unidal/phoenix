@@ -2,9 +2,10 @@ package com.dianping.phoenix.console.page.home;
 
 import java.util.List;
 
-import com.dianping.phoenix.console.ConsolePage;
-import com.dianping.phoenix.console.model.entity.Project;
 import org.unidal.web.mvc.ViewModel;
+
+import com.dianping.phoenix.console.ConsolePage;
+import com.dianping.phoenix.deploy.entity.Project;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private List<Project> m_projects;

@@ -24,7 +24,7 @@ public class DefaultVersionManager implements VersionManager {
 	private VersionDao m_dao;
 
 	@Override
-	public void createVersion(String version, String description, String releaseNotes, String createdBy)
+	public Version createVersion(String version, String description, String releaseNotes, String createdBy)
 	      throws Exception {
 		File gitDir = m_gitService.getWorkingDir();
 
@@ -34,7 +34,7 @@ public class DefaultVersionManager implements VersionManager {
 		m_gitService.commit(version, description);
 		m_gitService.push();
 
-		store(version, description, releaseNotes, createdBy);
+		return store(version, description, releaseNotes, createdBy);
 	}
 
 	@Override
@@ -45,18 +45,20 @@ public class DefaultVersionManager implements VersionManager {
 	}
 
 	@Override
-	public void removeVersion(String version) throws Exception {
+	public void removeVersion(int id) throws Exception {
 		try {
-			Version proto = m_dao.findByDomainVersion(KERNEL, version, VersionEntity.READSET_FULL);
+			Version proto = m_dao.findByPK(id, VersionEntity.READSET_FULL);
 
-			proto.setStatus(1);
-			m_dao.updateByPK(proto, VersionEntity.UPDATESET_FULL);
+			if (proto.getStatus() == 0) {
+				proto.setStatus(1);
+				m_dao.updateByPK(proto, VersionEntity.UPDATESET_FULL);
+			}
 		} catch (DalNotFoundException e) {
 			// ignore it
 		}
 	}
 
-	private void store(String version, String description, String releaseNotes, String createdBy) throws DalException {
+	private Version store(String version, String description, String releaseNotes, String createdBy) throws DalException {
 		try {
 			m_dao.findByDomainVersion(KERNEL, version, VersionEntity.READSET_FULL);
 
@@ -75,6 +77,7 @@ public class DefaultVersionManager implements VersionManager {
 		proto.setStatus(0);
 
 		m_dao.insert(proto);
+		return proto;
 	}
 
 	public void setWarService(WarService warService) {
