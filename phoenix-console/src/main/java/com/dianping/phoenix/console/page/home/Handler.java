@@ -34,18 +34,19 @@ public class Handler implements PageHandler<Context> {
 	@PayloadMeta(Payload.class)
 	@InboundActionMeta(name = "home")
 	public void handleInbound(Context ctx) throws ServletException, IOException {
-		if (!ctx.hasErrors()) {
-			Payload payload = ctx.getPayload();
-			Action action = payload.getAction();
+		Payload payload = ctx.getPayload();
+		Action action = payload.getAction();
 
-			if (action == Action.DEPLOY) {
+		if (action == Action.DEPLOY) {
+			if (!ctx.hasErrors()) {
 				List<String> hosts = payload.getHosts();
 				DeploymentPlan plan = payload.getPlan();
 				String deployUri = ctx.getRequestContext().getActionUri(ConsolePage.DEPLOY.getName());
 
 				int id = m_deploymentService.deploy(hosts, plan);
-				// redirect(ctx, deployUri + "?id=" + id);
-				payload.setAction("project");
+				redirect(ctx, deployUri + "?id=" + id);
+			} else {
+				payload.setAction(Action.PROJECT.getName());
 			}
 		}
 	}

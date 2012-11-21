@@ -80,7 +80,7 @@
 						</table>
 					</div>
 				</div>
-			
+
 				<h3>Deploy policy</h3>
 				<input type="hidden" name="op" value="deploy"/>
 				<div class="row-fluid">
@@ -89,7 +89,7 @@
 						 	<thead>
 							    <tr>
 									<th colspan="3">
-										<label for="pc-${id}" class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">部署方式</strong></label>
+										<label class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">部署方式</strong></label>
 									</th>
 							    </tr>
 							</thead>
@@ -107,7 +107,7 @@
 						 	<thead>
 							    <tr>
 									<th colspan="3">
-										<label for="pc-${id}" class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">错误处理</strong></label>
+										<label class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">错误处理</strong></label>
 									</th>
 							    </tr>
 							</thead>
@@ -126,7 +126,7 @@
 				</div>
 				<br />
 				<div class="row-fluid">
-					<button type="submit" class="btn btn-primary">Deploy</button>
+					<button type="submit" name="deploy" class="btn btn-primary">Deploy</button>
 				</div>
 			</div>
 		</div>

@@ -5,7 +5,7 @@ public class DeploymentPlan {
 
 	private String m_policy;
 
-	private boolean m_abortOnError;
+	private boolean m_abortOnError = true;
 
 	public String getPolicy() {
 		return m_policy;
