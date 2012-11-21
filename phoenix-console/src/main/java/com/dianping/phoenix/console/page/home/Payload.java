@@ -25,7 +25,7 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("project")
 	private String m_project;
 
-	@FieldMeta("hosts")
+	@FieldMeta("host")
 	private List<String> m_hosts;
 
 	@ObjectMeta("plan")

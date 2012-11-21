@@ -1,25 +1,26 @@
 <%@ page contentType="text/html; charset=utf-8"%>
-<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
-<%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
+<%@ taglib prefix="a" uri="http://www.dianping.com/phoenix/console"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 <jsp:useBean id="ctx" type="com.dianping.phoenix.console.page.home.Context" scope="request" />
 <jsp:useBean id="payload" type="com.dianping.phoenix.console.page.home.Payload" scope="request" />
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.home.Model" scope="request" />
 
 <a:layout>
 
+	<c:set var="project" value="${model.project}"/>
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span12">
 				<table class="table table-bordered table-condensed nohover">
 					<tbody>
 						<tr>
-							<th width="100">Project</th>
-							<td width="200">shop-web</td>
-							<th width="100">Owner</th>
-							<td width="200">jianbing.xu</td>
-							<th width="100">Description</th>
-							<td>图片前台web应用</td>
+							<th width="80">Project</th>
+							<td width="200">${project.name}</td>
+							<th width="80">Owner</th>
+							<td width="200">${project.owner}</td>
+							<th width="80">Description</th>
+							<td>${project.description}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -27,6 +28,7 @@
 		</div>
 		
 		<form>
+		<input type="hidden" name="project" value="${payload.project}">
 		<div class="row-fluid">
 			<div class="span3">
 				<div class="row-fluid">
@@ -34,175 +36,27 @@
 						<table class="table table-striped table-condensed lion">
 							<thead>
 								<tr>
-									<th>
-										<input type="checkbox" id="pc-${id}" class="category-check"/>
-										Machine
-									</th>
+									<th><input type="checkbox" id="pc-${id}" class="category-check"/> Machine</th>
 									<th>Kernel</th>
 									<th>App</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" value="192.168.8.40" id="machine_1">
-										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_1">192.168.8.40</label><div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" value="192.168.8.41" id="machine_2">
-										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_2">192.168.8.41</label><div class="u6 a-f-e" title="忙碌"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_3">
-										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_3">192.168.8.42</label><div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_4">
-										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_4">192.168.8.43</label><div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_5">
-										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_5">192.168.8.44</label><div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_6">
-										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_6">192.168.8.40</label><div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_7">
-										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_7">192.168.8.40</label><div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_8">
-										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_8">192.168.8.40</label><div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_9">
-										<label style="margin-left: 0px;vertical-align: bottom;" for="machine_9">192.168.8.40</label><div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_10">
-										192.168.8.41<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_11">
-										192.168.8.42<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_12">
-										192.168.8.43<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_13">
-										192.168.8.40<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_14">
-										192.168.8.41<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_15">
-										192.168.8.42<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_16">
-										192.168.8.43<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_17">
-										192.168.8.40<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_18">
-										192.168.8.41<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_19">
-										192.168.8.42<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
-								<tr>
-									<td>
-										<input type="checkbox" name="hosts" id="machine_20">
-										192.168.8.43<div class="z6 a-f-e" title="在线"></div>
-									</td>
-									<td>1.0</td>
-									<td>2.0.3</td>
-								</tr>
+								<c:forEach var="host" items="${project.hosts}" varStatus="status">
+									<tr>
+										<td>
+											${w:showCheckbox('host', host, payload.hosts, 'ip', 'ip')}
+											<c:if test="${host.status=='up'}">
+											   <div class="z6 a-f-e" title="可用"></div>
+											</c:if>
+											<c:if test="${host.status=='down'}">
+											   <div class="u6 a-f-e" title="不可用"></div>
+											</c:if>
+										</td>
+										<td>1.0</td>
+										<td>2.0.3</td>
+									</tr>
+								</c:forEach>
 							</tbody>
 						</table>
 					</div>
@@ -218,13 +72,7 @@
 									<th width="15%">Kernel Version</th>
 									<td>
 										<select name="plan.version">
-											<option>1.0.0</option>
-											<option>1.0.1</option>
-											<option>1.0.2</option>
-											<option>1.0.3</option>
-											<option>1.0.4</option>
-											<option>1.2.0</option>
-											<option>1.2.1</option>
+											${w:showOptions(model.versions, payload.plan.version, 'version', 'version')}
 										</select>
 									</td>
 								</tr>
@@ -247,15 +95,11 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td width="190">
-										<input type="radio" id="deploy_1" name="plan.policy" value="1" checked="checked"><label for="deploy_1">1 -> 1 -> 1 -> 1 ( 每次一台 )</label>
-									</td>
-									<td width="190">
-										<input type="radio" id="deploy_2" name="plan.policy" value="2"><label for="deploy_2">1 -> 2 -> 2 -> 2 ( 每次两台 )</label>
-									</td>
-									<td>
-										<input type="radio" id="deploy_3" name="plan.policy" value="3"><label for="deploy_3">1 -> 2 -> 4 -> 6 ( +2递增 )</label>
-									</td>
+									<c:forEach var="policy" items="${model.policies}">
+										<td width="190">
+											${w:showRadio('plan.policy', policy, payload.plan.policy, 'id', 'description')}
+										</td>
+									</c:forEach>
 								</tr>
 							</tbody>
 						</table>
@@ -270,10 +114,10 @@
 							<tbody>
 								<tr>
 									<td width="180">
-										<input type="radio" id="error_1" name="plan.abortOnError" value="true" checked="checked"><label for="error_1">终断后续发布</label>
+										<input type="radio" id="plan.abortOnError-1" name="plan.abortOnError" value="true" ${payload.plan.abortOnError==true?'checked':''}><label for="plan.abortOnError-1">终断后续发布</label>
 									</td>
 									<td>
-										<input type="radio" id="error_2" name="plan.abortOnError" value="false"><label for="error_2">继续后续发布</label>
+										<input type="radio" id="plan.abortOnError-2" name="plan.abortOnError" value="false" ${payload.plan.abortOnError==false?'checked':''}><label for="plan.abortOnError-2">继续后续发布</label>
 									</td>
 								</tr>
 							</tbody>

@@ -7,20 +7,12 @@ public class DeploymentPlan {
 
 	private boolean m_abortOnError;
 
-	public String getVersion() {
-		return m_version;
-	}
-
-	public void setVersion(String version) {
-		m_version = version;
-	}
-
 	public String getPolicy() {
 		return m_policy;
 	}
 
-	public void setPolicy(String policy) {
-		m_policy = policy;
+	public String getVersion() {
+		return m_version;
 	}
 
 	public boolean isAbortOnError() {
@@ -29,6 +21,14 @@ public class DeploymentPlan {
 
 	public void setAbortOnError(boolean abortOnError) {
 		m_abortOnError = abortOnError;
+	}
+
+	public void setPolicy(String policy) {
+		m_policy = policy;
+	}
+
+	public void setVersion(String version) {
+		m_version = version;
 	}
 
 	@Override
