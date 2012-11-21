@@ -1,5 +1,8 @@
 package com.dianping.phoenix.service;
 
+import java.io.File;
+import java.util.List;
+
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.lookup.annotation.Inject;
@@ -12,47 +15,79 @@ public class DefaultVersionManager implements VersionManager {
 	private static final String KERNEL = "kernel";
 
 	@Inject
+	private WarService m_warService;
+
+	@Inject
+	private GitService m_gitService;
+
+	@Inject
 	private VersionDao m_dao;
 
 	@Override
-	public void createVersion(String version, String description, String releaseNotes, String createdBy) {
-		try {
-			m_dao.findByDomainVersion(KERNEL, version, VersionEntity.READSET_FULL);
+	public Version createVersion(String version, String description,
+			String releaseNotes, String createdBy) throws Exception {
+		File gitDir = m_gitService.getWorkingDir();
 
-			throw new RuntimeException(String.format("Kernel version(%s) is already existed!", version));
-		} catch (DalNotFoundException e) {
-			// expected
-		} catch (DalException e) {
-			throw new RuntimeException(String.format("Error when removing kernel version(%s)!", version), e);
-		}
+		m_gitService.pull();
+		m_gitService.clearWorkingDir();
+		m_warService.downloadAndExtractTo(version, gitDir);
+		m_gitService.commit(version, description);
+		m_gitService.push();
 
-		try {
-			Version proto = m_dao.createLocal();
-
-			proto.setDomain(KERNEL);
-			proto.setVersion(version);
-			proto.setDescription(description);
-			proto.setReleaseNotes(releaseNotes);
-			proto.setCreatedBy(createdBy);
-			proto.setStatus(0);
-
-			m_dao.insert(proto);
-		} catch (DalException e) {
-			throw new RuntimeException(String.format("Error when inserting kernel version(%s)!", version), e);
-		}
+		return store(version, description, releaseNotes, createdBy);
 	}
 
 	@Override
-	public void removeVersion(String version) {
-		try {
-			Version proto = m_dao.findByDomainVersion(KERNEL, version, VersionEntity.READSET_FULL);
+	public List<Version> getActiveVersions() throws Exception {
+		List<Version> versions = m_dao.findAllActive(KERNEL,
+				VersionEntity.READSET_FULL);
 
-			proto.setStatus(1);
-			m_dao.updateByPK(proto, VersionEntity.UPDATESET_FULL);
+		return versions;
+	}
+
+	@Override
+	public void removeVersion(int id) throws Exception {
+
+		try {
+			Version proto = m_dao.findByPK(id, VersionEntity.READSET_FULL);
+
+			m_gitService.removeTag(proto.getVersion());
+
+			if (proto.getStatus() == 0) {
+				proto.setStatus(1);
+				m_dao.updateByPK(proto, VersionEntity.UPDATESET_FULL);
+			}
 		} catch (DalNotFoundException e) {
 			// ignore it
-		} catch (DalException e) {
-			throw new RuntimeException(String.format("Error when removing kernel version(%s)!", version), e);
 		}
+	}
+
+	private Version store(String version, String description,
+			String releaseNotes, String createdBy) throws DalException {
+		try {
+			m_dao.findByDomainVersion(KERNEL, version,
+					VersionEntity.READSET_FULL);
+
+			throw new RuntimeException(String.format(
+					"Kernel version(%s) is already existed!", version));
+		} catch (DalNotFoundException e) {
+			// expected
+		}
+
+		Version proto = m_dao.createLocal();
+
+		proto.setDomain(KERNEL);
+		proto.setVersion(version);
+		proto.setDescription(description);
+		proto.setReleaseNotes(releaseNotes);
+		proto.setCreatedBy(createdBy);
+		proto.setStatus(0);
+
+		m_dao.insert(proto);
+		return proto;
+	}
+
+	public void setWarService(WarService warService) {
+		this.m_warService = warService;
 	}
 }

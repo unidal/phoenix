@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<deploy>
+	<project name="shop-web" owner="jianbing.xu">
+		<decription>商户前台web应用</decription>
+		<hosts>
+			<host ip="192.168.8.40" status="up">
+				<war name="shop-web" version="2.0.3">
+					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
+					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
+					<dependency groupId="org.apache.struts" artifactId="struts2-core" version="2.2.0" />
+					<dependency groupId="org.apache.struts" artifactId="struts2-json-plugin" version="2.1.8" />
+					<dependency groupId="org.springframework" artifactId="spring-web" version="3.0" />
+				</war>
+				<war name="kernel" version="1.0">
+					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="4.1" />
+					<dependency groupId="org.apache.struts" artifactId="struts2-json-plugin" version="2.2.0" />
+					<dependency groupId="org.springframework" artifactId="spring-web" version="2.5.6" />
+				</war>
+			</host>
+			<host ip="192.168.8.41" status="down" />
+			<host ip="192.168.8.42" status="up" />
+			<host ip="192.168.8.43" status="up" />
+			<host ip="192.168.8.44" status="up" />
+			<host ip="192.168.8.45" status="up" />
+		</hosts>
+	</project>
+	<project name="shop-service" />
+</deploy>

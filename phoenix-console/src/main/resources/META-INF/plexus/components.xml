@@ -57,24 +57,19 @@
 			<implementation>com.dianping.phoenix.service.DefaultVersionManager</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.console.dal.deploy.VersionDao</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.service.VersionService</role>
-			<implementation>com.dianping.phoenix.service.DefaultVersionService</implementation>
-			<requirements>
-				<requirement>
 					<role>com.dianping.phoenix.service.WarService</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.service.GitService</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.service.VersionManager</role>
+					<role>com.dianping.phoenix.console.dal.deploy.VersionDao</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.service.DeploymentService</role>
+			<implementation>com.dianping.phoenix.service.DefaultDeploymentService</implementation>
 		</component>
 		<component>
 			<role>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</role>
@@ -95,9 +90,9 @@
 				<statement-cache-size>1000</statement-cache-size>
 				<properties>
 					<driver>com.mysql.jdbc.Driver</driver>
-					<URL>jdbc:mysql://localhost:3306/phoenix</URL>
+					<URL>jdbc:mysql://192.168.8.45:3306/phoenix</URL>
 					<user>root</user>
-					<password></password>
+					<password>dianpingadmin</password>
 					<connectionProperties><![CDATA[useUnicode=true&autoReconnect=true]]></connectionProperties>
 				</properties>
 			</configuration>
@@ -185,10 +180,7 @@
 					<role>com.dianping.phoenix.console.page.home.JspViewer</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.console.service.ProjectService</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.console.service.DeployService</role>
+					<role>com.dianping.phoenix.service.DeploymentService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -216,6 +208,9 @@
 			<role>com.dianping.phoenix.console.page.version.Handler</role>
 			<implementation>com.dianping.phoenix.console.page.version.Handler</implementation>
 			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.service.VersionManager</role>
+				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.version.JspViewer</role>
 				</requirement>

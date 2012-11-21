@@ -19,7 +19,8 @@ public class ConfigManager implements Initializable {
 
 	public String getGitOriginUrl() {
 		if (m_config == null) {
-			throw new RuntimeException("ConfigManager is not initialized properly!");
+			throw new RuntimeException(
+					"ConfigManager is not initialized properly!");
 		} else {
 			return m_config.getGit().getOriginUrl();
 		}
@@ -27,7 +28,8 @@ public class ConfigManager implements Initializable {
 
 	public String getGitWorkingDir() {
 		if (m_config == null) {
-			throw new RuntimeException("ConfigManager is not initialized properly!");
+			throw new RuntimeException(
+					"ConfigManager is not initialized properly!");
 		} else {
 			return m_config.getGit().getLocalDir();
 		}
@@ -35,7 +37,8 @@ public class ConfigManager implements Initializable {
 
 	public String getWarUrl(String version) {
 		if (m_config == null) {
-			throw new RuntimeException("ConfigManager is not initialized properly!");
+			throw new RuntimeException(
+					"ConfigManager is not initialized properly!");
 		} else {
 			return String.format(m_config.getWarUrlPattern(), version);
 		}
@@ -44,15 +47,23 @@ public class ConfigManager implements Initializable {
 	@Override
 	public void initialize() throws InitializationException {
 		try {
-			String content = Files.forIO().readFrom(new File(m_configFile), "utf-8");
+			File file = new File(m_configFile);
 
-			m_config = DefaultSaxParser.parse(content);
+			if (file.isFile()) {
+				String content = Files.forIO().readFrom(file, "utf-8");
 
-			if (m_config.getGit() == null) {
+				m_config = DefaultSaxParser.parse(content);
+
+				if (m_config.getGit() == null) {
+					m_config.setGit(new GitConfig());
+				}
+			} else {
+				m_config = new Config();
 				m_config.setGit(new GitConfig());
 			}
 		} catch (Exception e) {
-			throw new InitializationException(String.format("Unable to load configuration file(%s)!", m_configFile), e);
+			throw new InitializationException(String.format(
+					"Unable to load configuration file(%s)!", m_configFile), e);
 		}
 	}
 
