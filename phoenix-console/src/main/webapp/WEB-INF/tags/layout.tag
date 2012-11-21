@@ -14,6 +14,7 @@
 	<link rel="shortcut icon" href="${model.webapp}/img/favicon.png">
 	<res:cssSlot id="head-css"/>
 	<res:jsSlot id="head-js"/>
+	<res:useJs value="${res.js.local['jquery-1.8.1.min.js']}" target="head-js"/>
 	<res:useCss value='${res.css.local.bootstrap_css}' target="head-css"/>
 	<res:useCss value="${res.js.local['bootstrap-responsive.css']}" target="head-css"/>
 	<res:useCss value='${res.css.local.phoenix_css}' target="head-css"/>
@@ -53,7 +54,6 @@
 	</div>
 	<!--/.fluid-container-->
 
-	<res:useJs value="${res.js.local['jquery-1.8.1.min.js']}" target="bottom-js"/>
 	<res:useJs value="${res.js.local.bootstrap_js}" target="bottom-js"/>
 	<res:jsSlot id="bottom-js"/>
 </body>

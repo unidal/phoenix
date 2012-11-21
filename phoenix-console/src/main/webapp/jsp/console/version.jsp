@@ -13,7 +13,7 @@
 				<div class="alert fade in">
 		            <a class="close" data-dismiss="alert" href="#">×</a>
 		            <strong>Note：</strong> 同一时刻仅允许一个构建任务!
-		          </div>
+		        </div>
 			</div>
 		</div>
 		<div class="row-fluid">
@@ -21,15 +21,27 @@
 				<table class="table table-striped table-condensed lion">
 					<thead>
 						<tr>
-							<th>Version</th>
-							<th>Description<i class="icon-refresh pull-right"></i></th>
+							<th width="120">Version</th>
+							<th>
+								Description
+								<span id="del_confirm" class="pull-right hide">
+									<input type="hidden" id="del_version">
+									<a href="#" id="del_confirm" class="no-dec">确认</a>&nbsp;
+									<a href="#" id="del_cancel" class="no-dec">取消</a>
+								</span>
+							</th>
 						</tr>
 					</thead>
 					<tbody>
 						<c:forEach var="version" items="${model.versions}">
-							<tr>
+							<tr class="version_row">
 								<td>${version.version}</td>
-								<td>${version.description}</td>
+								<td>
+									${version.description}
+									<span class="pull-right hide btn_container">
+										<button version="${version.version}" class="btn btn-mini2 pull-right" name="btn_del" type="button">删除</button>
+									</span>
+								</td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -90,14 +102,12 @@
 			</div>
 		</div>
 		
-		<br />
-		
 		<div class="row-fluid">
 			<div class="span12 thumbnail">
-				<form method="get">
+				<form method="get" class="no-vertial-margin">
 				<input type="hidden" name="op" value="add">
-				Version：<input type="text" name="version" value="${payload.version}">&nbsp;&nbsp;&nbsp;
-				Description：<input type="text" name="desc" value="${payload.description}" class="input-xxlarge">
+				Version：<input type="text" name="version" value="${payload.version}" class="no-vertial-margin">&nbsp;&nbsp;&nbsp;
+				Description：<input type="text" name="desc" value="${payload.description}" class="input-xxlarge no-vertial-margin">
 				<button type="submit" class="btn btn-primary">&nbsp;创建&nbsp; </button>
 				</form>
 			</div>
@@ -121,4 +131,6 @@
 			滚动条....<br/>
 		</div>
 	</div>
+	<res:useJs value="${res.js.local.version_js}" target="version-js" />
+	<res:jsSlot id="version-js" />
 </a:layout>

@@ -26,6 +26,10 @@
 					<li>
 						<a href="#">其他</a>
 					</li>
+					<li class="pull-right">
+						<input type="text" style="margin-bottom: -12px;" placeholder="输入项目名...">
+						<button class="btn" style="margin-bottom: -12px;">Search</button>
+					</li>
 				</ul>
 			</div>
 		</div>
