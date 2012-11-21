@@ -79,4 +79,8 @@ public class DefaultVersionManager implements VersionManager {
 		m_dao.insert(proto);
 		return proto;
 	}
+
+	public void setWarService(WarService warService) {
+		this.m_warService = warService;
+	}
 }
