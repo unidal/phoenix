@@ -1,14 +1,21 @@
 package com.dianping.phoenix.service;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Iterator;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ProgressMonitor;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.transport.PushResult;
+import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.TrackingRefUpdate;
 import org.eclipse.jgit.util.FS;
 import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
@@ -28,6 +35,8 @@ public class DefaultGitService implements GitService {
 	private File m_workingDir = new File("target/gitrepo");
 
 	private Git m_git;
+
+	private static final String REFS_TAGS = "refs/tags/";
 
 	@Override
 	public void clearWorkingDir() throws Exception {
@@ -53,7 +62,7 @@ public class DefaultGitService implements GitService {
 	}
 
 	@Override
-	public void commit(String tag, String description) throws Exception {
+	public ObjectId commit(String tag, String description) throws Exception {
 		if (m_git == null) {
 			throw new IllegalStateException(
 					"Please call setup() to initiailize git first!");
@@ -67,7 +76,8 @@ public class DefaultGitService implements GitService {
 
 		// Commit
 		m_reporter.log(String.format("Commiting to git for tag(%s) ... ", tag));
-		m_git.commit().setAll(true).setMessage(description).call();
+		RevCommit revCommit = m_git.commit().setAll(true).setMessage(description)
+				.call();
 		m_reporter.log(String.format("Commiting to git for tag(%s) ... DONE.",
 				tag));
 
@@ -76,11 +86,18 @@ public class DefaultGitService implements GitService {
 		m_git.tag().setName(tag).setMessage(description).call();
 		m_reporter.log(String
 				.format("Taging to git for tag(%s) ... DONE.", tag));
+
+		return revCommit.getId();
 	}
 
 	@Override
 	public File getWorkingDir() {
 		return m_workingDir;
+	}
+
+	@Override
+	public Collection<Ref> lsRemote() throws Exception {
+		return m_git.lsRemote().call();
 	}
 
 	@Override
@@ -91,7 +108,10 @@ public class DefaultGitService implements GitService {
 		}
 
 		m_reporter.log("Pulling from git ... ");
-		m_git.pull().setProgressMonitor(m_monitor).call();
+		PullResult pr = m_git.pull().setProgressMonitor(m_monitor).call();
+		m_reporter.log(">>>>Fetch:"+pr.getFetchResult().getMessages());
+		m_reporter.log(">>>>Merge:"+pr.getMergeResult());
+		m_reporter.log(">>>>Rebase:"+pr.getRebaseResult());
 		m_reporter.log("Pulling from git ... DONE.");
 	}
 
@@ -114,31 +134,46 @@ public class DefaultGitService implements GitService {
 	}
 
 	@Override
+	public void removeTag(String tag) throws Exception {
+		m_reporter.log(String.format("removing tag(%s) from local git ... ",
+				tag));
+		m_git.tagDelete().setTags(tag).call();
+		m_reporter.log(String.format(
+				"removing tag(%s) from local git ... DONE. ", tag));
+
+		m_reporter.log(String.format("removing tag(%s) from remote git ... ",
+				tag));
+		m_git.push().setRefSpecs(new RefSpec(":" + REFS_TAGS + tag))
+				.setProgressMonitor(m_monitor).call();
+		m_reporter.log(String.format(
+				"removing tag(%s) from remote git ... DONE. ", tag));
+	}
+
+	@Override
 	public synchronized void setup() throws Exception {
 		if (m_git == null) {
 			m_workingDir = new File(m_configManager.getGitWorkingDir());
 			m_workingDir.mkdirs();
 
 			File gitRepo = new File(m_workingDir, ".git");
-			File phoenixHome = new File("src/main/resources/git");
+			File phoenixHome = new File(this.getClass().getClassLoader()
+					.getResource("git").toURI());
 
 			if (!gitRepo.exists()) {
 				String gitURL = m_configManager.getGitOriginUrl();
 				m_reporter.log(String.format("Cloning repo from %s ... ",
 						gitURL));
 				FileRepositoryBuilder builder = new FileRepositoryBuilder();
-				builder.setGitDir(gitRepo)
-				.readEnvironment().findGitDir();
-				
+				builder.setGitDir(gitRepo).readEnvironment().findGitDir();
+
 				FS fs = builder.getFS();
-				if(fs == null){
+				if (fs == null) {
 					fs = FS.DETECTED;
 				}
 				fs.setUserHome(phoenixHome);
-				
+
 				Repository repository = builder.build();
-				
-				
+
 				m_git = new Git(repository);
 				CloneCommand clone = Git.cloneRepository();
 				clone.setProgressMonitor(m_monitor);
@@ -148,13 +183,14 @@ public class DefaultGitService implements GitService {
 				clone.setURI(gitURL);
 				try {
 					clone.call();
-				}catch(Exception e){
+				} catch (Exception e) {
 					Files.forDir().delete(new File(m_workingDir, ".git"), true);
 				}
 				m_reporter.log(String.format("Cloning repo from %s ... DONE.",
 						gitURL));
 			} else {
-				m_git = Git.open(m_workingDir,FS.DETECTED.setUserHome(phoenixHome));
+				m_git = Git.open(m_workingDir,
+						FS.DETECTED.setUserHome(phoenixHome));
 			}
 		}
 	}

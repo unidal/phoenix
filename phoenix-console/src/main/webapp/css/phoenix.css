@@ -77,3 +77,18 @@ table.lion input[type="radio"], input[type="checkbox"] {
 	background-color: #000;
 }
 
+.no-vertial-margin {
+	margin-top: 0px !important; 
+	margin-bottom: 0px !important;
+}
+
+a.no-dec {
+	text-decoration: none;
+}
+
+.btn-mini2 {
+  padding: 1px 6px;
+  font-size: 11px;
+  line-height: 14px;
+}
+

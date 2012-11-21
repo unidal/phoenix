@@ -11,10 +11,22 @@
 		<div class="row-fluid">
 			<div class="span12">
 				<ul class="nav nav-tabs">
-					<li class="active"><a href="#">主站</a></li>
-					<li><a href="#">团购</a></li>
-					<li><a href="#">手机</a></li>
-					<li><a href="#">其他</a></li>
+					<li class="active">
+						<a href="#">主站</a>
+					</li>
+					<li>
+						<a href="#">团购</a>
+					</li>
+					<li>
+						<a href="#">手机</a>
+					</li>
+					<li>
+						<a href="#">其他</a>
+					</li>
+					<li class="pull-right">
+						<input type="text" style="margin-bottom: -12px;" placeholder="输入项目名...">
+						<button class="btn" style="margin-bottom: -12px;">Search</button>
+					</li>
 				</ul>
 			</div>
 		</div>
