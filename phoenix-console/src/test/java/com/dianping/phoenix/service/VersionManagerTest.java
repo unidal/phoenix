@@ -15,13 +15,11 @@ public class VersionManagerTest extends ComponentTestCase {
 		GitService git = lookup(GitService.class);
 
 		git.setup();
-		
-		manager.createVersion("mock-1.0", "mock description", "this is release notes", "mock");
 
+		Version version = manager.createVersion("mock-1.0", "mock description", "this is release notes", "mock");
 		List<Version> versions = manager.getActiveVersions();
 
 		Assert.assertTrue(versions.size() > 0);
-
-		manager.removeVersion("mock-1.0");
+		manager.removeVersion(version.getId());
 	}
 }

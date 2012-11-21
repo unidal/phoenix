@@ -2,10 +2,13 @@ package com.dianping.phoenix.console.page.home;
 
 import java.util.List;
 
-import com.dianping.phoenix.console.ConsolePage;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
+import org.unidal.web.mvc.payload.annotation.ObjectMeta;
+
+import com.dianping.phoenix.console.ConsolePage;
+import com.dianping.phoenix.service.DeploymentPlan;
 
 public class Payload implements ActionPayload<ConsolePage, Action> {
 	private ConsolePage m_page;
@@ -13,25 +16,28 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("op")
 	private Action m_action;
 
-	@FieldMeta("name")
-	private String m_projectName;
+	@FieldMeta("domain")
+	private String m_domain;
 
 	@FieldMeta("keyword")
 	private String m_keyword;
 
+	@FieldMeta("project")
+	private String m_project;
+
 	@FieldMeta("hosts")
 	private List<String> m_hosts;
 
-	@FieldMeta("plan")
-	private String m_plan;
+	@ObjectMeta("plan")
+	private DeploymentPlan m_plan;
 
 	@Override
 	public Action getAction() {
 		return m_action;
 	}
 
-	public String getPlan() {
-		return m_plan;
+	public String getDomain() {
+		return m_domain;
 	}
 
 	public List<String> getHosts() {
@@ -39,7 +45,7 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	}
 
 	public String getKeyword() {
-		return this.m_keyword;
+		return m_keyword;
 	}
 
 	@Override
@@ -47,24 +53,32 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		return m_page;
 	}
 
-	public String getProjectName() {
-		return m_projectName;
+	public DeploymentPlan getPlan() {
+		return m_plan;
+	}
+
+	public String getProject() {
+		return m_project;
 	}
 
 	public void setAction(String action) {
 		m_action = Action.getByName(action, Action.HOME);
 	}
 
-	public void setDeployPlan(String deployPlan) {
-		this.m_plan = deployPlan;
+	public void setDeployPlan(DeploymentPlan plan) {
+		m_plan = plan;
+	}
+
+	public void setDomain(String domain) {
+		m_domain = domain;
 	}
 
 	public void setHosts(List<String> hosts) {
-		this.m_hosts = hosts;
+		m_hosts = hosts;
 	}
 
 	public void setKeyword(String keyword) {
-		this.m_keyword = keyword;
+		m_keyword = keyword;
 	}
 
 	@Override
@@ -72,8 +86,8 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		m_page = ConsolePage.getByName(page, ConsolePage.HOME);
 	}
 
-	public void setProjectName(String projectName) {
-		this.m_projectName = projectName;
+	public void setProject(String project) {
+		m_project = project;
 	}
 
 	@Override

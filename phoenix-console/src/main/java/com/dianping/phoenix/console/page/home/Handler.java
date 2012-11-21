@@ -6,25 +6,23 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-import com.dianping.phoenix.console.ConsolePage;
-import com.dianping.phoenix.console.model.entity.Project;
-import com.dianping.phoenix.console.service.DeployService;
-import com.dianping.phoenix.console.service.ProjectService;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
+import com.dianping.phoenix.console.ConsolePage;
+import com.dianping.phoenix.deploy.entity.Project;
+import com.dianping.phoenix.service.DeploymentPlan;
+import com.dianping.phoenix.service.DeploymentService;
+
 public class Handler implements PageHandler<Context> {
 	@Inject
 	private JspViewer m_jspViewer;
 
 	@Inject
-	private ProjectService m_projectService;
-
-	@Inject
-	private DeployService m_deployService;
+	private DeploymentService m_deploymentService;
 
 	@Override
 	@PayloadMeta(Payload.class)
@@ -35,11 +33,11 @@ public class Handler implements PageHandler<Context> {
 
 		if (action == Action.DEPLOY) {
 			List<String> hosts = payload.getHosts();
-			String plan = payload.getPlan();
+			DeploymentPlan plan = payload.getPlan();
 			String deployUri = ctx.getRequestContext().getActionUri(ConsolePage.DEPLOY.getName());
 
-			m_deployService.deploy(hosts, plan);
-			redirect(ctx, deployUri + "?plan=" + plan);
+			int id = m_deploymentService.deploy(hosts, plan);
+			redirect(ctx, deployUri + "?id=" + id);
 		}
 	}
 
@@ -55,16 +53,14 @@ public class Handler implements PageHandler<Context> {
 
 		switch (action) {
 		case HOME:
-			List<Project> projects = m_projectService.search(payload.getKeyword());
+			List<Project> projects = m_deploymentService.search(payload.getDomain(), payload.getKeyword());
 
 			model.setProjects(projects);
 			break;
 		case PROJECT:
-			Project project = m_projectService.findByName(payload.getProjectName());
-			List<String> deployPlans = m_projectService.getPatches();
+			Project project = m_deploymentService.findByName(payload.getProject());
 
 			model.setProject(project);
-			model.setDeployPlans(deployPlans);
 			break;
 		default:
 			break;
