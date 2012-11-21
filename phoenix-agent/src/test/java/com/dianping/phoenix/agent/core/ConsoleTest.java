@@ -1,35 +1,34 @@
 package com.dianping.phoenix.agent.core;
 
-import static org.mockito.Mockito.mock;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.junit.Test;
+import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
 import com.dianping.phoenix.agent.core.event.Event;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.event.MessageEvent;
-import com.dianping.phoenix.agent.core.log.TransactionLog;
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.Task.Status;
-import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
 import com.dianping.phoenix.agent.core.task.processor.shell.ShellCmdTask;
-import com.dianping.phoenix.agent.core.task.processor.shell.ShellCmdTaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.war.Artifact;
 import com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTask;
 
 
-public class ConsoleTest {
+public class ConsoleTest extends ComponentTestCase {
 	
-	private static long id = 1L;
+	private long id = 1L;
 	
-	private static TransactionId generateTxId() {
+	private TransactionId generateTxId() {
 		return new TransactionId(id++);
 	}
 
-	public static void main(String[] args) {
+	@Test
+	public void testAgent() throws Exception {
 		final Agent agent = new DefaultAgent();
 		
 		Thread t = new Thread() {
@@ -75,7 +74,7 @@ public class ConsoleTest {
 			}
 		};
 		
-		TaskProcessorFactory.getInstance().registerTaskProcessor(ShellCmdTask.class, new ShellCmdTaskProcessor());
+//		lookup(TaskProcessorFactory.class).registerTaskProcessor(ShellCmdTask.class, new ShellCmdTaskProcessor());
 		
 		List<Task> tasks = new ArrayList<Task>();
 		
@@ -85,7 +84,7 @@ public class ConsoleTest {
 		tasks.add(new ShellCmdTask("ps ax"));
 		
 		for (Task task : tasks) {
-			Transaction tx = new Transaction(task, generateTxId(), eventTracker, mock(TransactionLog.class));
+			Transaction tx = new Transaction(task, generateTxId(), eventTracker);
 			agent.submit(tx);
 		}
 		

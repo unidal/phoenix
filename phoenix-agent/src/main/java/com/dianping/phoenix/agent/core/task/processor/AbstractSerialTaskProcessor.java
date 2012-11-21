@@ -1,59 +1,105 @@
 package com.dianping.phoenix.agent.core.task.processor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.Semaphore;
 
 import com.dianping.phoenix.agent.core.Transaction;
 import com.dianping.phoenix.agent.core.TransactionId;
+import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
+import com.dianping.phoenix.agent.core.event.EventTracker;
+import com.dianping.phoenix.agent.core.event.EventTrackerChain;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.task.Task.Status;
 
-public abstract class AbstractSerialTaskProcessor implements TaskProcessor {
+public abstract class AbstractSerialTaskProcessor<T> implements TaskProcessor<T> {
 
-	private Map<TransactionId, Transaction> txId2Tx = new ConcurrentHashMap<TransactionId, Transaction>();
-	private Lock lock = new ReentrantLock();
+	protected Transaction currentTx;
+	private Semaphore semaphore = new Semaphore(1); 
+	protected EventTrackerChain eventTrackerChain;
 
-	protected abstract void doProcess(Transaction tx);
+	/**
+	 * Remember to call transactionEnd when task is done!!!
+	 * 
+	 * @param tx
+	 * @throws Exception
+	 */
+	protected abstract void doProcess(Transaction tx) throws Exception;
+
+	private synchronized void initEventTrackerChain(EventTracker eventTracker) {
+		if (!(eventTracker instanceof EventTrackerChain)) {
+			eventTrackerChain = new EventTrackerChain(eventTracker);
+		} else {
+			eventTrackerChain = (EventTrackerChain) eventTracker;
+		}
+		eventTrackerChain.add(new AbstractEventTracker() {
+
+			@Override
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				if(event.getStatus().isCompleted()) {
+					transactionEnd(event.getTransactionId());
+				}
+			}
+			
+		});
+	}
 
 	@Override
 	public void submit(Transaction tx) {
-		if (lock.tryLock()) {
+		if (semaphore.tryAcquire()) {
 			try {
-				registerTransaction(tx);
-
-				try {
-					doProcess(tx);
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
-
-				deRegisterTask(tx.getTxId());
+				initEventTrackerChain(tx.getEventTracker());
+				transactionStart(tx);
 			} catch (Exception e) {
-				// TODO: handle exception
-			} finally {
-				lock.unlock();
+				transactionEnd(tx.getTxId());
+				throw new RuntimeException(e);
+			}
+			
+			try {
+				doProcess(tx);
+			} catch (Exception e) {
+				//TODO
 			}
 		} else {
-			tx.getEventTracker().onEvent(new LifecycleEvent("some task is running", Status.REJECTED));
+			tx.getEventTracker().onEvent(new LifecycleEvent(tx.getTxId(), "some task is running", Status.REJECTED));
 		}
 
 	}
 
-	private void registerTransaction(Transaction tx) {
-		txId2Tx.put(tx.getTxId(), tx);
+	private void transactionStart(Transaction tx) {
+		currentTx = tx;
 	}
 
-	private void deRegisterTask(TransactionId tx) {
-		txId2Tx.remove(tx);
+	private synchronized void transactionEnd(TransactionId txId) {
+		if(currentTx != null && !currentTx.getTxId().equals(txId)) {
+			throw new IllegalStateException(String.format("current transaction is %s while try to end %s", currentTx.getTxId(), txId));
+		}
+		currentTx = null;
+		if(semaphore.availablePermits() == 0) {
+			semaphore.release();
+		}
 	}
 
 	@Override
-	public List<Transaction> currentTransactions() {
-		return new ArrayList<Transaction>(txId2Tx.values());
+	public synchronized List<Transaction> currentTransactions() {
+		if (currentTx != null) {
+			List<Transaction> currentTxes = new ArrayList<Transaction>(1);
+			currentTxes.add(currentTx);
+			return currentTxes;
+		} else {
+			return Collections.emptyList();
+		}
+	}
+	
+	@Override
+	public synchronized boolean attachEventTracker(TransactionId txId, EventTracker eventTracker) {
+		if (currentTx != null && currentTx.getTxId().equals(txId)) {
+			eventTrackerChain.add(eventTracker);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

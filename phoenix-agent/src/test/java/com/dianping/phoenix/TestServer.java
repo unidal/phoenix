@@ -39,13 +39,13 @@ public class TestServer extends JettyServer {
    @Override
    protected void postConfigure(WebAppContext context) {
 //      context.addFilter(GzipFilter.class, "/agent/*", Handler.ALL);
-      context.addFilter(GzipFilter.class, "/agent/*", Handler.ALL);
+//      context.addFilter(GzipFilter.class, "/agent/*", Handler.ALL);
    }
 
    @Test
    public void startWebapp() throws Exception {
       // open the page in the default browser
-      display("/phoenix/agent");
+//      display("/phoenix/agent");
       waitForAnyKey();
    }
 }

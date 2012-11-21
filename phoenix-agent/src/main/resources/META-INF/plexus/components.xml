@@ -1,8 +1,40 @@
 <plexus>
 	<components>
 		<component>
-			<role>com.dianping.phoenix.agent.page.deploy.shell.Shell</role>
-			<implementation>com.dianping.phoenix.agent.page.deploy.shell.FakeShell</implementation>
+			<role>com.dianping.phoenix.agent.core.log.TransactionLog</role>
+			<implementation>com.dianping.phoenix.agent.core.log.FilePerTxLog</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
+			<implementation>com.dianping.phoenix.agent.core.shell.DefaultScriptExecutor</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.Agent</role>
+			<implementation>com.dianping.phoenix.agent.core.DefaultAgent</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.log.TransactionLog</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessor</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTaskProcessor</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.log.TransactionLog</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</implementation>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
@@ -35,7 +67,7 @@
 			<implementation>com.dianping.phoenix.agent.page.deploy.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.agent.page.deploy.shell.Shell</role>
+					<role>com.dianping.phoenix.agent.core.Agent</role>
 				</requirement>
 			</requirements>
 		</component>

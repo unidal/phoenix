@@ -18,7 +18,7 @@ public class FilePerTxLog implements TransactionLog {
 
 	private final static Logger logger = Logger.getLogger(FilePerTxLog.class);
 
-	private final static String LOG_ROOT = "/Volumes/HDD2/tmp/log/";
+	private final static String LOG_ROOT = "/data/applogs/phoenix/transaction/";
 	private final static String ENCODING = "UTF-8";
 
 	private File txId2File(TransactionId txId) throws IOException {
@@ -46,7 +46,9 @@ public class FilePerTxLog implements TransactionLog {
 	@Override
 	public Reader getLog(TransactionId txId, int offset) {
 		try {
-			return new InputStreamReader(new FileInputStream(txId2File(txId)), ENCODING);
+			Reader reader = new InputStreamReader(new FileInputStream(txId2File(txId)), ENCODING);
+			reader.skip(offset);
+			return reader;
 		} catch (Exception e) {
 			logger.error(String.format("can not open file %s", txId), e);
 			return null;

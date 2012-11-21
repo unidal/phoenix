@@ -6,49 +6,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.dianping.phoenix.agent.core.event.Event;
+import org.unidal.lookup.annotation.Inject;
+
+import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.EventTrackerChain;
-import com.dianping.phoenix.agent.core.log.InMemoryTransactionLog;
+import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.log.TransactionLog;
+import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
 
 public class DefaultAgent implements Agent {
 
-	private EventTrackerChain eventTrackerChain;
+	@Inject
 	private TransactionLog txLog;
-	private Map<TransactionId, TaskProcessor> txId2Processor;
+	@Inject
+	private TaskProcessorFactory taskProcessorFactory;
+	private Map<TransactionId, TaskProcessor<Task>> txId2Processor;
 
 	public DefaultAgent() {
-		txLog = new InMemoryTransactionLog();
-		txId2Processor = new ConcurrentHashMap<TransactionId, TaskProcessor>();
+		txId2Processor = new ConcurrentHashMap<TransactionId, TaskProcessor<Task>>();
 	}
 
 	@Override
-	public void submit(Transaction tx) {
+	public void submit(Transaction tx) throws Exception {
 		final TransactionId txId = tx.getTxId();
-		eventTrackerChain = new EventTrackerChain();
-		eventTrackerChain.add(new EventTracker() {
+		EventTrackerChain eventTrackerChain = new EventTrackerChain();
+		eventTrackerChain.add(new AbstractEventTracker() {
 
 			@Override
-			public void onEvent(Event event) {
-				try {
-					txLog.getWriter(txId).write(event.getMsg());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				if(event.getStatus().isCompleted()) {
+					txId2Processor.remove(txId);
 				}
 			}
+
 		});
 		eventTrackerChain.add(tx.getEventTracker());
 		
-		TaskProcessor taskProcessor = TaskProcessorFactory.getInstance().findTaskProcessor(tx.getTask());
+		TaskProcessor<Task> taskProcessor = taskProcessorFactory.findTaskProcessor(tx.getTask());
 		txId2Processor.put(txId, taskProcessor);
 		tx.setEventTracker(eventTrackerChain);
 		taskProcessor.submit(tx);
 	}
-
 
 	@Override
 	public Reader getLog(TransactionId txId, int offset) throws IOException {
@@ -57,16 +58,31 @@ public class DefaultAgent implements Agent {
 
 	@Override
 	public List<Transaction> currentTransactions() {
-		return TaskProcessorFactory.getInstance().currentTransactions();
+		return taskProcessorFactory.currentTransactions();
 	}
 
 	@Override
 	public boolean cancel(TransactionId txId) {
-		TaskProcessor processor = txId2Processor.get(txId);
+		TaskProcessor<Task> processor = txId2Processor.get(txId);
 		if(processor != null) {
 			return processor.cancel(txId);
 		}
 		return true;
+	}
+
+	@Override
+	public Class<Task> handle() {
+		return Task.class;
+	}
+
+	@Override
+	public boolean attachEventTracker(TransactionId txId, EventTracker eventTracker) {
+		TaskProcessor<Task> taskProcessor = txId2Processor.get(txId);
+		if(taskProcessor != null) {
+			return taskProcessor.attachEventTracker(txId, eventTracker);
+		} else {
+			return false;
+		}
 	}
 
 }

@@ -1,13 +1,14 @@
 package com.dianping.phoenix.agent.core.event;
 
+import com.dianping.phoenix.agent.core.TransactionId;
 import com.dianping.phoenix.agent.core.task.Task.Status;
 
 public class LifecycleEvent extends AbstractEvent {
 
 	private Status status;
 
-	public LifecycleEvent(String msg, Status status) {
-		super(msg);
+	public LifecycleEvent(TransactionId txId, String msg, Status status) {
+		super(txId, msg);
 		this.status = status;
 	}
 

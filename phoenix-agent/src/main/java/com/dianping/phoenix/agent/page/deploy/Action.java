@@ -2,8 +2,12 @@ package com.dianping.phoenix.agent.page.deploy;
 
 public enum Action implements org.unidal.web.mvc.Action {
 
-	DEFAULT("default");
-
+	DEFAULT("agentstaus"),
+	DEPLOY("deploy"),
+	CANCEL("cancel"),
+	GETLOG("getlog"),
+	STATUS("status");
+	
 	private String m_name;
 
 	private Action(String name) {

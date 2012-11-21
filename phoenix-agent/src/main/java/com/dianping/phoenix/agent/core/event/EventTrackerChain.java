@@ -11,14 +11,24 @@ public class EventTrackerChain implements EventTracker {
 		trackers = new ArrayList<EventTracker>();
 	}
 	
+	public EventTrackerChain(EventTracker eventTracker) {
+		add(eventTracker);
+	}
+
 	public void add(EventTracker tracker) {
-		trackers.add(tracker);
+		if(tracker != null) {
+			trackers.add(tracker);
+		}
 	}
 
 	@Override
 	public void onEvent(Event event) {
 		for (EventTracker tracker : trackers) {
-			tracker.onEvent(event);
+			try {
+				tracker.onEvent(event);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 		}
 	}
 

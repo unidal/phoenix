@@ -11,12 +11,21 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	@FieldMeta("op")
 	private Action m_action;
 
+	@FieldMeta("deployId")
+	private long m_deployId;
+
 	@FieldMeta("version")
 	private String m_version;
 
+	@FieldMeta("domain")
+	private String m_domain;
+
+	@FieldMeta("offset")
+	private int m_offset;
+
 	@Override
 	public Action getAction() {
-		return m_action;
+		return m_action == null ? Action.DEFAULT : m_action;
 	}
 
 	@Override
@@ -24,12 +33,24 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 		return m_page;
 	}
 
+	public String getDomain() {
+		return m_domain;
+	}
+
+	public long getDeployId() {
+		return m_deployId;
+	}
+
 	public String getVersion() {
 		return m_version;
 	}
 
+	public int getOffset() {
+		return m_offset;
+	}
+	
 	public void setAction(String action) {
-		m_action = Action.getByName(action, null);
+		m_action = Action.getByName(action, Action.DEFAULT);
 	}
 
 	@Override
