@@ -1,12 +1,21 @@
 package com.dianping.phoenix.service;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Iterator;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ProgressMonitor;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.PushResult;
+import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.TrackingRefUpdate;
 import org.eclipse.jgit.util.FS;
 import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
@@ -26,6 +35,8 @@ public class DefaultGitService implements GitService {
 	private File m_workingDir = new File("target/gitrepo");
 
 	private Git m_git;
+
+	private static final String REFS_TAGS = "refs/tags/";
 
 	@Override
 	public void clearWorkingDir() throws Exception {
@@ -51,7 +62,7 @@ public class DefaultGitService implements GitService {
 	}
 
 	@Override
-	public void commit(String tag, String description) throws Exception {
+	public ObjectId commit(String tag, String description) throws Exception {
 		if (m_git == null) {
 			throw new IllegalStateException(
 					"Please call setup() to initiailize git first!");
@@ -65,7 +76,8 @@ public class DefaultGitService implements GitService {
 
 		// Commit
 		m_reporter.log(String.format("Commiting to git for tag(%s) ... ", tag));
-		m_git.commit().setAll(true).setMessage(description).call();
+		RevCommit revCommit = m_git.commit().setAll(true).setMessage(description)
+				.call();
 		m_reporter.log(String.format("Commiting to git for tag(%s) ... DONE.",
 				tag));
 
@@ -74,11 +86,18 @@ public class DefaultGitService implements GitService {
 		m_git.tag().setName(tag).setMessage(description).call();
 		m_reporter.log(String
 				.format("Taging to git for tag(%s) ... DONE.", tag));
+
+		return revCommit.getId();
 	}
 
 	@Override
 	public File getWorkingDir() {
 		return m_workingDir;
+	}
+
+	@Override
+	public Collection<Ref> lsRemote() throws Exception {
+		return m_git.lsRemote().call();
 	}
 
 	@Override
@@ -89,7 +108,10 @@ public class DefaultGitService implements GitService {
 		}
 
 		m_reporter.log("Pulling from git ... ");
-		m_git.pull().setProgressMonitor(m_monitor).call();
+		PullResult pr = m_git.pull().setProgressMonitor(m_monitor).call();
+		m_reporter.log(">>>>Fetch:"+pr.getFetchResult().getMessages());
+		m_reporter.log(">>>>Merge:"+pr.getMergeResult());
+		m_reporter.log(">>>>Rebase:"+pr.getRebaseResult());
 		m_reporter.log("Pulling from git ... DONE.");
 	}
 
@@ -109,6 +131,22 @@ public class DefaultGitService implements GitService {
 		m_reporter.log("Pushing to git tags ... ");
 		m_git.push().setPushTags().setProgressMonitor(m_monitor).call();
 		m_reporter.log("Pushing to git tags ... DONE");
+	}
+
+	@Override
+	public void removeTag(String tag) throws Exception {
+		m_reporter.log(String.format("removing tag(%s) from local git ... ",
+				tag));
+		m_git.tagDelete().setTags(tag).call();
+		m_reporter.log(String.format(
+				"removing tag(%s) from local git ... DONE. ", tag));
+
+		m_reporter.log(String.format("removing tag(%s) from remote git ... ",
+				tag));
+		m_git.push().setRefSpecs(new RefSpec(":" + REFS_TAGS + tag))
+				.setProgressMonitor(m_monitor).call();
+		m_reporter.log(String.format(
+				"removing tag(%s) from remote git ... DONE. ", tag));
 	}
 
 	@Override

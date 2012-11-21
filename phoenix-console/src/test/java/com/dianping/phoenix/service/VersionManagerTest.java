@@ -19,8 +19,8 @@ public class VersionManagerTest extends ComponentTestCase {
 		String tag = "mock-1.0" + System.currentTimeMillis();
 		Version version = manager.createVersion(tag, "mock description", "this is release notes", "mock");
 		List<Version> versions = manager.getActiveVersions();
-
 		Assert.assertTrue(versions.size() > 0);
+		
 		manager.removeVersion(version.getId());
 	}
 }

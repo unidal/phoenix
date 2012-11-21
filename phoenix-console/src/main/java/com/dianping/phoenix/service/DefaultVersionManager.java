@@ -24,8 +24,8 @@ public class DefaultVersionManager implements VersionManager {
 	private VersionDao m_dao;
 
 	@Override
-	public Version createVersion(String version, String description, String releaseNotes, String createdBy)
-	      throws Exception {
+	public Version createVersion(String version, String description,
+			String releaseNotes, String createdBy) throws Exception {
 		File gitDir = m_gitService.getWorkingDir();
 
 		m_gitService.pull();
@@ -39,15 +39,19 @@ public class DefaultVersionManager implements VersionManager {
 
 	@Override
 	public List<Version> getActiveVersions() throws Exception {
-		List<Version> versions = m_dao.findAllActive(KERNEL, VersionEntity.READSET_FULL);
+		List<Version> versions = m_dao.findAllActive(KERNEL,
+				VersionEntity.READSET_FULL);
 
 		return versions;
 	}
 
 	@Override
 	public void removeVersion(int id) throws Exception {
+
 		try {
 			Version proto = m_dao.findByPK(id, VersionEntity.READSET_FULL);
+
+			m_gitService.removeTag(proto.getVersion());
 
 			if (proto.getStatus() == 0) {
 				proto.setStatus(1);
@@ -58,11 +62,14 @@ public class DefaultVersionManager implements VersionManager {
 		}
 	}
 
-	private Version store(String version, String description, String releaseNotes, String createdBy) throws DalException {
+	private Version store(String version, String description,
+			String releaseNotes, String createdBy) throws DalException {
 		try {
-			m_dao.findByDomainVersion(KERNEL, version, VersionEntity.READSET_FULL);
+			m_dao.findByDomainVersion(KERNEL, version,
+					VersionEntity.READSET_FULL);
 
-			throw new RuntimeException(String.format("Kernel version(%s) is already existed!", version));
+			throw new RuntimeException(String.format(
+					"Kernel version(%s) is already existed!", version));
 		} catch (DalNotFoundException e) {
 			// expected
 		}
