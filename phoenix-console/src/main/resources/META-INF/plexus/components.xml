@@ -182,6 +182,9 @@
 				<requirement>
 					<role>com.dianping.phoenix.service.DeploymentService</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.VersionManager</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

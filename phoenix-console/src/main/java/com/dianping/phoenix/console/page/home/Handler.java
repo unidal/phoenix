@@ -13,9 +13,12 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
+import com.dianping.phoenix.console.dal.deploy.Version;
 import com.dianping.phoenix.deploy.entity.Project;
 import com.dianping.phoenix.service.DeploymentPlan;
+import com.dianping.phoenix.service.DeploymentPolicy;
 import com.dianping.phoenix.service.DeploymentService;
+import com.dianping.phoenix.service.VersionManager;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
@@ -23,6 +26,9 @@ public class Handler implements PageHandler<Context> {
 
 	@Inject
 	private DeploymentService m_deploymentService;
+
+	@Inject
+	private VersionManager m_versionManager;
 
 	@Override
 	@PayloadMeta(Payload.class)
@@ -32,12 +38,16 @@ public class Handler implements PageHandler<Context> {
 		Action action = payload.getAction();
 
 		if (action == Action.DEPLOY) {
-			List<String> hosts = payload.getHosts();
-			DeploymentPlan plan = payload.getPlan();
-			String deployUri = ctx.getRequestContext().getActionUri(ConsolePage.DEPLOY.getName());
+			if (!ctx.hasErrors()) {
+				List<String> hosts = payload.getHosts();
+				DeploymentPlan plan = payload.getPlan();
+				String deployUri = ctx.getRequestContext().getActionUri(ConsolePage.DEPLOY.getName());
 
-			int id = m_deploymentService.deploy(hosts, plan);
-			redirect(ctx, deployUri + "?id=" + id);
+				int id = m_deploymentService.deploy(hosts, plan);
+				redirect(ctx, deployUri + "?id=" + id);
+			} else {
+				payload.setAction(Action.PROJECT.getName());
+			}
 		}
 	}
 
@@ -53,14 +63,22 @@ public class Handler implements PageHandler<Context> {
 
 		switch (action) {
 		case HOME:
-			List<Project> projects = m_deploymentService.search(payload.getDomain(), payload.getKeyword());
+			List<Project> projects = m_deploymentService.search(payload.getKeyword());
 
 			model.setProjects(projects);
 			break;
 		case PROJECT:
-			Project project = m_deploymentService.findByName(payload.getProject());
+			try {
+				Project project = m_deploymentService.findByName(payload.getProject());
+				List<Version> versions = m_versionManager.getActiveVersions();
 
-			model.setProject(project);
+				model.setProject(project);
+				model.setVersions(versions);
+				model.setPolicies(DeploymentPolicy.values());
+			} catch (Exception e) {
+				ctx.addError("project.view", e);
+			}
+
 			break;
 		default:
 			break;
