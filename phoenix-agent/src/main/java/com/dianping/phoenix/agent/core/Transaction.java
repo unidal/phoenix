@@ -1,7 +1,6 @@
 package com.dianping.phoenix.agent.core;
 
 import com.dianping.phoenix.agent.core.event.EventTracker;
-import com.dianping.phoenix.agent.core.log.TransactionLog;
 import com.dianping.phoenix.agent.core.task.Task;
 
 public class Transaction {
@@ -9,15 +8,13 @@ public class Transaction {
 	private Task task;
 	private TransactionId txId;
 	private EventTracker eventTracker;
-	private TransactionLog txLog;
 
-	public Transaction(Task task, TransactionId txId, EventTracker eventTracker, TransactionLog txLog) {
+	public Transaction(Task task, TransactionId txId, EventTracker eventTracker) {
 		this.task = task;
 		this.txId = txId;
 		this.eventTracker = eventTracker;
-		this.txLog = txLog;
 	}
-
+	
 	public Task getTask() {
 		return task;
 	}
@@ -28,10 +25,6 @@ public class Transaction {
 
 	public EventTracker getEventTracker() {
 		return eventTracker;
-	}
-
-	public TransactionLog getTxLog() {
-		return txLog;
 	}
 
 	public void setEventTracker(EventTracker eventTracker) {

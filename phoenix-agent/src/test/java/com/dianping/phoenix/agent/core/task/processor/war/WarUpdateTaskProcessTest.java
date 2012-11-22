@@ -30,7 +30,7 @@ public class WarUpdateTaskProcessTest {
 			}
 			
 		};
-		Transaction tx = new Transaction(mock(WarUpdateTask.class), txId, eventTracker  , txLog);
+		Transaction tx = new Transaction(mock(WarUpdateTask.class), txId, eventTracker);
 		processor.submit(tx);
 		char[] cbuf = new char[4096];
 		txLog.getLog(txId, 0).read(cbuf);

@@ -1,6 +1,8 @@
 package com.dianping.phoenix.agent.core;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,18 +14,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.phoenix.agent.core.event.Event;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
-import com.dianping.phoenix.agent.core.log.TransactionLog;
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.Task.Status;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
 import com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTask;
 
-public class DefaultAgentTest {
+public class DefaultAgentTest extends ComponentTestCase {
 
 	private Agent agent;
 
@@ -33,7 +35,7 @@ public class DefaultAgentTest {
 	}
 
 	@Test
-	public void testEventTracker() {
+	public void testEventTracker() throws Exception {
 		final AtomicBoolean trackerCalled = new AtomicBoolean(false);
 		EventTracker eventTracker = new EventTracker() {
 
@@ -42,13 +44,13 @@ public class DefaultAgentTest {
 				trackerCalled.set(true);
 			}
 		};
-		Transaction tx = new Transaction(mock(WarUpdateTask.class), new TransactionId(1L), eventTracker, mock(TransactionLog.class));
+		Transaction tx = new Transaction(mock(WarUpdateTask.class), new TransactionId(1L), eventTracker);
 		agent.submit(tx);
 		Assert.assertTrue(trackerCalled.get());
 	}
 
 	@Test
-	public void testTransactionLog() throws IOException {
+	public void testTransactionLog() throws Exception {
 		Task task = mock(WarUpdateTask.class);
 		TransactionId txId = new TransactionId(1L);
 		EventTracker eventTracker = new EventTracker() {
@@ -57,7 +59,7 @@ public class DefaultAgentTest {
 			public void onEvent(Event event) {
 			}
 		};
-		Transaction tx = new Transaction(task, txId, eventTracker, mock(TransactionLog.class));
+		Transaction tx = new Transaction(task, txId, eventTracker);
 		agent.submit(tx);
 		char[] buf = new char[4096];
 		agent.getLog(txId, 0).read(buf);
@@ -65,22 +67,22 @@ public class DefaultAgentTest {
 	}
 
 	@Test
-	public void testTrackLifecycleEvent() {
+	public void testTrackLifecycleEvent() throws Exception {
 		Task task = mock(Task.class);
-		TransactionId txId = new TransactionId(1L);
-		Transaction tx = new Transaction(task, txId, null, mock(TransactionLog.class));
-		TaskProcessor taskProcessor = mock(TaskProcessor.class);
+		final TransactionId txId = new TransactionId(1L);
+		Transaction tx = new Transaction(task, txId, null);
+		TaskProcessor<Task> taskProcessor = mock(TaskProcessor.class);
 		final List<Status> statusHolder = new ArrayList<Task.Status>();
 		doAnswer(new Answer<Object>() {
 
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				Transaction tx = (Transaction) invocation.getArguments()[0];
-				tx.getEventTracker().onEvent(new LifecycleEvent("", statusHolder.get(0)));
+				tx.getEventTracker().onEvent(new LifecycleEvent(txId, "", statusHolder.get(0)));
 				return null;
 			}
 		}).when(taskProcessor).submit(any(Transaction.class));
-		TaskProcessorFactory.getInstance().registerTaskProcessor(task.getClass(), taskProcessor);
+		lookup(TaskProcessorFactory.class).registerTaskProcessor(task.getClass(), taskProcessor);
 
 		for (final Status status : Status.values()) {
 			final AtomicBoolean statusRecieved = new AtomicBoolean(false);
