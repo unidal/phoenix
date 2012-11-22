@@ -2,7 +2,7 @@
 
 <deploy>
 	<project name="shop-web" owner="jianbing.xu">
-		<decription>商户前台web应用</decription>
+		<description>商户前台web应用</description>
 		<hosts>
 			<host ip="192.168.8.40" status="up">
 				<war name="shop-web" version="2.0.3">
