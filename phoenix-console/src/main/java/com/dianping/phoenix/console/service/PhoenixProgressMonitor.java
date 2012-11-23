@@ -10,7 +10,6 @@ public class PhoenixProgressMonitor extends BatchingProgressMonitor {
 	private StatusReporter m_reporter;
 
 	private void format(StringBuilder s, String taskName, int workCurr) {
-		s.append("\r");
 		s.append(taskName);
 		s.append(": ");
 		while (s.length() < 25)
@@ -20,7 +19,6 @@ public class PhoenixProgressMonitor extends BatchingProgressMonitor {
 
 	private void format(StringBuilder s, String taskName, int cmp,
 			int totalWork, int pcnt) {
-		s.append("\r");
 		s.append(taskName);
 		s.append(": ");
 		while (s.length() < 25)
