@@ -68,8 +68,46 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.service.DeploymentService</role>
-			<implementation>com.dianping.phoenix.service.DefaultDeploymentService</implementation>
+			<role>com.dianping.phoenix.service.ProjectManager</role>
+			<implementation>com.dianping.phoenix.service.DefaultProjectManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.DeployManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.deploy.DeployExecutor</role>
+			<role-hint>one-by-one</role-hint>
+			<implementation>com.dianping.phoenix.deploy.DefaultDeployExecutor</implementation>
+			<configuration>
+				<policy>ONE_BY_ONE</policy>
+			</configuration>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.deploy.DeployExecutor</role>
+			<role-hint>two-by-two</role-hint>
+			<implementation>com.dianping.phoenix.deploy.DefaultDeployExecutor</implementation>
+			<configuration>
+				<policy>TWO_BY_TWO</policy>
+			</configuration>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.deploy.DeployExecutor</role>
+			<role-hint>three-by-three</role-hint>
+			<implementation>com.dianping.phoenix.deploy.DefaultDeployExecutor</implementation>
+			<configuration>
+				<policy>THREE_BY_THREE</policy>
+			</configuration>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.deploy.DeployManager</role>
+			<implementation>com.dianping.phoenix.deploy.DefaultDeployManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDao</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</role>
@@ -90,9 +128,9 @@
 				<statement-cache-size>1000</statement-cache-size>
 				<properties>
 					<driver>com.mysql.jdbc.Driver</driver>
-					<URL>jdbc:mysql://192.168.8.45:3306/phoenix</URL>
+					<URL>jdbc:mysql://localhost:3306/phoenix</URL>
 					<user>root</user>
-					<password>dianpingadmin</password>
+					<password></password>
 					<connectionProperties><![CDATA[useUnicode=true&autoReconnect=true]]></connectionProperties>
 				</properties>
 			</configuration>
@@ -124,6 +162,16 @@
 		</component>
 		<component>
 			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>deployment-log</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<logical-table-name>deployment-log</logical-table-name>
+				<physical-table-name>deployment_log</physical-table-name>
+				<data-source-name>phoenix</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
 			<role-hint>version</role-hint>
 			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
 			<configuration>
@@ -144,6 +192,15 @@
 		<component>
 			<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
 			<implementation>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.dal.deploy.DeploymentLogDao</role>
+			<implementation>com.dianping.phoenix.console.dal.deploy.DeploymentLogDao</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.dal.jdbc.QueryEngine</role>
@@ -180,7 +237,7 @@
 					<role>com.dianping.phoenix.console.page.home.JspViewer</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.service.DeploymentService</role>
+					<role>com.dianping.phoenix.service.ProjectManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.service.VersionManager</role>
@@ -222,6 +279,22 @@
 		<component>
 			<role>com.dianping.phoenix.console.page.version.JspViewer</role>
 			<implementation>com.dianping.phoenix.console.page.version.JspViewer</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.page.deploy2.Handler</role>
+			<implementation>com.dianping.phoenix.console.page.deploy2.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.DeployManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.page.deploy2.JspViewer</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.page.deploy2.JspViewer</role>
+			<implementation>com.dianping.phoenix.console.page.deploy2.JspViewer</implementation>
 		</component>
 	</components>
 </plexus>

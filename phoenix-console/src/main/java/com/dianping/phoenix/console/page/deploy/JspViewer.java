@@ -1,7 +1,8 @@
 package com.dianping.phoenix.console.page.deploy;
 
-import com.dianping.phoenix.console.ConsolePage;
 import org.unidal.web.mvc.view.BaseJspViewer;
+
+import com.dianping.phoenix.console.ConsolePage;
 
 public class JspViewer extends BaseJspViewer<ConsolePage, Action, Context, Model> {
 	@Override

@@ -14,6 +14,7 @@ import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
+import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.phoenix.agent.core.Agent;
 import com.dianping.phoenix.agent.core.Transaction;
 import com.dianping.phoenix.agent.core.TransactionId;
@@ -63,7 +64,7 @@ public class Handler implements PageHandler<Context> {
 			container.setStatus("up");
 			container.setVersion("6.0.35");
 			res.setContainer(container);
-			res.setIp("127.0.0.1");
+			res.setIp(NetworkInterfaceManager.INSTANCE.getLocalHostAddress());
 			War war = new War();
 			war.setName("kernel");
 			war.setVersion("0.9.0");
@@ -131,14 +132,15 @@ public class Handler implements PageHandler<Context> {
 			int len;
 			if (logReader != null) {
 				while (true) {
-					
-					if(resp.getWriter().checkError()) {
+
+					if (resp.getWriter().checkError()) {
 						break;
 					}
-					
+
 					len = logReader.read(cbuf);
 					if (len > 0) {
 						resp.getWriter().write(cbuf, 0, len);
+						resp.getWriter().write("                                                                                                                                                                ");
 						resp.getWriter().flush();
 					} else {
 						if (txCompleted.get()) {

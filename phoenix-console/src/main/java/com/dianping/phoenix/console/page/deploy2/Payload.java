@@ -1,10 +1,9 @@
-package com.dianping.phoenix.console.page.version;
+package com.dianping.phoenix.console.page.deploy2;
 
+import com.dianping.phoenix.console.ConsolePage;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
-
-import com.dianping.phoenix.console.ConsolePage;
 
 public class Payload implements ActionPayload<ConsolePage, Action> {
 	private ConsolePage m_page;
@@ -12,22 +11,16 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("op")
 	private Action m_action;
 
-	@FieldMeta("version")
-	private String m_version;
-
-	@FieldMeta("desc")
-	private String m_description;
-
 	@FieldMeta("id")
 	private int m_id;
+
+	public void setAction(String action) {
+		m_action = Action.getByName(action, Action.VIEW);
+	}
 
 	@Override
 	public Action getAction() {
 		return m_action;
-	}
-
-	public String getDescription() {
-		return m_description;
 	}
 
 	public int getId() {
@@ -39,17 +32,9 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		return m_page;
 	}
 
-	public String getVersion() {
-		return m_version;
-	}
-
-	public void setAction(String action) {
-		m_action = Action.getByName(action, Action.VIEW);
-	}
-
 	@Override
 	public void setPage(String page) {
-		m_page = ConsolePage.getByName(page, ConsolePage.VERSION);
+		m_page = ConsolePage.getByName(page, ConsolePage.DEPLOY2);
 	}
 
 	@Override

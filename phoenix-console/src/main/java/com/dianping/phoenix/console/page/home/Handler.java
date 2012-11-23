@@ -14,10 +14,10 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Version;
+import com.dianping.phoenix.deploy.DeployPlan;
+import com.dianping.phoenix.deploy.DeployPolicy;
 import com.dianping.phoenix.deploy.entity.Project;
-import com.dianping.phoenix.service.DeploymentPlan;
-import com.dianping.phoenix.service.DeploymentPolicy;
-import com.dianping.phoenix.service.DeploymentService;
+import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.VersionManager;
 
 public class Handler implements PageHandler<Context> {
@@ -25,7 +25,7 @@ public class Handler implements PageHandler<Context> {
 	private JspViewer m_jspViewer;
 
 	@Inject
-	private DeploymentService m_deploymentService;
+	private ProjectManager m_projectManager;
 
 	@Inject
 	private VersionManager m_versionManager;
@@ -39,15 +39,23 @@ public class Handler implements PageHandler<Context> {
 
 		if (action == Action.DEPLOY) {
 			if (!ctx.hasErrors()) {
+				String name = payload.getProject();
 				List<String> hosts = payload.getHosts();
-				DeploymentPlan plan = payload.getPlan();
-				String deployUri = ctx.getRequestContext().getActionUri(ConsolePage.DEPLOY.getName());
+				DeployPlan plan = payload.getPlan();
+				String deployUri = ctx.getRequestContext().getActionUri(ConsolePage.DEPLOY2.getName());
 
-				int id = m_deploymentService.deploy(hosts, plan);
-				redirect(ctx, deployUri + "?id=" + id);
-			} else {
-				payload.setAction(Action.PROJECT.getName());
+				try {
+					int id = m_projectManager.deployToProject(name, hosts, plan);
+					redirect(ctx, deployUri + "?id=" + id);
+					return;
+				} catch (Exception e) {
+					e.printStackTrace();
+					ctx.addError("project.deploy", e);
+				}
 			}
+
+			// validation failed, back to project page
+			payload.setAction(Action.PROJECT.getName());
 		}
 	}
 
@@ -63,18 +71,22 @@ public class Handler implements PageHandler<Context> {
 
 		switch (action) {
 		case HOME:
-			List<Project> projects = m_deploymentService.search(payload.getKeyword());
+			try {
+				List<Project> projects = m_projectManager.searchProjects(payload.getKeyword());
 
-			model.setProjects(projects);
+				model.setProjects(projects);
+			} catch (Exception e) {
+				ctx.addError("project.search", e);
+			}
 			break;
 		case PROJECT:
 			try {
-				Project project = m_deploymentService.findByName(payload.getProject());
+				Project project = m_projectManager.findProjectBy(payload.getProject());
 				List<Version> versions = m_versionManager.getActiveVersions();
 
 				model.setProject(project);
 				model.setVersions(versions);
-				model.setPolicies(DeploymentPolicy.values());
+				model.setPolicies(DeployPolicy.values());
 			} catch (Exception e) {
 				ctx.addError("project.view", e);
 			}
