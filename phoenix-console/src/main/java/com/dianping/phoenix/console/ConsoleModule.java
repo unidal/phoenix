@@ -11,7 +11,9 @@ com.dianping.phoenix.console.page.home.Handler.class,
 
 com.dianping.phoenix.console.page.deploy.Handler.class,
 
-com.dianping.phoenix.console.page.version.Handler.class
+com.dianping.phoenix.console.page.version.Handler.class,
+
+com.dianping.phoenix.console.page.deploy2.Handler.class
 })
 public class ConsoleModule extends AbstractModule {
 

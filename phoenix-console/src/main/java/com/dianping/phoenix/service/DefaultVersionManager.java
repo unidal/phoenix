@@ -1,6 +1,8 @@
 package com.dianping.phoenix.service;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.unidal.dal.jdbc.DalException;
@@ -24,8 +26,10 @@ public class DefaultVersionManager implements VersionManager {
 	private VersionDao m_dao;
 
 	@Override
-	public Version createVersion(String version, String description,
-			String releaseNotes, String createdBy) throws Exception {
+	public Version createVersion(String version, String description, String releaseNotes, String createdBy)
+	      throws Exception {
+		m_gitService.setup();
+
 		File gitDir = m_gitService.getWorkingDir();
 
 		m_gitService.pull();
@@ -39,8 +43,15 @@ public class DefaultVersionManager implements VersionManager {
 
 	@Override
 	public List<Version> getActiveVersions() throws Exception {
-		List<Version> versions = m_dao.findAllActive(KERNEL,
-				VersionEntity.READSET_FULL);
+		List<Version> versions = m_dao.findAllActive(KERNEL, VersionEntity.READSET_FULL);
+
+		// order in descend
+		Collections.sort(versions, new Comparator<Version>() {
+			@Override
+			public int compare(Version v1, Version v2) {
+				return v2.getVersion().compareTo(v1.getVersion());
+			}
+		});
 
 		return versions;
 	}
@@ -62,14 +73,11 @@ public class DefaultVersionManager implements VersionManager {
 		}
 	}
 
-	private Version store(String version, String description,
-			String releaseNotes, String createdBy) throws DalException {
+	private Version store(String version, String description, String releaseNotes, String createdBy) throws DalException {
 		try {
-			m_dao.findByDomainVersion(KERNEL, version,
-					VersionEntity.READSET_FULL);
+			m_dao.findByDomainVersion(KERNEL, version, VersionEntity.READSET_FULL);
 
-			throw new RuntimeException(String.format(
-					"Kernel version(%s) is already existed!", version));
+			throw new RuntimeException(String.format("Kernel version(%s) is already existed!", version));
 		} catch (DalNotFoundException e) {
 			// expected
 		}

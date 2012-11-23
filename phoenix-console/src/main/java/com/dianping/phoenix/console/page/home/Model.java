@@ -6,8 +6,8 @@ import org.unidal.web.mvc.ViewModel;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Version;
+import com.dianping.phoenix.deploy.DeployPolicy;
 import com.dianping.phoenix.deploy.entity.Project;
-import com.dianping.phoenix.service.DeploymentPolicy;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private List<Project> m_projects;
@@ -18,7 +18,7 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	private List<Version> m_versions;
 
-	private DeploymentPolicy[] m_policies;
+	private DeployPolicy[] m_policies;
 
 	public Model(Context ctx) {
 		super(ctx);
@@ -33,7 +33,7 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 		return m_deployPlans;
 	}
 
-	public DeploymentPolicy[] getPolicies() {
+	public DeployPolicy[] getPolicies() {
    	return m_policies;
    }
 
@@ -53,7 +53,7 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 		m_deployPlans = deployPlans;
 	}
 
-	public void setPolicies(DeploymentPolicy[] policies) {
+	public void setPolicies(DeployPolicy[] policies) {
 		m_policies = policies;
 	}
 

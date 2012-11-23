@@ -2,10 +2,10 @@ package com.dianping.phoenix.console.page.version;
 
 import java.util.List;
 
+import org.unidal.web.mvc.ViewModel;
+
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Version;
-
-import org.unidal.web.mvc.ViewModel;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private List<Version> m_versions;
