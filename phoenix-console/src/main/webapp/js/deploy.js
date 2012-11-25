@@ -5,7 +5,7 @@ function updateDeployStatus() {
 						$
 								.ajax({
 									type : "GET",
-									url : "?op=log",
+									url : "?op=status",
 									dataType : "json",
 									data : {
 										offset : $("#offset").val(),

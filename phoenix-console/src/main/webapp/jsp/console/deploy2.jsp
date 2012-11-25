@@ -23,94 +23,16 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>192.168.8.40</td>
-								<td>
-									<div class="progress">
-										<div class="bar" style="width: 60%;"></div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>192.168.8.41</td>
-								<td>
-									<div class="progress progress-danger">
-										<div class="bar" style="width: 20%;"></div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>192.168.8.42</td>
-								<td>
-									<div class="progress">
-										<div class="bar" style="width: 0%;"></div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>192.168.8.43</td>
-								<td>
-									<div class="progress">
-										<div class="bar" style="width: 0%;"></div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>192.168.8.44</td>
-								<td>
-									<div class="progress">
-										<div class="bar" style="width: 0%;"></div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>192.168.8.45</td>
-								<td>
-									<div class="progress">
-										<div class="bar" style="width: 0%;"></div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>192.168.8.46</td>
-								<td>
-									<div class="progress">
-										<div class="bar" style="width: 0%;"></div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>192.168.8.47</td>
-								<td>
-									<div class="progress">
-										<div class="bar" style="width: 0%;"></div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>192.168.8.48</td>
-								<td>
-									<div class="progress">
-										<div class="bar" style="width: 0%;"></div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>192.168.8.49</td>
-								<td>
-									<div class="progress">
-										<div class="bar" style="width: 0%;"></div>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>192.168.8.50</td>
-								<td>
-									<div class="progress">
-										<div class="bar" style="width: 0%;"></div>
-									</div>
-								</td>
-							</tr>
+							<c:forEach var="host" items="${model.hosts}">
+								<tr>
+									<td>${host}</td>
+									<td>
+										<div class="progress">
+											<div class="bar" style="width: 60%;"></div>
+										</div>
+									</td>
+								</tr>
+							</c:forEach>
 						</tbody>
 					</table>
 				</div>
