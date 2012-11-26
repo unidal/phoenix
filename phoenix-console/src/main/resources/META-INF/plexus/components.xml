@@ -107,6 +107,9 @@
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDao</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -217,6 +220,19 @@
 			</requirements>
 		</component>
 		<component>
+			<role>com.dianping.phoenix.console.page.deploy2.KeepAliveViewer</role>
+			<implementation>com.dianping.phoenix.console.page.deploy2.KeepAliveViewer</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.page.deploy2.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.DeployManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
@@ -290,11 +306,26 @@
 				<requirement>
 					<role>com.dianping.phoenix.console.page.deploy2.JspViewer</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.page.deploy2.KeepAliveViewer</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.console.page.deploy2.JspViewer</role>
 			<implementation>com.dianping.phoenix.console.page.deploy2.JspViewer</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.page.deploy2.KeepAliveViewer</role>
+			<implementation>com.dianping.phoenix.console.page.deploy2.KeepAliveViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.page.deploy2.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.DeployManager</role>
+				</requirement>
+			</requirements>
 		</component>
 	</components>
 </plexus>

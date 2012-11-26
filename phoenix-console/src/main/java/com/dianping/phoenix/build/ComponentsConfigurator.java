@@ -10,7 +10,10 @@ import org.unidal.lookup.configuration.Component;
 
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDao;
+import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
 import com.dianping.phoenix.console.dal.deploy.VersionDao;
+import com.dianping.phoenix.console.page.deploy2.JspViewer;
+import com.dianping.phoenix.console.page.deploy2.KeepAliveViewer;
 import com.dianping.phoenix.console.service.DefaultDeployService;
 import com.dianping.phoenix.console.service.DefaultProjectService;
 import com.dianping.phoenix.console.service.DeployService;
@@ -83,10 +86,13 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		}
 
 		all.add(C(DeployManager.class, DefaultDeployManager.class) //
-				.req(DeploymentDao.class));
+		      .req(DeploymentDao.class, DeploymentDetailsDao.class));
 	}
 
 	private void defineWebComponents(List<Component> all) {
+		all.add(C(KeepAliveViewer.class).is(PER_LOOKUP) //
+		      .req(JspViewer.class, DeployManager.class));
+
 		// Please keep it as last
 		all.addAll(new WebComponentConfigurator().defineComponents());
 	}

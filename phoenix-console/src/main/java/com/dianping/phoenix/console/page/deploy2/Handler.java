@@ -14,6 +14,7 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Deployment;
+import com.dianping.phoenix.console.dal.deploy.DeploymentDetails;
 import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.DeployPlan;
 
@@ -23,6 +24,9 @@ public class Handler implements PageHandler<Context> {
 
 	@Inject
 	private JspViewer m_jspViewer;
+
+	@Inject
+	private KeepAliveViewer m_statusViewer;
 
 	@Override
 	@PayloadMeta(Payload.class)
@@ -36,28 +40,53 @@ public class Handler implements PageHandler<Context> {
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
 		Payload payload = ctx.getPayload();
+		Action action = payload.getAction();
 
-		model.setAction(Action.VIEW);
+		model.setAction(action);
 		model.setPage(ConsolePage.DEPLOY2);
 
-		try {
-			Deployment deployment = m_deployManager.query(payload.getId());
-			DeployPlan plan = new DeployPlan();
+		switch (action) {
+		case VIEW:
+			try {
+				showView(model, payload.getId());
+			} catch (Exception e) {
+				ctx.addError("deploy.query", e);
+			}
 
-			plan.setVersion(deployment.getWarVersion());
-			plan.setPolicy(deployment.getStrategy());
-			plan.setAbortOnError("abortOnError".equals(deployment.getErrorPolicy()));
-			model.setName(deployment.getDomain());
-			model.setPlan(plan);
+			m_jspViewer.view(ctx, model);
+			break;
+		case STATUS:
+			try {
+				showStatus(model, payload.getId());
+			} catch (Exception e) {
+				ctx.addError("deploy.status", e);
+			}
 
-			List<String> hosts = new ArrayList<String>();
+			m_statusViewer.view(ctx, model);
+			break;
+		}
+	}
 
-			// TODO
-			model.setHosts(hosts);
-		} catch (Exception e) {
-			ctx.addError("deploy.query", e);
+	private void showStatus(Model model, int id) {
+
+	}
+
+	private void showView(Model model, int id) throws Exception {
+		Deployment deployment = m_deployManager.query(id);
+		DeployPlan plan = new DeployPlan();
+
+		plan.setVersion(deployment.getWarVersion());
+		plan.setPolicy(deployment.getStrategy());
+		plan.setAbortOnError("abortOnError".equals(deployment.getErrorPolicy()));
+		model.setName(deployment.getDomain());
+		model.setPlan(plan);
+
+		List<String> hosts = new ArrayList<String>();
+
+		for (DeploymentDetails details : deployment.getDetailsList()) {
+			hosts.add(details.getIpAddress());
 		}
 
-		m_jspViewer.view(ctx, model);
+		model.setHosts(hosts);
 	}
 }
