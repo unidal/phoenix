@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.page.deploy2;
+package com.dianping.phoenix.console.page.deploy;
 
 import java.io.IOException;
 

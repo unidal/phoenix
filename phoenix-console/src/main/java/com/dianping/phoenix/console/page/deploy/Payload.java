@@ -1,59 +1,46 @@
 package com.dianping.phoenix.console.page.deploy;
 
+import com.dianping.phoenix.console.ConsolePage;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
-
-import com.dianping.phoenix.console.ConsolePage;
 
 public class Payload implements ActionPayload<ConsolePage, Action> {
 	private ConsolePage m_page;
 
 	@FieldMeta("op")
-	private Action m_action = Action.VIEW;
+	private Action m_action;
 
-	@FieldMeta("plan")
-	private String m_plan;
-	
-	@FieldMeta("offset")
-	private int m_offset;
+	@FieldMeta("id")
+	private int m_id;
+
+	public void setAction(String action) {
+		m_action = Action.getByName(action, Action.VIEW);
+	}
 
 	@Override
 	public Action getAction() {
 		return m_action;
 	}
 
-	public int getOffset() {
-   	return m_offset;
-   }
+	public int getId() {
+		return m_id;
+	}
 
 	@Override
 	public ConsolePage getPage() {
 		return m_page;
 	}
 
-	public String getPlan() {
-		return m_plan;
-	}
-
-	public void setAction(String action) {
-		m_action = Action.getByName(action, Action.VIEW);
-	}
-
-	public void setOffset(int offset) {
-   	m_offset = offset;
-   }
-
 	@Override
 	public void setPage(String page) {
-		m_page = ConsolePage.getByName(page, ConsolePage.DEPLOY);
-	}
-
-	public void setPlan(String plan) {
-		m_plan = plan;
+		m_page = ConsolePage.getByName(page, ConsolePage.DEPLOY2);
 	}
 
 	@Override
 	public void validate(ActionContext<?> ctx) {
+		if (m_action == null) {
+			m_action = Action.VIEW;
+		}
 	}
 }

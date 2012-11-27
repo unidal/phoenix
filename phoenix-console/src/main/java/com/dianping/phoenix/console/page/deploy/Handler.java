@@ -1,6 +1,8 @@
 package com.dianping.phoenix.console.page.deploy;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 
@@ -11,57 +13,80 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
-import com.dianping.phoenix.console.service.DeployService;
+import com.dianping.phoenix.console.dal.deploy.Deployment;
+import com.dianping.phoenix.console.dal.deploy.DeploymentDetails;
+import com.dianping.phoenix.deploy.DeployManager;
+import com.dianping.phoenix.deploy.DeployPlan;
 
 public class Handler implements PageHandler<Context> {
+	@Inject
+	private DeployManager m_deployManager;
+
 	@Inject
 	private JspViewer m_jspViewer;
 
 	@Inject
-	private DeployService m_service;
-
-	private void getMessages(Model model, Payload payload) {
-		StringBuilder sb = new StringBuilder(1024);
-		String plan = payload.getPlan();
-		int offset = payload.getOffset();
-		int logs = m_service.getMessages(plan, offset, sb);
-
-		model.setLog(sb.toString());
-		model.setOffset(offset + logs);
-	}
+	private KeepAliveViewer m_statusViewer;
 
 	@Override
 	@PayloadMeta(Payload.class)
-	@InboundActionMeta(name = "deploy")
+	@InboundActionMeta(name = "deploy2")
 	public void handleInbound(Context ctx) throws ServletException, IOException {
+		// display only, no action here
 	}
 
 	@Override
-	@OutboundActionMeta(name = "deploy")
+	@OutboundActionMeta(name = "deploy2")
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
 		Payload payload = ctx.getPayload();
+		Action action = payload.getAction();
 
-		model.setAction(payload.getAction());
-		model.setPage(ConsolePage.DEPLOY);
+		model.setAction(action);
+		model.setPage(ConsolePage.DEPLOY2);
 
-		String plan = payload.getPlan();
-		
-		switch (payload.getAction()) {
-		case LOG:
-			model.setHostPlans(m_service.getHostPlans(plan));
-			model.setStatus(m_service.getStatus(plan));
-			getMessages(model, payload);
-
-			break;
+		switch (action) {
 		case VIEW:
-			model.setHostPlans(m_service.getHostPlans(plan));
-			model.setStatus(m_service.getStatus(plan));
-			getMessages(model, payload);
+			try {
+				showView(model, payload.getId());
+			} catch (Exception e) {
+				ctx.addError("deploy.query", e);
+			}
 
+			m_jspViewer.view(ctx, model);
+			break;
+		case STATUS:
+			try {
+				showStatus(model, payload.getId());
+			} catch (Exception e) {
+				ctx.addError("deploy.status", e);
+			}
+
+			m_statusViewer.view(ctx, model);
 			break;
 		}
+	}
 
-		m_jspViewer.view(ctx, model);
+	private void showStatus(Model model, int id) {
+
+	}
+
+	private void showView(Model model, int id) throws Exception {
+		Deployment deployment = m_deployManager.query(id);
+		DeployPlan plan = new DeployPlan();
+
+		plan.setVersion(deployment.getWarVersion());
+		plan.setPolicy(deployment.getStrategy());
+		plan.setAbortOnError("abortOnError".equals(deployment.getErrorPolicy()));
+		model.setName(deployment.getDomain());
+		model.setPlan(plan);
+
+		List<String> hosts = new ArrayList<String>();
+
+		for (DeploymentDetails details : deployment.getDetailsList()) {
+			hosts.add(details.getIpAddress());
+		}
+
+		model.setHosts(hosts);
 	}
 }

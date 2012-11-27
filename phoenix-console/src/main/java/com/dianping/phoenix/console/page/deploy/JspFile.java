@@ -2,8 +2,10 @@ package com.dianping.phoenix.console.page.deploy;
 
 public enum JspFile {
 	VIEW("/jsp/console/deploy.jsp"),
+	
+	STATUS("/jsp/console/deploy_status.jsp"),
 
-	LOG("/jsp/console/deploy_log.jsp");
+	;
 
 	private String m_path;
 

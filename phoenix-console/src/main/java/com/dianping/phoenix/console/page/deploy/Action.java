@@ -2,8 +2,8 @@ package com.dianping.phoenix.console.page.deploy;
 
 public enum Action implements org.unidal.web.mvc.Action {
 	VIEW("view"),
-
-	LOG("log");
+	
+	STATUS("status");
 
 	private String m_name;
 
