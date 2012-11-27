@@ -34,7 +34,7 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	@Override
 	public void setPage(String page) {
-		m_page = ConsolePage.getByName(page, ConsolePage.DEPLOY2);
+		m_page = ConsolePage.getByName(page, ConsolePage.DEPLOY);
 	}
 
 	@Override

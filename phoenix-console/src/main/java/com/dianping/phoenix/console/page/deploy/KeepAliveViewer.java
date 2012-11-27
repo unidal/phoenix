@@ -24,7 +24,7 @@ public class KeepAliveViewer {
 	private byte[] renderChunk(Context ctx, Model model) throws ServletException, IOException {
 		HttpServletRequest req = ctx.getHttpServletRequest();
 		HttpServletResponse response = ctx.getHttpServletResponse();
-		HttpServletResponseWrapper res = new HttpServletResponseWrapper(response, true);
+		HttpServletResponseWrapper res = new HttpServletResponseWrapper(null, true);
 
 		ctx.initialize(req, res); // hack
 		m_jspViewer.view(ctx, model);

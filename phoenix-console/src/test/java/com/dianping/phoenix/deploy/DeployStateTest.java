@@ -10,7 +10,8 @@ import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.deploy.DeployState.Context;
+import com.dianping.phoenix.deploy.agent.DeployState;
+import com.dianping.phoenix.deploy.agent.DeployState.Context;
 
 public class DeployStateTest extends ComponentTestCase {
 	private ConfigManager m_configManager;

@@ -1,4 +1,4 @@
-package com.dianping.phoenix.deploy;
+package com.dianping.phoenix.deploy.agent;
 
 import java.io.IOException;
 
