@@ -14,11 +14,6 @@ import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
 import com.dianping.phoenix.console.dal.deploy.VersionDao;
 import com.dianping.phoenix.console.page.deploy.JspViewer;
 import com.dianping.phoenix.console.page.deploy.KeepAliveViewer;
-import com.dianping.phoenix.console.service.DefaultDeployService;
-import com.dianping.phoenix.console.service.DefaultProjectService;
-import com.dianping.phoenix.console.service.DeployService;
-import com.dianping.phoenix.console.service.PhoenixProgressMonitor;
-import com.dianping.phoenix.console.service.ProjectService;
 import com.dianping.phoenix.deploy.DefaultDeployExecutor;
 import com.dianping.phoenix.deploy.DefaultDeployManager;
 import com.dianping.phoenix.deploy.DeployExecutor;
@@ -30,6 +25,7 @@ import com.dianping.phoenix.service.DefaultStatusReporter;
 import com.dianping.phoenix.service.DefaultVersionManager;
 import com.dianping.phoenix.service.DefaultWarService;
 import com.dianping.phoenix.service.GitService;
+import com.dianping.phoenix.service.GitProgressMonitor;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.StatusReporter;
 import com.dianping.phoenix.service.VersionManager;
@@ -45,9 +41,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(C(ConfigManager.class));
-
-		all.add(C(ProjectService.class, DefaultProjectService.class));
-		all.add(C(DeployService.class, DefaultDeployService.class));
 
 		defineServiceComponents(all);
 		defineDatabaseComponents(all);
@@ -67,13 +60,12 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 	private void defineServiceComponents(List<Component> all) {
 		all.add(C(StatusReporter.class, DefaultStatusReporter.class));
-		all.add(C(ProgressMonitor.class, PhoenixProgressMonitor.class) //
-		      .req(StatusReporter.class));
 
 		all.add(C(WarService.class, DefaultWarService.class) //
 		      .req(ConfigManager.class, StatusReporter.class));
 		all.add(C(GitService.class, DefaultGitService.class) //
 		      .req(ConfigManager.class, StatusReporter.class, ProgressMonitor.class));
+		all.add(C(ProgressMonitor.class, GitProgressMonitor.class));
 
 		all.add(C(VersionManager.class, DefaultVersionManager.class) //
 		      .req(WarService.class, GitService.class, VersionDao.class));
