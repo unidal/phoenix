@@ -10,14 +10,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.phoenix.agent.core.Transaction;
-import com.dianping.phoenix.agent.core.TransactionId;
 import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.task.Task;
-import com.dianping.phoenix.agent.core.task.Task.Status;
-import com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTask;
+import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
+import com.dianping.phoenix.agent.core.tx.Transaction;
+import com.dianping.phoenix.agent.core.tx.TransactionId;
+import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 
 public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 
@@ -68,7 +68,7 @@ public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 
 			@Override
 			protected void onLifecycleEvent(LifecycleEvent event) {
-				if (event.getStatus() == Status.REJECTED) {
+				if (event.getStatus() == Transaction.Status.REJECTED) {
 					txRejected.set(true);
 					latch.countDown();
 				}
@@ -104,7 +104,7 @@ public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 		new Thread() {
 			@Override
 			public void run() {
-				Transaction tx = new Transaction(mock(WarUpdateTask.class), new TransactionId(1L), eventTracker);
+				Transaction tx = new Transaction(mock(DeployTask.class), new TransactionId(1L), eventTracker);
 				try {
 					mockProcessor.submit(tx);
 				} catch (Exception e) {
@@ -115,7 +115,7 @@ public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 
 		}.start();
 
-		Transaction tx2 = new Transaction(mock(WarUpdateTask.class), new TransactionId(2L), eventTracker);
+		Transaction tx2 = new Transaction(mock(DeployTask.class), new TransactionId(2L), eventTracker);
 		mockProcessor.submit(tx2);
 
 		Assert.assertTrue(txRejected.get());
@@ -123,14 +123,14 @@ public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 
 	@Test
 	public void testSubmitAfterCommit() {
-		Transaction tx = new Transaction(mock(WarUpdateTask.class), new TransactionId(1L), mock(EventTracker.class));
+		Transaction tx = new Transaction(mock(DeployTask.class), new TransactionId(1L), mock(EventTracker.class));
 		processor.submit(tx);
 		final AtomicBoolean txAccepted = new AtomicBoolean(true);
-		Transaction tx2 = new Transaction(mock(WarUpdateTask.class), new TransactionId(2L), new AbstractEventTracker() {
+		Transaction tx2 = new Transaction(mock(DeployTask.class), new TransactionId(2L), new AbstractEventTracker() {
 
 			@Override
 			protected void onLifecycleEvent(LifecycleEvent event) {
-				if (event.getStatus() == Status.REJECTED) {
+				if (event.getStatus() == Transaction.Status.REJECTED) {
 					txAccepted.set(false);
 				}
 			}

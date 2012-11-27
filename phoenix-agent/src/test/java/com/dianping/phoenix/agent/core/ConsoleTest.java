@@ -13,10 +13,10 @@ import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.event.MessageEvent;
 import com.dianping.phoenix.agent.core.task.Task;
-import com.dianping.phoenix.agent.core.task.Task.Status;
+import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
 import com.dianping.phoenix.agent.core.task.processor.shell.ShellCmdTask;
-import com.dianping.phoenix.agent.core.task.processor.war.Artifact;
-import com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTask;
+import com.dianping.phoenix.agent.core.tx.Transaction;
+import com.dianping.phoenix.agent.core.tx.TransactionId;
 
 
 public class ConsoleTest extends ComponentTestCase {
@@ -56,7 +56,7 @@ public class ConsoleTest extends ComponentTestCase {
 			@Override
 			protected void onLifecycleEvent(LifecycleEvent event) {
 				LifecycleEvent levent = (LifecycleEvent)event;
-				if(levent.getStatus() == Status.SUCCESS) {
+				if(levent.getStatus() == Transaction.Status.SUCCESS) {
 					taskSuccess.set(true);
 				} else {
 					taskSuccess.set(false);
@@ -78,8 +78,7 @@ public class ConsoleTest extends ComponentTestCase {
 		
 		List<Task> tasks = new ArrayList<Task>();
 		
-		Artifact artifactToUpdate = new Artifact("user-web", "1.0");
-		tasks.add(new WarUpdateTask(artifactToUpdate, "1.1"));
+		tasks.add(new DeployTask("user-web", "1.1"));
 		
 		tasks.add(new ShellCmdTask("ps ax"));
 		
