@@ -12,8 +12,8 @@ import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDao;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
 import com.dianping.phoenix.console.dal.deploy.VersionDao;
-import com.dianping.phoenix.console.page.deploy2.JspViewer;
-import com.dianping.phoenix.console.page.deploy2.KeepAliveViewer;
+import com.dianping.phoenix.console.page.deploy.JspViewer;
+import com.dianping.phoenix.console.page.deploy.KeepAliveViewer;
 import com.dianping.phoenix.console.service.DefaultDeployService;
 import com.dianping.phoenix.console.service.DefaultProjectService;
 import com.dianping.phoenix.console.service.DeployService;
@@ -82,6 +82,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
+			      .req(ConfigManager.class) //
 			      .config(E("policy").value(policy.name())));
 		}
 

@@ -12,8 +12,17 @@ public class ConfigManagerTest {
 		manager.setConfigFile(getClass().getResource("config.xml").getFile());
 		manager.initialize();
 
-		Assert.assertEquals("http://192.168.8.45:8080/artifactory/dianping-snapshots/com/dianping/platform/phoenix-kernel/1.0/phoenix-kernel-1.0.war", manager.getWarUrl("1.0"));
+		Assert.assertEquals("http://192.168.8.45:8080/artifactory/dianping-snapshots/" + //
+		      "com/dianping/platform/phoenix-kernel/1.0/phoenix-kernel-1.0.war", manager.getWarUrl("1.0"));
 		Assert.assertEquals("ssh://git@10.1.4.81:58422/kernel.git", manager.getGitOriginUrl());
 		Assert.assertEquals("target/gitrepo", manager.getGitWorkingDir());
+
+		Assert.assertEquals("http://localhost:3473/phoenix/agent/deploy?" + //
+		      "op=deploy&deployId=1&domain=user-web&version=0.1-SNAPSHOT",
+		      manager.getDeployUrl("localhost", 1, "user-web", "0.1-SNAPSHOT"));
+		Assert.assertEquals("http://localhost:3473/phoenix/agent/deploy?" + //
+		      "op=status&deployId=1", manager.getDeployStatusUrl("localhost", 1));
+		Assert.assertEquals("http://localhost:3473/phoenix/agent/deploy?" + //
+				"op=log&deployId=1", manager.getDeployLogUrl("localhost", 1));
 	}
 }

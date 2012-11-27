@@ -12,8 +12,8 @@ public class JspViewer extends BaseJspViewer<ConsolePage, Action, Context, Model
 		switch (action) {
 		case VIEW:
 			return JspFile.VIEW.getPath();
-		case LOG:
-			return JspFile.LOG.getPath();
+		case STATUS:
+			return JspFile.STATUS.getPath();
 		}
 
 		throw new RuntimeException("Unknown action: " + action);
