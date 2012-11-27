@@ -1,14 +1,16 @@
 package com.dianping.phoenix.agent.page.deploy;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Reader;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+import org.mortbay.jetty.HttpHeaders;
 import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.util.StringUtils;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
@@ -16,24 +18,28 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.phoenix.agent.core.Agent;
-import com.dianping.phoenix.agent.core.Transaction;
-import com.dianping.phoenix.agent.core.TransactionId;
-import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
-import com.dianping.phoenix.agent.core.event.Event;
 import com.dianping.phoenix.agent.core.event.EventTracker;
-import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.task.Task;
-import com.dianping.phoenix.agent.core.task.processor.war.Artifact;
-import com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTask;
+import com.dianping.phoenix.agent.core.task.processor.SubmitResult;
+import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
+import com.dianping.phoenix.agent.core.tx.Transaction;
+import com.dianping.phoenix.agent.core.tx.TransactionId;
+import com.dianping.phoenix.agent.core.tx.TransactionManager;
 import com.dianping.phoenix.agent.response.entity.Container;
 import com.dianping.phoenix.agent.response.entity.Lib;
 import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.entity.War;
 import com.dianping.phoenix.agent.response.transform.DefaultJsonBuilder;
+import com.dianping.phoenix.agent.util.ThreadUtil;
 
 public class Handler implements PageHandler<Context> {
+	
+	private final static Logger logger = Logger.getLogger(Handler.class);
+	
 	@Inject
 	private Agent agent;
+	@Inject
+	private TransactionManager txMgr;
 
 	@Override
 	@PayloadMeta(Payload.class)
@@ -77,32 +83,35 @@ public class Handler implements PageHandler<Context> {
 			ctx.getHttpServletResponse().getWriter().write(new DefaultJsonBuilder().buildJson(res));
 			break;
 		case DEPLOY:
-			res.setStatus("ok");
-			EventTracker eventTracker = new EventTracker() {
-
-				@Override
-				public void onEvent(Event event) {
-					// TODO Auto-generated method stub
-
+			if (deployArgumentValid(version, domain)) {
+				res.setStatus("error");
+				res.setMessage("More argument required");
+			} else {
+				Task task = new DeployTask(domain, version);
+				Transaction tx = new Transaction(task, txId, EventTracker.DUMMY_TRACKER);
+				SubmitResult submitResult = new SubmitResult(false, "");
+				try {
+					submitResult = agent.submit(tx);
+				} catch (Exception e) {
+					logger.error("error submit transaction " + tx, e);
 				}
-			};
-			Artifact artifactToUpdate = new Artifact(domain, "");
-			Task task = new WarUpdateTask(artifactToUpdate, version);
-			Transaction tx = new Transaction(task, txId, eventTracker);
-			try {
-				agent.submit(tx);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
+				res.setStatus(submitResult.isAccepted() ? "ok" : "error");
+				res.setMessage(submitResult.getMsg());
 			}
 			ctx.getHttpServletResponse().getWriter().write(new DefaultJsonBuilder().buildJson(res));
 			break;
 		case STATUS:
 			res.setStatus("done");
-			List<Transaction> txes = agent.currentTransactions();
-			for (Transaction atx : txes) {
-				if (atx.getTxId().equals(txId)) {
-					res.setStatus("processing");
+			if (txMgr.transactionExists(txId)) {
+				try {
+					Transaction tx = txMgr.loadTransaction(txId);
+					res.setStatus(tx.getStatus().toString().toLowerCase());
+				} catch (Exception e) {
+					res.setStatus("error");
 				}
+
+			} else {
+				res.setStatus("notfound");
 			}
 			ctx.getHttpServletResponse().getWriter().write(new DefaultJsonBuilder().buildJson(res));
 			break;
@@ -112,51 +121,45 @@ public class Handler implements PageHandler<Context> {
 			ctx.getHttpServletResponse().getWriter().write(new DefaultJsonBuilder().buildJson(res));
 			break;
 		case GETLOG:
-			final AtomicBoolean txCompleted = new AtomicBoolean(false);
-			boolean attachSuccess = agent.attachEventTracker(txId, new AbstractEventTracker() {
-
-				@Override
-				protected void onLifecycleEvent(LifecycleEvent event) {
-					if (event.getStatus().isCompleted()) {
-						txCompleted.set(true);
-					}
-				}
-
-			});
-			if (!attachSuccess) {
-				txCompleted.set(true);
+			Reader logReader = agent.getLogReader(txId, offset);
+			while(logReader == null && agent.isTransactionProcessing(txId)) {
+				ThreadUtil.sleepQuiet(1000);
+				logReader = agent.getLogReader(txId, offset);
 			}
-			char[] cbuf = new char[4096];
-			Reader logReader = agent.getLog(txId, offset);
 			HttpServletResponse resp = ctx.getHttpServletResponse();
-			int len;
-			if (logReader != null) {
-				while (true) {
+			resp.setHeader(HttpHeaders.CONTENT_TYPE, "text/html; charset=UTF-8");
+			PrintWriter writer = resp.getWriter();
+			transferLog(txMgr, txId, logReader, writer);
+			break;
+		}
+	}
 
-					if (resp.getWriter().checkError()) {
+	private boolean deployArgumentValid(String version, String domain) {
+		return StringUtils.isEmpty(StringUtils.trimAll(domain)) || StringUtils.isEmpty(StringUtils.trimAll(version));
+	}
+
+	private void transferLog(TransactionManager txMgr, TransactionId txId, Reader logReader, PrintWriter writer)
+			throws IOException {
+		int len;
+		char[] cbuf = new char[4096];
+		if (logReader != null) {
+			while (true) {
+				if (writer.checkError()) {
+					break;
+				}
+				len = logReader.read(cbuf);
+				if (len > 0) {
+					writer.write(cbuf, 0, len);
+					writer.flush();
+				} else {
+					Transaction tx = txMgr.loadTransaction(txId);
+					if (tx.getStatus().isCompleted()) {
 						break;
-					}
-
-					len = logReader.read(cbuf);
-					if (len > 0) {
-						resp.getWriter().write(cbuf, 0, len);
-						resp.getWriter().write("                                                                                                                                                                ");
-						resp.getWriter().flush();
 					} else {
-						if (txCompleted.get()) {
-							break;
-						} else {
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
+						ThreadUtil.sleepQuiet(1000);
 					}
 				}
 			}
-			break;
 		}
 	}
 }

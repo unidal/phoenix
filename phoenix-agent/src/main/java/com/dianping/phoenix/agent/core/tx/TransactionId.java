@@ -1,4 +1,7 @@
-package com.dianping.phoenix.agent.core;
+package com.dianping.phoenix.agent.core.tx;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 public class TransactionId {
 
@@ -6,6 +9,13 @@ public class TransactionId {
 
 	public TransactionId(long id) {
 		this.id = id;
+	}
+	
+	/** 
+	 * for serialization
+	 */
+	@SuppressWarnings("unused")
+	private TransactionId() {
 	}
 
 	public long getId() {
@@ -18,7 +28,7 @@ public class TransactionId {
 
 	@Override
 	public String toString() {
-		return "TransactionId [id=" + id + "]";
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 	@Override
@@ -42,5 +52,5 @@ public class TransactionId {
 			return false;
 		return true;
 	}
-
+	
 }

@@ -63,6 +63,21 @@
       	<version>1.9.0</version>
       	<scope>test</scope>
       </dependency>
+      <dependency>
+      	<groupId>org.codehaus.jackson</groupId>
+      	<artifactId>jackson-core-lgpl</artifactId>
+      	<version>1.9.11</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.codehaus.jackson</groupId>
+      	<artifactId>jackson-mapper-lgpl</artifactId>
+      	<version>1.9.11</version>
+      </dependency>
+      <dependency>
+      	<groupId>commons-lang</groupId>
+      	<artifactId>commons-lang</artifactId>
+      	<version>2.4</version>
+      </dependency>
    </dependencies>
    <build>
 		<plugins>

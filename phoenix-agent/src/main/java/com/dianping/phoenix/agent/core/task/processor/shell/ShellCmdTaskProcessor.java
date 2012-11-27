@@ -3,29 +3,30 @@ package com.dianping.phoenix.agent.core.task.processor.shell;
 import java.util.List;
 import java.util.Random;
 
-import com.dianping.phoenix.agent.core.Transaction;
-import com.dianping.phoenix.agent.core.TransactionId;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
-import com.dianping.phoenix.agent.core.task.Task.Status;
+import com.dianping.phoenix.agent.core.task.processor.SubmitResult;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
+import com.dianping.phoenix.agent.core.tx.Transaction;
+import com.dianping.phoenix.agent.core.tx.TransactionId;
 
 public class ShellCmdTaskProcessor implements TaskProcessor<ShellCmdTask> {
 
 	@Override
-	public void submit(Transaction tx) {
+	public SubmitResult submit(Transaction tx) {
 		ShellCmdTask shellCmdTask = (ShellCmdTask) tx.getTask();
 		Random rnd = new Random();
-		Status status = Status.FAILED;
+		Transaction.Status status = Transaction.Status.FAILED;
 		System.out.println("Shell running " + shellCmdTask.getCmd());
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 		}
 		if(rnd.nextBoolean()) {
-			status = Status.SUCCESS;
+			status = Transaction.Status.SUCCESS;
 		}
 		tx.getEventTracker().onEvent(new LifecycleEvent(tx.getTxId(), "success", status));
+		return new SubmitResult(true, "");
 	}
 
 	@Override

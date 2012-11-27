@@ -5,9 +5,12 @@ import java.io.Reader;
 
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
+import com.dianping.phoenix.agent.core.tx.TransactionId;
 
 public interface Agent extends TaskProcessor<Task> {
 
-	Reader getLog(TransactionId txId, int offset) throws IOException;
+	Reader getLogReader(TransactionId txId, int offset) throws IOException;
+
+	boolean isTransactionProcessing(TransactionId txId);
 	
 }
