@@ -62,7 +62,6 @@
 	<input type="hidden" id="offset" name="offset" value="\${model.offset}">
 	<input type="hidden" id="plan" name="plan" value="\${payload.plan}">
 
-	<res:useJs value="${res.js.local.deploy_js}" target="deploy-js" />
 	<res:useJs value="${res.js.local.TypingText_js}" target="deploy-js" />
 	<res:jsSlot id="deploy-js" />
 	<res:useCss value='${res.css.local.deploy_css}' target="head-css" />

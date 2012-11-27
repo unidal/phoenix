@@ -83,6 +83,11 @@
 			<configuration>
 				<policy>ONE_BY_ONE</policy>
 			</configuration>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.deploy.DeployExecutor</role>
@@ -91,6 +96,11 @@
 			<configuration>
 				<policy>TWO_BY_TWO</policy>
 			</configuration>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.deploy.DeployExecutor</role>
@@ -99,6 +109,11 @@
 			<configuration>
 				<policy>THREE_BY_THREE</policy>
 			</configuration>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.deploy.DeployManager</role>

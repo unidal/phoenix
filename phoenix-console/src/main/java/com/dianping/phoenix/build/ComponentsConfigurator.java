@@ -82,6 +82,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
+			      .req(ConfigManager.class) //
 			      .config(E("policy").value(policy.name())));
 		}
 
