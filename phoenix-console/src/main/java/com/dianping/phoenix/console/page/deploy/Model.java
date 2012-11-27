@@ -3,9 +3,10 @@ package com.dianping.phoenix.console.page.deploy;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.unidal.web.mvc.ViewModel;
+
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.service.HostPlan;
-import org.unidal.web.mvc.ViewModel;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private List<String> m_hosts;

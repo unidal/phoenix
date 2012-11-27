@@ -8,8 +8,8 @@ import org.unidal.web.mvc.payload.annotation.FieldMeta;
 import org.unidal.web.mvc.payload.annotation.ObjectMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
-import com.dianping.phoenix.service.DeploymentPlan;
-import com.dianping.phoenix.service.DeploymentPolicy;
+import com.dianping.phoenix.deploy.DeployPlan;
+import com.dianping.phoenix.deploy.DeployPolicy;
 
 public class Payload implements ActionPayload<ConsolePage, Action> {
 	private ConsolePage m_page;
@@ -30,7 +30,7 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	private List<String> m_hosts;
 
 	@ObjectMeta("plan")
-	private DeploymentPlan m_plan;
+	private DeployPlan m_plan;
 
 	@FieldMeta("deploy")
 	private boolean m_deploy;
@@ -57,7 +57,7 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		return m_page;
 	}
 
-	public DeploymentPlan getPlan() {
+	public DeployPlan getPlan() {
 		return m_plan;
 	}
 
@@ -73,30 +73,10 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		m_action = Action.getByName(action, Action.HOME);
 	}
 
-	// public void setDeployPlan(DeploymentPlan plan) {
-	// m_plan = plan;
-	// }
-	//
-	// public void setDomain(String domain) {
-	// m_domain = domain;
-	// }
-	//
-	// public void setHosts(List<String> hosts) {
-	// m_hosts = hosts;
-	// }
-	//
-	// public void setKeyword(String keyword) {
-	// m_keyword = keyword;
-	// }
-
 	@Override
 	public void setPage(String page) {
 		m_page = ConsolePage.getByName(page, ConsolePage.HOME);
 	}
-//
-//	public void setProject(String project) {
-//		m_project = project;
-//	}
 
 	@Override
 	public void validate(ActionContext<?> ctx) {
@@ -106,11 +86,11 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 		if (m_action == Action.PROJECT) {
 			if (m_plan == null) {
-				m_plan = new DeploymentPlan();
+				m_plan = new DeployPlan();
 			}
 
 			if (m_plan.getPolicy() == null) {
-				m_plan.setPolicy(String.valueOf(DeploymentPolicy.ONE_BY_ONE.getId()));
+				m_plan.setPolicy(DeployPolicy.ONE_BY_ONE.getId());
 			}
 		} else if (m_action == Action.DEPLOY) {
 			if (m_hosts == null || m_hosts.isEmpty()) {
@@ -118,7 +98,7 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 			}
 
 			if (m_plan == null) {
-				m_plan = new DeploymentPlan();
+				m_plan = new DeployPlan();
 			}
 
 			if (m_plan.getVersion() == null) {

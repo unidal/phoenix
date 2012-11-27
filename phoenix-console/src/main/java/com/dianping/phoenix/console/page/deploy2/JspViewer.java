@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.page.home;
+package com.dianping.phoenix.console.page.deploy2;
 
 import org.unidal.web.mvc.view.BaseJspViewer;
 
@@ -10,14 +10,10 @@ public class JspViewer extends BaseJspViewer<ConsolePage, Action, Context, Model
 		Action action = model.getAction();
 
 		switch (action) {
-		case HOME:
-			return JspFile.HOME.getPath();
-		case PROJECT:
-			return JspFile.PROJECT.getPath();
-		case DEPLOY:
-			return JspFile.DEPLOY.getPath();
-		case ABOUT:
-			return JspFile.ABOUT.getPath();
+		case VIEW:
+			return JspFile.VIEW.getPath();
+		case STATUS:
+			return JspFile.STATUS.getPath();
 		}
 
 		throw new RuntimeException("Unknown action: " + action);

@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.lib.Ref;
@@ -65,8 +66,9 @@ public class DefaultGitService implements GitService {
 
 		// Add
 		m_reporter.log(String.format("Adding to git for tag(%s) ... ", tag));
-		m_git.add().addFilepattern(".").call();
+		DirCache dirCache = m_git.add().addFilepattern(".").call();
 		m_reporter.log(String.format("Adding to git for tag(%s) ... DONE.", tag));
+		
 
 		// Commit
 		m_reporter.log(String.format("Commiting to git for tag(%s) ... ", tag));
@@ -75,7 +77,12 @@ public class DefaultGitService implements GitService {
 
 		// Tag
 		m_reporter.log(String.format("Taging to git for tag(%s) ... ", tag));
-		m_git.tag().setName(tag).setMessage(description).call();
+		try{
+			m_git.tag().setName(tag).setMessage(description).call();
+		}catch(Exception e){
+			m_reporter.log(String.format("Tag(%s) already exists!", tag), e);
+		}
+		
 		m_reporter.log(String.format("Taging to git for tag(%s) ... DONE.", tag));
 
 		return revCommit.getId();

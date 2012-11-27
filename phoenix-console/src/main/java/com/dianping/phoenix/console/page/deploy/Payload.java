@@ -1,9 +1,10 @@
 package com.dianping.phoenix.console.page.deploy;
 
-import com.dianping.phoenix.console.ConsolePage;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
+
+import com.dianping.phoenix.console.ConsolePage;
 
 public class Payload implements ActionPayload<ConsolePage, Action> {
 	private ConsolePage m_page;

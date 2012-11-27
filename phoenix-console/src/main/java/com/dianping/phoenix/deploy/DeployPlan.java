@@ -1,6 +1,6 @@
-package com.dianping.phoenix.service;
+package com.dianping.phoenix.deploy;
 
-public class DeploymentPlan {
+public class DeployPlan {
 	private String m_version;
 
 	private String m_policy;
@@ -33,7 +33,7 @@ public class DeploymentPlan {
 
 	@Override
 	public String toString() {
-		return String.format("%s[version=%s, policy=%s, abortOnError=%s]", DeploymentPlan.class.getSimpleName(),
+		return String.format("%s[version=%s, policy=%s, abortOnError=%s]", DeployPlan.class.getSimpleName(),
 		      m_version, m_policy, m_abortOnError);
 	}
 }
