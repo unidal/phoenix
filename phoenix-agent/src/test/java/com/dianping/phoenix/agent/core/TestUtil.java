@@ -2,7 +2,8 @@ package com.dianping.phoenix.agent.core;
 
 import java.lang.reflect.ParameterizedType;
 
-import com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTaskProcessor;
+import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor;
+import com.dianping.phoenix.agent.core.tx.TransactionId;
 
 
 public class TestUtil {
@@ -29,7 +30,7 @@ public class TestUtil {
 	}
 	
 	public static void main(String[] args) {
-		WarUpdateTaskProcessor a = new WarUpdateTaskProcessor();
+		DeployTaskProcessor a = new DeployTaskProcessor();
 		Class clazz = (Class) ((ParameterizedType)a.getClass().getGenericSuperclass()).getRawType();
 		System.out.println(clazz);
 		System.out.println(clazz.getGenericInterfaces()[0]);

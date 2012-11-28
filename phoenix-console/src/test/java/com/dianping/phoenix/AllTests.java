@@ -5,6 +5,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.dianping.phoenix.configure.ConfigManagerTest;
+import com.dianping.phoenix.deploy.DeployPolicyExecutorTest;
+import com.dianping.phoenix.deploy.DeployStateTest;
 import com.dianping.phoenix.deploy.ModelTest;
 
 @RunWith(Suite.class)
@@ -12,7 +14,11 @@ import com.dianping.phoenix.deploy.ModelTest;
 
 ConfigManagerTest.class,
 
-ModelTest.class
+ModelTest.class,
+
+DeployStateTest.class,
+
+DeployPolicyExecutorTest.class
 
 })
 public class AllTests {

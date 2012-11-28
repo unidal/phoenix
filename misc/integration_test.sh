@@ -21,7 +21,6 @@ function check_arguments {
                 v)      version=$OPTARG;;
                 c)      container=$OPTARG;;
 				w)		war=$OPTARG;;
-                \?)     usage;;
         esac
 	done
 	forkGrep=f

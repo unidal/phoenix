@@ -1,0 +1,59 @@
+Progress: 11/100
+
+[11-27 16:33:44] [INFO] PID is 8728
+[11-27 16:33:44] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:33:44] [INFO] getting kernel war from git
+Cloning into '/data/appdata/phoenix_kernel_war_tmp'...
+Switched to a new branch 'dummy'
+[11-27 16:34:34] [INFO] got kernel war from git
+--9ed2b78c112fbd17a8511812c554da62941629a8--
+Progress: 21/100
+
+[11-27 16:34:34] [INFO] PID is 8744
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] turning off traffic
+[11-27 16:34:34] [INFO] traffic turned off
+--9ed2b78c112fbd17a8511812c554da62941629a8--
+Progress: 31/100
+
+[11-27 16:34:34] [INFO] PID is 8754
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] stopping container
+[11-27 16:34:34] [INFO] container stopped
+--9ed2b78c112fbd17a8511812c554da62941629a8--
+Progress: 41/100
+
+[11-27 16:34:34] [INFO] PID is 8769
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] upgrading sample-app kernel to 0.1-SNAPSHOT
+[11-27 16:34:34] [INFO] sample-app kernel upgraded to 0.1-SNAPSHOT
+--9ed2b78c112fbd17a8511812c554da62941629a8--
+Progress: 51/100
+
+[11-27 16:34:34] [INFO] PID is 8782
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] starting container
+[11-27 16:34:35] [INFO] container started
+--9ed2b78c112fbd17a8511812c554da62941629a8--
+Progress: 61/100
+Status: failed
+
+[11-27 16:34:35] [INFO] PID is 8803
+[11-27 16:34:35] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:35] [INFO] checking container status
+[11-27 16:34:35] [INFO] container status ok
+--9ed2b78c112fbd17a8511812c554da62941629a8--
+Progress: 71/100
+
+[11-27 16:34:35] [INFO] PID is 8813
+[11-27 16:34:35] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:35] [INFO] commiting kernel
+[master 8f95266] update to 0.1-SNAPSHOT
+ 9 files changed, 399 insertions(+), 399 deletions(-)
+[11-27 16:34:35] [INFO] kernel version 0.1-SNAPSHOT committed
+[11-27 16:34:35] [INFO] turning on traffic
+[11-27 16:34:35] [INFO] traffic turned on
+--9ed2b78c112fbd17a8511812c554da62941629a8--
+Progress: 100/100
+
+--255220d51dc7fb4aacddadedfe252a346da267d4--

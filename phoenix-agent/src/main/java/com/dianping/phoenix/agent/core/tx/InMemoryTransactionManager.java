@@ -1,4 +1,4 @@
-package com.dianping.phoenix.agent.core.log;
+package com.dianping.phoenix.agent.core.tx;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,14 +12,13 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.dianping.phoenix.agent.core.TransactionId;
 
 /**
  * Utility class for dev & test
  * @author marsqing
  *
  */
-public class InMemoryTransactionLog implements TransactionLog {
+public class InMemoryTransactionManager implements TransactionManager {
 
 	/**
 	 * Unified byte array based Input/OutputStream
@@ -82,7 +81,7 @@ public class InMemoryTransactionLog implements TransactionLog {
 	private Map<TransactionId, ByteArrayStream> cache = new ConcurrentHashMap<TransactionId, ByteArrayStream>();
 
 	@Override
-	public synchronized OutputStream getOutputStream(TransactionId txId) throws IOException {
+	public synchronized OutputStream getLogOutputStream(TransactionId txId) throws IOException {
 		if (cache.containsKey(txId)) {
 			return cache.get(txId).getOutputStream();
 		} else {
@@ -93,7 +92,7 @@ public class InMemoryTransactionLog implements TransactionLog {
 	}
 
 	@Override
-	public Reader getLog(TransactionId txId, int offset) {
+	public Reader getLogReader(TransactionId txId, int offset) {
 		ByteArrayStream bs = cache.get(txId);
 		if (bs != null && bs.getOutputStream().size() > offset) {
 			InputStream in = bs.getInputStream();
@@ -109,23 +108,52 @@ public class InMemoryTransactionLog implements TransactionLog {
 	}
 
 	@Override
-	public Writer getWriter(TransactionId txId) throws IOException {
-		return new OutputStreamWriter(getOutputStream(txId), ENCODING);
+	public Writer getLogWriter(TransactionId txId) throws IOException {
+		return new OutputStreamWriter(getLogOutputStream(txId), ENCODING);
 	}
 	
 	public static void main(String[] args) throws IOException {
-		InMemoryTransactionLog log = new InMemoryTransactionLog();
+		InMemoryTransactionManager log = new InMemoryTransactionManager();
 		TransactionId txId = new TransactionId(1L);
-		log.getOutputStream(txId).write("a".getBytes());
+		log.getLogOutputStream(txId).write("a".getBytes());
 		char[] cbuf = new char[4096];
-		Reader reader = log.getLog(txId, 0);
+		Reader reader = log.getLogReader(txId, 0);
 		int len = reader.read(cbuf);
 		System.out.println(cbuf[0]);
 		len = reader.read(cbuf);
 		System.out.println(len);
-		log.getOutputStream(txId).write("b".getBytes());
+		log.getLogOutputStream(txId).write("b".getBytes());
 		len = reader.read(cbuf);
 		System.out.println(cbuf[0]);
+	}
+
+	@Override
+	public Transaction loadTransaction(TransactionId txId) {
+		return null;
+	}
+
+	@Override
+	public void saveTransaction(Transaction tx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean transactionExists(TransactionId txId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean startTransaction(TransactionId txId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endTransaction(TransactionId txId) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

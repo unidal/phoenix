@@ -37,6 +37,7 @@ public class Handler implements PageHandler<Context> {
 			try {
 				m_manager.createVersion(version, description, releaseNotes, createdBy);
 			} catch (Exception e) {
+				e.printStackTrace(); // TODO remove it
 				ctx.addError("version.add", e);
 			}
 		} else if (payload.getAction() == Action.REMOVE) {

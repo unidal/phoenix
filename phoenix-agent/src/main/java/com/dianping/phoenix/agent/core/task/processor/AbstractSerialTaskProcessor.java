@@ -5,26 +5,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import com.dianping.phoenix.agent.core.Transaction;
-import com.dianping.phoenix.agent.core.TransactionId;
-import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
+import org.apache.log4j.Logger;
+
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.EventTrackerChain;
-import com.dianping.phoenix.agent.core.event.LifecycleEvent;
-import com.dianping.phoenix.agent.core.task.Task.Status;
+import com.dianping.phoenix.agent.core.tx.Transaction;
+import com.dianping.phoenix.agent.core.tx.TransactionId;
+import com.site.helper.Threads;
 
 public abstract class AbstractSerialTaskProcessor<T> implements TaskProcessor<T> {
 
 	protected Transaction currentTx;
-	private Semaphore semaphore = new Semaphore(1); 
+	private Semaphore semaphore = new Semaphore(1);
 	protected EventTrackerChain eventTrackerChain;
 
-	/**
-	 * Remember to call transactionEnd when task is done!!!
-	 * 
-	 * @param tx
-	 * @throws Exception
-	 */
 	protected abstract void doProcess(Transaction tx) throws Exception;
 
 	private synchronized void initEventTrackerChain(EventTracker eventTracker) {
@@ -33,51 +27,64 @@ public abstract class AbstractSerialTaskProcessor<T> implements TaskProcessor<T>
 		} else {
 			eventTrackerChain = (EventTrackerChain) eventTracker;
 		}
-		eventTrackerChain.add(new AbstractEventTracker() {
-
-			@Override
-			protected void onLifecycleEvent(LifecycleEvent event) {
-				if(event.getStatus().isCompleted()) {
-					transactionEnd(event.getTransactionId());
-				}
-			}
-			
-		});
 	}
 
 	@Override
-	public void submit(Transaction tx) {
+	public SubmitResult submit(final Transaction tx) {
+		Logger logger = getLogger();
+		SubmitResult submitResult = new SubmitResult(false, "");
 		if (semaphore.tryAcquire()) {
-			try {
-				initEventTrackerChain(tx.getEventTracker());
-				transactionStart(tx);
-			} catch (Exception e) {
-				transactionEnd(tx.getTxId());
-				throw new RuntimeException(e);
-			}
+			logger.info("accept " + tx);
 			
-			try {
-				doProcess(tx);
-			} catch (Exception e) {
-				//TODO
-			}
-		} else {
-			tx.getEventTracker().onEvent(new LifecycleEvent(tx.getTxId(), "some task is running", Status.REJECTED));
-		}
+			final Class<?> clazz = getClass();
+			Threads.Task task = new Threads.Task() {
 
+				@Override
+				public void run() {
+					try {
+						initEventTrackerChain(tx.getEventTracker());
+						transactionStart(tx);
+						doProcess(tx);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					} finally {
+						semaphore.release();
+						transactionEnd(tx.getTxId());
+					}
+				}
+
+				@Override
+				public void shutdown() {
+
+				}
+
+				@Override
+				public String getName() {
+					return clazz.getSimpleName();
+				}
+			};
+			Threads.forGroup("Phoenix").start(task);
+			submitResult.setAccepted(true);
+		} else {
+			logger.info("reject " + tx);
+			submitResult.setAccepted(false);
+			submitResult.setMsg("another transaction is running");
+		}
+		return submitResult;
 	}
 
-	private void transactionStart(Transaction tx) {
+	private Logger getLogger() {
+		Logger logger = Logger.getLogger(getClass());
+		return logger;
+	}
+
+	private synchronized void transactionStart(Transaction tx) {
 		currentTx = tx;
 	}
 
 	private synchronized void transactionEnd(TransactionId txId) {
-		if(currentTx != null && !currentTx.getTxId().equals(txId)) {
-			throw new IllegalStateException(String.format("current transaction is %s while try to end %s", currentTx.getTxId(), txId));
-		}
-		currentTx = null;
-		if(semaphore.availablePermits() == 0) {
-			semaphore.release();
+		if (currentTx != null && currentTx.getTxId().equals(txId)) {
+			currentTx = null;
 		}
 	}
 
@@ -91,7 +98,7 @@ public abstract class AbstractSerialTaskProcessor<T> implements TaskProcessor<T>
 			return Collections.emptyList();
 		}
 	}
-	
+
 	@Override
 	public synchronized boolean attachEventTracker(TransactionId txId, EventTracker eventTracker) {
 		if (currentTx != null && currentTx.getTxId().equals(txId)) {

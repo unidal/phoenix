@@ -4,4 +4,10 @@
 		<origin-url>ssh://git@10.1.4.81:58422/kernel.git</origin-url>
 		<local-dir>target/gitrepo</local-dir>
 	</git>
+	<agent>
+		<deploy-retry-interval>60</deploy-retry-interval>
+		<deploy-url-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy?op=deploy&deployId=%s&domain=%s&version=%s]]></deploy-url-pattern>
+		<deploy-status-url-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy?op=status&deployId=%s]]></deploy-status-url-pattern>
+		<deploy-log-url-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy?op=log&deployId=%s]]></deploy-log-url-pattern>
+	</agent>
 </config>

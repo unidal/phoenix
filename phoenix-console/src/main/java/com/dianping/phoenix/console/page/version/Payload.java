@@ -17,7 +17,7 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	@FieldMeta("desc")
 	private String m_description;
-	
+
 	@FieldMeta("id")
 	private int m_id;
 
@@ -31,8 +31,8 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	}
 
 	public int getId() {
-   	return m_id;
-   }
+		return m_id;
+	}
 
 	@Override
 	public ConsolePage getPage() {
@@ -47,21 +47,9 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		m_action = Action.getByName(action, Action.VIEW);
 	}
 
-	public void setDescription(String description) {
-		m_description = description;
-	}
-
-	public void setId(int id) {
-   	m_id = id;
-   }
-
 	@Override
 	public void setPage(String page) {
 		m_page = ConsolePage.getByName(page, ConsolePage.VERSION);
-	}
-
-	public void setVersion(String version) {
-		m_version = version;
 	}
 
 	@Override

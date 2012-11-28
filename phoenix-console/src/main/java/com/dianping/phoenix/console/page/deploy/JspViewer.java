@@ -1,7 +1,8 @@
 package com.dianping.phoenix.console.page.deploy;
 
-import com.dianping.phoenix.console.ConsolePage;
 import org.unidal.web.mvc.view.BaseJspViewer;
+
+import com.dianping.phoenix.console.ConsolePage;
 
 public class JspViewer extends BaseJspViewer<ConsolePage, Action, Context, Model> {
 	@Override
@@ -11,8 +12,8 @@ public class JspViewer extends BaseJspViewer<ConsolePage, Action, Context, Model
 		switch (action) {
 		case VIEW:
 			return JspFile.VIEW.getPath();
-		case LOG:
-			return JspFile.LOG.getPath();
+		case STATUS:
+			return JspFile.STATUS.getPath();
 		}
 
 		throw new RuntimeException("Unknown action: " + action);
