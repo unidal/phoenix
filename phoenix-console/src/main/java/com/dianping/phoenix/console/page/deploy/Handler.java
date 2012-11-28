@@ -1,8 +1,7 @@
 package com.dianping.phoenix.console.page.deploy;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 
@@ -14,7 +13,6 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Deployment;
-import com.dianping.phoenix.console.dal.deploy.DeploymentDetails;
 import com.dianping.phoenix.deploy.DeployExecutor;
 import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.DeployPlan;
@@ -26,12 +24,9 @@ public class Handler implements PageHandler<Context> {
 
 	@Inject
 	private DeployExecutor m_deployExecutor;
-	
-	@Inject
-	private JspViewer m_jspViewer;
 
 	@Inject
-	private KeepAliveViewer m_statusViewer;
+	private JspViewer m_jspViewer;
 
 	@Override
 	@PayloadMeta(Payload.class)
@@ -53,7 +48,7 @@ public class Handler implements PageHandler<Context> {
 		switch (action) {
 		case VIEW:
 			try {
-				showView(model, payload.getId());
+				showView(model, payload);
 			} catch (Exception e) {
 				ctx.addError("deploy.query", e);
 			}
@@ -62,21 +57,28 @@ public class Handler implements PageHandler<Context> {
 			break;
 		case STATUS:
 			try {
-				showStatus(model, payload.getId());
+				showStatus(model, payload);
 			} catch (Exception e) {
 				ctx.addError("deploy.status", e);
 			}
 
-			m_statusViewer.view(ctx, model);
+			m_jspViewer.view(ctx, model);
 			break;
 		}
 	}
 
-	private void showStatus(Model model, int id) {
+	private void showStatus(Model model, Payload payload) {
+		int id = payload.getId();
+		DeployModel deployModel = m_deployExecutor.getModel(id);
+		Map<String, Integer> progressMap = payload.getProgressMap();
+		StatusModelVisitor visitor = new StatusModelVisitor(progressMap);
 
+		deployModel.accept(visitor);
+		model.setDeploy(visitor.getModel());
 	}
 
-	private void showView(Model model, int id) throws Exception {
+	private void showView(Model model, Payload payload) throws Exception {
+		int id = payload.getId();
 		DeployModel deployModel = m_deployExecutor.getModel(id);
 		Deployment deployment = m_deployManager.query(id);
 		DeployPlan plan = new DeployPlan();
@@ -84,17 +86,8 @@ public class Handler implements PageHandler<Context> {
 		plan.setVersion(deployment.getWarVersion());
 		plan.setPolicy(deployment.getStrategy());
 		plan.setAbortOnError("abortOnError".equals(deployment.getErrorPolicy()));
-		
-		model.setName(deployment.getDomain());
+
 		model.setPlan(plan);
 		model.setDeploy(deployModel);
-
-		List<String> hosts = new ArrayList<String>();
-
-		for (DeploymentDetails details : deployment.getDetailsList()) {
-			hosts.add(details.getIpAddress());
-		}
-
-		model.setStatus("doing");
 	}
 }

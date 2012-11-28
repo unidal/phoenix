@@ -45,29 +45,14 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 
 	private Map<Integer, DeployModel> m_models = new HashMap<Integer, DeployModel>();
 
-	private Map<Integer, ControllerTask> m_tasks = new HashMap<Integer, ControllerTask>();
-
 	@Override
-   public DeployModel getModel(int deployId) {
-	   return m_models.get(deployId);
-   }
+	public DeployModel getModel(int deployId) {
+		return m_models.get(deployId);
+	}
 
 	@Override
 	public DeployPolicy getPolicy() {
 		return m_policy;
-	}
-
-	@Override
-	public void onBegin(Context ctx) {
-		DeploymentDetails details = m_detailsDao.createLocal();
-
-		try {
-			details.setStatus(2); // 2 - deploying
-			details.setBeginDate(new Date());
-			m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
-		} catch (DalException e) {
-			throw new RuntimeException("Error when updating deployment details table! " + e, e);
-		}
 	}
 
 	@Override
@@ -97,19 +82,16 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 	}
 
 	@Override
-	public DeployUpdate poll(DeployContext ctx) {
-		ControllerTask task = m_tasks.get(ctx.getDeployId());
-		DeployUpdate update = new DeployUpdate();
+	public void onStart(Context ctx) {
+		DeploymentDetails details = m_detailsDao.createLocal();
 
-		// TODO if not in cache, get it from database
-
-		if (task == null) {
-			update.setDone(true);
-		} else {
-			task.poll(ctx, update);
+		try {
+			details.setStatus(2); // 2 - deploying
+			details.setBeginDate(new Date());
+			m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
+		} catch (DalException e) {
+			throw new RuntimeException("Error when updating deployment details table! " + e, e);
 		}
-
-		return update;
 	}
 
 	public void setPolicy(DeployPolicy policy) {
@@ -172,14 +154,6 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 			return this;
 		}
 
-		public void poll(DeployContext ctx, DeployUpdate update) {
-			int offset = ctx.getOffset();
-			int len = m_content.length();
-
-			update.setContent(m_content.substring(offset, len));
-			ctx.setOffset(len);
-		}
-
 		@Override
 		public void run() {
 			m_active = true;
@@ -239,45 +213,7 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 		}
 	}
 
-	static class RolloutTask implements Task {
-		private StateContext m_ctx;
-
-		private CountDownLatch m_latch;
-
-		public RolloutTask(ControllerTask controller, Listener listener, DeployModel model, String host,
-		      CountDownLatch latch) {
-			m_ctx = new StateContext(controller, listener, model, host);
-			m_latch = latch;
-		}
-
-		@Override
-		public String getName() {
-			return getClass().getSimpleName();
-		}
-
-		@Override
-		public void run() {
-			try {
-				State.execute(m_ctx);
-			} catch (Throwable e) {
-				m_ctx.print("Deployment aborted due to: %s.\r\n", e);
-
-				StringWriter sw = new StringWriter();
-				PrintWriter writer = new PrintWriter(sw);
-				e.printStackTrace(writer);
-
-				m_ctx.println(sw.toString());
-			} finally {
-				m_latch.countDown();
-			}
-		}
-
-		@Override
-		public void shutdown() {
-		}
-	}
-
-	static class StateContext implements Context {
+	static class RolloutContext implements Context {
 		private ControllerTask m_controller;
 
 		private Listener m_listener;
@@ -290,7 +226,7 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 
 		private int m_retryCount;
 
-		public StateContext(ControllerTask controller, Listener listener, DeployModel model, String host) {
+		public RolloutContext(ControllerTask controller, Listener listener, DeployModel model, String host) {
 			m_controller = controller;
 			m_listener = listener;
 			m_model = model;
@@ -384,7 +320,7 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 
 			switch (state) {
 			case CREATED:
-				m_listener.onBegin(this);
+				m_listener.onStart(this);
 				break;
 			case SUCCESSFUL:
 				m_listener.onEnd(this, "success");
@@ -393,6 +329,44 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 				m_listener.onEnd(this, "failed");
 				break;
 			}
+		}
+	}
+
+	static class RolloutTask implements Task {
+		private RolloutContext m_ctx;
+
+		private CountDownLatch m_latch;
+
+		public RolloutTask(ControllerTask controller, Listener listener, DeployModel model, String host,
+		      CountDownLatch latch) {
+			m_ctx = new RolloutContext(controller, listener, model, host);
+			m_latch = latch;
+		}
+
+		@Override
+		public String getName() {
+			return getClass().getSimpleName();
+		}
+
+		@Override
+		public void run() {
+			try {
+				State.execute(m_ctx);
+			} catch (Throwable e) {
+				m_ctx.print("Deployment aborted due to: %s.\r\n", e);
+
+				StringWriter sw = new StringWriter();
+				PrintWriter writer = new PrintWriter(sw);
+				e.printStackTrace(writer);
+
+				m_ctx.println(sw.toString());
+			} finally {
+				m_latch.countDown();
+			}
+		}
+
+		@Override
+		public void shutdown() {
 		}
 	}
 }

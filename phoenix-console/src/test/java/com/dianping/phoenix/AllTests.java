@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.dianping.phoenix.configure.ConfigManagerTest;
+import com.dianping.phoenix.console.page.deploy.StatusModelVisitorTest;
 import com.dianping.phoenix.deploy.DeployModelTest;
 import com.dianping.phoenix.deploy.DeployPolicyExecutorTest;
 import com.dianping.phoenix.deploy.DeployStateTest;
@@ -20,6 +21,8 @@ ProjectModelTest.class,
 DeployModelTest.class,
 
 DeployStateTest.class,
+
+StatusModelVisitorTest.class,
 
 DeployPolicyExecutorTest.class
 

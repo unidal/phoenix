@@ -4,14 +4,14 @@
 <jsp:useBean id="payload" type="com.dianping.phoenix.console.page.deploy.Payload" scope="request" />
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.deploy.Model" scope="request" />
 {
-"status":"${model.status}", 
+"status":"${model.deploy.status}", 
 "hosts": [ 
-<c:forEach var="entry" items="${model.deploy.hosts}" varStatus="s1">
+<c:forEach var="entry" items="${model.deploy.hosts}" varStatus="status">
 <c:set var="host" value="${entry.value}"/>{
-"offset": 0,
-"progress": 10,
-"step": "stop container",
-"log": "this is mock log!"
-}<c:if test="${not s1.last}">,</c:if>
+"offset": ${host.offset},
+"progress": ${host.progress},
+"step": "${host.currentStep}",
+"log": "${host.log}"
+}<c:if test="${not status.last}">,</c:if>
 </c:forEach>]
 }

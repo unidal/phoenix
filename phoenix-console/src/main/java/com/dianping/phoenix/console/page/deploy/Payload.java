@@ -1,9 +1,15 @@
 package com.dianping.phoenix.console.page.deploy;
 
-import com.dianping.phoenix.console.ConsolePage;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
+
+import com.dianping.phoenix.console.ConsolePage;
+import com.site.helper.Splitters;
 
 public class Payload implements ActionPayload<ConsolePage, Action> {
 	private ConsolePage m_page;
@@ -14,9 +20,10 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("id")
 	private int m_id;
 
-	public void setAction(String action) {
-		m_action = Action.getByName(action, Action.VIEW);
-	}
+	@FieldMeta("progress")
+	private String m_progress;
+
+	private Map<String, Integer> m_progressMap;
 
 	@Override
 	public Action getAction() {
@@ -32,15 +39,47 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		return m_page;
 	}
 
+	public Map<String, Integer> getProgressMap() {
+		return m_progressMap;
+	}
+
+	public void setAction(String action) {
+		m_action = Action.getByName(action, Action.VIEW);
+	}
+
 	@Override
 	public void setPage(String page) {
 		m_page = ConsolePage.getByName(page, ConsolePage.DEPLOY);
+	}
+
+	public void setProgress(String progress) {
+		m_progress = progress;
 	}
 
 	@Override
 	public void validate(ActionContext<?> ctx) {
 		if (m_action == null) {
 			m_action = Action.VIEW;
+		}
+
+		if (m_progress != null) {
+			List<String> parts = Splitters.by(',').noEmptyItem().trim().split(m_progress);
+
+			m_progressMap = new HashMap<String, Integer>(parts.size() * 2);
+
+			try {
+				for (String part : parts) {
+					int pos = part.indexOf(':');
+
+					if (pos > 0) {
+						m_progressMap.put(part.substring(0, pos), Integer.parseInt(part.substring(pos + 1)));
+					} else {
+						m_progressMap.put(part, 0);
+					}
+				}
+			} catch (NumberFormatException e) {
+				ctx.addError("payload.progress", new IllegalArgumentException("Invalid progress: " + m_progress, e));
+			}
 		}
 	}
 }
