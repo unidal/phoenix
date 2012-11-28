@@ -21,7 +21,6 @@ import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetails;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsEntity;
-import com.dianping.phoenix.console.dal.deploy.DeploymentLogDao;
 import com.dianping.phoenix.deploy.agent.Context;
 import com.dianping.phoenix.deploy.agent.Listener;
 import com.dianping.phoenix.deploy.agent.Progress;
@@ -42,9 +41,6 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 	private DeploymentDetailsDao m_detailsDao;
 
 	@Inject
-	private DeploymentLogDao m_logDao;
-
-	@Inject
 	private DeployPolicy m_policy;
 
 	private Map<Integer, DeployModel> m_models = new HashMap<Integer, DeployModel>();
@@ -52,8 +48,52 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 	private Map<Integer, ControllerTask> m_tasks = new HashMap<Integer, ControllerTask>();
 
 	@Override
+   public DeployModel getModel(int deployId) {
+	   return m_models.get(deployId);
+   }
+
+	@Override
 	public DeployPolicy getPolicy() {
 		return m_policy;
+	}
+
+	@Override
+	public void onBegin(Context ctx) {
+		DeploymentDetails details = m_detailsDao.createLocal();
+
+		try {
+			details.setStatus(2); // 2 - deploying
+			details.setBeginDate(new Date());
+			m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
+		} catch (DalException e) {
+			throw new RuntimeException("Error when updating deployment details table! " + e, e);
+		}
+	}
+
+	@Override
+	public void onEnd(Context ctx, String status) {
+		DeploymentDetails details = m_detailsDao.createLocal();
+
+		try {
+			if ("successful".equals(status)) {
+				details.setStatus(3); // 3 - successful
+			} else if ("failed".equals(status)) {
+				details.setStatus(5); // 5 - failed
+			} else {
+				throw new RuntimeException(String.format("Internal error: unknown status(%s)!", status));
+			}
+
+			details.setEndDate(new Date());
+			m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
+		} catch (DalException e) {
+			throw new RuntimeException("Error when updating deployment details table! " + e, e);
+		}
+	}
+
+	@Override
+	public void onProgress(Context ctx, Progress progress, String log) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -353,45 +393,6 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 				m_listener.onEnd(this, "failed");
 				break;
 			}
-		}
-	}
-
-	@Override
-	public void onProgress(Context ctx, Progress progress, String log) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onBegin(Context ctx) {
-		DeploymentDetails details = m_detailsDao.createLocal();
-
-		try {
-			details.setStatus(2); // 2 - deploying
-			details.setBeginDate(new Date());
-			m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
-		} catch (DalException e) {
-			throw new RuntimeException("Error when updating deployment details table! " + e, e);
-		}
-	}
-
-	@Override
-	public void onEnd(Context ctx, String status) {
-		DeploymentDetails details = m_detailsDao.createLocal();
-
-		try {
-			if ("successful".equals(status)) {
-				details.setStatus(3); // 3 - successful
-			} else if ("failed".equals(status)) {
-				details.setStatus(5); // 5 - failed
-			} else {
-				throw new RuntimeException(String.format("Internal error: unknown status(%s)!", status));
-			}
-
-			details.setEndDate(new Date());
-			m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
-		} catch (DalException e) {
-			throw new RuntimeException("Error when updating deployment details table! " + e, e);
 		}
 	}
 }

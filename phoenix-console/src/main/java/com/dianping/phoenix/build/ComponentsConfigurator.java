@@ -11,7 +11,6 @@ import org.unidal.lookup.configuration.Component;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDao;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
-import com.dianping.phoenix.console.dal.deploy.DeploymentLogDao;
 import com.dianping.phoenix.console.dal.deploy.VersionDao;
 import com.dianping.phoenix.console.page.deploy.JspViewer;
 import com.dianping.phoenix.console.page.deploy.KeepAliveViewer;
@@ -75,7 +74,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
-			      .req(ConfigManager.class, DeploymentDetailsDao.class, DeploymentLogDao.class) //
+			      .req(ConfigManager.class, DeploymentDetailsDao.class) //
 			      .config(E("policy").value(policy.name())));
 		}
 

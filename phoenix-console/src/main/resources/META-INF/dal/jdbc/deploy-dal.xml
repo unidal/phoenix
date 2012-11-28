@@ -34,7 +34,6 @@
     <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" insert-expr="NOW()" update-expr="NOW()" />
     <relation name="details-list" multiple="true" entity-name="deployment-details" entity-alias="dd" join="d.id = dd.deployment_id"/>
-    <relation name="log-list" multiple="true" entity-name="deployment-log" entity-alias="dl" join="d.id = dl.deployment_id"/>
     <query-defs>
     	<query name="delete-by-PK" type="DELETE" enabled="false"/>
     </query-defs>
@@ -47,26 +46,11 @@
       	<member name="status"/>
       	<member name="begin-date"/>
       	<member name="end-date"/>
+      	<member name="raw-log"/>
       </updateset>
     </updatesets>
     <query-defs>
       <query name="insert" type="INSERT" batch="true"/>
-      <query name="delete-by-PK" type="DELETE" enabled="false"/>
-      <query name="find-all-by-deploy-id" type="SELECT" multiple="true">
-        <param name="deployment-id" />
-        <statement><![CDATA[
-        SELECT <FIELDS/> 
-        FROM <TABLE/> 
-        WHERE <FIELD name='deployment-id'/> = ${deployment-id}
-        ]]></statement>
-      </query>
-      <query name="delete-by-PK" type="DELETE" enabled="false"/>
-    </query-defs>    
-  </entity>
-  <entity name="deployment-log" table="deployment_log" alias="dl">
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
-    <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" insert-expr="NOW()" update-expr="NOW()" />
-    <query-defs>
       <query name="delete-by-PK" type="DELETE" enabled="false"/>
       <query name="find-all-by-deploy-id" type="SELECT" multiple="true">
         <param name="deployment-id" />

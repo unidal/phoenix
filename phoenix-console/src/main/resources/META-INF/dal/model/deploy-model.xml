@@ -5,8 +5,12 @@
   </entity>
   <entity name="host" class-name="HostModel">
     <attribute name="ip" value-type="String" key="true" />
+    <attribute name="offset" value-type="int" render="false" />
+    <attribute name="progress" value-type="int" render="false" />
+    <attribute name="current-step" value-type="String" render="false" />
   </entity>
   <entity name="segment" class-name="SegmentModel">
+    <attribute name="encoded-text" value-type="String" render="false" />
   </entity>
 </model>
 

@@ -37,18 +37,10 @@ CREATE TABLE `deployment_details` (
   `status` int(1) NOT NULL COMMENT '部署状态，可选值: 1 - created, 2 - deploying, 3 - successful, 5 - failed, 8 - aborted, 9 - cancelled',
   `begin_date` datetime NULL COMMENT '部署开始时间',
   `end_date` datetime NULL COMMENT '部署结束时间',
+  `raw_log` MediumText NULL COMMENT '原始日志',
   `creation_date` datetime NOT NULL COMMENT '创建时间',
   `last_modified_date` datetime NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='业务部署详细表';
 
-CREATE TABLE `deployment_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `deployment_id` int(11) NOT NULL COMMENT '部署ID',
-  `ip_address` varchar(32) DEFAULT NULL COMMENT '业务主机IP地址',
-  `raw_log` MediumBlob NOT NULL COMMENT '原始日志',
-  `creation_date` datetime NOT NULL COMMENT '创建时间',
-  `last_modified_date` datetime NOT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='业务部署日志表';
 
