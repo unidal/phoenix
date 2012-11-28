@@ -1,7 +1,11 @@
 $(document).ready(
     function() {
-        $.ajax({
-
+        $.ajax("", {
+            data : $.param({
+                "op" : "status",
+                "id" : $("#deploy_id").val(),
+                "hosts" : ""
+            }, true)
         });
         $.ajax({
             type : "GET",
@@ -101,6 +105,35 @@ $(document).ready(
             }
         });
     });
+
+function fetch_deploy_status() {
+    var hostArr = [];
+    $(".host_status").map(function() {
+        hostArr.push($(this).attr("data-host") + ":" + $(this).attr("data-offset"));
+    });
+    if(hostArr.length > 0) {
+        $.ajax("", {
+            data : $.param({
+                "op" : "status",
+                "id" : $("#deploy_id").val(),
+                "hosts" : hostArr.join(",")
+            }, true),
+            dataType: "json",
+            success: function(result) {
+
+            },
+            complete: function() {
+                if (!is_deploy_finished()) {
+                     setTimeout(fetch_deploy_status(), 1000);
+                }
+            }
+        });
+    }
+}
+
+function is_deploy_finished() {
+    return $("#deploy_status").text() != "doing";
+}
 
 //var interval = setInterval('updateDeployStatus()', 1000);
 //function stopTimer() {

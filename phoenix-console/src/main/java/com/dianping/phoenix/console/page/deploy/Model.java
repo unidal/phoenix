@@ -11,6 +11,8 @@ import com.dianping.phoenix.deploy.DeployPlan;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private String m_name;
+
+    private int m_id;
 	
 	private DeployPlan m_plan;
 
@@ -67,5 +69,13 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
     public void setPlanStatus(String planStatus) {
         this.m_planStatus = planStatus;
+    }
+
+    public int getId() {
+        return m_id;
+    }
+
+    public void setId(int id) {
+        this.m_id = id;
     }
 }

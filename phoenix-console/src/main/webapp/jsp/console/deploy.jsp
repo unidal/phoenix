@@ -13,6 +13,7 @@
 			<div class="page-header">
 				<strong style="font-size: medium;">${model.name}</strong>：[<font color="blue">${model.plan.version}</font>, 方式：1->1->1->1, 错误：终断后续发布],
                 结果：[<strong><span id="deploy_status">${model.planStatus}</span></strong>]
+                <input type="hidden" id="deploy_id" value="${model.id}">
 			</div>
 			<div class="row-fluid">
 				<div class="span12 thumbnail" style="height: 440px; overflow: auto;">
@@ -25,7 +26,7 @@
 						</thead>
 						<tbody>
 							<c:forEach var="hostStatus" items="${model.hostStatus}">
-								<tr>
+								<tr class="host_status" data-host="${hostStatus.host}" data-offset="2">
 									<td>${hostStatus.host}</td>
 									<td>
                                         <div class="progress">
