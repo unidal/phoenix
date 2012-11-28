@@ -13,8 +13,10 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private String m_name;
 	
 	private DeployPlan m_plan;
+
+    private String m_planStatus;   //for test: doing, succeed, failed
 	
-	private List<String> m_hosts;
+	private List<HostDeployStatus> m_hostStatus;
 	
 	private Map<String, DeployLog> m_logs;
 	
@@ -43,12 +45,12 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
    	m_plan = plan;
    }
 
-	public List<String> getHosts() {
-   	return m_hosts;
+	public List<HostDeployStatus> getHostStatus() {
+   	return m_hostStatus;
    }
 
-	public void setHosts(List<String> hosts) {
-   	m_hosts = hosts;
+	public void setHostStatus(List<HostDeployStatus> hosts) {
+   	m_hostStatus = hosts;
    }
 
 	public Map<String, DeployLog> getLogs() {
@@ -58,4 +60,12 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 	public void setLogs(Map<String, DeployLog> logs) {
    	m_logs = logs;
    }
+
+    public String getPlanStatus() {
+        return m_planStatus;
+    }
+
+    public void setPlanStatus(String planStatus) {
+        this.m_planStatus = planStatus;
+    }
 }
