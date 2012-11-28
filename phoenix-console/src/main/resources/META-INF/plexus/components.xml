@@ -5,25 +5,8 @@
 			<implementation>com.dianping.phoenix.configure.ConfigManager</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.console.service.ProjectService</role>
-			<implementation>com.dianping.phoenix.console.service.DefaultProjectService</implementation>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.console.service.DeployService</role>
-			<implementation>com.dianping.phoenix.console.service.DefaultDeployService</implementation>
-		</component>
-		<component>
 			<role>com.dianping.phoenix.service.StatusReporter</role>
 			<implementation>com.dianping.phoenix.service.DefaultStatusReporter</implementation>
-		</component>
-		<component>
-			<role>org.eclipse.jgit.lib.ProgressMonitor</role>
-			<implementation>com.dianping.phoenix.console.service.PhoenixProgressMonitor</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.service.StatusReporter</role>
-				</requirement>
-			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.service.WarService</role>
@@ -51,6 +34,10 @@
 					<role>org.eclipse.jgit.lib.ProgressMonitor</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>org.eclipse.jgit.lib.ProgressMonitor</role>
+			<implementation>com.dianping.phoenix.service.GitProgressMonitor</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.service.VersionManager</role>

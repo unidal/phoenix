@@ -10,7 +10,30 @@ function log {
 KERNEL_WAR_BASE=/data/webapps/phoenix-kernel/
 
 KERNEL_WAR_TMP=/data/appdata/phoenix_kernel_war_tmp/
-KERNEL_GIT_URL="ssh://git@10.1.4.81:58422/phoenix-kernel.git"
+KERNEL_GIT_HOST="10.1.4.81"
+KERNEL_GIT_URL="ssh://git@${KERNEL_GIT_HOST}:58422/phoenix-kernel.git"
+
+function add_ssh_private_key {
+	ssh_config=~/.ssh/config
+	local host_cnt=`grep -c $KERNEL_GIT_HOST $ssh_config 2>/dev/null || true`
+	local write=0
+	if [ x$host_cnt == x ];then	#config file not exist
+		write=1
+	else
+		if [ $host_cnt -eq 0 ];then	#no config entry for kernel git host
+			write=1
+		fi
+	fi
+	if [ $write -eq 1  ];then
+		cp git/.ssh/id_rsa ~/.ssh/id_rsa.phoenix
+		chmod 600 ~/.ssh/id_rsa.phoenix
+		cat <<-END >> $ssh_config
+			
+			Host $KERNEL_GIT_HOST
+			 IdentityFile ~/.ssh/id_rsa.phoenix
+		END
+	fi
+}
 
 log "PID is $$"
 log "CMD is $0 $@"
@@ -45,6 +68,7 @@ function kill_tomcat {
 
 function get_kernel_war {
 	log "getting kernel war from git"
+	add_ssh_private_key
 	rm -rf $KERNEL_WAR_TMP
 	mkdir -p $KERNEL_WAR_TMP
 	git clone $KERNEL_GIT_URL $KERNEL_WAR_TMP

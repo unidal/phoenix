@@ -8,8 +8,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.phoenix.deploy.DefaultDeployExecutor.Progress;
-import com.dianping.phoenix.deploy.DefaultDeployExecutor.SegmentReader;
+import com.dianping.phoenix.deploy.agent.Progress;
+import com.dianping.phoenix.deploy.agent.SegmentReader;
 
 public class DeployPolicyExecutorTest extends ComponentTestCase {
 	@Test
