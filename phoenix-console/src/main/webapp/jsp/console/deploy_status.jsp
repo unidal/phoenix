@@ -5,14 +5,13 @@
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.deploy.Model" scope="request" />
 {
 "status":"${model.status}", 
-"offset":${model.offset}, 
-"content": "${model.quotedLog}",
 "hosts": [ 
-<c:forEach var="plan" items="${model.hostPlans}" varStatus="s1">{
-"index": ${plan.index},
-"host": "${plan.host}",
-"status": [<c:forEach var="status" items="${plan.statuses}" varStatus="s2">
-"${status}"<c:if test="${not s2.last}">,</c:if>
-</c:forEach>]}<c:if test="${not s1.last}">,</c:if>
+<c:forEach var="entry" items="${model.deploy.hosts}" varStatus="s1">
+<c:set var="host" value="${entry.value}"/>{
+"offset": 0,
+"progress": 10,
+"step": "stop container",
+"log": "this is mock log!"
+}<c:if test="${not s1.last}">,</c:if>
 </c:forEach>]
 }
