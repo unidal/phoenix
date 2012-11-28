@@ -1,11 +1,8 @@
 package com.dianping.phoenix.deploy;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.HashMap;
@@ -19,7 +16,10 @@ import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.deploy.DeployState.Context;
+import com.dianping.phoenix.deploy.agent.DeployState;
+import com.dianping.phoenix.deploy.agent.DeployState.Context;
+import com.dianping.phoenix.deploy.agent.Progress;
+import com.dianping.phoenix.deploy.agent.SegmentReader;
 import com.site.helper.Files;
 import com.site.helper.Threads;
 
@@ -204,7 +204,44 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		}
 	}
 
-	static class DeployStateContext implements DeployState.Context {
+	static class RolloutTask implements Task {
+		private StateContext m_ctx;
+
+		private CountDownLatch m_latch;
+
+		public RolloutTask(ControllerTask controller, String host, CountDownLatch latch) {
+			m_ctx = new StateContext(controller, host);
+			m_latch = latch;
+		}
+
+		@Override
+		public String getName() {
+			return getClass().getSimpleName();
+		}
+
+		@Override
+		public void run() {
+			try {
+				DeployState.execute(m_ctx);
+			} catch (Throwable e) {
+				m_ctx.print("Deployment aborted due to: %s.\r\n", e);
+
+				StringWriter sw = new StringWriter();
+				PrintWriter writer = new PrintWriter(sw);
+				e.printStackTrace(writer);
+
+				m_ctx.println(sw.toString());
+			} finally {
+				m_latch.countDown();
+			}
+		}
+
+		@Override
+		public void shutdown() {
+		}
+	}
+
+	static class StateContext implements DeployState.Context {
 		private ControllerTask m_controller;
 
 		private DeployState m_state;
@@ -213,7 +250,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 		private int m_retryCount;
 
-		public DeployStateContext(ControllerTask controller, String host) {
+		public StateContext(ControllerTask controller, String host) {
 			m_controller = controller;
 			m_host = host;
 		}
@@ -302,179 +339,6 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		@Override
 		public void setState(DeployState state) {
 			m_state = state;
-		}
-	}
-
-	static class Progress {
-		private int m_current;
-
-		private int m_total;
-
-		private String m_status;
-
-		public int getCurrent() {
-			return m_current;
-		}
-
-		public String getStatus() {
-			return m_status;
-		}
-
-		public int getTotal() {
-			return m_total;
-		}
-
-		public void setCurrent(int current) {
-			m_current = current;
-		}
-
-		public void setStatus(String status) {
-			m_status = status;
-		}
-
-		public void setTotal(int total) {
-			m_total = total;
-		}
-
-		@Override
-		public String toString() {
-			return String.format("Progress[%s/%s, %s]", m_current, m_total, m_status);
-		}
-	}
-
-	static class RolloutTask implements Task {
-		private DeployStateContext m_ctx;
-
-		private CountDownLatch m_latch;
-
-		public RolloutTask(ControllerTask controller, String host, CountDownLatch latch) {
-			m_ctx = new DeployStateContext(controller, host);
-			m_latch = latch;
-		}
-
-		@Override
-		public String getName() {
-			return getClass().getSimpleName();
-		}
-
-		@Override
-		public void run() {
-			try {
-				DeployState.execute(m_ctx);
-			} catch (Throwable e) {
-				m_ctx.print("Deployment aborted due to: %s.\r\n", e);
-
-				StringWriter sw = new StringWriter();
-				PrintWriter writer = new PrintWriter(sw);
-				e.printStackTrace(writer);
-
-				m_ctx.println(sw.toString());
-			} finally {
-				m_latch.countDown();
-			}
-		}
-
-		@Override
-		public void shutdown() {
-		}
-	}
-
-	static class SegmentReader {
-		private static final String SEPARATOR = "--9ed2b78c112fbd17a8511812c554da62941629a8--";
-
-		private static final String TERMINATOR = "--255220d51dc7fb4aacddadedfe252a346da267d4--";
-
-		private Reader m_reader;
-
-		private boolean m_last;
-
-		private StringBuilder m_sb = new StringBuilder(4096);
-
-		public SegmentReader(Reader reader) {
-			m_reader = reader;
-		}
-
-		public boolean hasNext() {
-			return !m_last;
-		}
-
-		public String next(Progress progress) throws IOException {
-			char[] data = new char[2048];
-			String segment = null;
-
-			while (true) {
-				int len = m_reader.read(data);
-
-				if (len > 0) {
-					m_sb.append(data, 0, len);
-				}
-
-				int pos = m_sb.indexOf(SEPARATOR);
-				int sl = SEPARATOR.length();
-
-				if (pos > 0 && pos + sl < m_sb.length() && m_sb.charAt(pos + sl) == '\r') {
-					sl++;
-				}
-
-				if (pos > 0 && pos + sl < m_sb.length() && m_sb.charAt(pos + sl) == '\n') {
-					sl++;
-				}
-
-				if (pos >= 0) {
-					segment = m_sb.substring(0, pos);
-
-					m_sb.delete(0, pos + sl);
-					break;
-				} else {
-					pos = m_sb.indexOf(TERMINATOR);
-
-					if (pos >= 0) {
-						m_last = true;
-						segment = m_sb.substring(0, pos);
-						break;
-					}
-				}
-			}
-
-			if (segment != null) {
-				if (segment.length() == 0) {
-					return "";
-				}
-
-				BufferedReader reader = new BufferedReader(new StringReader(segment), segment.length());
-				StringBuilder sb = new StringBuilder();
-				boolean header = true;
-
-				while (true) {
-					String line = reader.readLine();
-
-					if (line == null) {
-						break;
-					} else {
-						if (header) {
-							if (line.length() == 0) { // first blank line
-								header = false;
-							} else if (line.startsWith("Progress: ")) {
-								int pos1 = "Progress: ".length();
-								int pos2 = line.indexOf('/', pos1);
-
-								progress.setCurrent(Integer.parseInt(line.substring(pos1, pos2).trim()));
-								progress.setTotal(Integer.parseInt(line.substring(pos2 + 1).trim()));
-							} else if (line.startsWith("Status: ")) {
-								int pos = "Status: ".length();
-
-								progress.setStatus(line.substring(pos).trim());
-							}
-						} else {
-							sb.append(line).append("\r\n");
-						}
-					}
-				}
-
-				return sb.toString();
-			}
-
-			throw new IOException(String.format("Invalid protocol! segment: %s\r\n", segment));
 		}
 	}
 }

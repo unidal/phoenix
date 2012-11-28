@@ -30,20 +30,20 @@ public class Handler implements PageHandler<Context> {
 
 	@Override
 	@PayloadMeta(Payload.class)
-	@InboundActionMeta(name = "deploy2")
+	@InboundActionMeta(name = "deploy")
 	public void handleInbound(Context ctx) throws ServletException, IOException {
 		// display only, no action here
 	}
 
 	@Override
-	@OutboundActionMeta(name = "deploy2")
+	@OutboundActionMeta(name = "deploy")
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
 		Payload payload = ctx.getPayload();
 		Action action = payload.getAction();
 
 		model.setAction(action);
-		model.setPage(ConsolePage.DEPLOY2);
+		model.setPage(ConsolePage.DEPLOY);
 
 		switch (action) {
 		case VIEW:
