@@ -42,6 +42,13 @@
   <entity name="deployment-details" table="deployment_details" alias="dd">
     <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" insert-expr="NOW()" update-expr="NOW()" />
+    <updatesets>
+      <updateset name="STATUS">
+      	<member name="status"/>
+      	<member name="begin-date"/>
+      	<member name="end-date"/>
+      </updateset>
+    </updatesets>
     <query-defs>
       <query name="insert" type="INSERT" batch="true"/>
       <query name="delete-by-PK" type="DELETE" enabled="false"/>

@@ -12,15 +12,15 @@ import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.DeployPlan;
-import com.dianping.phoenix.deploy.entity.Deploy;
-import com.dianping.phoenix.deploy.entity.Project;
-import com.dianping.phoenix.deploy.transform.DefaultSaxParser;
+import com.dianping.phoenix.project.entity.Project;
+import com.dianping.phoenix.project.entity.Root;
+import com.dianping.phoenix.project.transform.DefaultSaxParser;
 
 public class DefaultProjectManager implements ProjectManager, Initializable {
 	@Inject
 	private DeployManager m_deployManager;
 
-	private Deploy m_deploy;
+	private Root m_root;
 
 	private Map<String, Integer> m_map = new HashMap<String, Integer>();
 
@@ -29,9 +29,9 @@ public class DefaultProjectManager implements ProjectManager, Initializable {
 		List<Project> list = new ArrayList<Project>();
 
 		if (keyword == null || keyword.trim().length() == 0) {
-			list.addAll(m_deploy.getProjects().values());
+			list.addAll(m_root.getProjects().values());
 		} else {
-			for (Map.Entry<String, Project> e : m_deploy.getProjects().entrySet()) {
+			for (Map.Entry<String, Project> e : m_root.getProjects().entrySet()) {
 				if (e.getKey().contains(keyword)) {
 					list.add(e.getValue());
 				}
@@ -43,7 +43,7 @@ public class DefaultProjectManager implements ProjectManager, Initializable {
 
 	@Override
 	public Project findProjectBy(String name) throws Exception {
-		return m_deploy.findProject(name);
+		return m_root.findProject(name);
 	}
 
 	@Override
@@ -58,13 +58,13 @@ public class DefaultProjectManager implements ProjectManager, Initializable {
 	@Override
 	public void initialize() throws InitializationException {
 		// TODO test purpose
-		InputStream in = getClass().getResourceAsStream("/com/dianping/phoenix/deploy/deploy.xml");
+		InputStream in = getClass().getResourceAsStream("/com/dianping/phoenix/deploy/project.xml");
 
 		try {
-			m_deploy = DefaultSaxParser.parse(in);
+			m_root = DefaultSaxParser.parse(in);
 		} catch (Exception e) {
 			throw new RuntimeException(
-			      "Unable to load deploy model from resource(com/dianping/phoenix/deploy/deploy.xml)!", e);
+			      "Unable to load deploy model from resource(com/dianping/phoenix/deploy/project.xml)!", e);
 		}
 	}
 }

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model model-package="com.dianping.phoenix.deploy" enable-sax-parser="true">
-	<entity name="deploy" root="true">
-		<entity-ref name="project" type="map" names="projects" />
-	</entity>
-	<entity name="project">
-		<attribute name="name" value-type="String" key="true" />
-	</entity>
-	<entity name="war">
-		<attribute name="name" value-type="String" key="true" />
-	</entity>
+<model model-package="com.dianping.phoenix.deploy.model" enable-sax-parser="true" enable-json-builder="true">
+  <entity name="deploy" root="true" class-name="DeployModel">
+    <entity-ref name="host" type="map" names="hosts" />
+  </entity>
+  <entity name="host" class-name="HostModel">
+    <attribute name="ip" value-type="String" key="true" />
+  </entity>
+  <entity name="segment" class-name="SegmentModel">
+  </entity>
 </model>
 

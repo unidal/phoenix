@@ -3,7 +3,7 @@ package com.dianping.phoenix.service;
 import java.util.List;
 
 import com.dianping.phoenix.deploy.DeployPlan;
-import com.dianping.phoenix.deploy.entity.Project;
+import com.dianping.phoenix.project.entity.Project;
 
 public interface ProjectManager {
 	public List<Project> searchProjects(String keyword) throws Exception;

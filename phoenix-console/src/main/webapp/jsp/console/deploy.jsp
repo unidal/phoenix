@@ -40,7 +40,7 @@
 			<div class="row" style="margin-top: 5px;">
 				<p class="pull-right">
 					<span class="label label-todo">pending&nbsp;&nbsp;&nbsp;</span> <span class="label label-doing">doing&nbsp;&nbsp;</span> <span
-						class="label label-success">success</span> <span class="label label-warning">warning</span> <span class="label label-failed">failed&nbsp;</span>
+						class="label label-success">success</span> <span class="label label-failed">failed&nbsp;</span>
 				</p>
 			</div>
 

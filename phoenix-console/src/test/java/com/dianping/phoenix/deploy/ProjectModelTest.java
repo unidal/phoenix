@@ -6,15 +6,15 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import com.dianping.phoenix.deploy.entity.Deploy;
-import com.dianping.phoenix.deploy.transform.DefaultSaxParser;
+import com.dianping.phoenix.project.entity.Root;
+import com.dianping.phoenix.project.transform.DefaultSaxParser;
 
-public class ModelTest {
+public class ProjectModelTest {
 	@Test
 	public void testModel() throws SAXException, IOException {
-		Deploy deploy = DefaultSaxParser.parse(getClass().getResourceAsStream("deploy.xml"));
+		Root deploy = DefaultSaxParser.parse(getClass().getResourceAsStream("project.xml"));
 
-		Assert.assertEquals(2, deploy.getProjects().size());
+		Assert.assertEquals(3, deploy.getProjects().size());
 		Assert.assertEquals(6, deploy.findProject("shop-web").getHosts().size());
 	}
 }

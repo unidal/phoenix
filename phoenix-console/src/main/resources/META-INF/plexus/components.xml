@@ -74,6 +74,12 @@
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentLogDao</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -87,6 +93,12 @@
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentLogDao</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -99,6 +111,12 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentLogDao</role>
 				</requirement>
 			</requirements>
 		</component>
