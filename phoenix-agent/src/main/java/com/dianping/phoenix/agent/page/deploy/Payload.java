@@ -23,6 +23,9 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	@FieldMeta("offset")
 	private int m_offset;
 
+	@FieldMeta("br")
+	private int m_br;
+
 	@Override
 	public Action getAction() {
 		return m_action == null ? Action.DEFAULT : m_action;
@@ -48,7 +51,11 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	public int getOffset() {
 		return m_offset;
 	}
-	
+
+	public int getBr() {
+		return m_br;
+	}
+
 	public void setAction(String action) {
 		m_action = Action.getByName(action, Action.DEFAULT);
 	}

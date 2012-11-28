@@ -5,7 +5,7 @@ public enum Action implements org.unidal.web.mvc.Action {
 	DEFAULT("agentstaus"),
 	DEPLOY("deploy"),
 	CANCEL("cancel"),
-	GETLOG("getlog"),
+	GETLOG("log"),
 	STATUS("status");
 	
 	private String m_name;

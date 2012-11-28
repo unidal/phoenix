@@ -1,8 +1,17 @@
 <plexus>
 	<components>
 		<component>
-			<role>com.dianping.phoenix.agent.core.log.TransactionLog</role>
-			<implementation>com.dianping.phoenix.agent.core.log.FilePerTxLog</implementation>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep$Context</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStepContext</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
+			<implementation>com.dianping.phoenix.agent.core.tx.FileBasedTransactionManager</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
@@ -13,7 +22,7 @@
 			<implementation>com.dianping.phoenix.agent.core.DefaultAgent</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.log.TransactionLog</role>
+					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</role>
@@ -22,19 +31,23 @@
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessor</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.war.WarUpdateTaskProcessor</implementation>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.log.TransactionLog</role>
+					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep$Context</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
+			<implementation>com.dianping.phoenix.agent.core.tx.FileBasedTransactionManager</implementation>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
@@ -68,6 +81,9 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.Agent</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 			</requirements>
 		</component>

@@ -3,7 +3,11 @@ package com.dianping.phoenix.agent.core.event;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class EventTrackerChain implements EventTracker {
+	
+	private final static Logger logger = Logger.getLogger(EventTrackerChain.class); 
 
 	private List<EventTracker> trackers;
 
@@ -27,7 +31,7 @@ public class EventTrackerChain implements EventTracker {
 			try {
 				tracker.onEvent(event);
 			} catch (Exception e) {
-				// TODO: handle exception
+				logger.error("error occurred in EventTracker.onEvent", e);
 			}
 		}
 	}

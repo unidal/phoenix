@@ -11,7 +11,8 @@
 	<div class="row-fluid">
 		<div class="span4">
 			<div class="page-header">
-				<strong style="font-size: medium;">${model.name}</strong>：[<font color="blue">${model.plan.version}</font>, 方式：1->1->1->1, 错误：终断后续发布]
+				<strong style="font-size: medium;">${model.name}</strong>：[<font color="blue">${model.plan.version}</font>, 方式：1->1->1->1, 错误：终断后续发布],
+                结果：[<strong><span id="deploy_status">${model.planStatus}</span></strong>]
 			</div>
 			<div class="row-fluid">
 				<div class="span12 thumbnail" style="height: 440px; overflow: auto;">
@@ -23,13 +24,15 @@
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="host" items="${model.hosts}">
+							<c:forEach var="hostStatus" items="${model.hostStatus}">
 								<tr>
-									<td>${host}</td>
+									<td>${hostStatus.host}</td>
 									<td>
-										<div class="progress">
-											<div class="bar" style="width: 60%;"></div>
-										</div>
+                                        <div class="progress">
+                                            <div class="bar" style="width: ${hostStatus.progress}%;">
+                                                <div style="width: 250px;color: #000000;">${hostStatus.action}</div>
+                                            </div>
+                                        </div>
 									</td>
 								</tr>
 							</c:forEach>
@@ -51,18 +54,23 @@
 				<div class="page-header">
 					<h4>Remote Deploy Logs</h4>
 				</div>
-				<div id="status" data-spy="scroll" data-offset="0" class="terminal-like"
+                <c:forEach var="log" items="${model.logs}" varStatus="status">
+				<div id="status" data-spy="scroll" data-offset="0" class="terminal-like<c:if test="${status.index > 0}"> hide</c:if>"
 					style="height: 508px; line-height: 20px; overflow: auto;">
-					<span id="offset--1" class="terminal-like"> \${model.quotedLog} </span>
+					<span id="offset--1" class="terminal-like"> ${log.value.content} </span>
 				</div>
+                </c:forEach>
 			</div>
 		</div>
 	</div>
 
+    <!--
 	<input type="hidden" id="offset" name="offset" value="\${model.offset}">
 	<input type="hidden" id="plan" name="plan" value="\${payload.plan}">
+    -->
 
 	<res:useJs value="${res.js.local.TypingText_js}" target="deploy-js" />
+	<res:useJs value="${res.js.local.deploy_js}" target="deploy-js" />
 	<res:jsSlot id="deploy-js" />
 	<res:useCss value='${res.css.local.deploy_css}' target="head-css" />
 	<res:cssSlot id="deploy-css" />
