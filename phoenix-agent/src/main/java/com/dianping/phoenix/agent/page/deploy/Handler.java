@@ -3,6 +3,7 @@ package com.dianping.phoenix.agent.page.deploy;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.Writer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +31,7 @@ import com.dianping.phoenix.agent.response.entity.Lib;
 import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.entity.War;
 import com.dianping.phoenix.agent.response.transform.DefaultJsonBuilder;
+import com.dianping.phoenix.agent.util.CharacterReplaceFilterWriter;
 import com.dianping.phoenix.agent.util.ThreadUtil;
 
 public class Handler implements PageHandler<Context> {
@@ -128,7 +130,10 @@ public class Handler implements PageHandler<Context> {
 			}
 			HttpServletResponse resp = ctx.getHttpServletResponse();
 			resp.setHeader(HttpHeaders.CONTENT_TYPE, "text/html; charset=UTF-8");
-			PrintWriter writer = resp.getWriter();
+			Writer writer = resp.getWriter();
+			if(payload.getBr() > 0) {
+				writer = new CharacterReplaceFilterWriter(writer, '\n', "<br/>");
+			}
 			transferLog(txMgr, txId, logReader, writer);
 			break;
 		}
@@ -138,15 +143,12 @@ public class Handler implements PageHandler<Context> {
 		return StringUtils.isEmpty(StringUtils.trimAll(domain)) || StringUtils.isEmpty(StringUtils.trimAll(version));
 	}
 
-	private void transferLog(TransactionManager txMgr, TransactionId txId, Reader logReader, PrintWriter writer)
+	private void transferLog(TransactionManager txMgr, TransactionId txId, Reader logReader, Writer writer)
 			throws IOException {
 		int len;
 		char[] cbuf = new char[4096];
 		if (logReader != null) {
 			while (true) {
-				if (writer.checkError()) {
-					break;
-				}
 				len = logReader.read(cbuf);
 				if (len > 0) {
 					writer.write(cbuf, 0, len);
