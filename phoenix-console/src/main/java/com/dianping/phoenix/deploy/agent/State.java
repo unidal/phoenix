@@ -4,9 +4,8 @@ import java.io.IOException;
 
 import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.transform.DefaultJsonParser;
-import com.dianping.phoenix.configure.ConfigManager;
 
-public enum DeployState {
+public enum State {
 	CREATED(0, 1, 2, 9) {
 		@Override
 		protected void doActivity(Context ctx) throws Exception {
@@ -132,13 +131,13 @@ public enum DeployState {
 
 	private int[] m_nextIds;
 
-	private DeployState(int id, int... nextIds) {
+	private State(int id, int... nextIds) {
 		m_id = id;
 		m_nextIds = nextIds;
 	}
 
 	public static void execute(Context ctx) throws Exception {
-		DeployState initial = CREATED;
+		State initial = CREATED;
 
 		ctx.setState(initial);
 		initial.doActivity(ctx);
@@ -150,7 +149,7 @@ public enum DeployState {
 		return m_id;
 	}
 
-	void moveTo(Context ctx, DeployState nextState) throws Exception {
+	void moveTo(Context ctx, State nextState) throws Exception {
 		int nextId = nextState.getId();
 		boolean found = false;
 
@@ -168,33 +167,5 @@ public enum DeployState {
 		}
 
 		nextState.doActivity(ctx);
-	}
-
-	public interface Context {
-		public ConfigManager getConfigManager();
-
-		public int getDeployId();
-
-		public String getDomain();
-
-		public String getHost();
-
-		public int getRetryCount();
-
-		public DeployState getState();
-
-		public String getVersion();
-
-		public String openUrl(String url) throws IOException;
-
-		public Context print(String string, Object... args);
-
-		public Context println();
-
-		public Context println(String string, Object... args);
-
-		public void setRetryCount(int retryCount);
-
-		public void setState(DeployState state);
 	}
 }

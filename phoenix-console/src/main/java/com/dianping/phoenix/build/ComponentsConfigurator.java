@@ -24,8 +24,8 @@ import com.dianping.phoenix.service.DefaultProjectManager;
 import com.dianping.phoenix.service.DefaultStatusReporter;
 import com.dianping.phoenix.service.DefaultVersionManager;
 import com.dianping.phoenix.service.DefaultWarService;
-import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.GitProgressMonitor;
+import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.StatusReporter;
 import com.dianping.phoenix.service.VersionManager;
@@ -74,7 +74,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
-			      .req(ConfigManager.class) //
+			      .req(ConfigManager.class, DeploymentDetailsDao.class) //
 			      .config(E("policy").value(policy.name())));
 		}
 
