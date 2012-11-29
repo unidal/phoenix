@@ -20,15 +20,15 @@
 					<table class="table table-condensed nohover">
 						<thead>
 							<tr>
-								<th width="90">Machine</th>
+								<th width="105">Machine</th>
 								<th>Progress</th>
 							</tr>
 						</thead>
 						<tbody>
 							<c:forEach var="entry" items="${model.deploy.hosts}" varStatus="status">
 								<c:set var="host" value="${entry.value}"/>
-								<tr class="host_status<c:if test="${status.index == 0}"> selected</c:if>" id="${host.ip}" data-offset="${host.offset}">
-									<td>${host.ip}</td>
+								<tr class="host_status" id="${host.ip}" data-offset="${host.offset}">
+									<td>${host.ip}<i class="log-arrow icon-chevron-left<c:if test="${status.index > 0}"> hide</c:if>"></i></td>
 									<td>
                                         <div class="progress">
                                             <div class="bar" style="width: ${host.progress}%;">
