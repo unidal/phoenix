@@ -18,6 +18,10 @@
 			<implementation>com.dianping.phoenix.agent.core.shell.DefaultScriptExecutor</implementation>
 		</component>
 		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.Config</implementation>
+		</component>
+		<component>
 			<role>com.dianping.phoenix.agent.core.Agent</role>
 			<implementation>com.dianping.phoenix.agent.core.DefaultAgent</implementation>
 			<requirements>
@@ -39,11 +43,23 @@
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep$Context</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
+			<implementation>com.dianping.phoenix.agent.core.AgentStatusReporter</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
@@ -85,7 +101,29 @@
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
+			<implementation>com.dianping.phoenix.agent.core.AgentStatusReporter</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.Config</implementation>
 		</component>
 	</components>
 </plexus>

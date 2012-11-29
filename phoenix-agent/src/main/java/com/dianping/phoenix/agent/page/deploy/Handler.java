@@ -1,9 +1,9 @@
 package com.dianping.phoenix.agent.page.deploy;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -19,9 +19,11 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.phoenix.agent.core.Agent;
+import com.dianping.phoenix.agent.core.AgentStatusReporter;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.SubmitResult;
+import com.dianping.phoenix.agent.core.task.processor.kernel.Config;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
@@ -42,6 +44,10 @@ public class Handler implements PageHandler<Context> {
 	private Agent agent;
 	@Inject
 	private TransactionManager txMgr;
+	@Inject
+	private AgentStatusReporter agentStatusReporter;
+	@Inject
+	private Config config;
 
 	@Override
 	@PayloadMeta(Payload.class)
@@ -66,22 +72,14 @@ public class Handler implements PageHandler<Context> {
 		switch (payload.getAction()) {
 		case DEFAULT:
 			res.setStatus("ok");
-			Container container = new Container();
-			container.setInstallPath("/usr/local/tomcat");
-			container.setName("tomcat");
-			container.setStatus("up");
-			container.setVersion("6.0.35");
-			res.setContainer(container);
-			res.setIp(NetworkInterfaceManager.INSTANCE.getLocalHostAddress());
-			War war = new War();
-			war.setName("kernel");
-			war.setVersion("0.9.0");
-			Lib lib = new Lib();
-			lib.setGroupId("g");
-			lib.setArtifactId("a");
-			lib.setVersion("v");
-			war.addLib(lib);
-			res.addWar(war);
+			
+			try {
+				res = agentStatusReporter.report();
+			} catch (Exception e) {
+				logger.error("error get agent status", e);
+				res.setStatus("error");
+			}
+			
 			ctx.getHttpServletResponse().getWriter().write(new DefaultJsonBuilder().buildJson(res));
 			break;
 		case DEPLOY:

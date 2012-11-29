@@ -17,11 +17,16 @@
     <attribute name="name" value-type="String" />
     <attribute name="version" value-type="String" />
     <entity-ref name="lib" type="list" names="libs" />
+    <entity-ref name="kernel" />
   </entity>
   <entity name="lib">
     <attribute name="group-id" value-type="String" />
     <attribute name="artifact-id" value-type="String" />
     <attribute name="version" value-type="String" />
+  </entity>
+  <entity name="kernel">
+    <attribute name="version" value-type="String" />
+    <entity-ref name="lib" type="list" names="libs" />
   </entity>
 </model>
 
