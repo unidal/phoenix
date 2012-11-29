@@ -21,7 +21,7 @@ public class ArtifactResolverTest extends ComponentTestCase {
 		String resource = "/" + ComponentTestCase.class.getName().replace('.', '/') + ".class";
 		URL url = getClass().getResource(resource);
 		String path = url.getPath();
-		int off = path.lastIndexOf(':');
+		int off = path.indexOf(':');
 		int pos = path.lastIndexOf('!');
 		Artifact artifact = resolver.resolve(new File(path.substring(off + 1, pos)));
 
