@@ -11,12 +11,13 @@
 	<div class="row-fluid">
 		<div class="span4">
 			<div class="page-header">
+                <input type="hidden" id="deploy_id" value="${model.deploy.id}">
 				<strong style="font-size: medium;">${model.deploy.domain}</strong>：
-				[<font color="blue">${model.deploy.version}</font>, 方式：1->1->1->1, 错误：终断后续发布], 结果：[<strong><span id="deploy_status">${model.deploy.status}</span></strong>]
+				[<font color="blue">${model.deploy.version}</font>, 方式：1->1->1->1, 错误：终断后续发布], 结果：[<strong><span id="deploy_status">doing</span></strong>]
 			</div>
 			<div class="row-fluid">
 				<div class="span12 thumbnail" style="height: 440px; overflow: auto;">
-					<table class="table table-condensed">
+					<table class="table table-condensed nohover">
 						<thead>
 							<tr>
 								<th width="90">Machine</th>
@@ -24,14 +25,14 @@
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="entry" items="${model.deploy.hosts}">
+							<c:forEach var="entry" items="${model.deploy.hosts}" varStatus="status">
 								<c:set var="host" value="${entry.value}"/>
-								<tr id="${host.ip}" data-offset="${host.offset}"">
+								<tr class="host_status<c:if test="${status.index == 0}"> selected</c:if>" id="${host.ip}" data-offset="${host.offset}">
 									<td>${host.ip}</td>
 									<td>
                                         <div class="progress">
                                             <div class="bar" style="width: ${host.progress}%;">
-                                                <div style="width: 250px;color: #000000;">${host.currentStep}</div>
+                                                <div class="step" style="width: 250px;color: #000000;">${host.currentStep}</div>
                                             </div>
                                         </div>
 									</td>
@@ -58,9 +59,9 @@
 				<c:forEach var="entry" items="${model.deploy.hosts}" varStatus="status">
 					<c:set var="host" value="${entry.value}"/>
 					<div id="log-${host.ip}" data-spy="scroll" data-offset="0" style="height: 508px; line-height: 20px; overflow: auto;"
-						 class="terminal-like<c:if test="${status.index > 0}"> hide</c:if>">
+						 class="terminal terminal-like<c:if test="${status.index > 0}"> hide</c:if>">
 						<c:forEach var="segment" items="${host.segments}">
-							<span class="terminal-like">${segment.encodedText}</span>
+							<div class="terminal-like">${segment.encodedText}</div>
 						</c:forEach>
 					</div>
 				</c:forEach>

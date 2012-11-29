@@ -14,6 +14,11 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("id")
 	private int m_id;
 
+    @FieldMeta("hosts")
+    private String m_hosts;
+
+    private int count;   //TODO remove me!
+
 	public void setAction(String action) {
 		m_action = Action.getByName(action, Action.VIEW);
 	}
@@ -43,4 +48,20 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 			m_action = Action.VIEW;
 		}
 	}
+
+    public String getHosts() {
+        return m_hosts;
+    }
+
+    public void setHosts(String hosts) {
+        this.m_hosts = hosts;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 }
