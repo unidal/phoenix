@@ -33,6 +33,8 @@ public class Handler implements PageHandler<Context> {
 	@Inject
 	private KeepAliveViewer m_statusViewer;
 
+    private int count;  //TODO remove me!
+
 	@Override
 	@PayloadMeta(Payload.class)
 	@InboundActionMeta(name = "deploy")
@@ -52,6 +54,7 @@ public class Handler implements PageHandler<Context> {
 
 		switch (action) {
 		case VIEW:
+            count = 0;
 			try {
 				showView(model, payload.getId());
 			} catch (Exception e) {
@@ -61,13 +64,15 @@ public class Handler implements PageHandler<Context> {
 			m_jspViewer.view(ctx, model);
 			break;
 		case STATUS:
+            count++;
+            payload.setCount(count);
 			try {
 				showStatus(model, payload.getId());
 			} catch (Exception e) {
 				ctx.addError("deploy.status", e);
 			}
 
-			m_statusViewer.view(ctx, model);
+            m_jspViewer.view(ctx, model);
 			break;
 		}
 	}

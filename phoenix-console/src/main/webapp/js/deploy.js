@@ -1,115 +1,26 @@
-$(document).ready(
-    function() {
-        $.ajax("", {
-            data : $.param({
-                "op" : "status",
-                "id" : $("#deploy_id").val(),
-                "hosts" : ""
-            }, true)
-        });
-        $.ajax({
-            type : "GET",
-            url : "?op=status",
-            dataType : "json",
-            data : {
-                offset : $("#offset").val(),
-                plan : $("#plan").val()
-            },
-            error : function(xhRequest, ErrorText,
-                    thrownError) {
-                console.log(xhRequest);
-                console.log(ErrorText);
-                console.log(thrownError);
+var continuous_err_times = 0;
+var MAX_CON_ERR_TIMES = 10;
+$(function() {
+    if (!is_deploy_finished()) {
+        setTimeout(fetch_deploy_status, 1000);
+    }
+    bind_cmp_evt_handlers();
+});
 
-                showResult("error", ErrorText);
-                $(".progress").removeClass("active");
-                stopTimer();
-            },
-            success : function(data) {
-
-                var finished = data.status
-                $
-                        .each(
-                                data.hosts,
-                                function(hostIndex,
-                                        host) {
-                                    $("#p_" + hostIndex)
-                                            .addClass(
-                                                    "active");
-                                    $
-                                            .each(
-                                                    host.status,
-                                                    function(
-                                                            statusIndex,
-                                                            status) {
-                                                        console.log(status);
-                                                        $(
-                                                                "#b_"
-                                                                        + hostIndex
-                                                                        + "_"
-                                                                        + statusIndex)
-                                                                .attr(
-                                                                        "class",
-                                                                        "bar bar-"
-                                                                                + status);
-                                                        $(
-                                                                "#b_"
-                                                                        + hostIndex
-                                                                        + "_"
-                                                                        + statusIndex)
-                                                                .attr(
-                                                                        "title",
-                                                                        status);
-                                                        if (statusIndex == host.status.length - 1
-                                                                && (status == 'success'
-                                                                        || status == 'warning' || status == 'failed')) {
-                                                            $(
-                                                                    "#p_"
-                                                                            + hostIndex)
-                                                                    .removeClass(
-                                                                            "active");
-                                                            $(
-                                                                    "#p_"
-                                                                            + hostIndex)
-                                                                    .removeClass(
-                                                                            "progress-striped");
-                                                        }
-                                                    });
-                                });
-
-                if (finished=="success") {
-                    showResult("success",
-                            "Deploy Completed");
-                    $(".progress")
-                            .removeClass("active");
-                    stopTimer();
-                }else if(finished=="failed"){
-                    showResult("error","Deploy Failed");
-                    $(".progress")
-                    .removeClass("active");
-                    stopTimer();
-                }
-
-                $("#offset").val(data.offset);
-
-                if (data.content) {
-                    $("#status")
-                            .append(
-                                    "<span id=offset-"
-                                            + data.offset
-                                            + " class=\"terminal-like\">"
-                                            + data.content
-                                            + "</span>");
-                    $("#status").scrollTop($("#status").get(0).scrollHeight)
-                }
-            }
-        });
+function bind_cmp_evt_handlers() {
+    $(".host_status").click(function() {
+        var host = $(this).attr("id");
+        $(".host_status").removeClass("selected");
+        $(this).addClass("selected");
+        $(".terminal").hide();
+        $("#log-" + host.replace(/\./g, "\\.")).show();
     });
+}
 
 function fetch_deploy_status() {
     var hostArr = [];
     $(".host_status").map(function() {
-        hostArr.push($(this).attr("data-host") + ":" + $(this).attr("data-offset"));
+        hostArr.push($(this).attr("id") + ":" + $(this).attr("data-offset"));
     });
     if(hostArr.length > 0) {
         $.ajax("", {
@@ -119,12 +30,24 @@ function fetch_deploy_status() {
                 "hosts" : hostArr.join(",")
             }, true),
             dataType: "json",
+            cache: false,
             success: function(result) {
-
+                continuous_err_times = 0;
+                if (result != null) {
+                    $.each(result.hosts, function(index, obj) {
+                        var host = obj.host.replace(/\./g, "\\.");
+                        update_host_status(host, obj);
+                        update_host_log(host, obj);
+                    });
+                    update_deploy_status(result.status);
+                }
+            },
+            error: function(xhr, errstat, err) {
+                continuous_err_times++;
             },
             complete: function() {
-                if (!is_deploy_finished()) {
-                     setTimeout(fetch_deploy_status(), 1000);
+                if (!is_deploy_finished() && continuous_err_times < MAX_CON_ERR_TIMES) {
+                     setTimeout(fetch_deploy_status, 1000);
                 }
             }
         });
@@ -135,14 +58,38 @@ function is_deploy_finished() {
     return $("#deploy_status").text() != "doing";
 }
 
-//var interval = setInterval('updateDeployStatus()', 1000);
-//function stopTimer() {
-//	clearInterval(interval);
-//}
+function update_host_status(host, data) {
+    var hostStatus = data.status;
+    var $hostProgress = $("#" + host).find(".progress");
+    var $hostBar = $("#" + host).find(".bar");
+    var $hostStep = $("#" + host).find(".step");
+    if ("pending" == hostStatus) {
+        $hostBar.css("width", "0%");
+        $hostStep.text("");
+    } else {
+        $hostBar.css("width", data.progress + "%");
+        $hostStep.text(data.step);
+    }
+    $("#" + host).attr("data-offset", data.offset);
+    $hostProgress.removeClass().addClass("progress");
+    if ("success" == hostStatus) {
+        $hostProgress.addClass("progress-success");
+    } else if ("failed" == hostStatus) {
+        $hostProgress.addClass("progress-danger");
+    } else if ("doing" == hostStatus) {
+        $hostProgress.addClass("progress-striped active");
+    }
+}
 
-//function showResult(type, content) {
-//	$("#result").html(
-//			"<div id='alert' class='alert alert-" + type + "'>" + content
-//					+ "</div>");
-//	$("#result").show();
-//}
+function update_host_log(host, data) {
+    //TODO data.log是否已经做了换行到<br />的转换，或者是使用数组形式
+    if (data.log != null && data.log != "") {
+        var $logContainer = $("#log-" + host);
+        $logContainer.append("<div class=\"terminal-like\">" + data.log + "</div>");
+        $logContainer.scrollTop($logContainer.get(0).scrollHeight);
+    }
+}
+
+function update_deploy_status(status) {
+    $("#deploy_status").text(status);
+}
