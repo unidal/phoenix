@@ -12,40 +12,39 @@ import org.unidal.test.jetty.JettyServer;
 
 @RunWith(JUnit4.class)
 public class TestServer extends JettyServer {
-   public static void main(String[] args) throws Exception {
-      TestServer server = new TestServer();
+	public static void main(String[] args) throws Exception {
+		TestServer server = new TestServer();
 
-      server.startServer();
-      server.startWebapp();
-      server.stopServer();
-   }
+		server.startServer();
+		server.startWebapp();
+		server.stopServer();
+	}
 
-   @Before
-   public void before() throws Exception {
-      System.setProperty("devMode", "true");
-      super.startServer();
-   }
+	@Before
+	public void before() throws Exception {
+		System.setProperty("devMode", "true");
+		super.startServer();
+	}
 
-   @Override
-   protected String getContextPath() {
-      return "/phoenix";
-   }
+	@Override
+	protected String getContextPath() {
+		return "/phoenix";
+	}
 
-   @Override
-   protected int getServerPort() {
-      return 3473;
-   }
+	@Override
+	protected int getServerPort() {
+		return 3473;
+	}
 
-   @Override
-   protected void postConfigure(WebAppContext context) {
-//      context.addFilter(GzipFilter.class, "/agent/*", Handler.ALL);
-//      context.addFilter(GzipFilter.class, "/agent/*", Handler.ALL);
-   }
+	@Override
+	protected void postConfigure(WebAppContext context) {
+		context.addFilter(GzipFilter.class, "/agent/*", Handler.ALL);
+	}
 
-   @Test
-   public void startWebapp() throws Exception {
-      // open the page in the default browser
-//      display("/phoenix/agent");
-      waitForAnyKey();
-   }
+	@Test
+	public void startWebapp() throws Exception {
+		// open the page in the default browser
+		display("/phoenix/agent");
+		waitForAnyKey();
+	}
 }

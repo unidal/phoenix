@@ -26,8 +26,7 @@ function fetch_deploy_status() {
         $.ajax("", {
             data : $.param({
                 "op" : "status",
-                "id" : $("#deploy_id").val(),
-                "hosts" : hostArr.join(",")
+                "progress" : hostArr.join(",")
             }, true),
             dataType: "json",
             cache: false,

@@ -20,25 +20,21 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("id")
 	private int m_id;
 
-<<<<<<< HEAD
 	@FieldMeta("progress")
 	private String m_progress;
 
 	private Map<String, Integer> m_progressMap;
-=======
-    @FieldMeta("hosts")
-    private String m_hosts;
 
-    private int count;   //TODO remove me!
-
-	public void setAction(String action) {
-		m_action = Action.getByName(action, Action.VIEW);
-	}
->>>>>>> d85463f406c564cba9c6fdce345284be1a505806
+	@FieldMeta("hosts")
+	private String m_hosts;
 
 	@Override
 	public Action getAction() {
 		return m_action;
+	}
+
+	public String getHosts() {
+		return m_hosts;
 	}
 
 	public int getId() {
@@ -56,6 +52,10 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	public void setAction(String action) {
 		m_action = Action.getByName(action, Action.VIEW);
+	}
+
+	public void setHosts(String hosts) {
+		this.m_hosts = hosts;
 	}
 
 	@Override
@@ -93,20 +93,4 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 			}
 		}
 	}
-
-    public String getHosts() {
-        return m_hosts;
-    }
-
-    public void setHosts(String hosts) {
-        this.m_hosts = hosts;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
 }

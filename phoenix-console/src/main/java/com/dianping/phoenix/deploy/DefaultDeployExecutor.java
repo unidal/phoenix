@@ -28,6 +28,7 @@ import com.dianping.phoenix.deploy.agent.SegmentReader;
 import com.dianping.phoenix.deploy.agent.State;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
+import com.dianping.phoenix.deploy.model.entity.SegmentModel;
 import com.site.helper.Files;
 import com.site.helper.Threads;
 
@@ -77,8 +78,46 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 
 	@Override
 	public void onProgress(Context ctx, Progress progress, String log) {
-		// TODO Auto-generated method stub
+		int id = ctx.getDeployId();
+		DeployModel model = m_models.get(id);
 
+		if (model != null) {
+			String ip = ctx.getHost();
+			HostModel host = model.findHost(ip);
+			SegmentModel segment = new SegmentModel();
+
+			segment.setCurrentTicks(progress.getCurrent());
+			segment.setTotalTicks(progress.getTotal());
+			segment.setStatus(progress.getStatus());
+			segment.setText(log);
+			segment.setEncodedText(escape(log));
+			host.addSegment(segment);
+		}
+	}
+
+	private String escape(String str) {
+		int len = str.length();
+		StringBuilder sb = new StringBuilder(len + 32);
+
+		for (int i = 0; i < len; i++) {
+			char ch = str.charAt(i);
+
+			switch (ch) {
+			case '"':
+				sb.append("\\\"");
+				break;
+			case '\r':
+				break;
+			case '\n':
+				sb.append("\r\n<br>");
+				break;
+			default:
+				sb.append(ch);
+				break;
+			}
+		}
+
+		return sb.toString();
 	}
 
 	@Override
@@ -119,8 +158,6 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 
 		private DeployPolicy m_policy;
 
-		private StringBuilder m_content = new StringBuilder(8192);
-
 		private List<String> m_hosts;
 
 		private int m_hostIndex;
@@ -149,8 +186,14 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 			return getClass().getSimpleName();
 		}
 
-		public ControllerTask log(String pattern, Object... args) {
-			m_content.append(String.format(pattern, args));
+		public ControllerTask log(String ip, String pattern, Object... args) {
+			HostModel host = m_model.findHost(ip);
+			String message = String.format(pattern, args);
+
+			if (host != null) {
+				host.addSegment(new SegmentModel()); // TODO
+			}
+
 			return this;
 		}
 
@@ -205,11 +248,6 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 			} else {
 				return latch;
 			}
-		}
-
-		public void update(Progress progress, String segment) {
-			// TODO Auto-generated method stub
-			System.out.println(progress + "\r\n" + segment);
 		}
 	}
 
@@ -292,20 +330,20 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 
 		@Override
 		public Context print(String pattern, Object... args) {
-			m_controller.log(pattern, args);
+			m_controller.log(m_host, pattern, args);
 			return this;
 		}
 
 		@Override
 		public Context println() {
-			m_controller.log("\r\n");
+			m_controller.log(m_host, "\r\n");
 			return this;
 		}
 
 		@Override
 		public Context println(String pattern, Object... args) {
-			m_controller.log(pattern, args);
-			m_controller.log("\r\n");
+			print(pattern, args);
+			println();
 			return this;
 		}
 

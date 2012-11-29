@@ -4,7 +4,7 @@
 	<project name="sample-app" owner="qing.gu">
 		<description>Sample Application</description>
 		<hosts>
-			<host ip="192.168.66.131" status="up">
+			<host ip="127.0.0.1" status="up">
 				<war name="sample-app" version="0.1-SNAPSHOT">
 					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
 					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
@@ -18,7 +18,7 @@
 					<dependency groupId="org.springframework" artifactId="spring-web" version="2.5.6" />
 				</war>
 			</host>
-			<host ip="192.168.66.132" status="up">
+			<host ip="192.168.66.125" status="up">
 				<war name="sample-app" version="0.1-SNAPSHOT">
 					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
 					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />

@@ -18,6 +18,31 @@ class StatusModelVisitor extends BaseVisitor {
 		m_map = map != null ? map : Collections.<String, Integer> emptyMap();
 	}
 
+	private String escape(String str) {
+		int len = str.length();
+		StringBuilder sb = new StringBuilder(len + 32);
+
+		for (int i = 0; i < len; i++) {
+			char ch = str.charAt(i);
+
+			switch (ch) {
+			case '"':
+				sb.append("\\\"");
+				break;
+			case '\r':
+				break;
+			case '\n':
+				sb.append("\r\n<br>");
+				break;
+			default:
+				sb.append(ch);
+				break;
+			}
+		}
+
+		return sb.toString();
+	}
+
 	public DeployModel getModel() {
 		return m_model;
 	}
@@ -44,7 +69,7 @@ class StatusModelVisitor extends BaseVisitor {
 			index = 0;
 		}
 
-		for (int i = 0; i < index; i++) {
+		for (int i = 0; i < index && index < size; i++) {
 			SegmentModel segment = segments.get(i);
 
 			if (segment.getStep() != null) {
@@ -62,7 +87,11 @@ class StatusModelVisitor extends BaseVisitor {
 				step = segment.getStep();
 			}
 
-			sb.append(segment.getText().trim()).append("\r\n");
+			String text = segment.getText();
+
+			if (text != null) {
+				sb.append(text.trim()).append("\r\n");
+			}
 		}
 
 		if (sb.length() > 0) {
@@ -70,7 +99,7 @@ class StatusModelVisitor extends BaseVisitor {
 
 			host.setProgress(progress);
 			host.setCurrentStep(step);
-			host.setLog(sb.toString());
+			host.setLog(escape(sb.toString()));
 			host.setOffset(size);
 			m_model.addHost(host);
 		}
