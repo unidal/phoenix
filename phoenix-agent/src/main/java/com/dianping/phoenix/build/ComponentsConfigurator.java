@@ -8,10 +8,12 @@ import org.unidal.lookup.configuration.Component;
 
 import com.dianping.phoenix.agent.core.Agent;
 import com.dianping.phoenix.agent.core.DefaultAgent;
+import com.dianping.phoenix.agent.core.AgentStatusReporter;
 import com.dianping.phoenix.agent.core.shell.DefaultScriptExecutor;
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
+import com.dianping.phoenix.agent.core.task.processor.kernel.Config;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployStepContext;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor;
@@ -26,9 +28,11 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(DeployStep.Context.class, DeployStepContext.class).req(ScriptExecutor.class));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 		all.add(C(ScriptExecutor.class, DefaultScriptExecutor.class));
+		all.add(C(Config.class));
 		all.add(C(Agent.class, DefaultAgent.class).req(TransactionManager.class).req(TaskProcessorFactory.class));
-		all.add(C(TaskProcessor.class, DeployTaskProcessor.class).req(TransactionManager.class).req(DeployStep.Context.class));
+		all.add(C(TaskProcessor.class, DeployTaskProcessor.class).req(TransactionManager.class).req(DeployStep.Context.class).req(Config.class));
 		all.add(C(TaskProcessorFactory.class));
+		all.add(C(AgentStatusReporter.class).req(Config.class));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 
 		// Please keep it as last

@@ -1,6 +1,7 @@
 package com.dianping.kernel.inspect.page.classpath;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -9,10 +10,10 @@ import java.util.zip.ZipEntry;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
-
-import com.dianping.phoenix.spi.internal.VersionParser;
 import org.unidal.helper.Scanners;
 import org.unidal.helper.Scanners.IMatcher;
+
+import com.dianping.phoenix.spi.internal.VersionParser;
 
 public class ArtifactResolver implements LogEnabled {
 	private Logger m_logger;
@@ -75,7 +76,85 @@ public class ArtifactResolver implements LogEnabled {
 		});
 	}
 
-	public Artifact resolve(File jarFile) {
+	public Artifact resolve(File file) {
+		if(file.isDirectory()) {
+			return resolveForDir(file);
+		} else {
+			return resolveForJar(file);
+		}
+	}
+	
+	private Artifact resolveForDir(File warRoot) {
+		File pom = Scanners.forDir().scanForOne(warRoot, new IMatcher<File>() {
+			@Override
+			public boolean isDirEligible() {
+				return false;
+			}
+
+			@Override
+			public boolean isFileElegible() {
+				return true;
+			}
+			
+			private int depth = 0;
+
+			@Override
+			public Direction matches(File base, String path) {
+				switch (depth) {
+				case 0:
+					if("META-INF".equals(path)) {
+						depth++;
+						return Direction.DOWN;
+					} else {
+						return Direction.NEXT;
+					}
+				case 1:
+					if("META-INF/maven".equals(path)) {
+						depth++;
+						return Direction.DOWN;
+					} else {
+						return Direction.NEXT;
+					}
+				case 2:
+					depth++;
+					return Direction.DOWN;
+				case 3:
+					depth++;
+					return Direction.DOWN;
+				case 4:
+					if(path.endsWith("pom.properties")) {
+						return Direction.MATCHED;
+					} else {
+						return Direction.NEXT;
+					}
+
+				default:
+					return Direction.NEXT;
+				}
+			}
+		});
+		
+		if (pom != null) {
+			Properties p = new Properties();
+			try {
+				p.load(new FileInputStream(pom));
+			} catch (IOException e) {
+				m_logger.warn(String.format("Unable to read entry out of pom(%s)!", pom.getAbsolutePath()), e);
+				return null;
+			}
+
+			String groupId = p.getProperty("groupId");
+			String artifactId = p.getProperty("artifactId");
+			String version = p.getProperty("version");
+
+			return new Artifact(warRoot.getAbsolutePath(), groupId, artifactId, version);
+		} else {
+			return null;
+		}
+		
+	}
+	
+	private Artifact resolveForJar(File jarFile) {
 		if (!jarFile.isFile()) {
 			return null;
 		}

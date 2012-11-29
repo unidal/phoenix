@@ -78,6 +78,16 @@
       	<artifactId>commons-lang</artifactId>
       	<version>2.4</version>
       </dependency>
+      <dependency>
+      	<groupId>com.dianping.platform</groupId>
+		<artifactId>phoenix-kernel</artifactId>
+		<version>0.1-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+      	<groupId>commons-io</groupId>
+      	<artifactId>commons-io</artifactId>
+      	<version>1.4</version>
+      </dependency>
    </dependencies>
    <build>
 		<plugins>
