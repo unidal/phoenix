@@ -11,7 +11,7 @@ final class PhoenixDatabaseConfigurator extends AbstractJdbcResourceConfigurator
    public List<Component> defineComponents() {
       List<Component> all = new ArrayList<Component>();
 
-      all.add(defineJdbcDataSourceComponent("phoenix", "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/phoenix", "root", "", "<![CDATA[useUnicode=true&autoReconnect=true]]>"));
+      all.add(defineJdbcDataSourceComponent("phoenix", "com.mysql.jdbc.Driver", "jdbc:mysql://192.168.8.45:3306/phoenix", "root", "dianpingadmin", "<![CDATA[useUnicode=true&autoReconnect=true]]>"));
 
       defineSimpleTableProviderComponents(all, "phoenix", com.dianping.phoenix.console.dal.deploy._INDEX.getEntityClasses());
       defineDaoComponents(all, com.dianping.phoenix.console.dal.deploy._INDEX.getDaoClasses());

@@ -2,6 +2,7 @@
 <%@ taglib prefix="a" uri="http://www.dianping.com/phoenix/console"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
+<%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 <jsp:useBean id="ctx" type="com.dianping.phoenix.console.page.home.Context" scope="request" />
 <jsp:useBean id="payload" type="com.dianping.phoenix.console.page.home.Payload" scope="request" />
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.home.Model" scope="request" />
@@ -36,7 +37,7 @@
 						<table class="table table-striped table-condensed lion">
 							<thead>
 								<tr>
-									<th><input type="checkbox" id="pc-${id}" class="category-check"/> Machine</th>
+									<th><input type="checkbox" id="all-machine-check"/> Machine</th>
 									<th>Kernel</th>
 									<th>App</th>
 								</tr>
@@ -349,4 +350,7 @@
 			</div>
 		</div>
 	</div>
+
+    <res:useJs value="${res.js.local.project_js}" target="project-js" />
+    <res:jsSlot id="project-js" />
 </a:layout>
