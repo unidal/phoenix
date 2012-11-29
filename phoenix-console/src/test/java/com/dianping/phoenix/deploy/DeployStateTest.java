@@ -10,7 +10,8 @@ import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.deploy.DeployState.Context;
+import com.dianping.phoenix.deploy.agent.Context;
+import com.dianping.phoenix.deploy.agent.State;
 
 public class DeployStateTest extends ComponentTestCase {
 	private ConfigManager m_configManager;
@@ -19,7 +20,7 @@ public class DeployStateTest extends ComponentTestCase {
 	public void initConfig() throws InitializationException {
 		ConfigManager configManager = new ConfigManager();
 
-		configManager.setConfigFile(getClass().getResource("deploy_config.xml").getFile());
+		configManager.setConfigFile(getClass().getResource("config.xml").getFile());
 		configManager.initialize();
 
 		m_configManager = configManager;
@@ -29,8 +30,8 @@ public class DeployStateTest extends ComponentTestCase {
 	public void testRetryButFailed() throws Exception {
 		RetryButFailedContext ctx = new RetryButFailedContext(m_configManager);
 
-		DeployState.execute(ctx);
-		Assert.assertEquals(DeployState.FAILED, ctx.getState());
+		State.execute(ctx);
+		Assert.assertEquals(State.FAILED, ctx.getState());
 
 		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \r\n" //
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \r\n" //
@@ -44,8 +45,8 @@ public class DeployStateTest extends ComponentTestCase {
 	public void testSuccess() throws Exception {
 		SuccessContext ctx = new SuccessContext(m_configManager);
 
-		DeployState.execute(ctx);
-		Assert.assertEquals(DeployState.SUCCESSFUL, ctx.getState());
+		State.execute(ctx);
+		Assert.assertEquals(State.SUCCESSFUL, ctx.getState());
 
 		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\r\n" //
 		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \r\n" //
@@ -58,8 +59,8 @@ public class DeployStateTest extends ComponentTestCase {
 	public void testSuccessWithRetry() throws Exception {
 		SuccessWithRetryContext ctx = new SuccessWithRetryContext(m_configManager);
 
-		DeployState.execute(ctx);
-		Assert.assertEquals(DeployState.SUCCESSFUL, ctx.getState());
+		State.execute(ctx);
+		Assert.assertEquals(State.SUCCESSFUL, ctx.getState());
 
 		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \r\n" //
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \r\n" //
@@ -70,12 +71,12 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(expected, ctx.getLog());
 	}
 
-	static abstract class BaseContext implements DeployState.Context {
+	static abstract class BaseContext implements Context {
 		private ConfigManager m_configManager;
 
 		private int m_retryCount;
 
-		private DeployState m_state;
+		private State m_state;
 
 		private StringBuilder m_log = new StringBuilder(2048);
 
@@ -113,7 +114,7 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public DeployState getState() {
+		public State getState() {
 			return m_state;
 		}
 
@@ -158,7 +159,7 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public void setState(DeployState state) {
+		public void setState(State state) {
 			m_state = state;
 		}
 	}

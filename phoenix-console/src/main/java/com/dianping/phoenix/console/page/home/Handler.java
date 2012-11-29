@@ -16,7 +16,7 @@ import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Version;
 import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.DeployPolicy;
-import com.dianping.phoenix.deploy.entity.Project;
+import com.dianping.phoenix.project.entity.Project;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.VersionManager;
 
@@ -42,7 +42,7 @@ public class Handler implements PageHandler<Context> {
 				String name = payload.getProject();
 				List<String> hosts = payload.getHosts();
 				DeployPlan plan = payload.getPlan();
-				String deployUri = ctx.getRequestContext().getActionUri(ConsolePage.DEPLOY2.getName());
+				String deployUri = ctx.getRequestContext().getActionUri(ConsolePage.DEPLOY.getName());
 
 				try {
 					int id = m_projectManager.deployToProject(name, hosts, plan);

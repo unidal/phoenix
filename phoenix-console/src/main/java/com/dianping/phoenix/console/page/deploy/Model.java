@@ -1,6 +1,5 @@
 package com.dianping.phoenix.console.page.deploy;
 
-import java.util.List;
 import java.util.Map;
 
 import org.unidal.web.mvc.ViewModel;
@@ -8,54 +7,65 @@ import org.unidal.web.mvc.ViewModel;
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.deploy.DeployLog;
 import com.dianping.phoenix.deploy.DeployPlan;
+import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
-	private String m_name;
-	
-	private DeployPlan m_plan;
-	
-	private List<String> m_hosts;
-	
-	private Map<String, DeployLog> m_logs;
-	
-	public Model(Context ctx) {
-		super(ctx);
-	}
+    private String m_name;
 
-	@Override
-	public Action getDefaultAction() {
-		return Action.VIEW;
-	}
+    private DeployPlan m_plan;
 
-	public String getName() {
-   	return m_name;
-   }
+    private String m_status; // for test: doing, succeed, failed
 
-	public void setName(String name) {
-   	m_name = name;
-   }
+    private Map<String, DeployLog> m_logs;
 
-	public DeployPlan getPlan() {
-   	return m_plan;
-   }
+    private DeployModel m_deploy;
 
-	public void setPlan(DeployPlan plan) {
-   	m_plan = plan;
-   }
+    public Model(Context ctx) {
+        super(ctx);
+    }
 
-	public List<String> getHosts() {
-   	return m_hosts;
-   }
+    @Override
+    public Action getDefaultAction() {
+        return Action.VIEW;
+    }
 
-	public void setHosts(List<String> hosts) {
-   	m_hosts = hosts;
-   }
+    public String getName() {
+        return m_name;
+    }
 
-	public Map<String, DeployLog> getLogs() {
-   	return m_logs;
-   }
+    public void setName(String name) {
+        m_name = name;
+    }
 
-	public void setLogs(Map<String, DeployLog> logs) {
-   	m_logs = logs;
-   }
+    public DeployPlan getPlan() {
+        return m_plan;
+    }
+
+    public void setPlan(DeployPlan plan) {
+        m_plan = plan;
+    }
+
+    public Map<String, DeployLog> getLogs() {
+        return m_logs;
+    }
+
+    public void setLogs(Map<String, DeployLog> logs) {
+        m_logs = logs;
+    }
+
+    public String getStatus() {
+        return m_status;
+    }
+
+    public void setStatus(String status) {
+        this.m_status = status;
+    }
+
+    public DeployModel getDeploy() {
+        return m_deploy;
+    }
+
+    public void setDeploy(DeployModel deploy) {
+        m_deploy = deploy;
+    }
 }

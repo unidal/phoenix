@@ -7,7 +7,7 @@ import org.unidal.web.mvc.ViewModel;
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Version;
 import com.dianping.phoenix.deploy.DeployPolicy;
-import com.dianping.phoenix.deploy.entity.Project;
+import com.dianping.phoenix.project.entity.Project;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private List<Project> m_projects;
