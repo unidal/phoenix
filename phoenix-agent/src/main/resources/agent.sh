@@ -13,6 +13,17 @@ KERNEL_WAR_TMP=/data/appdata/phoenix_kernel_war_tmp/
 KERNEL_GIT_HOST="10.1.4.81"
 KERNEL_GIT_URL="ssh://git@${KERNEL_GIT_HOST}:58422/phoenix-kernel.git"
 
+now=`date "+%Y-%m-%d"`
+while getopts "c:d:v:f:" option;do
+	case $option in
+			c)		container=$OPTARG;;
+			d)      domain=$OPTARG;;
+			v)      kernel_version=$OPTARG;;
+			f)      func=`echo $OPTARG | tr '[A-Z]' '[a-z]'`;;
+	esac
+done
+domain_kernel_base=$KERNEL_WAR_BASE/$domain
+
 function add_ssh_private_key {
 	ssh_config=~/.ssh/config
 	local host_cnt=`grep -c $KERNEL_GIT_HOST $ssh_config 2>/dev/null || true`
@@ -37,17 +48,6 @@ function add_ssh_private_key {
 
 log "PID is $$"
 log "CMD is $0 $@"
-
-now=`date "+%Y-%m-%d"`
-while getopts "c:d:v:f:" option;do
-	case $option in
-			c)		container=$OPTARG;;
-			d)      domain=$OPTARG;;
-			v)      kernel_version=$OPTARG;;
-			f)      func=`echo $OPTARG | tr '[A-Z]' '[a-z]'`;;
-	esac
-done
-domain_kernel_base=$KERNEL_WAR_BASE/$domain
 
 function exit_on_error {
 	if [ $? -ne 0 ];then

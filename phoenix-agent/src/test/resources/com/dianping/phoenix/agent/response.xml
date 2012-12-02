@@ -5,9 +5,13 @@
 	<container name="jboss" version="4.2.2" status="up">
 		<install-path>/jboss</install-path>
 	</container>
-	<war name="kernel" version="1.0.0">
+	<war name="user-web" version="1.0.0">
 		<lib group-id="junit" artifact-id="junit" version="4.8.1" />
 		<lib group-id="junit" artifact-id="junit" version="4.8.1" />
+		<kernel version="1.0.0">
+			<lib group-id="junit" artifact-id="junit" version="4.8.1" />
+			<lib group-id="junit" artifact-id="junit" version="4.8.1" />
+		</kernel>
 	</war>
-	<war name="shop-web" />
+	<war name="user-service" />
 </response>

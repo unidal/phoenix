@@ -12,7 +12,7 @@ import com.dianping.phoenix.spi.internal.ClasspathBuilderTest;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-ClasspathBuilderTest.class,
+ClasspathBuilderTest.class
 
 })
 public class IntegrationTests {
