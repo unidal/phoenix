@@ -19,7 +19,7 @@ CREATE TABLE `deployment` (
   `war_version` varchar(32) NOT NULL COMMENT '版本，如: 0.1',
   `strategy` varchar(32) NOT NULL COMMENT '部署策略',
   `error_policy` varchar(32) NOT NULL COMMENT '出错处理策略',
-  `status` int(1) NOT NULL COMMENT '部署状态，可选值: 1 - created, 2 - deploying, 3 - completed all successful, 4 - completed with partial failures, 5 - failed, 8 - aborted, 9 - cancelled',
+  `status` int(1) NOT NULL COMMENT '部署状态，可选值: 1 - created, 2 - deploying, 3 - completed with all successful, 4 - completed with partial failures, 5 - failed, 8 - aborted, 9 - cancelled',
   `deployed_by` varchar(64) NOT NULL COMMENT '部署者',
   `begin_date` datetime NULL COMMENT '部署开始时间',
   `end_date` datetime NULL COMMENT '部署结束时间',

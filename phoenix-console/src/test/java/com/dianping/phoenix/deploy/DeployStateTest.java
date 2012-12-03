@@ -90,6 +90,16 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
+		public String getRawLog() {
+			return null;
+		}
+
+		@Override
+		public int getId() {
+			return 0;
+		}
+
+		@Override
 		public int getDeployId() {
 			return 123;
 		}

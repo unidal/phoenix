@@ -17,6 +17,10 @@ import com.dianping.phoenix.deploy.DefaultDeployManager;
 import com.dianping.phoenix.deploy.DeployExecutor;
 import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.DeployPolicy;
+import com.dianping.phoenix.deploy.event.AgentListener;
+import com.dianping.phoenix.deploy.event.DefaultAgentListener;
+import com.dianping.phoenix.deploy.event.DefaultDeployListener;
+import com.dianping.phoenix.deploy.event.DeployListener;
 import com.dianping.phoenix.service.DefaultGitService;
 import com.dianping.phoenix.service.DefaultProjectManager;
 import com.dianping.phoenix.service.DefaultStatusReporter;
@@ -72,12 +76,16 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
-			      .req(ConfigManager.class, DeploymentDetailsDao.class) //
+			      .req(ConfigManager.class, DeployListener.class, AgentListener.class) //
 			      .config(E("policy").value(policy.name())));
 		}
 
 		all.add(C(DeployManager.class, DefaultDeployManager.class) //
+		      .req(DeployListener.class));
+		all.add(C(DeployListener.class, DefaultDeployListener.class) //
 		      .req(DeploymentDao.class, DeploymentDetailsDao.class));
+		all.add(C(AgentListener.class, DefaultAgentListener.class) //
+		      .req(DeployListener.class, DeploymentDetailsDao.class));
 	}
 
 	private void defineWebComponents(List<Component> all) {

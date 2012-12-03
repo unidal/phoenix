@@ -75,7 +75,10 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.event.AgentListener</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -91,7 +94,10 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.event.AgentListener</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -107,7 +113,10 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.event.AgentListener</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -116,7 +125,28 @@
 			<implementation>com.dianping.phoenix.deploy.DefaultDeployManager</implementation>
 			<requirements>
 				<requirement>
+					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.deploy.event.DeployListener</role>
+			<implementation>com.dianping.phoenix.deploy.event.DefaultDeployListener</implementation>
+			<requirements>
+				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDao</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.deploy.event.AgentListener</role>
+			<implementation>com.dianping.phoenix.deploy.event.DefaultAgentListener</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
@@ -142,9 +172,9 @@
 				<statement-cache-size>1000</statement-cache-size>
 				<properties>
 					<driver>com.mysql.jdbc.Driver</driver>
-					<URL>jdbc:mysql://192.168.8.45:3306/phoenix</URL>
+					<URL>jdbc:mysql://localhost:3306/phoenix</URL>
 					<user>root</user>
-					<password>dianpingadmin</password>
+					<password></password>
 					<connectionProperties><![CDATA[useUnicode=true&autoReconnect=true]]></connectionProperties>
 				</properties>
 			</configuration>
@@ -265,9 +295,6 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.deploy.DeployManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.deploy.DeployExecutor</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.deploy.JspViewer</role>

@@ -13,6 +13,10 @@ public interface Context {
 
 	public String getHost();
 
+	public int getId();
+
+	public String getRawLog();
+
 	public int getRetryCount();
 
 	public State getState();

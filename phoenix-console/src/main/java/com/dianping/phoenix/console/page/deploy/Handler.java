@@ -12,18 +12,12 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
-import com.dianping.phoenix.console.dal.deploy.Deployment;
-import com.dianping.phoenix.deploy.DeployExecutor;
 import com.dianping.phoenix.deploy.DeployManager;
-import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
 	private DeployManager m_deployManager;
-
-	@Inject
-	private DeployExecutor m_deployExecutor;
 
 	@Inject
 	private JspViewer m_jspViewer;
@@ -70,7 +64,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void showStatus(Model model, Payload payload) {
 		int id = payload.getId();
-		DeployModel deployModel = m_deployExecutor.getModel(id);
+		DeployModel deployModel = m_deployManager.getModel(id);
 		Map<String, Integer> progressMap = payload.getProgressMap();
 		StatusModelVisitor visitor = new StatusModelVisitor(progressMap);
 
@@ -80,15 +74,9 @@ public class Handler implements PageHandler<Context> {
 
 	private void showView(Model model, Payload payload) throws Exception {
 		int id = payload.getId();
-		DeployModel deployModel = m_deployExecutor.getModel(id);
-		Deployment deployment = m_deployManager.query(id);
-		DeployPlan plan = new DeployPlan();
+		DeployModel deployModel = m_deployManager.getModel(id);
 
-		plan.setVersion(deployment.getWarVersion());
-		plan.setPolicy(deployment.getStrategy());
-		plan.setAbortOnError("abortOnError".equals(deployment.getErrorPolicy()));
-
-		model.setPlan(plan);
+		model.setPlan(deployModel.getPlan()); // TODO revise UI
 		model.setDeploy(deployModel);
 	}
 }
