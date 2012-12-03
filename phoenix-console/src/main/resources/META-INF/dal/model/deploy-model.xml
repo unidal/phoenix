@@ -11,6 +11,7 @@
 		<attribute name="progress" value-type="int" primitive="true" render="false" />
 		<attribute name="current-step" value-type="String" render="false" />
 		<attribute name="log" value-type="String" render="false" />
+	    <attribute name="id" value-type="int" primitive="true" render="false" />
 	</entity>
 	<entity name="segment" class-name="SegmentModel">
 	    <attribute name="current-ticks" value-type="int" primitive="true" />

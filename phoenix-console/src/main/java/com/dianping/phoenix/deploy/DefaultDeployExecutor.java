@@ -7,9 +7,10 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.unidal.helper.Files;
+import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 
@@ -23,12 +24,8 @@ import com.dianping.phoenix.deploy.event.DeployListener;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.entity.SegmentModel;
-import com.site.helper.Files;
-import com.site.helper.Threads;
 
 public class DefaultDeployExecutor implements DeployExecutor {
-	private static ExecutorService s_threadPool = Threads.forPool().getFixedThreadPool("Phoenix-Deploy", 50);
-
 	@Inject
 	private ConfigManager m_configManager;
 
@@ -51,28 +48,12 @@ public class DefaultDeployExecutor implements DeployExecutor {
 	}
 
 	@Override
-	public synchronized void submit(int deployId, String name, List<String> hosts, String version, boolean abortOnError)
-	      throws Exception {
-		DeployModel model = new DeployModel();
-
-		model.setId(deployId).setDomain(name).setVersion(version).setAbortOnError(abortOnError);
-
-		for (String host : hosts) {
-			model.addHost(new HostModel().setIp(host));
-		}
-
-		DeployPlan plan = new DeployPlan();
-
-		plan.setVersion(version);
-		plan.setPolicy(m_policy.getId());
-		plan.setAbortOnError(abortOnError);
-
-		model.setPlan(plan);
-
+	public synchronized void submit(int deployId, List<String> hosts) throws Exception {
+		DeployModel model = m_deployListener.getModel(deployId);
 		ControllerTask task = new ControllerTask(m_agentListener, model, hosts);
 
 		Threads.forGroup("Phoenix").start(task);
-		m_deployListener.onDeployStart(model);
+		m_deployListener.onDeployStart(deployId);
 	}
 
 	class ControllerTask implements Task {
@@ -106,7 +87,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			String message = String.format(pattern, args);
 
 			if (host != null) {
-				host.addSegment(new SegmentModel()); // TODO
+				host.addSegment(new SegmentModel().setText(message)); // TODO
 			}
 
 			return this;
@@ -137,10 +118,10 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			} finally {
 				if (latch == null) {
 					try {
-	               m_deployListener.onDeployEnd(m_model.getId());
-               } catch (Exception e) {
-	               e.printStackTrace();
-               }
+						m_deployListener.onDeployEnd(m_model.getId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -158,7 +139,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			while (m_hostIndex < len) {
 				String host = m_hosts.get(m_hostIndex++);
 
-				s_threadPool.submit(new RolloutTask(this, m_listener, m_model, host, latch));
+				Threads.forGroup("Phoenix").start(new RolloutTask(this, m_listener, m_model, host, latch));
 				count++;
 			}
 
@@ -183,6 +164,8 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 		private State m_state;
 
+		private int m_id;
+
 		private String m_host;
 
 		private int m_retryCount;
@@ -192,6 +175,10 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			m_listener = listener;
 			m_model = model;
 			m_host = host;
+
+			HostModel m = model.findHost(host);
+
+			m_id = m.getId();
 		}
 
 		@Override
@@ -213,6 +200,16 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		public String getHost() {
 			return m_host;
 		}
+
+		@Override
+		public int getId() {
+			return m_id;
+		}
+
+		@Override
+      public String getRawLog() {
+	      return null; // TODO
+      }
 
 		@Override
 		public int getRetryCount() {
@@ -243,10 +240,10 @@ public class DefaultDeployExecutor implements DeployExecutor {
 					String segment = sr.next(progress);
 
 					try {
-	               m_listener.onProgress(this, progress, segment);
-               } catch (Exception e) {
-	               e.printStackTrace(); // TODO
-               }
+						m_listener.onProgress(this, progress, segment);
+					} catch (Exception e) {
+						e.printStackTrace(); // TODO
+					}
 				}
 
 				return "";
@@ -284,17 +281,17 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			m_state = state;
 
 			try {
-			switch (state) {
-			case CREATED:
-				m_listener.onStart(this);
-				break;
-			case SUCCESSFUL:
-				m_listener.onEnd(this, "success");
-				break;
-			case FAILED:
-				m_listener.onEnd(this, "failed");
-				break;
-			}
+				switch (state) {
+				case CREATED:
+					m_listener.onStart(this);
+					break;
+				case SUCCESSFUL:
+					m_listener.onEnd(this, "success");
+					break;
+				case FAILED:
+					m_listener.onEnd(this, "failed");
+					break;
+				}
 			} catch (Exception e) {
 				e.printStackTrace(); // TODO
 			}

@@ -8,9 +8,9 @@ import com.dianping.phoenix.deploy.model.entity.DeployModel;
 public interface DeployListener {
 	public DeployModel getModel(int deployId);
 
-	public int onDeployCreate(String name, List<String> hosts, DeployPlan plan) throws Exception;
+	public DeployModel onDeployCreate(String name, List<String> hosts, DeployPlan plan) throws Exception;
 
 	public void onDeployEnd(int deployId) throws Exception;
 
-	public void onDeployStart(DeployModel model) throws Exception;
+	public void onDeployStart(int deployId) throws Exception;
 }

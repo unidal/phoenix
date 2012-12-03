@@ -1,6 +1,5 @@
 package com.dianping.phoenix.deploy.event;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsEntity;
 import com.dianping.phoenix.console.dal.deploy.DeploymentEntity;
 import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
+import com.dianping.phoenix.deploy.model.entity.HostModel;
 
 public class DefaultDeployListener implements DeployListener {
 	@Inject
@@ -59,22 +59,28 @@ public class DefaultDeployListener implements DeployListener {
 	}
 
 	@Override
-	public int onDeployCreate(String name, List<String> hosts, DeployPlan plan) throws Exception {
+	public DeployModel onDeployCreate(String name, List<String> hosts, DeployPlan plan) throws Exception {
+		DeployModel model = new DeployModel();
 		Deployment d = createDeployment(name, plan);
 
 		m_deploymentDao.insert(d);
 
 		int deployId = d.getId();
-		List<DeploymentDetails> detailsList = new ArrayList<DeploymentDetails>(hosts.size());
-		for (String host : hosts) {
-			DeploymentDetails details = createDeploymentDetails(deployId, host, plan, "TBD");// TODO
 
-			detailsList.add(details);
+		for (String host : hosts) {
+			DeploymentDetails details = createDeploymentDetails(d.getId(), host, plan, "TBD"); // TODO
+
+			m_deploymentDetailsDao.insert(details);
+			model.addHost(new HostModel().setIp(host).setId(details.getId()));
 		}
 
-		m_deploymentDetailsDao.insert(detailsList.toArray(new DeploymentDetails[0]));
-
-		return deployId;
+		model.setId(deployId);
+		model.setDomain(name);
+		model.setVersion(plan.getVersion());
+		model.setAbortOnError(plan.isAbortOnError());
+		model.setPlan(plan);
+		m_models.put(deployId, model);
+		return model;
 	}
 
 	@Override
@@ -99,15 +105,12 @@ public class DefaultDeployListener implements DeployListener {
 	}
 
 	@Override
-	public void onDeployStart(DeployModel model) throws Exception {
-		int deployId = model.getId();
+	public void onDeployStart(int deployId) throws Exception {
 		Deployment d = m_deploymentDao.createLocal();
 
 		d.setKeyId(deployId);
 		d.setStatus(2); // 2 - deploying
-		d.setBeginDate(new Date());
 
 		m_deploymentDao.updateByPK(d, DeploymentEntity.UPDATESET_STATUS);
-		m_models.put(deployId, model);
 	}
 }

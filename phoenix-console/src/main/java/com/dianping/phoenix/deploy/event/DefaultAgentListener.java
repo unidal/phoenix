@@ -34,7 +34,7 @@ public class DefaultAgentListener implements AgentListener {
 			case '\r':
 				break;
 			case '\n':
-				sb.append("\r\n<br>");
+				sb.append("\\r\\n<br>");
 				break;
 			default:
 				sb.append(ch);
@@ -57,7 +57,9 @@ public class DefaultAgentListener implements AgentListener {
 			throw new RuntimeException(String.format("Internal error: unknown status(%s)!", status));
 		}
 
+		details.setKeyId(ctx.getId());
 		details.setEndDate(new Date());
+		details.setRawLog(ctx.getRawLog());
 		m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
 	}
 
@@ -90,6 +92,7 @@ public class DefaultAgentListener implements AgentListener {
 	public void onStart(Context ctx) throws Exception {
 		DeploymentDetails details = m_detailsDao.createLocal();
 
+		details.setKeyId(ctx.getId());
 		details.setStatus(2); // 2 - deploying
 		details.setBeginDate(new Date());
 		m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);

@@ -14,12 +14,11 @@ public class DefaultDeployManager extends ContainerHolder implements DeployManag
 
 	@Override
 	public int deploy(String name, List<String> hosts, DeployPlan plan) throws Exception {
-		int deployId = m_listener.onDeployCreate(name, hosts, plan);
-
 		DeployExecutor executor = lookup(DeployExecutor.class, plan.getPolicy());
+		DeployModel model = m_listener.onDeployCreate(name, hosts, plan);
+		int deployId = model.getId();
 
-		executor.submit(deployId, name, hosts, plan.getVersion(), plan.isAbortOnError());
-
+		executor.submit(deployId, hosts);
 		return deployId;
 	}
 
