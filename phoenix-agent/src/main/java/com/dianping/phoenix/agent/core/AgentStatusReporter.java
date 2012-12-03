@@ -2,7 +2,6 @@ package com.dianping.phoenix.agent.core;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,6 +17,7 @@ import com.dianping.kernel.inspect.page.classpath.ArtifactResolver;
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.processor.kernel.Config;
 import com.dianping.phoenix.agent.response.entity.Container;
+import com.dianping.phoenix.agent.response.entity.Domain;
 import com.dianping.phoenix.agent.response.entity.Kernel;
 import com.dianping.phoenix.agent.response.entity.Lib;
 import com.dianping.phoenix.agent.response.entity.Response;
@@ -40,6 +40,7 @@ public class AgentStatusReporter {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document doc = builder.parse(serverXml);
 			NodeList ctxList = doc.getElementsByTagName("Context");
+			// for each <Context>
 			for (int i = 0; i < ctxList.getLength(); i++) {
 				Element ctx = (Element) ctxList.item(i);
 				String strDomainDocBase = ctx.getAttribute("docBase");
@@ -49,26 +50,26 @@ public class AgentStatusReporter {
 					Element loader = (Element) loaderList.item(0);
 					strKernelDocBase = loader.getAttribute("kernelDocBase");
 				}
-				War domainWar = reportWar(strDomainDocBase);
+				
+				// kernel info
 				War kernelWar = reportWar(strKernelDocBase);
-				
 				Kernel kernel = new Kernel();
-				kernel.setVersion(kernelWar.getVersion());
-				List<Lib> kernelLibs = kernelWar.getLibs();
-				if(kernelLibs != null) {
-					for (Lib lib : kernelLibs) {
-						kernel.addLib(lib);
-					}
-				}
+				kernel.setWar(kernelWar);
 				
-				domainWar.setKernel(kernel);
-				res.addWar(domainWar);
+				// domain info
+				Domain domain = new Domain();
+				War domainWar = reportWar(strDomainDocBase);
+				domain.setKernel(kernel);
+				domain.setWar(domainWar);
+				
+				res.addDomain(domain);
 			}
 		}
 		
 		Container container = new Container();
 		container.setInstallPath(config.getContainerInstallPath());
 		container.setName(config.getContainerType().toString().toLowerCase());
+		// TODO
 		container.setStatus("up");
 		container.setVersion("6.0.35");
 		res.setContainer(container);

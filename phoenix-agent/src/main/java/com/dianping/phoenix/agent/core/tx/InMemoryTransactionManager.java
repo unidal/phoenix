@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -77,7 +75,6 @@ public class InMemoryTransactionManager implements TransactionManager {
 		}
 	}
 
-	private final static String ENCODING = "UTF-8";
 	private Map<TransactionId, ByteArrayStream> cache = new ConcurrentHashMap<TransactionId, ByteArrayStream>();
 
 	@Override
@@ -107,11 +104,6 @@ public class InMemoryTransactionManager implements TransactionManager {
 		}
 	}
 
-	@Override
-	public Writer getLogWriter(TransactionId txId) throws IOException {
-		return new OutputStreamWriter(getLogOutputStream(txId), ENCODING);
-	}
-	
 	public static void main(String[] args) throws IOException {
 		InMemoryTransactionManager log = new InMemoryTransactionManager();
 		TransactionId txId = new TransactionId(1L);

@@ -1,6 +1,7 @@
 package com.dianping.phoenix.agent.core.task.processor.kernel;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -12,8 +13,12 @@ public class Config {
 	private final static Logger logger = Logger.getLogger(Config.class);
 	private final static String TOMCAT_LOADER_CLASS = "com.dianping.phoenix.bootstrap.Tomcat6WebappLoader";
 	private final static String JBOSS_LOADER_CLASS = "com.dianping.phoenix.bootstrap.Jboss4WebappLoader";
+	private final static String CONFIG_FILE = "/data/appdatas/phoenix/agent.properties";
 
-	private String containerInstallPath;
+	/**
+	 * Where the container installs
+	 */
+	private String containerInstallPath = System.getProperty("user.home") + "/Downloads/apache-tomcat-6.0.35/";
 
 	/**
 	 * Where kernel docBase locates. Use first %s to represent domain name and
@@ -38,20 +43,22 @@ public class Config {
 	private File serverXml;
 
 	public Config() {
-		InputStream in = this.getClass().getClassLoader().getResourceAsStream("container.properties");
-		if (in == null) {
-			String msg = "container.properties not found";
-			throw new RuntimeException(msg);
-		}
+		
+		File configFile = new File(CONFIG_FILE);
 		Properties props = new Properties();
-		try {
-			props.load(in);
-		} catch (IOException e) {
-			String msg = "error reading container.properties";
-			logger.error(msg, e);
-			throw new RuntimeException(msg, e);
+		if (configFile.exists()) {
+			logger.info(String.format("fount config file %s", configFile.getAbsolutePath()));
+			try {
+				InputStream in = new FileInputStream(configFile);
+				props.load(in);
+			} catch (IOException e) {
+				String msg = String.format("error reading config file %s", configFile.getAbsolutePath());
+				logger.error(msg, e);
+				throw new RuntimeException(msg, e);
+			}
 		}
-		containerInstallPath = props.getProperty("containerInstallPath", "/");
+		
+		containerInstallPath = props.getProperty("containerInstallPath", containerInstallPath);
 		kernelDocBasePattern = props.getProperty("kernelDocBasePattern", kernelDocBasePattern);
 		domainDocBaseFeaturePattern = props.getProperty("domainDocBaseFeaturePattern", domainDocBaseFeaturePattern);
 
@@ -67,7 +74,7 @@ public class Config {
 			containerType = ContainerType.JBOSS;
 		} else {
 			throw new RuntimeException(
-					"container_install_path in container.properties does not have a valid tomcat or jboss installation");
+					String.format("containerInstallPath %s does not have a valid tomcat or jboss installation", containerInstallPath));
 		}
 
 		logger.info("containerType: " + containerType);

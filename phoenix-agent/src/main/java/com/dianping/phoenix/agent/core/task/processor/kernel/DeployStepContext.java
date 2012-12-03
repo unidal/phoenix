@@ -58,8 +58,8 @@ public class DeployStepContext implements DeployStep.Context {
 	}
 
 	private String jointShellCmd(String domain, String newVersion, String container, DeployStep postStep) {
-		return String.format("%s -c \"%s\" -d \"%s\" -v \"%s\" -f \"%s\"", getScriptPath(), container, domain,
-				newVersion, postStep);
+		return String.format("%s -x \"%s\" -c \"%s\" -d \"%s\" -v \"%s\" -f \"%s\"", getScriptPath(), serverXml,
+				container, domain, newVersion, postStep);
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class DeployStepContext implements DeployStep.Context {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Progress: ");
 		sb.append(curStep.getProgressInfo());
-		if(status != null) {
+		if (status != null) {
 			sb.append("\r\n");
 			sb.append("Status: ");
 			sb.append(status);
