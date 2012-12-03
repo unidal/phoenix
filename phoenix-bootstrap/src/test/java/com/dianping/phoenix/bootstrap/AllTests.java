@@ -12,7 +12,7 @@ import com.dianping.phoenix.spi.internal.VersionParserTest;
 
 VersionComparatorTest.class,
 
-VersionParserTest.class,
+VersionParserTest.class
 
 })
 public class AllTests {

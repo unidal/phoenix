@@ -16,7 +16,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.unidal.lookup.annotation.Inject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
@@ -36,7 +35,7 @@ public class DeployStepContext implements DeployStep.Context {
 	private String container;
 	private File serverXml;
 	private String loaderClass;
-	private String kernelRootPattern;
+	private String kernelDocBasePattern;
 	private String domainDocBaseFeaturePattern;
 
 	@Override
@@ -95,7 +94,7 @@ public class DeployStepContext implements DeployStep.Context {
 			throw new RuntimeException("container server.xml not found");
 		}
 
-		File kernelDocBase = new File(String.format(kernelRootPattern, domain, kernelVersion));
+		File kernelDocBase = new File(String.format(kernelDocBasePattern, domain, kernelVersion));
 		injectPhoenixContextLoader(serverXml, domain, loaderClass, kernelDocBase);
 
 	}
@@ -106,8 +105,8 @@ public class DeployStepContext implements DeployStep.Context {
 		Document doc = builder.parse(serverXml);
 		NodeList ctxList = doc.getElementsByTagName("Context");
 		for (int i = 0; i < ctxList.getLength(); i++) {
-			Node ctx = ctxList.item(i);
-			String docBase = ctx.getAttributes().getNamedItem("docBase").getNodeValue();
+			Element ctx = (Element) ctxList.item(i);
+			String docBase = ctx.getAttribute("docBase");
 			if (docBase.indexOf(String.format(domainDocBaseFeaturePattern, domain)) >= 0) {
 				if (ctx instanceof Element) {
 					int loaderCnt = ((Element) ctx).getElementsByTagName("Loader").getLength();
@@ -170,8 +169,8 @@ public class DeployStepContext implements DeployStep.Context {
 		this.loaderClass = loaderClass;
 	}
 
-	public void setKernelRootPattern(String kernelRootPattern) {
-		this.kernelRootPattern = kernelRootPattern;
+	public void setKernelDocBasePattern(String kernelDocBasePattern) {
+		this.kernelDocBasePattern = kernelDocBasePattern;
 	}
 
 	public void setDomainDocBaseFeaturePattern(String domainDocBaseFeaturePattern) {
