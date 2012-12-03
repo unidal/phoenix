@@ -14,6 +14,7 @@
 	<entity name="segment" class-name="SegmentModel">
 	    <attribute name="current-ticks" value-type="int" primitive="true" />
 	    <attribute name="total-ticks" value-type="int" primitive="true" />
+		<attribute name="encoded-text" value-type="String" render="false" />
 	</entity>
 </model>
 
