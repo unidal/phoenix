@@ -9,17 +9,18 @@ function log {
 
 KERNEL_WAR_BASE=/data/webapps/phoenix-kernel/
 
-KERNEL_WAR_TMP=/data/appdata/phoenix_kernel_war_tmp/
+KERNEL_WAR_TMP=/data/appdatas/phoenix_kernel_war_tmp/
 KERNEL_GIT_HOST="10.1.4.81"
 KERNEL_GIT_URL="ssh://git@${KERNEL_GIT_HOST}:58422/phoenix-kernel.git"
 
 now=`date "+%Y-%m-%d"`
-while getopts "c:d:v:f:" option;do
+while getopts "x:c:d:v:f:" option;do
 	case $option in
 			c)		container=$OPTARG;;
 			d)      domain=$OPTARG;;
 			v)      kernel_version=$OPTARG;;
 			f)      func=`echo $OPTARG | tr '[A-Z]' '[a-z]'`;;
+			x)      server_xml=$OPTARG;;
 	esac
 done
 domain_kernel_base=$KERNEL_WAR_BASE/$domain
@@ -55,6 +56,18 @@ function exit_on_error {
 			log $1
 		fi
 		exit 1
+	fi
+}
+
+function init {
+	# set up a git repo for server.xml to enable rollback/commit
+	server_xml_dir=`dirname $server_xml`
+	if [ ! -e $server_xml_dir/.git ];then
+		cd $server_xml_dir
+		git init
+		git add server.xml
+		git commit -m "init commit"
+		cd - > /dev/null
 	fi
 }
 
@@ -127,26 +140,51 @@ function check_container_status {
 	log "container status ok"
 }
 
+# Rollback a git directory
+# Parameters: 1. git_directory
+function git_rollback {
+	local git_dir=$1
+	cd $git_dir
+	git reset --hard
+	cd - >/dev/null
+}
+
 function rollback {
 	# TODO rollback all other things
 	log "rolling back kernel"
-	cd $domain_kernel_base
-	git reset --hard
-	cd - >/dev/null
+	git_rollback $domain_kernel_base
 	log "kernel version $kernel_version rolled back"
 	turn_on_traffic "$@"
 }
 
-function commit {
-	# TODO commit all other things
-	log "commiting kernel"
-	cd $domain_kernel_base
-	change_files=`git status --short | wc -l`
+# Commit a git directory
+# Parameters: 1. git_directory, 2. comment
+function git_commit {
+	local git_dir=$1
+	local comment=$2
+	cd $git_dir
+	local change_files=`git status --short --untracked-files=no | wc -l`
 	if [ $change_files -gt 0 ];then
-		git commit -am "update to $kernel_version"
+		log "committing $change_files files"
+		git commit -am "$comment"
+	else
+		log "no file changed, no commit necessary"
 	fi
 	cd - >/dev/null
-	log "kernel version $kernel_version committed"
+}
+
+function commit {
+	# commit kernel
+	log "committing kernel for $domain in $domain_kernel_base"
+	git_commit $domain_kernel_base "update to $kernel_version"
+	log "committed"
+
+	# commit server.xml
+	log "committing server.xml"
+	git_commit `dirname $server_xml` "update to $kernel_version"
+	log "committed"
+
+	# turn on traffic
 	turn_on_traffic "$@"
 }
 

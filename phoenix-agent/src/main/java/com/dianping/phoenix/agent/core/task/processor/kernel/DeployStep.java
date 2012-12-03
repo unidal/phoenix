@@ -8,15 +8,12 @@ import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
 
 public enum DeployStep {
+	
+	START(-1, 500, 0),
 
-	INIT(-1, 500, 0) {
-		@Override
-		protected void doActivity(Context ctx) {
-			// do nothing
-		}
-	},
+	INIT(0, 500, 1),
 
-	CHECK_ARGUMENT(0, 500, 1) {
+	CHECK_ARGUMENT(1, 500, 2) {
 
 		@Override
 		protected void doActivity(Context ctx) {
@@ -25,7 +22,7 @@ public enum DeployStep {
 
 	},
 
-	INJECT_PHOENIX_LOADER(1, 80, 10) {
+	INJECT_PHOENIX_LOADER(2, 80, 10) {
 
 		@Override
 		protected void doActivity(Context ctx) {
@@ -140,7 +137,7 @@ public enum DeployStep {
 	}
 
 	public static void execute(Context ctx) {
-		INIT.moveTo(ctx, CHECK_ARGUMENT);
+		START.moveTo(ctx, INIT);
 	}
 
 	protected void doActivity(Context ctx) {
