@@ -17,7 +17,6 @@ import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
-import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 
 public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 

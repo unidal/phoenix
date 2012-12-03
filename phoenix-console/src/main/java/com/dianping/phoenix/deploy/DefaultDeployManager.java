@@ -72,19 +72,6 @@ public class DefaultDeployManager extends ContainerHolder implements DeployManag
 	}
 
 	@Override
-	public DeployUpdate poll(DeployContext ctx) {
-		try {
-			int deployId = ctx.getDeployId();
-			Deployment d = m_deploymentDao.findByPK(deployId, DeploymentEntity.READSET_FULL);
-			DeployExecutor executor = lookup(DeployExecutor.class, d.getStrategy());
-
-			return executor.poll(ctx);
-		} catch (Exception e) {
-			return new DeployUpdate(true);
-		}
-	}
-
-	@Override
 	public Deployment query(int deployId) throws Exception {
 		Deployment d = m_deploymentDao.findByPK(deployId, DeploymentEntity.READSET_FULL);
 		List<DeploymentDetails> detailsList = m_deploymentDetailsDao.findAllByDeployId(deployId,

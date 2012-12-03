@@ -10,9 +10,6 @@
          <page name="version" title="Version" path="version">
             <description>Version</description>
          </page>
-         <page name="deploy2" title="Deploy2" path="deploy2">
-            <description>Deploy2</description>
-         </page>
       </module>
    </webapp>
 </wizard>

@@ -1,29 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<deploy>
-	<project name="shop-web" owner="jianbing.xu">
-		<description>商户前台web应用</description>
-		<hosts>
-			<host ip="192.168.8.40" status="up">
-				<war name="shop-web" version="2.0.3">
-					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
-					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
-					<dependency groupId="org.apache.struts" artifactId="struts2-core" version="2.2.0" />
-					<dependency groupId="org.apache.struts" artifactId="struts2-json-plugin" version="2.1.8" />
-					<dependency groupId="org.springframework" artifactId="spring-web" version="3.0" />
-				</war>
-				<war name="kernel" version="1.0">
-					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="4.1" />
-					<dependency groupId="org.apache.struts" artifactId="struts2-json-plugin" version="2.2.0" />
-					<dependency groupId="org.springframework" artifactId="spring-web" version="2.5.6" />
-				</war>
-			</host>
-			<host ip="192.168.8.41" status="down" />
-			<host ip="192.168.8.42" status="up" />
-			<host ip="192.168.8.43" status="up" />
-			<host ip="192.168.8.44" status="up" />
-			<host ip="192.168.8.45" status="up" />
-		</hosts>
-	</project>
-	<project name="shop-service" />
+<deploy id="123" domain="sample-app" version="0.1-SNAPSHOT" abortOnError="true" status="failed">
+	<host ip="192.168.66.133" status="failed">
+<segment step="stop container" current-ticks="11" total-ticks="91"><![CDATA[
+[11-27 16:33:44] [INFO] PID is 8728
+[11-27 16:33:44] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:33:44] [INFO] getting kernel war from git
+Cloning into '/data/appdata/phoenix_kernel_war_tmp'...
+Switched to a new branch 'dummy'
+[11-27 16:34:34] [INFO] got kernel war from git
+]]></segment>
+<segment current-ticks="31" total-ticks="91" status="failed"><![CDATA[
+[11-27 16:34:34] [INFO] PID is 8744
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] turning off traffic
+[11-27 16:34:34] [INFO] traffic turned off
+[11-27 16:34:34] [INFO] PID is 8754
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] stopping container
+[11-27 16:34:34] [INFO] container stopped
+]]></segment>
+	</host>
+	<host/>
 </deploy>

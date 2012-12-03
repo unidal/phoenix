@@ -1,90 +1,39 @@
 package com.dianping.phoenix.console.page.deploy;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.unidal.web.mvc.ViewModel;
 
 import com.dianping.phoenix.console.ConsolePage;
-import com.dianping.phoenix.console.service.HostPlan;
+import com.dianping.phoenix.deploy.DeployPlan;
+import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
-	private List<String> m_hosts;
+	private DeployPlan m_plan;
 
-	private List<HostPlan> m_hostPlans;
+	private DeployModel m_deploy;
 
-	private HostPlan m_currentHostPlan;
+    public Model(Context ctx) {
+        super(ctx);
+    }
 
-	private String m_plan;
+    @Override
+    public Action getDefaultAction() {
+        return Action.VIEW;
+    }
 
-	private String m_log;
-
-	private int m_offset;
-
-	private String m_status;
-
-	public Model(Context ctx) {
-		super(ctx);
+	public DeployModel getDeploy() {
+		return m_deploy;
 	}
 
-	public HostPlan getCurrentHostPlan() {
-		return m_currentHostPlan;
+    public DeployPlan getPlan() {
+        return m_plan;
+    }
+
+	public void setDeploy(DeployModel deploy) {
+		m_deploy = deploy;
 	}
 
-	@Override
-	public Action getDefaultAction() {
-		return Action.VIEW;
-	}
-
-	public List<HostPlan> getHostPlans() {
-		return m_hostPlans;
-	}
-
-	public List<String> getHosts() {
-		return m_hosts;
-	}
-
-	public int getOffset() {
-		return m_offset;
-	}
-
-	public String getPlan() {
-		return m_plan;
-	}
-
-	public String getQuotedLog() {
-		return m_log == null ? null : m_log.replace(Pattern.quote("\""), "\\\"");
-	}
-
-	public String getStatus() {
-		return m_status;
-	}
-
-	public void setCurrentHostPlan(HostPlan currentHostPlan) {
-		m_currentHostPlan = currentHostPlan;
-	}
-
-	public void setHostPlans(List<HostPlan> hostPlans) {
-		m_hostPlans = hostPlans;
-	}
-
-	public void setHosts(List<String> hosts) {
-		m_hosts = hosts;
-	}
-
-	public void setLog(String log) {
-		m_log = log;
-	}
-
-	public void setOffset(int offset) {
-		m_offset = offset;
-	}
-
-	public void setPlan(String plan) {
+	public void setPlan(DeployPlan plan) {
 		m_plan = plan;
 	}
-
-	public void setStatus(String status) {
-		m_status = status;
-	}
 }
+

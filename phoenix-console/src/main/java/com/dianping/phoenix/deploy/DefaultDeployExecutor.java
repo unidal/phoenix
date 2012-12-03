@@ -1,5 +1,11 @@
 package com.dianping.phoenix.deploy;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,22 +13,124 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.unidal.dal.jdbc.DalException;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.phoenix.configure.ConfigManager;
+import com.dianping.phoenix.console.dal.deploy.DeploymentDetails;
+import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
+import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsEntity;
+import com.dianping.phoenix.deploy.agent.Context;
+import com.dianping.phoenix.deploy.agent.Listener;
+import com.dianping.phoenix.deploy.agent.Progress;
+import com.dianping.phoenix.deploy.agent.SegmentReader;
+import com.dianping.phoenix.deploy.agent.State;
+import com.dianping.phoenix.deploy.model.entity.DeployModel;
+import com.dianping.phoenix.deploy.model.entity.HostModel;
+import com.dianping.phoenix.deploy.model.entity.SegmentModel;
+import com.site.helper.Files;
 import com.site.helper.Threads;
 
-public class DefaultDeployExecutor implements DeployExecutor {
+public class DefaultDeployExecutor implements DeployExecutor, Listener {
 	private static ExecutorService s_threadPool = Threads.forPool().getFixedThreadPool("Phoenix-Deploy", 50);
+
+	@Inject
+	private ConfigManager m_configManager;
+
+	@Inject
+	private DeploymentDetailsDao m_detailsDao;
 
 	@Inject
 	private DeployPolicy m_policy;
 
-	private Map<Integer, ControllerTask> m_tasks = new HashMap<Integer, ControllerTask>();
+	private Map<Integer, DeployModel> m_models = new HashMap<Integer, DeployModel>();
+
+	@Override
+	public DeployModel getModel(int deployId) {
+		return m_models.get(deployId);
+	}
 
 	@Override
 	public DeployPolicy getPolicy() {
 		return m_policy;
+	}
+
+	@Override
+	public void onEnd(Context ctx, String status) {
+		DeploymentDetails details = m_detailsDao.createLocal();
+
+		try {
+			if ("successful".equals(status)) {
+				details.setStatus(3); // 3 - successful
+			} else if ("failed".equals(status)) {
+				details.setStatus(5); // 5 - failed
+			} else {
+				throw new RuntimeException(String.format("Internal error: unknown status(%s)!", status));
+			}
+
+			details.setEndDate(new Date());
+			m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
+		} catch (DalException e) {
+			throw new RuntimeException("Error when updating deployment details table! " + e, e);
+		}
+	}
+
+	@Override
+	public void onProgress(Context ctx, Progress progress, String log) {
+		int id = ctx.getDeployId();
+		DeployModel model = m_models.get(id);
+
+		if (model != null) {
+			String ip = ctx.getHost();
+			HostModel host = model.findHost(ip);
+			SegmentModel segment = new SegmentModel();
+
+			segment.setCurrentTicks(progress.getCurrent());
+			segment.setTotalTicks(progress.getTotal());
+			segment.setStatus(progress.getStatus());
+			segment.setText(log);
+			segment.setEncodedText(escape(log));
+			host.addSegment(segment);
+		}
+	}
+
+	private String escape(String str) {
+		int len = str.length();
+		StringBuilder sb = new StringBuilder(len + 32);
+
+		for (int i = 0; i < len; i++) {
+			char ch = str.charAt(i);
+
+			switch (ch) {
+			case '"':
+				sb.append("\\\"");
+				break;
+			case '\r':
+				break;
+			case '\n':
+				sb.append("\r\n<br>");
+				break;
+			default:
+				sb.append(ch);
+				break;
+			}
+		}
+
+		return sb.toString();
+	}
+
+	@Override
+	public void onStart(Context ctx) {
+		DeploymentDetails details = m_detailsDao.createLocal();
+
+		try {
+			details.setStatus(2); // 2 - deploying
+			details.setBeginDate(new Date());
+			m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
+		} catch (DalException e) {
+			throw new RuntimeException("Error when updating deployment details table! " + e, e);
+		}
 	}
 
 	public void setPolicy(DeployPolicy policy) {
@@ -31,63 +139,62 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 	@Override
 	public synchronized void submit(int deployId, String name, List<String> hosts, String version, boolean abortOnError) {
-		ControllerTask task = new ControllerTask(deployId, name, hosts, version, m_policy, abortOnError);
+		DeployModel model = new DeployModel();
 
-		m_tasks.put(deployId, task);
+		model.setId(deployId).setDomain(name).setVersion(version).setAbortOnError(abortOnError);
+
+		for (String host : hosts) {
+			model.addHost(new HostModel().setIp(host));
+		}
+
+		ControllerTask task = new ControllerTask(m_configManager, m_policy, this, model, hosts);
+
+		m_models.put(deployId, model);
 		Threads.forGroup("Phoenix").start(task);
 	}
 
-	@Override
-	public DeployUpdate poll(DeployContext ctx) {
-		ControllerTask task = m_tasks.get(ctx.getDeployId());
-		DeployUpdate update = new DeployUpdate();
-
-		// TODO if not in cache, get it from database
-
-		if (task == null) {
-			update.setDone(true);
-		} else {
-			task.poll(ctx, update);
-		}
-
-		return update;
-	}
-
 	static class ControllerTask implements Task {
-		private int m_deployId;
-
-		private String m_name;
-
-		private List<String> m_hosts;
-
-		private String m_version;
+		private ConfigManager m_configManager;
 
 		private DeployPolicy m_policy;
 
-		private boolean m_abortOnError;
-
-		private StringBuilder m_content = new StringBuilder(8192);
+		private List<String> m_hosts;
 
 		private int m_hostIndex;
 
 		private boolean m_active;
 
-		public ControllerTask(int deployId, String name, List<String> hosts, String version, DeployPolicy policy,
-		      boolean abortOnError) {
-			m_deployId = deployId;
-			m_name = name;
-			m_hosts = hosts;
-			m_version = version;
+		private Listener m_listener;
+
+		private DeployModel m_model;
+
+		public ControllerTask(ConfigManager configManager, DeployPolicy policy, Listener listener, DeployModel model,
+		      List<String> hosts) {
+			m_configManager = configManager;
 			m_policy = policy;
-			m_abortOnError = abortOnError;
+			m_listener = listener;
+			m_model = model;
+			m_hosts = hosts;
 		}
 
-		public void poll(DeployContext ctx, DeployUpdate update) {
-			int offset = ctx.getOffset();
-			int len = m_content.length();
+		public ConfigManager getConfigManager() {
+			return m_configManager;
+		}
 
-			update.setContent(m_content.substring(offset, len));
-			ctx.setOffset(len);
+		@Override
+		public String getName() {
+			return getClass().getSimpleName();
+		}
+
+		public ControllerTask log(String ip, String pattern, Object... args) {
+			HostModel host = m_model.findHost(ip);
+			String message = String.format(pattern, args);
+
+			if (host != null) {
+				host.addSegment(new SegmentModel()); // TODO
+			}
+
+			return this;
 		}
 
 		@Override
@@ -115,6 +222,11 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			}
 		}
 
+		@Override
+		public void shutdown() {
+			m_active = false;
+		}
+
 		private CountDownLatch submitNextRolloutTask(int maxCount) {
 			CountDownLatch latch = new CountDownLatch(maxCount);
 			int len = m_hosts.size();
@@ -123,7 +235,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			while (m_hostIndex < len) {
 				String host = m_hosts.get(m_hostIndex++);
 
-				s_threadPool.submit(new RolloutTask(this, host, latch));
+				s_threadPool.submit(new RolloutTask(this, m_listener, m_model, host, latch));
 				count++;
 			}
 
@@ -137,6 +249,137 @@ public class DefaultDeployExecutor implements DeployExecutor {
 				return latch;
 			}
 		}
+	}
+
+	static class RolloutContext implements Context {
+		private ControllerTask m_controller;
+
+		private Listener m_listener;
+
+		private DeployModel m_model;
+
+		private State m_state;
+
+		private String m_host;
+
+		private int m_retryCount;
+
+		public RolloutContext(ControllerTask controller, Listener listener, DeployModel model, String host) {
+			m_controller = controller;
+			m_listener = listener;
+			m_model = model;
+			m_host = host;
+		}
+
+		@Override
+		public ConfigManager getConfigManager() {
+			return m_controller.getConfigManager();
+		}
+
+		@Override
+		public int getDeployId() {
+			return m_model.getId();
+		}
+
+		@Override
+		public String getDomain() {
+			return m_model.getDomain();
+		}
+
+		@Override
+		public String getHost() {
+			return m_host;
+		}
+
+		@Override
+		public int getRetryCount() {
+			return m_retryCount;
+		}
+
+		@Override
+		public State getState() {
+			return m_state;
+		}
+
+		@Override
+		public String getVersion() {
+			return m_model.getVersion();
+		}
+
+		@Override
+		public String openUrl(String url) throws IOException {
+			if (url.contains("?op=deploy&")) {
+				String content = Files.forIO().readFrom(new URL(url).openStream(), "utf-8");
+
+				return content;
+			} else if (url.contains("?op=log&")) {
+				SegmentReader sr = new SegmentReader(new InputStreamReader(new URL(url).openStream(), "utf-8"));
+				Progress progress = new Progress();
+
+				while (sr.hasNext()) {
+					String segment = sr.next(progress);
+
+					m_listener.onProgress(this, progress, segment);
+				}
+
+				return "";
+			} else {
+				throw new IllegalStateException(String.format("Not implemented yet(%s)!", url));
+			}
+		}
+
+		@Override
+		public Context print(String pattern, Object... args) {
+			m_controller.log(m_host, pattern, args);
+			return this;
+		}
+
+		@Override
+		public Context println() {
+			m_controller.log(m_host, "\r\n");
+			return this;
+		}
+
+		@Override
+		public Context println(String pattern, Object... args) {
+			print(pattern, args);
+			println();
+			return this;
+		}
+
+		@Override
+		public void setRetryCount(int retryCount) {
+			m_retryCount = retryCount;
+		}
+
+		@Override
+		public void setState(State state) {
+			m_state = state;
+
+			switch (state) {
+			case CREATED:
+				m_listener.onStart(this);
+				break;
+			case SUCCESSFUL:
+				m_listener.onEnd(this, "success");
+				break;
+			case FAILED:
+				m_listener.onEnd(this, "failed");
+				break;
+			}
+		}
+	}
+
+	static class RolloutTask implements Task {
+		private RolloutContext m_ctx;
+
+		private CountDownLatch m_latch;
+
+		public RolloutTask(ControllerTask controller, Listener listener, DeployModel model, String host,
+		      CountDownLatch latch) {
+			m_ctx = new RolloutContext(controller, listener, model, host);
+			m_latch = latch;
+		}
 
 		@Override
 		public String getName() {
@@ -144,45 +387,24 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		}
 
 		@Override
-		public void shutdown() {
-			m_active = false;
-		}
-	}
-
-	static class RolloutTask implements Task {
-		private ControllerTask m_controller;
-
-		private String m_host;
-
-		private CountDownLatch m_latch;
-
-		private boolean m_active;
-
-		public RolloutTask(ControllerTask controller, String host, CountDownLatch latch) {
-			m_controller = controller;
-			m_host = host;
-			m_latch = latch;
-		}
-
-		@Override
 		public void run() {
-			m_active = true;
+			try {
+				State.execute(m_ctx);
+			} catch (Throwable e) {
+				m_ctx.print("Deployment aborted due to: %s.\r\n", e);
 
-			while (m_active) {
-				// TODO
+				StringWriter sw = new StringWriter();
+				PrintWriter writer = new PrintWriter(sw);
+				e.printStackTrace(writer);
+
+				m_ctx.println(sw.toString());
+			} finally {
+				m_latch.countDown();
 			}
-
-			m_latch.countDown();
-		}
-
-		@Override
-		public String getName() {
-			return RolloutTask.class.getSimpleName();
 		}
 
 		@Override
 		public void shutdown() {
-			m_active = false;
 		}
 	}
 }

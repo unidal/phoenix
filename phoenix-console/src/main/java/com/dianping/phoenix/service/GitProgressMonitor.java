@@ -1,11 +1,10 @@
-package com.dianping.phoenix.console.service;
+package com.dianping.phoenix.service;
 
 import org.eclipse.jgit.lib.BatchingProgressMonitor;
 
-import com.dianping.phoenix.service.StatusReporter;
 import com.site.lookup.annotation.Inject;
 
-public class PhoenixProgressMonitor extends BatchingProgressMonitor {
+public class GitProgressMonitor extends BatchingProgressMonitor {
 	@Inject
 	private StatusReporter m_reporter;
 
