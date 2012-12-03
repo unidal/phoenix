@@ -3,6 +3,7 @@
 	enable-base-visitor="true">
 	<entity name="deploy" root="true" class-name="DeployModel">
 		<entity-ref name="host" type="map" names="hosts" />
+		<element name="plan" value-type="com.dianping.phoenix.deploy.DeployPlan" render="false"/>
 	</entity>
 	<entity name="host" class-name="HostModel">
 		<attribute name="ip" value-type="String" key="true" />

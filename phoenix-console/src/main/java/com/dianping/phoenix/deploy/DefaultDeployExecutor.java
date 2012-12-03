@@ -5,132 +5,45 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.unidal.dal.jdbc.DalException;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.console.dal.deploy.DeploymentDetails;
-import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
-import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsEntity;
 import com.dianping.phoenix.deploy.agent.Context;
-import com.dianping.phoenix.deploy.agent.Listener;
 import com.dianping.phoenix.deploy.agent.Progress;
 import com.dianping.phoenix.deploy.agent.SegmentReader;
 import com.dianping.phoenix.deploy.agent.State;
+import com.dianping.phoenix.deploy.event.AgentListener;
+import com.dianping.phoenix.deploy.event.DeployListener;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.entity.SegmentModel;
 import com.site.helper.Files;
 import com.site.helper.Threads;
 
-public class DefaultDeployExecutor implements DeployExecutor, Listener {
+public class DefaultDeployExecutor implements DeployExecutor {
 	private static ExecutorService s_threadPool = Threads.forPool().getFixedThreadPool("Phoenix-Deploy", 50);
 
 	@Inject
 	private ConfigManager m_configManager;
 
 	@Inject
-	private DeploymentDetailsDao m_detailsDao;
+	private DeployListener m_deployListener;
+
+	@Inject
+	private AgentListener m_agentListener;
 
 	@Inject
 	private DeployPolicy m_policy;
 
-	private Map<Integer, DeployModel> m_models = new HashMap<Integer, DeployModel>();
-
-	@Override
-	public DeployModel getModel(int deployId) {
-		return m_models.get(deployId);
-	}
-
 	@Override
 	public DeployPolicy getPolicy() {
 		return m_policy;
-	}
-
-	@Override
-	public void onEnd(Context ctx, String status) {
-		DeploymentDetails details = m_detailsDao.createLocal();
-
-		try {
-			if ("successful".equals(status)) {
-				details.setStatus(3); // 3 - successful
-			} else if ("failed".equals(status)) {
-				details.setStatus(5); // 5 - failed
-			} else {
-				throw new RuntimeException(String.format("Internal error: unknown status(%s)!", status));
-			}
-
-			details.setEndDate(new Date());
-			m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
-		} catch (DalException e) {
-			throw new RuntimeException("Error when updating deployment details table! " + e, e);
-		}
-	}
-
-	@Override
-	public void onProgress(Context ctx, Progress progress, String log) {
-		int id = ctx.getDeployId();
-		DeployModel model = m_models.get(id);
-
-		if (model != null) {
-			String ip = ctx.getHost();
-			HostModel host = model.findHost(ip);
-			SegmentModel segment = new SegmentModel();
-
-			segment.setCurrentTicks(progress.getCurrent());
-			segment.setTotalTicks(progress.getTotal());
-			segment.setStatus(progress.getStatus());
-			segment.setText(log);
-			segment.setEncodedText(escape(log));
-			host.addSegment(segment);
-		}
-	}
-
-	private String escape(String str) {
-		int len = str.length();
-		StringBuilder sb = new StringBuilder(len + 32);
-
-		for (int i = 0; i < len; i++) {
-			char ch = str.charAt(i);
-
-			switch (ch) {
-			case '"':
-				sb.append("\\\"");
-				break;
-			case '\r':
-				break;
-			case '\n':
-				sb.append("\r\n<br>");
-				break;
-			default:
-				sb.append(ch);
-				break;
-			}
-		}
-
-		return sb.toString();
-	}
-
-	@Override
-	public void onStart(Context ctx) {
-		DeploymentDetails details = m_detailsDao.createLocal();
-
-		try {
-			details.setStatus(2); // 2 - deploying
-			details.setBeginDate(new Date());
-			m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
-		} catch (DalException e) {
-			throw new RuntimeException("Error when updating deployment details table! " + e, e);
-		}
 	}
 
 	public void setPolicy(DeployPolicy policy) {
@@ -138,7 +51,8 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 	}
 
 	@Override
-	public synchronized void submit(int deployId, String name, List<String> hosts, String version, boolean abortOnError) {
+	public synchronized void submit(int deployId, String name, List<String> hosts, String version, boolean abortOnError)
+	      throws Exception {
 		DeployModel model = new DeployModel();
 
 		model.setId(deployId).setDomain(name).setVersion(version).setAbortOnError(abortOnError);
@@ -147,31 +61,32 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 			model.addHost(new HostModel().setIp(host));
 		}
 
-		ControllerTask task = new ControllerTask(m_configManager, m_policy, this, model, hosts);
+		DeployPlan plan = new DeployPlan();
 
-		m_models.put(deployId, model);
+		plan.setVersion(version);
+		plan.setPolicy(m_policy.getId());
+		plan.setAbortOnError(abortOnError);
+
+		model.setPlan(plan);
+
+		ControllerTask task = new ControllerTask(m_agentListener, model, hosts);
+
 		Threads.forGroup("Phoenix").start(task);
+		m_deployListener.onDeployStart(model);
 	}
 
-	static class ControllerTask implements Task {
-		private ConfigManager m_configManager;
-
-		private DeployPolicy m_policy;
-
+	class ControllerTask implements Task {
 		private List<String> m_hosts;
 
 		private int m_hostIndex;
 
 		private boolean m_active;
 
-		private Listener m_listener;
-
 		private DeployModel m_model;
 
-		public ControllerTask(ConfigManager configManager, DeployPolicy policy, Listener listener, DeployModel model,
-		      List<String> hosts) {
-			m_configManager = configManager;
-			m_policy = policy;
+		private AgentListener m_listener;
+
+		public ControllerTask(AgentListener listener, DeployModel model, List<String> hosts) {
 			m_listener = listener;
 			m_model = model;
 			m_hosts = hosts;
@@ -205,7 +120,7 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 
 			try {
 				while (m_active) {
-					if (latch == null) {
+					if (latch == null) { // no more hosts
 						break;
 					}
 
@@ -219,6 +134,14 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 				}
 			} catch (InterruptedException e) {
 				// ignore it
+			} finally {
+				if (latch == null) {
+					try {
+	               m_deployListener.onDeployEnd(m_model.getId());
+               } catch (Exception e) {
+	               e.printStackTrace();
+               }
+				}
 			}
 		}
 
@@ -254,7 +177,7 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 	static class RolloutContext implements Context {
 		private ControllerTask m_controller;
 
-		private Listener m_listener;
+		private AgentListener m_listener;
 
 		private DeployModel m_model;
 
@@ -264,7 +187,7 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 
 		private int m_retryCount;
 
-		public RolloutContext(ControllerTask controller, Listener listener, DeployModel model, String host) {
+		public RolloutContext(ControllerTask controller, AgentListener listener, DeployModel model, String host) {
 			m_controller = controller;
 			m_listener = listener;
 			m_model = model;
@@ -319,7 +242,11 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 				while (sr.hasNext()) {
 					String segment = sr.next(progress);
 
-					m_listener.onProgress(this, progress, segment);
+					try {
+	               m_listener.onProgress(this, progress, segment);
+               } catch (Exception e) {
+	               e.printStackTrace(); // TODO
+               }
 				}
 
 				return "";
@@ -356,6 +283,7 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 		public void setState(State state) {
 			m_state = state;
 
+			try {
 			switch (state) {
 			case CREATED:
 				m_listener.onStart(this);
@@ -367,6 +295,9 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 				m_listener.onEnd(this, "failed");
 				break;
 			}
+			} catch (Exception e) {
+				e.printStackTrace(); // TODO
+			}
 		}
 	}
 
@@ -375,7 +306,7 @@ public class DefaultDeployExecutor implements DeployExecutor, Listener {
 
 		private CountDownLatch m_latch;
 
-		public RolloutTask(ControllerTask controller, Listener listener, DeployModel model, String host,
+		public RolloutTask(ControllerTask controller, AgentListener listener, DeployModel model, String host,
 		      CountDownLatch latch) {
 			m_ctx = new RolloutContext(controller, listener, model, host);
 			m_latch = latch;
