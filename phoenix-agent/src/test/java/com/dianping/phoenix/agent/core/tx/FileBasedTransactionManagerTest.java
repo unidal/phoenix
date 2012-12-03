@@ -2,6 +2,7 @@ package com.dianping.phoenix.agent.core.tx;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import junit.framework.Assert;
@@ -39,16 +40,13 @@ public class FileBasedTransactionManagerTest {
 		Assert.assertTrue(txMgr.startTransaction(txId));
 		Assert.assertFalse(txMgr.startTransaction(txId));
 		txMgr.endTransaction(txId);
-		Assert.assertTrue(txMgr.startTransaction(txId));
-		txMgr.endTransaction(txId);
-		txMgr.endTransaction(txId);
 	}
 
 	@Test
 	public void testWriteReadLog() throws IOException {
 		TransactionId txId = new TransactionId(1L);
 		String msg = "你好";
-		Writer writer = txMgr.getLogWriter(txId);
+		Writer writer = new OutputStreamWriter(txMgr.getLogOutputStream(txId));
 		writer.write(msg);
 		writer.close();
 		char[] cbuf = new char[100];

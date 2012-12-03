@@ -6,9 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -83,16 +81,6 @@ public class FileBasedTransactionManager implements TransactionManager {
 			}
 		}
 		return reader;
-	}
-
-	@Override
-	public Writer getLogWriter(TransactionId txId) throws IOException {
-		OutputStream out = getLogOutputStream(txId);
-		Writer logWriter = null;
-		if (out != null) {
-			logWriter = new OutputStreamWriter(out, ENCODING);
-		}
-		return logWriter;
 	}
 
 	@Override
