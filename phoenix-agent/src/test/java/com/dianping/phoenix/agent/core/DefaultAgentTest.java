@@ -4,7 +4,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,7 +24,6 @@ import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
-import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 
 public class DefaultAgentTest extends ComponentTestCase {
 

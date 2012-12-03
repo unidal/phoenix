@@ -12,8 +12,6 @@ import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDao;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
 import com.dianping.phoenix.console.dal.deploy.VersionDao;
-import com.dianping.phoenix.console.page.deploy.JspViewer;
-import com.dianping.phoenix.console.page.deploy.KeepAliveViewer;
 import com.dianping.phoenix.deploy.DefaultDeployExecutor;
 import com.dianping.phoenix.deploy.DefaultDeployManager;
 import com.dianping.phoenix.deploy.DeployExecutor;
@@ -83,9 +81,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	}
 
 	private void defineWebComponents(List<Component> all) {
-		all.add(C(KeepAliveViewer.class).is(PER_LOOKUP) //
-		      .req(JspViewer.class, DeployManager.class));
-
 		// Please keep it as last
 		all.addAll(new WebComponentConfigurator().defineComponents());
 	}

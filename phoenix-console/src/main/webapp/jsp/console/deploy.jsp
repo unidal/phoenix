@@ -61,7 +61,9 @@
 					<div id="log-${host.ip}" data-spy="scroll" data-offset="0" style="height: 508px; line-height: 20px; overflow: auto;"
 						 class="terminal terminal-like<c:if test="${status.index > 0}"> hide</c:if>">
 						<c:forEach var="segment" items="${host.segments}">
-							<div class="terminal-like">${segment.encodedText}</div>
+							<c:if test="${not empty segment.encodedText}">
+								<div class="terminal-like">${segment.encodedText}</div>
+							</c:if>
 						</c:forEach>
 					</div>
 				</c:forEach>
