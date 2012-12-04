@@ -24,7 +24,7 @@ public class Config {
 	 * Where kernel docBase locates. Use first %s to represent domain name and
 	 * second %s to represent kernel version.
 	 */
-	private String kernelDocBasePattern = "/data/phoenix-kernel/%s";
+	private String kernelDocBasePattern = "/data/webapps/phoenix-kernel/%s";
 
 	/**
 	 * Where domain docBase locates relative to the domain webapps root dir. Use

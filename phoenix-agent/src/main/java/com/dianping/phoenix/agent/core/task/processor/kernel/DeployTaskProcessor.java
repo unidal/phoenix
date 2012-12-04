@@ -7,20 +7,16 @@ import org.apache.log4j.Logger;
 import org.codehaus.plexus.util.IOUtil;
 import org.unidal.lookup.annotation.Inject;
 
-import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.event.MessageEvent;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessor;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
-import com.dianping.phoenix.agent.core.tx.TransactionManager;
 
 public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask> {
 
 	private final static Logger logger = Logger.getLogger(DeployTaskProcessor.class);
 
-	@Inject
-	private TransactionManager txMgr;
 	@Inject
 	DeployStepContext ctx;
 	@Inject
@@ -28,24 +24,9 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 
 	public DeployTaskProcessor() {
 	}
-
+	
 	@Override
-	protected void doProcess(final Transaction tx) throws IOException {
-		logger.info("start processing " + tx);
-		try {
-			tx.setStatus(Status.PROCESSING);
-			txMgr.saveTransaction(tx);
-			tx.setStatus(innerProcess(tx));
-		} catch (Exception e) {
-			tx.setStatus(Status.FAILED);
-			eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), e.getMessage(), Status.FAILED));
-		} finally {
-			txMgr.saveTransaction(tx);
-			logger.info("end processing " + tx);
-		}
-	}
-
-	private Status innerProcess(final Transaction tx) throws IOException {
+	protected Status doTransaction(final Transaction tx) throws IOException {
 
 		DeployTask task = (DeployTask) tx.getTask();
 		String domain = task.getDomain();
@@ -61,7 +42,6 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 			exitStatus = Status.FAILED;
 		} finally {
 			IOUtil.close(stdOut);
-			eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), "", exitStatus));
 		}
 		return exitStatus;
 	}

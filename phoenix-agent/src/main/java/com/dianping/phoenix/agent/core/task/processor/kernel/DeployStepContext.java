@@ -1,22 +1,11 @@
 package com.dianping.phoenix.agent.core.task.processor.kernel;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.unidal.lookup.annotation.Inject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
@@ -95,38 +84,8 @@ public class DeployStepContext implements DeployStep.Context {
 		}
 
 		File kernelDocBase = new File(String.format(kernelDocBasePattern, domain, kernelVersion));
-		injectPhoenixContextLoader(serverXml, domain, loaderClass, kernelDocBase);
-
-	}
-
-	private void injectPhoenixContextLoader(File serverXml, String domain, String loaderClass, File kernelDocBase)
-			throws Exception {
-		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		Document doc = builder.parse(serverXml);
-		NodeList ctxList = doc.getElementsByTagName("Context");
-		for (int i = 0; i < ctxList.getLength(); i++) {
-			Element ctx = (Element) ctxList.item(i);
-			String docBase = ctx.getAttribute("docBase");
-			if (docBase.indexOf(String.format(domainDocBaseFeaturePattern, domain)) >= 0) {
-				if (ctx instanceof Element) {
-					int loaderCnt = ((Element) ctx).getElementsByTagName("Loader").getLength();
-					if (loaderCnt == 0) {
-						Element loader = doc.createElement("Loader");
-						loader.setAttribute("className", loaderClass);
-						loader.setAttribute("kernelDocBase", kernelDocBase.getAbsolutePath());
-						ctx.appendChild(loader);
-					} else {
-						return;
-					}
-				}
-			}
-		}
-
-		Transformer transformer = TransformerFactory.newInstance().newTransformer();
-		DOMSource source = new DOMSource(doc);
-		FileOutputStream fout = new FileOutputStream(serverXml);
-		StreamResult result = new StreamResult(fout);
-		transformer.transform(source, result);
+		String domainDocBasePattern = String.format(domainDocBaseFeaturePattern, domain);
+		ServerXmlUtil.attachPhoenixContextLoader(serverXml, domainDocBasePattern, loaderClass, kernelDocBase);
 	}
 
 	private String getScriptPath() {

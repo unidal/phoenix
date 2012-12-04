@@ -50,15 +50,6 @@ function add_ssh_private_key {
 log "PID is $$"
 log "CMD is $0 $@"
 
-function exit_on_error {
-	if [ $? -ne 0 ];then
-		if [ ! x$1 == x ];then
-			log $1
-		fi
-		exit 1
-	fi
-}
-
 function init {
 	# set up a git repo for server.xml to enable rollback/commit
 	server_xml_dir=`dirname $server_xml`
