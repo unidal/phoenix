@@ -2,11 +2,11 @@ Phoenix
 =======
 Phoenix is:
 
-* A powerful custmized J2EE web container (eg. JBoss, Jetty, Tomcat)
-* The cutting-edge rollout tools for Dianping kernel java libraries
+* A powerful customized J2EE web container (JBoss, Jetty, Tomcat)
+* The cutting-edge rollout tools for kernel Java libraries in Dianping.com
 * And more ...
 
-It's originated from a Dianping hackathon product (Egret), fully rebuilt and maintained by [Frankie Wu](http://github.com/unidal), [marsqing Ma](http://github.com/marsqing), [Bin Miao](http://github.com/firefox007), [Figo Yang](http://github.com/figoyang) and [Jian Liu](http://github.com/liuliliujian).
+It's originated from a Dianping hackathon product (Egret), and fully re-designed by [Frankie Wu](http://github.com/unidal), [marsqing Ma](http://github.com/marsqing), [Bin Miao](http://github.com/firefox007), [Figo Yang](http://github.com/figoyang) and [Jian Liu](http://github.com/liuliliujian).
 
 Get Started
 -----------
