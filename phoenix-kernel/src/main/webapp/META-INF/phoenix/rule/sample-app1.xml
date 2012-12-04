@@ -1,3 +1,5 @@
 <config>
-	<rule artifactId="dpsf-net" use="app">don't upgrade</rule>
+	<rule groupId="*" artifactId="dpsf-net" use="app">don't upgrade</rule>
+	<rule groupId="*" artifactId="cat-core" use="kernel">Cat client API</rule>
+	<rule groupId="*" artifactId="lookup" version="[1.0, 1.1)" use="app">use old lookup jar if it's before 1.1</rule>
 </config>

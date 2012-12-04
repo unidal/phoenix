@@ -21,6 +21,7 @@ import org.apache.juli.logging.LogFactory;
  * 
  * <pre>
  * &lt;Context docBase="\webapps\mydocbase">
+ *   
  *   &lt;Loader className="com.dianping.phoenix.bootstrap.Tomcat6WebappLoader"/>
  * &lt;/Context>
  * </pre>

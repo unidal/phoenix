@@ -20,6 +20,9 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	@FieldMeta("id")
 	private int m_id;
+	
+	@FieldMeta("index")
+	private int m_index;
 
 	@Override
 	public Action getAction() {
@@ -45,6 +48,14 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	public void setAction(String action) {
 		m_action = Action.getByName(action, Action.VIEW);
+	}
+
+	public int getIndex() {
+		return m_index;
+	}
+
+	public void setIndex(int index) {
+		m_index = index;
 	}
 
 	@Override

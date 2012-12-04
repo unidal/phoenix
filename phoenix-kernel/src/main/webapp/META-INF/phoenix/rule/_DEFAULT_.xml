@@ -1,5 +1,3 @@
-<config>
-	<rule artifactId="*" use="higher">use higher version jars by default</rule>
-	<rule artifactId="cat-core" use="kernel">Cat client API</rule>
-	<rule artifactId="lookup" version="[1.0, 1.1)" use="app">use old lookup jar if it's before 1.1</rule>
+<config domain="*" hosts="*">
+	<rule groupId="*" artifactId="*" use="higher">use higher version jars by default</rule>
 </config>

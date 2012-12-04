@@ -172,6 +172,8 @@ public class DefaultGitService implements GitService {
 					clone.call();
 				} catch (Exception e) {
 					Files.forDir().delete(new File(m_workingDir, ".git"), true);
+					e.printStackTrace();
+					throw e;
 				}
 				m_reporter.log(String.format("Cloning repo from %s ... DONE.", gitURL));
 			} else {
