@@ -54,7 +54,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	private void defineDatabaseComponents(List<Component> all) {
 		// setup datasource configuration manager
 		all.add(C(JdbcDataSourceConfigurationManager.class) //
-		      .config(E("datasourceFile").value("/data/appdatas/phoenix/datasources.xml")));
+				.config(E("datasourceFile").value(
+						"/data/appdatas/phoenix/datasources.xml")));
 
 		// Phoenix database
 		all.addAll(new PhoenixDatabaseConfigurator().defineComponents());
@@ -64,28 +65,33 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(StatusReporter.class, DefaultStatusReporter.class));
 
 		all.add(C(WarService.class, DefaultWarService.class) //
-		      .req(ConfigManager.class, StatusReporter.class));
+				.req(ConfigManager.class, StatusReporter.class));
 		all.add(C(GitService.class, DefaultGitService.class) //
-		      .req(ConfigManager.class, StatusReporter.class, ProgressMonitor.class));
-		all.add(C(ProgressMonitor.class, GitProgressMonitor.class));
+				.req(ConfigManager.class, StatusReporter.class,
+						ProgressMonitor.class));
+		all.add(C(ProgressMonitor.class, GitProgressMonitor.class) //
+				.req(StatusReporter.class));
 
 		all.add(C(VersionManager.class, DefaultVersionManager.class) //
-		      .req(WarService.class, GitService.class, VersionDao.class));
+				.req(StatusReporter.class, WarService.class, GitService.class,
+						VersionDao.class));
 		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
-		      .req(DeployManager.class));
+				.req(DeployManager.class));
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
-			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
-			      .req(ConfigManager.class, DeployListener.class, AgentListener.class) //
-			      .config(E("policy").value(policy.name())));
+			all.add(C(DeployExecutor.class, policy.getId(),
+					DefaultDeployExecutor.class) //
+					.req(ConfigManager.class, DeployListener.class,
+							AgentListener.class) //
+					.config(E("policy").value(policy.name())));
 		}
 
 		all.add(C(DeployManager.class, DefaultDeployManager.class) //
-		      .req(DeployListener.class));
+				.req(DeployListener.class));
 		all.add(C(DeployListener.class, DefaultDeployListener.class) //
-		      .req(DeploymentDao.class, DeploymentDetailsDao.class));
+				.req(DeploymentDao.class, DeploymentDetailsDao.class));
 		all.add(C(AgentListener.class, DefaultAgentListener.class) //
-		      .req(DeployListener.class, DeploymentDetailsDao.class));
+				.req(DeployListener.class, DeploymentDetailsDao.class));
 	}
 
 	private void defineWebComponents(List<Component> all) {

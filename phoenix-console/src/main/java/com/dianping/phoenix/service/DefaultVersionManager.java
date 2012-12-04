@@ -1,6 +1,7 @@
 package com.dianping.phoenix.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -17,6 +18,9 @@ public class DefaultVersionManager implements VersionManager {
 	private static final String KERNEL = "kernel";
 
 	@Inject
+	private StatusReporter m_reporter;
+
+	@Inject
 	private WarService m_warService;
 
 	@Inject
@@ -26,24 +30,18 @@ public class DefaultVersionManager implements VersionManager {
 	private VersionDao m_dao;
 
 	@Override
-	public Version createVersion(String version, String description, String releaseNotes, String createdBy)
-	      throws Exception {
-		m_gitService.setup();
-
-		File gitDir = m_gitService.getWorkingDir();
-
-		m_gitService.pull();
-		m_gitService.clearWorkingDir();
-		m_warService.downloadAndExtractTo(version, gitDir);
-		m_gitService.commit(version, description);
-		m_gitService.push();
-
+	public Version createVersion(String version, String description,
+			String releaseNotes, String createdBy) throws Exception {
+		
+		
+		
 		return store(version, description, releaseNotes, createdBy);
 	}
 
 	@Override
 	public List<Version> getActiveVersions() throws Exception {
-		List<Version> versions = m_dao.findAllActive(KERNEL, VersionEntity.READSET_FULL);
+		List<Version> versions = m_dao.findAllActive(KERNEL,
+				VersionEntity.READSET_FULL);
 
 		// order in descend
 		Collections.sort(versions, new Comparator<Version>() {
@@ -73,11 +71,14 @@ public class DefaultVersionManager implements VersionManager {
 		}
 	}
 
-	private Version store(String version, String description, String releaseNotes, String createdBy) throws DalException {
+	private Version store(String version, String description,
+			String releaseNotes, String createdBy) throws DalException {
 		try {
-			m_dao.findByDomainVersion(KERNEL, version, VersionEntity.READSET_FULL);
+			m_dao.findByDomainVersion(KERNEL, version,
+					VersionEntity.READSET_FULL);
 
-			throw new RuntimeException(String.format("Kernel version(%s) is already existed!", version));
+			m_reporter.log(String.format(
+					"Kernel version(%s) is already existed!", version));
 		} catch (DalNotFoundException e) {
 			// expected
 		}
@@ -95,7 +96,11 @@ public class DefaultVersionManager implements VersionManager {
 		return proto;
 	}
 
-	public void setWarService(WarService warService) {
-		this.m_warService = warService;
+	@Override
+	public String getStatus() {
+		
+		
+		return null;
 	}
+
 }

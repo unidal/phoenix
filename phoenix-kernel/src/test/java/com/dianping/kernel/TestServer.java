@@ -12,40 +12,40 @@ import org.unidal.test.jetty.JettyServer;
 
 @RunWith(JUnit4.class)
 public class TestServer extends JettyServer {
-   public static void main(String[] args) throws Exception {
-      TestServer server = new TestServer();
 
-      server.startServer();
-      server.startWebapp();
-      server.stopServer();
-   }
+	public static void main(String[] args) throws Exception {
+		TestServer server = new TestServer();
 
-   @Before
-   public void before() throws Exception {
-      System.setProperty("devMode", "true");
-      super.startServer();
-   }
+		server.startServer();
+		server.startWebapp();
+		server.stopServer();
+	}
 
-   @Override
-   
-   protected String getContextPath() {
-      return "/kernel";
-   }
+	@Before
+	public void before() throws Exception {
+		System.setProperty("devMode", "true");
+		super.startServer();
+	}
 
-   @Override
-   protected int getServerPort() {
-      return 5376;
-   }
+	@Override
+	protected String getContextPath() {
+		return "/kernel";
+	}
 
-   @Override
-   protected void postConfigure(WebAppContext context) {
-      context.addFilter(GzipFilter.class, "/inspect/*", Handler.ALL);
-   }
+	@Override
+	protected int getServerPort() {
+		return 5376;
+	}
 
-   @Test
-   public void startWebapp() throws Exception {
-      // open the page in the default browser
-      display("/kernel/inspect");
-      waitForAnyKey();
-   }
+	@Override
+	protected void postConfigure(WebAppContext context) {
+		context.addFilter(GzipFilter.class, "/inspect/*", Handler.ALL);
+	}
+
+	@Test
+	public void startWebapp() throws Exception {
+		// open the page in the default browser
+		display("/kernel/inspect");
+		waitForAnyKey();
+	}
 }
