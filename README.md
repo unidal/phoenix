@@ -1,6 +1,12 @@
 Phoenix
 =======
-Phoenix is a powerful custmized container for java application server(eg. JBoss, Jetty, Tomcat), created and maintained by [Frankie Wu](http://github.com/unidal), [marsqing](http://github.com/marsqing), [Bin Miao](http://github.com/firefox007), [Figo Yang](http://github.com/figoyang) and [Jian Liu](http://github.com/liuliliujian).
+Phoenix is:
+
+* A powerful custmized J2EE web container (eg. JBoss, Jetty, Tomcat)
+* The cutting-edge rollout tools for Dianping kernel java libraries
+* And more ...
+
+It's originated from a Dianping hackathon product (Egret), fully rebuilt and maintained by [Frankie Wu](http://github.com/unidal), [marsqing Ma](http://github.com/marsqing), [Bin Miao](http://github.com/firefox007), [Figo Yang](http://github.com/figoyang) and [Jian Liu](http://github.com/liuliliujian).
 
 Get Started
 -----------
@@ -36,15 +42,15 @@ Check:
 
 Attentions:
 
-* Using DianPing private maven repository
+* Using DianPing private maven repository (192.168.8.45)
 * Currently only tested under Mac OSX 10.8
 
 Author
 ------
 * Frankie Wu
-	* <http://weibo.com/u/2203580833> 
+	* <http://weibo.com/qmwu2000> 
 	* <http://github.com/unidal>
-* marsqing
+* marsqing Ma
 	* <http://weibo.com/marsqing>
 	* <http://github.com/marsqing>
 * Bin Miao
