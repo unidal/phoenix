@@ -37,12 +37,13 @@ function add_ssh_private_key {
 		fi
 	fi
 	if [ $write -eq 1  ];then
+		mkdir -p ~/.ssh
 		cp git/.ssh/id_rsa ~/.ssh/id_rsa.phoenix
 		chmod 600 ~/.ssh/id_rsa.phoenix
 		cat <<-END >> $ssh_config
 			
 			Host $KERNEL_GIT_HOST
-			 IdentityFile ~/.ssh/id_rsa.phoenix
+			IdentityFile ~/.ssh/id_rsa.phoenix
 		END
 	fi
 }
@@ -71,14 +72,24 @@ function kill_tomcat {
 }
 
 function get_kernel_war {
-	log "getting kernel war from git"
+	log "getting kernel war from $KERNEL_GIT_URL"
+
 	add_ssh_private_key
-	rm -rf $KERNEL_WAR_TMP
+
 	mkdir -p $KERNEL_WAR_TMP
-	git clone $KERNEL_GIT_URL $KERNEL_WAR_TMP
+
 	cd $KERNEL_WAR_TMP
-	git checkout -b dummy $kernel_version
+	if [ -e $KERNEL_WAR_TMP/.git ];then
+		log "found existing kernel, fetching kernel war"
+		git fetch $KERNEL_GIT_URL master
+		git checkout $kernel_version
+	else
+		log "no existing kernel found, cloning kernel war"
+		git clone $KERNEL_GIT_URL $KERNEL_WAR_TMP
+		git checkout $kernel_version
+	fi
 	cd - >/dev/null
+
 	log "got kernel war from git"
 }
 
