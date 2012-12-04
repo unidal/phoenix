@@ -38,11 +38,19 @@
 		<component>
 			<role>org.eclipse.jgit.lib.ProgressMonitor</role>
 			<implementation>com.dianping.phoenix.service.GitProgressMonitor</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.service.StatusReporter</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.service.VersionManager</role>
 			<implementation>com.dianping.phoenix.service.DefaultVersionManager</implementation>
 			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.service.StatusReporter</role>
+				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.service.WarService</role>
 				</requirement>

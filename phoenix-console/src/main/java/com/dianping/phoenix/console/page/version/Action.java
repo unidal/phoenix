@@ -5,7 +5,9 @@ public enum Action implements org.unidal.web.mvc.Action {
 	
 	ADD("add"),
 	
-	REMOVE("remove");
+	REMOVE("remove"),
+	
+	STATUS("status");
 
 	private String m_name;
 
