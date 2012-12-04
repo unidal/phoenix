@@ -34,6 +34,14 @@
     <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" insert-expr="NOW()" update-expr="NOW()" />
     <relation name="details-list" multiple="true" entity-name="deployment-details" entity-alias="dd" join="d.id = dd.deployment_id"/>
+    <updatesets>
+      <updateset name="STATUS">
+      	<member name="status"/>
+      	<member name="begin-date"/>
+      	<member name="end-date"/>
+      	<member name="last-modified-date"/>
+      </updateset>
+    </updatesets>
     <query-defs>
     	<query name="delete-by-PK" type="DELETE" enabled="false"/>
     </query-defs>
@@ -41,12 +49,18 @@
   <entity name="deployment-details" table="deployment_details" alias="dd">
     <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" insert-expr="NOW()" update-expr="NOW()" />
+    <readsets>
+      <readset name="STATUS">
+      	<member name="status"/>
+      </readset>
+    </readsets>
     <updatesets>
       <updateset name="STATUS">
       	<member name="status"/>
       	<member name="begin-date"/>
       	<member name="end-date"/>
       	<member name="raw-log"/>
+      	<member name="last-modified-date"/>
       </updateset>
     </updatesets>
     <query-defs>
