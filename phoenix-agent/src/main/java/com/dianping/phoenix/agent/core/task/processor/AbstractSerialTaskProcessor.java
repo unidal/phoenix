@@ -52,6 +52,7 @@ public abstract class AbstractSerialTaskProcessor<T> implements TaskProcessor<T>
 					String eventMsg = "ok";
 					try {
 						startTransaction(tx);
+						eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), "", tx.getStatus()));
 						try {
 							tx.setStatus(doTransaction(tx));
 						} catch (Exception e) {
