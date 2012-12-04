@@ -20,36 +20,11 @@ public class DefaultAgentListener implements AgentListener {
 	@Inject
 	private DeploymentDetailsDao m_detailsDao;
 
-	private String escape(String str) {
-		int len = str.length();
-		StringBuilder sb = new StringBuilder(len + 32);
-
-		for (int i = 0; i < len; i++) {
-			char ch = str.charAt(i);
-
-			switch (ch) {
-			case '"':
-				sb.append("\\\"");
-				break;
-			case '\r':
-				break;
-			case '\n':
-				sb.append("\\r\\n<br>");
-				break;
-			default:
-				sb.append(ch);
-				break;
-			}
-		}
-
-		return sb.toString();
-	}
-
 	@Override
 	public void onEnd(Context ctx, String status) throws Exception {
 		DeploymentDetails details = m_detailsDao.createLocal();
 
-		if ("success".equals(status)) {
+		if ("successful".equals(status)) {
 			details.setStatus(3); // 3 - successful
 		} else if ("failed".equals(status)) {
 			details.setStatus(5); // 5 - failed
@@ -65,7 +40,6 @@ public class DefaultAgentListener implements AgentListener {
 
 	@Override
 	public void onError(Context ctx, Throwable e) throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -83,7 +57,6 @@ public class DefaultAgentListener implements AgentListener {
 			segment.setTotalTicks(progress.getTotal());
 			segment.setStatus(progress.getStatus());
 			segment.setText(log);
-			segment.setEncodedText(escape(log));
 			host.addSegment(segment);
 		}
 	}

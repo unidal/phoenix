@@ -57,6 +57,8 @@ public class DefaultDeployExecutor implements DeployExecutor {
 	}
 
 	class ControllerTask implements Task {
+		private static final String SUMMARY = "summary";
+
 		private List<String> m_hosts;
 
 		private int m_hostIndex;
@@ -71,6 +73,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			m_listener = listener;
 			m_model = model;
 			m_hosts = hosts;
+			m_model.addHost(new HostModel(SUMMARY));
 		}
 
 		public ConfigManager getConfigManager() {
@@ -82,14 +85,10 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			return getClass().getSimpleName();
 		}
 
-		public ControllerTask log(String ip, String pattern, Object... args) {
-			HostModel host = m_model.findHost(ip);
-			String message = String.format(pattern, args);
+		public ControllerTask log(String message) {
+			HostModel host = m_model.findHost(SUMMARY);
 
-			if (host != null) {
-				host.addSegment(new SegmentModel().setText(message)); // TODO
-			}
-
+			host.addSegment(new SegmentModel().setText(message));
 			return this;
 		}
 
@@ -105,7 +104,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 						break;
 					}
 
-					boolean done = latch.await(5, TimeUnit.MILLISECONDS);
+					boolean done = latch.await(10, TimeUnit.MILLISECONDS);
 
 					if (done) {
 						int batchSize = m_policy.getBatchSize();
@@ -136,7 +135,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			int len = m_hosts.size();
 			int count = 0;
 
-			while (m_hostIndex < len) {
+			while (m_hostIndex < len && count < maxCount) {
 				String host = m_hosts.get(m_hostIndex++);
 
 				Threads.forGroup("Phoenix").start(new RolloutTask(this, m_listener, m_model, host, latch));
@@ -169,6 +168,8 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		private String m_host;
 
 		private int m_retryCount;
+
+		private StringBuilder m_log = new StringBuilder(256);
 
 		public RolloutContext(ControllerTask controller, AgentListener listener, DeployModel model, String host) {
 			m_controller = controller;
@@ -207,9 +208,11 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		}
 
 		@Override
-      public String getRawLog() {
-	      return null; // TODO
-      }
+		public String getRawLog() {
+			HostModel host = m_model.findHost(m_host);
+
+			return new DeployModel().addHost(host).toString();
+		}
 
 		@Override
 		public int getRetryCount() {
@@ -254,20 +257,26 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 		@Override
 		public Context print(String pattern, Object... args) {
-			m_controller.log(m_host, pattern, args);
+			String message = String.format(pattern, args);
+
+			m_log.append(message);
 			return this;
 		}
 
 		@Override
 		public Context println() {
-			m_controller.log(m_host, "\r\n");
+			m_controller.log(m_log.toString());
+			m_log.setLength(0);
 			return this;
 		}
 
 		@Override
 		public Context println(String pattern, Object... args) {
-			print(pattern, args);
-			println();
+			String message = String.format(pattern, args);
+
+			m_log.append(message);
+			m_controller.log(m_log.toString());
+			m_log.setLength(0);
 			return this;
 		}
 
@@ -286,7 +295,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 					m_listener.onStart(this);
 					break;
 				case SUCCESSFUL:
-					m_listener.onEnd(this, "success");
+					m_listener.onEnd(this, "successful");
 					break;
 				case FAILED:
 					m_listener.onEnd(this, "failed");
@@ -295,6 +304,13 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			} catch (Exception e) {
 				e.printStackTrace(); // TODO
 			}
+		}
+
+		@Override
+		public void updateStatus(String status) {
+			HostModel host = m_model.findHost(m_host);
+
+			host.addSegment(new SegmentModel().setStatus(status));
 		}
 	}
 

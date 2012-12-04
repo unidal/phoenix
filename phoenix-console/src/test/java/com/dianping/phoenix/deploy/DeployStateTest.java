@@ -90,16 +90,6 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public String getRawLog() {
-			return null;
-		}
-
-		@Override
-		public int getId() {
-			return 0;
-		}
-
-		@Override
 		public int getDeployId() {
 			return 123;
 		}
@@ -114,8 +104,18 @@ public class DeployStateTest extends ComponentTestCase {
 			return "localhost";
 		}
 
+		@Override
+		public int getId() {
+			return 0;
+		}
+
 		public String getLog() {
 			return m_log.toString();
+		}
+
+		@Override
+		public String getRawLog() {
+			return null;
 		}
 
 		@Override
@@ -172,6 +172,10 @@ public class DeployStateTest extends ComponentTestCase {
 		public void setState(State state) {
 			m_state = state;
 		}
+
+		@Override
+      public void updateStatus(String status) {
+      }
 	}
 
 	static class RetryButFailedContext extends BaseContext {

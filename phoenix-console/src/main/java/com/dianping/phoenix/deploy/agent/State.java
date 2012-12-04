@@ -35,6 +35,7 @@ public enum State {
 				moveTo(ctx, SUBMITTED);
 			} else {
 				ctx.print(response.getStatus()).println();
+				ctx.println(response.getMessage());
 			}
 		}
 	},
@@ -79,6 +80,7 @@ public enum State {
 					moveTo(ctx, SUBMITTED);
 				} else {
 					ctx.print(response.getStatus()).println();
+					ctx.println(response.getMessage());
 				}
 			}
 		}
@@ -123,6 +125,7 @@ public enum State {
 			String version = ctx.getVersion();
 			String host = ctx.getHost();
 
+			ctx.updateStatus("failed");
 			ctx.println("[ERROR] Failed to deploy phoenix kernel(%s) to host(%s).", version, host);
 		}
 	};
