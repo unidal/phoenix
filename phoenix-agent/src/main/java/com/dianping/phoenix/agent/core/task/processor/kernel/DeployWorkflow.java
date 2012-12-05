@@ -207,6 +207,7 @@ public class DeployWorkflow {
 
 			writeLogChunkHeader(logOut, nextStep);
 			int exitCode = DeployStep.CODE_ERROR;
+			logger.info(String.format("current step %s", nextStep));
 			try {
 				exitCode = nextStep.doStep(steps, ctx);
 			} catch (Exception e) {
@@ -215,10 +216,12 @@ public class DeployWorkflow {
 			writeLogChunkTerminator(logOut, nextStep);
 
 			if (exitCode != DeployStep.CODE_OK) {
+				logger.info("failed");
 				if (nextStep.nextIdWhenFail != null) {
 					nextStep.moveTo(steps, get(nextStep.nextIdWhenFail), logOut, ctx);
 				}
 			} else {
+				logger.info("successful");
 				if (nextStep.nextIdWhenSuccess != null) {
 					nextStep.moveTo(steps, get(nextStep.nextIdWhenSuccess), logOut, ctx);
 				}
