@@ -19,8 +19,6 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 
 	@Inject
 	DeployWorkflow workflow;
-	@Inject
-	DeployStep steps;
 
 	public DeployTaskProcessor() {
 	}
@@ -47,14 +45,7 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 	}
 
 	private Status updateKernel(String domain, String kernelVersion, OutputStream stdOut) throws Exception {
-//		ctx.setContainer(config.getContainerType().toString().toLowerCase());
-//		ctx.setDomain(domain);
-//		ctx.setDomainDocBaseFeaturePattern(config.getDomainDocBaseFeaturePattern());
-//		ctx.setKernelDocBasePattern(config.getKernelDocBasePattern());
-//		ctx.setLoaderClass(config.getLoaderClass());
-//		ctx.setKernelVersion(kernelVersion);
-//		ctx.setOut(stdOut);
-//		ctx.setServerXml(config.getServerXml());
+		DeployStep steps = lookup(DeployStep.class);
 		int exitCode = workflow.start(domain, kernelVersion, steps, stdOut);
 		if(exitCode == DeployStep.CODE_OK) {
 			return Status.SUCCESS;
