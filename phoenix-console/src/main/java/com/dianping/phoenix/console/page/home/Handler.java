@@ -82,7 +82,7 @@ public class Handler implements PageHandler<Context> {
 		case PROJECT:
 			try {
 				Project project = m_projectManager.findProjectBy(payload.getProject());
-				List<Version> versions = m_versionManager.getActiveVersions();
+				List<Version> versions = m_versionManager.getFinishedVersions();
 
 				model.setProject(project);
 				model.setVersions(versions);

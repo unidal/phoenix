@@ -11,6 +11,8 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private List<Version> m_versions;
 	
 	private String m_creatingVersion;
+	
+	private String m_logcontent;
 
 	public Model(Context ctx) {
 		super(ctx);
@@ -35,5 +37,13 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	public void setCreatingVersion(String creatingVersion) {
 		m_creatingVersion = creatingVersion;
+	}
+
+	public void setLogcontent(String logcontent) {
+		m_logcontent = logcontent;
+	}
+
+	public String getLogcontent() {
+		return m_logcontent;
 	}
 }

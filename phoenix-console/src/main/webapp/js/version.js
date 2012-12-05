@@ -1,9 +1,55 @@
+var continuous_err_times = 0;
+var MAX_CON_ERR_TIMES = 10;
+
 $(function(){
-	
+	if (is_version_creating()) {
+		fetch_create_log();
+	}
 	bind_cmp_evt_handlers();
-	
-	
 });
+
+function fetch_create_log() {
+	$.ajax("", {
+		data : $.param({
+            "op" : "status",
+            "version" : $("#creating_version").val(),
+            "index" : $("#log_index").val()
+        }, true),
+        dataType: "json",
+        cache: false,
+        success: function(result) {
+            continuous_err_times = 0;
+            if (result != null) {
+            	update_create_log(result);
+            }
+        },
+        error: function(xhr, errstat, err) {
+            continuous_err_times++;
+        },
+        complete: function() {
+            if (is_version_creating() && continuous_err_times < MAX_CON_ERR_TIMES) {
+                 setTimeout(fetch_create_log, 1000);
+            }
+        }
+	});
+}
+
+function update_create_log(result) {
+	var creating_version = $("#creating_version").val();
+	var return_version = result.version;
+	if (creating_version == return_version) {
+		$("#log_index").val(result.index);
+		var $logplane = $("#log-plane");
+		$logplane.append("<div class=\"terminal-like\">" + result.log + "</div>");
+		$logplane.scrollTop($logplane.get(0).scrollHeight);
+	} else {
+		$("#creating_version").val("");
+	}
+}
+
+function is_version_creating() {
+	return !$("#creating_version").val().isBlank();
+}
 
 var confirm_timeout_id;
 

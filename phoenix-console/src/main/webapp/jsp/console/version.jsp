@@ -13,6 +13,8 @@
 				<div class="alert fade in">
 		            <a class="close" data-dismiss="alert" href="#">×</a>
 		            <strong>Note：</strong> 同一时刻仅允许一个构建任务!
+		            <input type="hidden" id="creating_version" value="${model.creatingVersion != null ? model.creatingVersion : ""}">
+		            <input type="hidden" id="log_index" value="0">
 		            <c:if test="${model.creatingVersion != null}">
 		            &nbsp;&nbsp;&nbsp;<span style="color: blue;">"${model.creatingVersion}" IS Creating...</span>
 		            </c:if>
@@ -104,7 +106,7 @@
 				</table>
 			</div>
 		</div>
-		
+		<br />
 		<div class="row-fluid">
 			<div class="span12 thumbnail">
 				<form method="get" class="no-vertial-margin">
@@ -125,7 +127,7 @@
 			</div>
 		</div>
 		<br />
-		<div class="terminal-like" style="height: 200px;overflow-y: auto;">
+		<div id="log-plane" class="terminal-like" style="height: 200px; line-height: 20px; overflow: auto;">
 			Git pull from remote repository<br/>
 			Pull succeed<br/>
 			Download phoenix.war from maven repository<br/>

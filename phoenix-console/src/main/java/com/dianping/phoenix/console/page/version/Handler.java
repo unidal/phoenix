@@ -26,37 +26,7 @@ public class Handler implements PageHandler<Context> {
 	@PayloadMeta(Payload.class)
 	@InboundActionMeta(name = "version")
 	public void handleInbound(Context ctx) throws ServletException, IOException {
-		Payload payload = ctx.getPayload();
-
-		String versionUri = ctx.getRequestContext().getActionUri(ConsolePage.VERSION.getName());
-		if (payload.getAction() == Action.CREATE) {
-			String version = payload.getVersion();
-			String description = payload.getDescription();
-			String releaseNotes = "No release notes here";
-			String createdBy = "phoenix";
-
-			try {
-				m_manager.createVersion(version, description, releaseNotes, createdBy);
-				ctx.redirect(versionUri);
-			} catch (Exception e) {
-				e.printStackTrace(); // TODO remove it
-				ctx.addError("version.add", e);
-			}
-		} else if (payload.getAction() == Action.REMOVE) {
-			int id = payload.getId();
-			
-			try {
-				m_manager.removeVersion(id);
-				ctx.redirect(versionUri);
-			} catch (Exception e) {
-				ctx.addError("version.remove", e);
-			}
-		} else if (payload.getAction() == Action.STATUS) {
-			String version = payload.getVersion();
-			int index = payload.getIndex();
-			
-			
-		}
+		
 	}
 
 	@Override
@@ -68,16 +38,69 @@ public class Handler implements PageHandler<Context> {
 		model.setAction(action);
 		model.setPage(ConsolePage.VERSION);
 		
-		if (action == Action.VIEW) {
-			try {
-				List<Version> versions = m_manager.getActiveVersions();
-				model.setVersions(versions);
-//				model.setCreatingVersion("0.0.1-SNAPSHOT");
-			} catch (Exception e) {
-				ctx.addError("version.active", e);
-			}
+		switch (action) {
+			case CREATE:
+				createVersion(ctx, payload, model);
+				break;
+			case REMOVE:
+				removeVersion(ctx, payload, model);
+				break;
+			case STATUS:
+				String version = payload.getVersion();
+				int index = payload.getIndex();
+				
+				break;
+			case VIEW:
+				viewVersions(ctx, model);
+				break;
 		}
 
 		m_jspViewer.view(ctx, model);
+	}
+
+	private void createVersion(Context ctx, Payload payload, Model model) {
+		String version = payload.getVersion();
+		String description = payload.getDescription();
+		String releaseNotes = "No release notes here";
+		String createdBy = "phoenix";
+		try {
+			m_manager.createVersion(version, description, releaseNotes, createdBy);
+			ctx.redirect(getActionUri(ctx, ConsolePage.VERSION));
+		} catch (Exception e) {
+			e.printStackTrace(); // TODO remove it
+			ctx.addError("version.create", e);
+			model.setAction(Action.VIEW);
+			viewVersions(ctx, model);
+		}
+	}
+
+	private void removeVersion(Context ctx, Payload payload, Model model) {
+		int id = payload.getId();
+		try {
+			m_manager.removeVersion(id);
+			ctx.redirect(getActionUri(ctx, ConsolePage.VERSION));
+		} catch (Exception e) {
+			ctx.addError("version.remove", e);
+			model.setAction(Action.VIEW);
+			viewVersions(ctx, model);
+		}
+	}
+
+	private void viewVersions(Context ctx, Model model) {
+		try {
+			List<Version> versions = m_manager.getFinishedVersions();
+			model.setVersions(versions);
+			Version activeVersion = m_manager.getActiveVersion();
+			if (activeVersion != null) {
+				model.setCreatingVersion(activeVersion.getVersion());
+			}
+//			model.setCreatingVersion("0.0.1-SNAPSHOT");
+		} catch (Exception e) {
+			ctx.addError("version.active", e);
+		}
+	}
+
+	private String getActionUri(Context ctx, ConsolePage page) {
+		return ctx.getRequestContext().getActionUri(page.getName());
 	}
 }

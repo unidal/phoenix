@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
+import org.unidal.helper.Threads;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.console.dal.deploy.Version;
@@ -33,14 +35,65 @@ public class DefaultVersionManager implements VersionManager {
 	public Version createVersion(String version, String description,
 			String releaseNotes, String createdBy) throws Exception {
 		
+		Version v = store(version, description, releaseNotes, createdBy);
 		
+		Threads.forGroup("Phoenix").start(new VersionExecutor(v.getId(),version, description,this));
 		
-		return store(version, description, releaseNotes, createdBy);
+		return v;
+	}
+	
+	public void submitVersion(String version,String description) throws Exception{
+		m_gitService.setup();
+		
+		File gitDir = m_gitService.getWorkingDir();
+	
+		m_gitService.pull();
+		m_gitService.clearWorkingDir();
+		try {
+			m_warService.downloadAndExtractTo(version, gitDir);
+		} catch (FileNotFoundException fe) {
+			String log = String.format(
+					"can not find war for version: %s ...", version);
+			m_reporter.log(log);
+			throw new RuntimeException(log);
+		}
+	
+		m_gitService.commit(version, description);
+		m_gitService.push();
+	}
+	
+	@Override
+	public void updateVersionSuccessed(int versionId){
+		try {
+			Version proto = m_dao.findByPK(versionId, VersionEntity.READSET_FULL);
+
+
+			if (proto.getStatus() != 1) {
+				proto.setStatus(1);
+				m_dao.updateByPK(proto, VersionEntity.UPDATESET_FULL);
+			}
+		} catch (DalException e) {
+			// ignore it
+		}
+	}
+	
+	@Override
+	public void clearVersion(String version){
+		m_reporter.clearMessage(DefaultStatusReporter.VERSION_LOG, version);
 	}
 
 	@Override
-	public List<Version> getActiveVersions() throws Exception {
+	public Version getActiveVersion() throws Exception {
 		List<Version> versions = m_dao.findAllActive(KERNEL,
+				new Date(new Date().getTime() - 5*60*1000),
+				VersionEntity.READSET_FULL);
+
+		return versions!=null && versions.size()>0 ? versions.get(0) : null;
+	}
+	
+	@Override
+	public List<Version> getFinishedVersions() throws Exception {
+		List<Version> versions = m_dao.findAllFinished(KERNEL,
 				VersionEntity.READSET_FULL);
 
 		// order in descend
@@ -62,16 +115,17 @@ public class DefaultVersionManager implements VersionManager {
 
 			m_gitService.removeTag(proto.getVersion());
 
-			if (proto.getStatus() == 0) {
-				proto.setStatus(1);
+			if (proto.getStatus() != 2) {
+				proto.setStatus(2);
 				m_dao.updateByPK(proto, VersionEntity.UPDATESET_FULL);
 			}
 		} catch (DalNotFoundException e) {
 			// ignore it
 		}
 	}
-
-	private Version store(String version, String description,
+	
+	@Override
+	public Version store(String version, String description,
 			String releaseNotes, String createdBy) throws DalException {
 		try {
 			m_dao.findByDomainVersion(KERNEL, version,
@@ -97,10 +151,38 @@ public class DefaultVersionManager implements VersionManager {
 	}
 
 	@Override
-	public String getStatus() {
+	public String getStatus(String version,int index) {
 		
-		
+//		m_reporter.getMessage(category, subCategory, index)
 		return null;
+	}
+	
+	public class VersionLog{
+		private int m_index;
+		private List<String> m_messages;
+		
+		public VersionLog(int index, List<String> messages){
+			m_index = index;
+			m_messages = messages;
+		}
+
+		public int getIndex() {
+			return m_index;
+		}
+
+		public void setIndex(int m_index) {
+			this.m_index = m_index;
+		}
+
+		public List<String> getMessages() {
+			return m_messages;
+		}
+
+		public void setMessages(List<String> messages) {
+			this.m_messages = messages;
+		}
+		
+		
 	}
 
 }

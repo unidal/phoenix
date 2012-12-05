@@ -1,57 +1,47 @@
 package com.dianping.phoenix.service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 
 import org.unidal.helper.Threads.Task;
-import org.unidal.lookup.annotation.Inject;
-
-import com.dianping.phoenix.console.dal.deploy.VersionDao;
 
 public class VersionExecutor implements Task{
 	
 	private boolean m_active;
 	
-	private StatusReporter m_reporter = null;
-
-	private WarService m_warService = null;
-
-	private GitService m_gitService = null;
-
-	private VersionDao m_dao = null;
+	private String m_version;
 	
-	private String version = null;
+	private String m_description;
 	
-	private String description = null;
+	private VersionManager m_manager;
+
+	private int m_versionId;
 	
-	public VersionExecutor(){
-		
+	public VersionExecutor(int versionId,String version, String description,VersionManager manager){
+		m_version = version;
+		m_description = description;
+		m_manager = manager;
+		m_versionId = versionId;
 	}
 
 	@Override
 	public void run() {
-try{
-	m_gitService.setup();
-
-	File gitDir = m_gitService.getWorkingDir();
-
-	m_gitService.pull();
-	m_gitService.clearWorkingDir();
-	try {
-		m_warService.downloadAndExtractTo(version, gitDir);
-	} catch (FileNotFoundException fe) {
-		m_reporter.log(String.format(
-				"can not find war for version: %s ...", version));
-		return;
-	}
-
-	m_gitService.commit(version, description);
-	m_gitService.push();
-
-	
-}catch(Exception e){
-	
-}
+		try{
+			
+		m_manager.submitVersion(m_version, m_description);
+		
+		}catch(Exception e){
+			e.printStackTrace();
+			return;
+		}
+		
+		m_manager.updateVersionSuccessed(m_versionId);
+		
+		try {
+			Thread.sleep(30*1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		m_manager.clearVersion(m_version);
 	}
 	
 	
