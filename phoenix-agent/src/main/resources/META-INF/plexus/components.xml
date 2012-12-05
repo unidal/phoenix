@@ -6,9 +6,16 @@
 			<implementation>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep$Context</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStepContext</implementation>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStep</implementation>
 			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
 				</requirement>
@@ -51,10 +58,10 @@
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep$Context</role>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep</role>
 				</requirement>
 			</requirements>
 		</component>

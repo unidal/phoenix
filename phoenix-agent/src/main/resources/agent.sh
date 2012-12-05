@@ -16,7 +16,7 @@ KERNEL_GIT_URL="ssh://git@${KERNEL_GIT_HOST}:58422/phoenix-kernel.git"
 now=`date "+%Y-%m-%d"`
 while getopts "x:c:d:v:f:" option;do
 	case $option in
-			c)		container=$OPTARG;;
+			c)		container=`echo $OPTARG | tr '[A-Z]' '[a-z]'`;;
 			d)      domain=$OPTARG;;
 			v)      kernel_version=$OPTARG;;
 			f)      func=`echo $OPTARG | tr '[A-Z]' '[a-z]'`;;

@@ -18,9 +18,9 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 	private final static Logger logger = Logger.getLogger(DeployTaskProcessor.class);
 
 	@Inject
-	DeployStepContext ctx;
+	DeployWorkflow workflow;
 	@Inject
-	Config config;
+	DeployStep steps;
 
 	public DeployTaskProcessor() {
 	}
@@ -47,21 +47,25 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 	}
 
 	private Status updateKernel(String domain, String kernelVersion, OutputStream stdOut) throws Exception {
-		ctx.setContainer(config.getContainerType().toString().toLowerCase());
-		ctx.setDomain(domain);
-		ctx.setDomainDocBaseFeaturePattern(config.getDomainDocBaseFeaturePattern());
-		ctx.setKernelDocBasePattern(config.getKernelDocBasePattern());
-		ctx.setLoaderClass(config.getLoaderClass());
-		ctx.setKernelVersion(kernelVersion);
-		ctx.setOut(stdOut);
-		ctx.setServerXml(config.getServerXml());
-		DeployStep.execute(ctx);
-		return ctx.getStatus();
+//		ctx.setContainer(config.getContainerType().toString().toLowerCase());
+//		ctx.setDomain(domain);
+//		ctx.setDomainDocBaseFeaturePattern(config.getDomainDocBaseFeaturePattern());
+//		ctx.setKernelDocBasePattern(config.getKernelDocBasePattern());
+//		ctx.setLoaderClass(config.getLoaderClass());
+//		ctx.setKernelVersion(kernelVersion);
+//		ctx.setOut(stdOut);
+//		ctx.setServerXml(config.getServerXml());
+		int exitCode = workflow.start(domain, kernelVersion, steps, stdOut);
+		if(exitCode == DeployStep.CODE_OK) {
+			return Status.SUCCESS;
+		} else {
+			return Status.FAILED;
+		}
 	}
 
 	@Override
 	public boolean cancel(TransactionId txId) {
-		ctx.kill(txId);
+		workflow.kill();
 		return true;
 	}
 

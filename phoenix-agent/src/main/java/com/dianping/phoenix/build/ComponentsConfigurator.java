@@ -15,9 +15,10 @@ import com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
 import com.dianping.phoenix.agent.core.task.processor.kernel.Config;
+import com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStep;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep;
-import com.dianping.phoenix.agent.core.task.processor.kernel.DeployStepContext;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor;
+import com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DetachTaskProcessor;
 import com.dianping.phoenix.agent.core.tx.FileBasedTransactionManager;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
@@ -28,7 +29,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(C(SemaphoreWrapper.class, "kernel", SemaphoreWrapper.class));
-		all.add(C(DeployStep.Context.class, DeployStepContext.class).req(ScriptExecutor.class));
+		all.add(C(DeployWorkflow.class));
+		all.add(C(DeployStep.class, DefaultDeployStep.class).req(Config.class).req(ScriptExecutor.class));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 		all.add(C(ScriptExecutor.class, DefaultScriptExecutor.class));
 		all.add(C(Config.class));
@@ -36,7 +38,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(TaskProcessorFactory.class));
 		all.add(C(TaskProcessor.class, "deploy", DeployTaskProcessor.class) //
 				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
-				.req(DeployStep.Context.class).req(Config.class));
+				.req(DeployWorkflow.class).req(DeployStep.class));
 		all.add(C(TaskProcessor.class, "detach", DetachTaskProcessor.class) //
 				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
 				.req(Config.class));
