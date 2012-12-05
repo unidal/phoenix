@@ -1,6 +1,7 @@
 package com.dianping.phoenix.agent.core.event;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -9,12 +10,11 @@ public class EventTrackerChain implements EventTracker {
 	
 	private final static Logger logger = Logger.getLogger(EventTrackerChain.class); 
 
-	private List<EventTracker> trackers;
+	private List<EventTracker> trackers = Collections.synchronizedList(new ArrayList<EventTracker>());
 
 	public EventTrackerChain() {
-		trackers = new ArrayList<EventTracker>();
 	}
-	
+
 	public EventTrackerChain(EventTracker eventTracker) {
 		add(eventTracker);
 	}
