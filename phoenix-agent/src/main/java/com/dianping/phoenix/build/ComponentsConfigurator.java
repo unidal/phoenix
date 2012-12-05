@@ -30,7 +30,9 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(SemaphoreWrapper.class, "kernel", SemaphoreWrapper.class));
 		all.add(C(DeployWorkflow.class));
-		all.add(C(DeployStep.class, DefaultDeployStep.class).req(Config.class).req(ScriptExecutor.class));
+		all.add(C(DeployStep.class, DefaultDeployStep.class) //
+				.req(Config.class).req(ScriptExecutor.class) //
+				.is(PER_LOOKUP));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 		all.add(C(ScriptExecutor.class, DefaultScriptExecutor.class));
 		all.add(C(Config.class));
@@ -38,7 +40,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(TaskProcessorFactory.class));
 		all.add(C(TaskProcessor.class, "deploy", DeployTaskProcessor.class) //
 				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
-				.req(DeployWorkflow.class).req(DeployStep.class));
+				.req(DeployWorkflow.class));
 		all.add(C(TaskProcessor.class, "detach", DetachTaskProcessor.class) //
 				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
 				.req(Config.class));
