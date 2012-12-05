@@ -35,5 +35,5 @@ public interface Context {
 
 	public void setState(State state);
 
-	public void updateStatus(String status);
+	public void updateStatus(String status, String message);
 }

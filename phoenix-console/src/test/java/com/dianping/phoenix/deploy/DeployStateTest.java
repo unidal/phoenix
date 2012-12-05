@@ -1,6 +1,7 @@
 package com.dianping.phoenix.deploy;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 import junit.framework.Assert;
 
@@ -27,48 +28,156 @@ public class DeployStateTest extends ComponentTestCase {
 	}
 
 	@Test
-	public void testRetryButFailed() throws Exception {
-		RetryButFailedContext ctx = new RetryButFailedContext(m_configManager);
+	public void testFailedWithBadDeploy() throws Exception {
+		BaseContext ctx = new BaseContext(m_configManager) {
+			@Override
+			public String openUrl(String url) throws IOException {
+				if (isDeploy(url)) {
+					return "{status: \"error\", message: \"deploy id is already existed.\"}";
+				} else {
+					return "";
+				}
+			}
+		};
 
 		State.execute(ctx);
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \r\n" //
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \r\n" //
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \r\n" //
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \r\n" //
-		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\r\n";
-		Assert.assertEquals(expected, ctx.getLog());
+		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... error\n"
+		      + "deploy id is already existed.\n"
+		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
+		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
+	}
+
+	@Test
+	public void testFailedWithBadDeployStatus() throws Exception {
+		BaseContext ctx = new BaseContext(m_configManager) {
+			@Override
+			public String openUrl(String url) throws IOException {
+				if (isDeploy(url)) {
+					return "{status: \"ok\"}";
+				} else if (isLog(url)) {
+					throw new RuntimeException("Unexpected exception threw.");
+				} else {
+					return "";
+				}
+			}
+		};
+
+		State.execute(ctx);
+		Assert.assertEquals(State.FAILED, ctx.getState());
+
+		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
+		      + "java.lang.RuntimeException: Unexpected exception threw.\n"
+		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
+		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
+	}
+
+	@Test
+	public void testFailedWithDeployException() throws Exception {
+		BaseContext ctx = new BaseContext(m_configManager) {
+			@Override
+			public String openUrl(String url) throws IOException {
+				if (isDeploy(url)) {
+					throw new IOException("IO issue");
+				} else {
+					return "";
+				}
+			}
+		};
+
+		State.execute(ctx);
+		Assert.assertEquals(State.FAILED, ctx.getState());
+
+		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \n"
+		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
+		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
+		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
+		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
+		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
+	}
+
+	@Test
+	public void testFailedWithRetriedUnreachables() throws Exception {
+		BaseContext ctx = new BaseContext(m_configManager) {
+			@Override
+			public String openUrl(String url) throws IOException {
+				if (isDeploy(url)) {
+					throw new UnknownHostException("unknownHost");
+				} else {
+					return "";
+				}
+			}
+		};
+
+		State.execute(ctx);
+		Assert.assertEquals(State.FAILED, ctx.getState());
+
+		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \n"
+		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
+		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
+		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
+		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
+		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
 	@Test
 	public void testSuccess() throws Exception {
-		SuccessContext ctx = new SuccessContext(m_configManager);
+		BaseContext ctx = new BaseContext(m_configManager) {
+			@Override
+			public String openUrl(String url) throws IOException {
+				if (isDeploy(url)) {
+					return "{status: \"ok\"}";
+				} else if (isLog(url)) {
+					return "[INFO] log and status of " + url + "\r\n";
+				} else {
+					return "";
+				}
+			}
+		};
 
 		State.execute(ctx);
 		Assert.assertEquals(State.SUCCESSFUL, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\r\n" //
-		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \r\n" //
-		      + "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\r\n" //
-		      + "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\r\n";
-		Assert.assertEquals(expected, ctx.getLog());
+		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
+		      + "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\n"
+		      + "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\n";
+		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
 	@Test
 	public void testSuccessWithRetry() throws Exception {
-		SuccessWithRetryContext ctx = new SuccessWithRetryContext(m_configManager);
+		BaseContext ctx = new BaseContext(m_configManager) {
+			private int m_retryCount = 2;
+
+			@Override
+			public String openUrl(String url) throws IOException {
+				if (isDeploy(url)) {
+					if (m_retryCount-- > 0) {
+						throw new IOException("Unavailable");
+					} else {
+						return "{status: \"ok\"}";
+					}
+				} else if (isLog(url)) {
+					return "[INFO] log and status of " + url + "\r\n";
+				} else {
+					return "";
+				}
+			}
+		};
 
 		State.execute(ctx);
 		Assert.assertEquals(State.SUCCESSFUL, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \r\n" //
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \r\n" //
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\r\n" //
-		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \r\n" //
-		      + "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\r\n" //
-		      + "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\r\n";
-		Assert.assertEquals(expected, ctx.getLog());
+		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \n"
+		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
+		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
+		      + "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\n"
+		      + "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\n";
+		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
 	static abstract class BaseContext implements Context {
@@ -174,64 +283,7 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-      public void updateStatus(String status) {
-      }
-	}
-
-	static class RetryButFailedContext extends BaseContext {
-		public RetryButFailedContext(ConfigManager configManager) {
-			super(configManager);
-		}
-
-		@Override
-		public String openUrl(String url) throws IOException {
-			if (isDeploy(url)) {
-				throw new IOException("Unavailable");
-			} else if (isLog(url)) {
-				return "[INFO] log and status of " + url + "\r\n";
-			} else {
-				return "";
-			}
-		}
-	}
-
-	static class SuccessContext extends BaseContext {
-		public SuccessContext(ConfigManager configManager) {
-			super(configManager);
-		}
-
-		@Override
-		public String openUrl(String url) throws IOException {
-			if (isDeploy(url)) {
-				return "{status: \"ok\"}";
-			} else if (isLog(url)) {
-				return "[INFO] log and status of " + url + "\r\n";
-			} else {
-				return "";
-			}
-		}
-	}
-
-	static class SuccessWithRetryContext extends BaseContext {
-		private int m_retryCount = 2;
-
-		public SuccessWithRetryContext(ConfigManager configManager) {
-			super(configManager);
-		}
-
-		@Override
-		public String openUrl(String url) throws IOException {
-			if (isDeploy(url)) {
-				if (m_retryCount-- > 0) {
-					throw new IOException("Unavailable");
-				} else {
-					return "{status: \"ok\"}";
-				}
-			} else if (isLog(url)) {
-				return "[INFO] log and status of " + url + "\r\n";
-			} else {
-				return "";
-			}
+		public void updateStatus(String status, String message) {
 		}
 	}
 }

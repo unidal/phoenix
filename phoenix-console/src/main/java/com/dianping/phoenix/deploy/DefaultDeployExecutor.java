@@ -5,11 +5,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.unidal.helper.Files;
+import org.unidal.helper.Formats;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
@@ -76,6 +78,21 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			m_model.addHost(new HostModel(SUMMARY));
 		}
 
+		private void cancelResetTasks() {
+			int len = m_hosts.size();
+
+			while (m_hostIndex < len) {
+				String host = m_hosts.get(m_hostIndex++);
+				RolloutContext ctx = new RolloutContext(this, m_agentListener, m_model, host);
+
+				try {
+					m_agentListener.onCancel(ctx);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 		public ConfigManager getConfigManager() {
 			return m_configManager;
 		}
@@ -86,9 +103,10 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		}
 
 		public ControllerTask log(String message) {
+			String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
 			HostModel host = m_model.findHost(SUMMARY);
 
-			host.addSegment(new SegmentModel().setText(message));
+			host.addSegment(new SegmentModel().setText("[" + timestamp + "] " + message));
 			return this;
 		}
 
@@ -107,9 +125,14 @@ public class DefaultDeployExecutor implements DeployExecutor {
 					boolean done = latch.await(10, TimeUnit.MILLISECONDS);
 
 					if (done) {
-						int batchSize = m_policy.getBatchSize();
+						if (shouldStop()) {
+							cancelResetTasks();
+							latch = null;
+						} else {
+							int batchSize = m_policy.getBatchSize();
 
-						latch = submitNextRolloutTask(batchSize);
+							latch = submitNextRolloutTask(batchSize);
+						}
 					}
 				}
 			} catch (InterruptedException e) {
@@ -123,6 +146,24 @@ public class DefaultDeployExecutor implements DeployExecutor {
 					}
 				}
 			}
+		}
+
+		private boolean shouldStop() {
+			boolean abortOnError = m_model.isAbortOnError();
+
+			if (abortOnError) {
+				for (HostModel host : m_model.getHosts().values()) {
+					for (SegmentModel segment : host.getSegments()) {
+						String status = segment.getStatus();
+
+						if (status != null && "failed".equals(status)) {
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
 		}
 
 		@Override
@@ -307,10 +348,11 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		}
 
 		@Override
-		public void updateStatus(String status) {
+		public void updateStatus(String status, String message) {
 			HostModel host = m_model.findHost(m_host);
 
-			host.addSegment(new SegmentModel().setStatus(status));
+			host.addSegment(new SegmentModel().setStatus(status) //
+			      .setCurrentTicks(100).setTotalTicks(100).setText(message));
 		}
 	}
 

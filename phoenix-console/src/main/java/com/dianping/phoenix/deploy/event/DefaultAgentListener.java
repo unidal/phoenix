@@ -39,8 +39,18 @@ public class DefaultAgentListener implements AgentListener {
 	}
 
 	@Override
-	public void onError(Context ctx, Throwable e) throws Exception {
+	public void onCancel(Context ctx) throws Exception {
+		int id = ctx.getDeployId();
+		DeployModel model = m_deployListener.getModel(id);
 
+		if (model != null) {
+			String ip = ctx.getHost();
+			HostModel host = model.findHost(ip);
+			SegmentModel segment = new SegmentModel();
+
+			segment.setCurrentTicks(100).setTotalTicks(100).setStatus("cancelled");
+			host.addSegment(segment);
+		}
 	}
 
 	@Override
@@ -56,6 +66,7 @@ public class DefaultAgentListener implements AgentListener {
 			segment.setCurrentTicks(progress.getCurrent());
 			segment.setTotalTicks(progress.getTotal());
 			segment.setStatus(progress.getStatus());
+			segment.setStep(progress.getStep());
 			segment.setText(log);
 			host.addSegment(segment);
 		}

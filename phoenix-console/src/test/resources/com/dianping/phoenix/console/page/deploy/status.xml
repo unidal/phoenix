@@ -23,6 +23,9 @@ Second segment
 Third segment
 ]]></segment>
 	</host>
+	<host ip="192.168.66.134">
+<segment current-ticks="91" total-ticks="91" status="failed"></segment>
+	</host>
 	<host ip="summary">
 <segment><![CDATA[
 Summary segment

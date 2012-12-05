@@ -22,7 +22,7 @@ public enum State {
 			try {
 				json = ctx.openUrl(url);
 			} catch (IOException e) {
-				ctx.println();
+				ctx.println(e.toString());
 				moveTo(ctx, UNREACHABLE);
 				return;
 			}
@@ -36,6 +36,7 @@ public enum State {
 			} else {
 				ctx.print(response.getStatus()).println();
 				ctx.println(response.getMessage());
+				moveTo(ctx, FAILED);
 			}
 		}
 	},
@@ -67,7 +68,7 @@ public enum State {
 				try {
 					json = ctx.openUrl(url);
 				} catch (IOException e) {
-					ctx.println();
+					ctx.println(e.toString());
 					moveTo(ctx, UNREACHABLE);
 					return;
 				}
@@ -81,6 +82,7 @@ public enum State {
 				} else {
 					ctx.print(response.getStatus()).println();
 					ctx.println(response.getMessage());
+					moveTo(ctx, FAILED);
 				}
 			}
 		}
@@ -100,7 +102,8 @@ public enum State {
 				String log = ctx.openUrl(url);
 
 				ctx.print(log);
-			} catch (IOException e) {
+			} catch (Exception e) {
+				ctx.println(e.toString());
 				moveTo(ctx, FAILED);
 				return;
 			}
@@ -124,9 +127,10 @@ public enum State {
 		protected void doActivity(Context ctx) throws Exception {
 			String version = ctx.getVersion();
 			String host = ctx.getHost();
+			String message = String.format("[ERROR] Failed to deploy phoenix kernel(%s) to host(%s).", version, host);
 
-			ctx.updateStatus("failed");
-			ctx.println("[ERROR] Failed to deploy phoenix kernel(%s) to host(%s).", version, host);
+			ctx.updateStatus("failed", message);
+			ctx.println(message);
 		}
 	};
 

@@ -101,6 +101,8 @@ class StatusModelVisitor extends BaseVisitor {
 			status = "doing";
 		} else if (set.contains("failed")) {
 			status = "failed";
+		} else if (set.contains("cancelled")) {
+			status = "cancelled";
 		} else if (set.contains("successful")) {
 			status = "successful";
 		} else {
@@ -127,7 +129,7 @@ class StatusModelVisitor extends BaseVisitor {
 			index = 0;
 		}
 
-		for (int i = 0; i < index && index < size; i++) {
+		for (int i = 0; i < index && i < size; i++) {
 			SegmentModel segment = segments.get(i);
 
 			if (segment.getStep() != null) {
@@ -145,9 +147,9 @@ class StatusModelVisitor extends BaseVisitor {
 			if (segment.getStep() != null) {
 				step = segment.getStep();
 			}
-			
+
 			if (segment.getStatus() != null) {
-				status=segment.getStatus();
+				status = segment.getStatus();
 			}
 
 			String text = segment.getText();
@@ -157,7 +159,7 @@ class StatusModelVisitor extends BaseVisitor {
 			}
 		}
 
-		if (sb.length() > 0) {
+		if (sb.length() > 0 || status != null || step != null || progress > 0) {
 			HostModel host = new HostModel().setIp(ip);
 
 			host.setProgress(progress);
