@@ -1,5 +1,7 @@
 package com.dianping.phoenix.service;
 
+import java.util.List;
+
 public interface StatusReporter {
 	public void updateState(String state);
 
@@ -11,7 +13,7 @@ public interface StatusReporter {
 	
 	public void categoryLog(String category,String subCategory,String message, Throwable e);
 	
-	public String getMessage(String category,String subCategory,int index);
+	public List<String> getMessage(String category,String subCategory,int index);
 	
 	public void clearMessage(String category,String subCategory);
 }
