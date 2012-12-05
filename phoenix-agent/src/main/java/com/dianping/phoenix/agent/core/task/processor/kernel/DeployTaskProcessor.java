@@ -7,45 +7,24 @@ import org.apache.log4j.Logger;
 import org.codehaus.plexus.util.IOUtil;
 import org.unidal.lookup.annotation.Inject;
 
-import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.event.MessageEvent;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessor;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
-import com.dianping.phoenix.agent.core.tx.TransactionManager;
 
 public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask> {
 
 	private final static Logger logger = Logger.getLogger(DeployTaskProcessor.class);
 
 	@Inject
-	private TransactionManager txMgr;
-	@Inject
-	DeployStepContext ctx;
-	@Inject
-	Config config;
+	DeployWorkflow workflow;
 
 	public DeployTaskProcessor() {
 	}
-
+	
 	@Override
-	protected void doProcess(final Transaction tx) throws IOException {
-		logger.info("start processing " + tx);
-		try {
-			tx.setStatus(Status.PROCESSING);
-			txMgr.saveTransaction(tx);
-			tx.setStatus(innerProcess(tx));
-		} catch (Exception e) {
-			tx.setStatus(Status.FAILED);
-			eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), e.getMessage(), Status.FAILED));
-		} finally {
-			txMgr.saveTransaction(tx);
-			logger.info("end processing " + tx);
-		}
-	}
-
-	private Status innerProcess(final Transaction tx) throws IOException {
+	protected Status doTransaction(final Transaction tx) throws IOException {
 
 		DeployTask task = (DeployTask) tx.getTask();
 		String domain = task.getDomain();
@@ -61,27 +40,23 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 			exitStatus = Status.FAILED;
 		} finally {
 			IOUtil.close(stdOut);
-			eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), "", exitStatus));
 		}
 		return exitStatus;
 	}
 
 	private Status updateKernel(String domain, String kernelVersion, OutputStream stdOut) throws Exception {
-		ctx.setContainer(config.getContainerType().toString().toLowerCase());
-		ctx.setDomain(domain);
-		ctx.setDomainDocBaseFeaturePattern(config.getDomainDocBaseFeaturePattern());
-		ctx.setKernelDocBasePattern(config.getKernelDocBasePattern());
-		ctx.setLoaderClass(config.getLoaderClass());
-		ctx.setKernelVersion(kernelVersion);
-		ctx.setOut(stdOut);
-		ctx.setServerXml(config.getServerXml());
-		DeployStep.execute(ctx);
-		return ctx.getStatus();
+		DeployStep steps = lookup(DeployStep.class);
+		int exitCode = workflow.start(domain, kernelVersion, steps, stdOut);
+		if(exitCode == DeployStep.CODE_OK) {
+			return Status.SUCCESS;
+		} else {
+			return Status.FAILED;
+		}
 	}
 
 	@Override
 	public boolean cancel(TransactionId txId) {
-		ctx.kill(txId);
+		workflow.kill();
 		return true;
 	}
 

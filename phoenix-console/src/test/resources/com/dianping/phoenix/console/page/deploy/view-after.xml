@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<deploy id="123" domain="sample-app" version="0.1-SNAPSHOT" status="doing">
+   <host ip="summary" status="doing" progress="34">
+      <segment current-ticks="0" total-ticks="0">
+Summary segment
+</segment>
+   </host>
+   <host ip="192.168.66.131" status="doing" progress="12" current-step="step1">
+      <segment step="step1" current-ticks="11" total-ticks="91">
+First segment
+</segment>
+   </host>
+   <host ip="192.168.66.132" status="failed" progress="34" current-step="step1">
+      <segment step="step1" current-ticks="11" total-ticks="91">
+First segment
+</segment>
+      <segment current-ticks="31" total-ticks="91" status="failed">
+Second segment
+</segment>
+   </host>
+   <host ip="192.168.66.133" status="failed" progress="56" current-step="step2">
+      <segment step="step1" current-ticks="11" total-ticks="91">
+First segment
+</segment>
+      <segment current-ticks="31" total-ticks="91" status="failed">
+Second segment
+</segment>
+      <segment step="step2" current-ticks="51" total-ticks="91">
+Third segment
+</segment>
+   </host>
+</deploy>

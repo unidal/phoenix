@@ -4,15 +4,15 @@
 <jsp:useBean id="payload" type="com.dianping.phoenix.console.page.deploy.Payload" scope="request" />
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.deploy.Model" scope="request" />
 {
-"status":"doing", 
+"status":"${model.deploy.status}", 
 "hosts": [ 
 <c:forEach var="entry" items="${model.deploy.hosts}" varStatus="status">
 <c:set var="host" value="${entry.value}"/>{
 "host": "${host.ip}",
-"offset": ${host.offset+1},
+"offset": ${host.offset},
 "progress": ${host.progress},
 "step": "${host.currentStep}",
-"status": "doing",
+"status": "${host.status}",
 "log": "${host.log}"
 }<c:if test="${not status.last}">,</c:if>
 </c:forEach>]

@@ -1,9 +1,22 @@
 <plexus>
 	<components>
 		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep$Context</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStepContext</implementation>
+			<role>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</role>
+			<role-hint>kernel</role-hint>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStep</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
 				</requirement>
@@ -35,13 +48,32 @@
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessor</role>
+			<role-hint>deploy</role-hint>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor</implementation>
 			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</role>
+					<role-hint>kernel</role-hint>
+				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep$Context</role>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessor</role>
+			<role-hint>detach</role-hint>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DetachTaskProcessor</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</role>
+					<role-hint>kernel</role-hint>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
@@ -103,9 +135,6 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
 				</requirement>
 			</requirements>
 		</component>

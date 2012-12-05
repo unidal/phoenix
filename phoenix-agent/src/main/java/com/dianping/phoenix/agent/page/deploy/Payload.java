@@ -1,8 +1,11 @@
 package com.dianping.phoenix.agent.page.deploy;
 
 import com.dianping.phoenix.agent.AgentPage;
+
+import org.unidal.lookup.util.StringUtils;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
+import org.unidal.web.mvc.ErrorObject;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
 
 public class Payload implements ActionPayload<AgentPage, Action> {
@@ -71,5 +74,45 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 
 	@Override
 	public void validate(ActionContext<?> ctx) {
+		StringBuilder sb = new StringBuilder();
+		switch (m_action) {
+		case DEPLOY:
+			checkCommonArguments(ctx, sb);
+			if (StringUtils.isEmpty(StringUtils.trimAll(m_domain))) {
+				sb.append("domain can not be null,");
+			}
+			if (StringUtils.isEmpty(StringUtils.trimAll(m_version))) {
+				sb.append("version can not be null,");
+			}
+			break;
+
+		case DETACH:
+			checkCommonArguments(ctx, sb);
+			if (StringUtils.isEmpty(StringUtils.trimAll(m_domain))) {
+				sb.append("domain can not be empty");
+			}
+			break;
+			
+		case STATUS:
+		case CANCEL:
+		case GETLOG:
+			checkCommonArguments(ctx, sb);
+			break;
+
+		}
+		
+		if (sb.length() > 0) {
+			ctx.addError(new ErrorObject(sb.toString()));
+		}
+	}
+	
+	private void checkCommonArguments(ActionContext<?> ctx, StringBuilder sb) {
+		if(!validDeployId(m_deployId)) {
+			sb.append("deployId invalid");
+		}
+	}
+
+	private boolean validDeployId(long deployId) {
+		return deployId > 0;
 	}
 }

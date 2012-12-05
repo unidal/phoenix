@@ -6,7 +6,8 @@ public enum Action implements org.unidal.web.mvc.Action {
 	DEPLOY("deploy"),
 	CANCEL("cancel"),
 	GETLOG("log"),
-	STATUS("status");
+	STATUS("status"),
+	DETACH("detach");
 	
 	private String m_name;
 

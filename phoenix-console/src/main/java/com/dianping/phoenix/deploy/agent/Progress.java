@@ -7,12 +7,18 @@ public class Progress {
 
 	private String m_status;
 
+	private String m_step;
+
 	public int getCurrent() {
 		return m_current;
 	}
 
 	public String getStatus() {
 		return m_status;
+	}
+
+	public String getStep() {
+		return m_step;
 	}
 
 	public int getTotal() {
@@ -27,12 +33,16 @@ public class Progress {
 		m_status = status;
 	}
 
+	public void setStep(String step) {
+		m_step = step;
+	}
+
 	public void setTotal(int total) {
 		m_total = total;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Progress[%s/%s, %s]", m_current, m_total, m_status);
+		return String.format("Progress[%s/%s, %s, %s]", m_current, m_total, m_status, m_step);
 	}
 }

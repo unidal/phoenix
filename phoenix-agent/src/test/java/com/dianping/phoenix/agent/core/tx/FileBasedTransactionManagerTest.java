@@ -2,7 +2,6 @@ package com.dianping.phoenix.agent.core.tx;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import junit.framework.Assert;
@@ -46,7 +45,7 @@ public class FileBasedTransactionManagerTest {
 	public void testWriteReadLog() throws IOException {
 		TransactionId txId = new TransactionId(1L);
 		String msg = "你好";
-		Writer writer = new OutputStreamWriter(txMgr.getLogOutputStream(txId));
+		Writer writer = txMgr.getLogWriter(txId);
 		writer.write(msg);
 		writer.close();
 		char[] cbuf = new char[100];
@@ -58,7 +57,6 @@ public class FileBasedTransactionManagerTest {
 	public void testSaveLoadTransaction() throws IOException {
 		TransactionId txId = new TransactionId(1L);
 		String domain = "user-web";
-		String version = "1.0";
 		String newVersion = "1.1";
 		Task task = new DeployTask(domain, newVersion);
 		Transaction tx = new Transaction(task, txId, EventTracker.DUMMY_TRACKER);
@@ -71,5 +69,5 @@ public class FileBasedTransactionManagerTest {
 		Assert.assertEquals(tx.getTask(), loadedTx.getTask());
 		
 	}
-
+	
 }
