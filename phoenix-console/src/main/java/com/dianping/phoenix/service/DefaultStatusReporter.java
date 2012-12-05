@@ -62,16 +62,18 @@ public class DefaultStatusReporter implements StatusReporter {
 		}
 	}
 	
-	public synchronized String getMessage(String category,String subCategory,int index){
-		String result = null;
+	public synchronized List<String> getMessage(String category,String subCategory,int index){
+		List<String> results = null;
 		Map<String,List<String>> cgyLog = m_logCache.get(category);
 		if(cgyLog != null){
 			List<String> subCgyLog = cgyLog.get(subCategory);
-			if(subCgyLog != null && subCgyLog.size() > index){
-				result = subCgyLog.get(index);
+			if(subCgyLog != null){
+				while(subCgyLog.size() > index){
+					results.add(subCgyLog.get(index));
+				}
 			}
 		}
-		return result;
+		return results;
 	}
 	
 	public synchronized void clearMessage(String category,String subCategory){

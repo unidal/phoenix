@@ -61,7 +61,7 @@ public class Handler implements PageHandler<Context> {
 		Model model = new Model(ctx);
 
 		try {
-			List<Version> versions = m_manager.getActiveVersions();
+			List<Version> versions = m_manager.getFinishedVersions();
 
 			model.setVersions(versions);
 		} catch (Exception e) {
