@@ -30,7 +30,7 @@ public class DefaultStatusReporter implements StatusReporter {
 	
 	public synchronized void categoryLog(String category,String subCategory,String message){
 		String log = m_format.format(new Object[] { new Date(),category,subCategory, message });
-
+		storeMessage(category, subCategory, log);
 		System.out.println(log);
 	}
 
@@ -41,6 +41,7 @@ public class DefaultStatusReporter implements StatusReporter {
 	
 	public synchronized void categoryLog(String category,String subCategory,String message, Throwable e){
 		String log = m_format.format(new Object[] { new Date(),category,subCategory, message });
+		storeMessage(category, subCategory, log);
 		System.out.println(log);
 		e.printStackTrace();
 	}
@@ -68,8 +69,9 @@ public class DefaultStatusReporter implements StatusReporter {
 		if(cgyLog != null){
 			List<String> subCgyLog = cgyLog.get(subCategory);
 			if(subCgyLog != null){
+				results = new ArrayList<String>();
 				while(subCgyLog.size() > index){
-					results.add(subCgyLog.get(index));
+					results.add(subCgyLog.get(index++));
 				}
 			}
 		}
