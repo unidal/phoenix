@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.Assert;
 
@@ -15,6 +16,7 @@ import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.tx.Transaction;
+import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
 
 public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
@@ -57,7 +59,7 @@ public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 			Assert.fail();
 		}
 	}
-	
+
 	@Test
 	public void testSubmitWhileProcessingMultipleTaskProcessor() throws Exception {
 		TaskProcessor<Task> a1 = lookup(MockTaskProcessorA1.class);
@@ -94,7 +96,7 @@ public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 		}
 
 	}
-	
+
 	@Test
 	public void testSubmitWhileUnrelatedTaskProcessorProcessing() throws Exception {
 		TaskProcessor<Task> a1 = lookup(MockTaskProcessorA1.class);
@@ -107,6 +109,86 @@ public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 		SubmitResult submitResult2 = b.submit(tx2);
 		Assert.assertTrue(submitResult1.isAccepted());
 		Assert.assertTrue(submitResult2.isAccepted());
+	}
+
+	@Test
+	public void testCurrentTransactions() throws Exception {
+		TaskProcessor<Task> a1 = lookup(MockTaskProcessorA1.class);
+		Assert.assertEquals(0, a1.currentTransactions().size());
+
+		TransactionId txId = new TransactionId(1L);
+		final CountDownLatch endLatch = new CountDownLatch(1);
+		final CountDownLatch startLatch = new CountDownLatch(1);
+		Transaction tx1 = new Transaction(mock(Task.class), txId, new AbstractEventTracker() {
+
+			@Override
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				if (event.getStatus().isCompleted()) {
+					endLatch.countDown();
+				} else if (event.getStatus() == Status.PROCESSING) {
+					startLatch.countDown();
+				}
+			}
+		});
+
+		a1.submit(tx1);
+
+		// when PROCESSING event published, current transaction should have been
+		// recorded
+		boolean awaitOk = startLatch.await(2, TimeUnit.SECONDS);
+		if (!awaitOk) {
+			Assert.fail();
+		} else {
+			Assert.assertEquals(1, a1.currentTransactions().size());
+			Assert.assertEquals(tx1, a1.currentTransactions().get(0));
+		}
+
+		a1.cancel(txId);
+		awaitOk = endLatch.await(2, TimeUnit.SECONDS);
+		if (!awaitOk) {
+			Assert.fail();
+		} else {
+			Assert.assertEquals(0, a1.currentTransactions().size());
+		}
+
+	}
+
+	@Test
+	public void testAttachEventTracker() throws Exception {
+		TaskProcessor<Task> a1 = lookup(MockTaskProcessorA1.class);
+		TransactionId txId = new TransactionId(1L);
+		final CountDownLatch latch = new CountDownLatch(1);
+		Transaction tx1 = new Transaction(mock(Task.class), txId, new AbstractEventTracker() {
+
+			@Override
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				if (event.getStatus().isCompleted()) {
+					latch.countDown();
+				}
+			}
+		});
+		a1.submit(tx1);
+
+		final AtomicBoolean eventReceived = new AtomicBoolean(false);
+		a1.attachEventTracker(txId, new AbstractEventTracker() {
+
+			@Override
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				if (event.getStatus().isCompleted()) {
+					eventReceived.set(true);
+				}
+			}
+		});
+
+		a1.cancel(txId);
+
+		boolean awaitOk = latch.await(2, TimeUnit.SECONDS);
+		if (!awaitOk) {
+			Assert.fail();
+		} else {
+			Assert.assertTrue(eventReceived.get());
+		}
+
 	}
 
 }

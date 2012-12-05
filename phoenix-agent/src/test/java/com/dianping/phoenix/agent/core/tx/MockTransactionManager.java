@@ -5,7 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +66,16 @@ public class MockTransactionManager implements TransactionManager {
 
 	@Override
 	public void endTransaction(TransactionId txId) {
+	}
+
+	@Override
+	public Writer getLogWriter(TransactionId txId) throws IOException {
+		OutputStream out = getLogOutputStream(txId);
+		if(out != null) {
+			return new OutputStreamWriter(out);
+		} else {
+			return null;
+		}
 	}
 
 }
