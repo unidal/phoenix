@@ -4,4 +4,15 @@ import com.dianping.phoenix.agent.core.task.AbstractTask;
 
 public class DetachTask extends AbstractTask {
 
+	private String domain;
+
+	public DetachTask(String domain) {
+		super();
+		this.domain = domain;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
 }

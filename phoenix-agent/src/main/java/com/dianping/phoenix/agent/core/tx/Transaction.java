@@ -79,6 +79,9 @@ public class Transaction {
 	}
 
 	public void setStatus(Status status) {
+		if(status == null) {
+			throw new IllegalStateException("status of transaction can't be set to null");
+		}
 		this.status = status;
 	}
 

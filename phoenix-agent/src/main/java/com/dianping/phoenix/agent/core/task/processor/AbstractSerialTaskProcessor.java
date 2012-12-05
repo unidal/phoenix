@@ -1,25 +1,33 @@
 package com.dianping.phoenix.agent.core.task.processor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.Logger;
+import org.unidal.helper.Threads;
+import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.EventTrackerChain;
+import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.tx.Transaction;
+import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
-import com.site.helper.Threads;
+import com.dianping.phoenix.agent.core.tx.TransactionManager;
 
 public abstract class AbstractSerialTaskProcessor<T> implements TaskProcessor<T> {
 
+	@Inject
+	protected TransactionManager txMgr;
+	@Inject
+	private SemaphoreWrapper semaphoreWrapper;
+
 	protected Transaction currentTx;
-	private Semaphore semaphore = new Semaphore(1);
 	protected EventTrackerChain eventTrackerChain;
 
-	protected abstract void doProcess(Transaction tx) throws Exception;
+	protected abstract Status doTransaction(Transaction tx) throws Exception;
 
 	private synchronized void initEventTrackerChain(EventTracker eventTracker) {
 		if (!(eventTracker instanceof EventTrackerChain)) {
@@ -33,23 +41,34 @@ public abstract class AbstractSerialTaskProcessor<T> implements TaskProcessor<T>
 	public SubmitResult submit(final Transaction tx) {
 		Logger logger = getLogger();
 		SubmitResult submitResult = new SubmitResult(false, "");
-		if (semaphore.tryAcquire()) {
+		if (semaphoreWrapper.getSemaphore().tryAcquire()) {
 			logger.info("accept " + tx);
-			
+
 			final Class<?> clazz = getClass();
 			Threads.Task task = new Threads.Task() {
 
 				@Override
 				public void run() {
+					String eventMsg = "ok";
 					try {
-						initEventTrackerChain(tx.getEventTracker());
-						transactionStart(tx);
-						doProcess(tx);
+						startTransaction(tx);
+						eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), "", tx.getStatus()));
+						try {
+							tx.setStatus(doTransaction(tx));
+						} catch (Exception e) {
+							tx.setStatus(Status.FAILED);
+							eventMsg = e.getMessage();
+						} finally {
+							txMgr.saveTransaction(tx);
+							getLogger().info("end processing " + tx);
+						}
 					} catch (Exception e) {
+						getLogger().error("error preparing transaction", e);
 						throw new RuntimeException(e);
 					} finally {
-						semaphore.release();
-						transactionEnd(tx.getTxId());
+						semaphoreWrapper.getSemaphore().release();
+						endTransaction(tx.getTxId());
+						eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), eventMsg, tx.getStatus()));
 					}
 				}
 
@@ -63,7 +82,7 @@ public abstract class AbstractSerialTaskProcessor<T> implements TaskProcessor<T>
 					return clazz.getSimpleName();
 				}
 			};
-			Threads.forGroup("Phoenix").start(task);
+			Threads.forGroup("Phoenix").start(task, false);
 			submitResult.setAccepted(true);
 		} else {
 			logger.info("reject " + tx);
@@ -78,11 +97,15 @@ public abstract class AbstractSerialTaskProcessor<T> implements TaskProcessor<T>
 		return logger;
 	}
 
-	private synchronized void transactionStart(Transaction tx) {
+	private synchronized void startTransaction(Transaction tx) throws IOException {
+		getLogger().info("start processing " + tx);
 		currentTx = tx;
+		initEventTrackerChain(tx.getEventTracker());
+		tx.setStatus(Status.PROCESSING);
+		txMgr.saveTransaction(tx);
 	}
 
-	private synchronized void transactionEnd(TransactionId txId) {
+	private synchronized void endTransaction(TransactionId txId) {
 		if (currentTx != null && currentTx.getTxId().equals(txId)) {
 			currentTx = null;
 		}

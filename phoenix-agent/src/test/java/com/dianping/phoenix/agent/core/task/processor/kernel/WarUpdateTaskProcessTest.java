@@ -1,4 +1,4 @@
-package com.dianping.phoenix.agent.core.task.processor.war;
+package com.dianping.phoenix.agent.core.task.processor.kernel;
 
 import static org.mockito.Mockito.mock;
 

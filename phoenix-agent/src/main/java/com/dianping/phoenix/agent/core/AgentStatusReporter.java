@@ -12,8 +12,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.dianping.cat.configuration.NetworkInterfaceManager;
-import com.dianping.kernel.inspect.page.classpath.Artifact;
-import com.dianping.kernel.inspect.page.classpath.ArtifactResolver;
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.processor.kernel.Config;
 import com.dianping.phoenix.agent.response.entity.Container;
@@ -22,6 +20,8 @@ import com.dianping.phoenix.agent.response.entity.Kernel;
 import com.dianping.phoenix.agent.response.entity.Lib;
 import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.entity.War;
+import com.dianping.phoenix.agent.util.Artifact;
+import com.dianping.phoenix.agent.util.ArtifactResolver;
 
 public class AgentStatusReporter {
 
