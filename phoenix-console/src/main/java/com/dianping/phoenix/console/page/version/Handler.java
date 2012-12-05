@@ -11,6 +11,7 @@ import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
+import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Version;
 import com.dianping.phoenix.service.VersionManager;
 
@@ -27,7 +28,8 @@ public class Handler implements PageHandler<Context> {
 	public void handleInbound(Context ctx) throws ServletException, IOException {
 		Payload payload = ctx.getPayload();
 
-		if (payload.getAction() == Action.ADD) {
+		String versionUri = ctx.getRequestContext().getActionUri(ConsolePage.VERSION.getName());
+		if (payload.getAction() == Action.CREATE) {
 			String version = payload.getVersion();
 			String description = payload.getDescription();
 			String releaseNotes = "No release notes here";
@@ -35,6 +37,7 @@ public class Handler implements PageHandler<Context> {
 
 			try {
 				m_manager.createVersion(version, description, releaseNotes, createdBy);
+				ctx.redirect(versionUri);
 			} catch (Exception e) {
 				e.printStackTrace(); // TODO remove it
 				ctx.addError("version.add", e);
@@ -44,6 +47,7 @@ public class Handler implements PageHandler<Context> {
 			
 			try {
 				m_manager.removeVersion(id);
+				ctx.redirect(versionUri);
 			} catch (Exception e) {
 				ctx.addError("version.remove", e);
 			}
@@ -59,16 +63,20 @@ public class Handler implements PageHandler<Context> {
 	@OutboundActionMeta(name = "version")
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
-
-		try {
-			List<Version> versions = m_manager.getActiveVersions();
-
-			model.setVersions(versions);
-		} catch (Exception e) {
-			ctx.addError("version.active", e);
+		Payload payload = ctx.getPayload();
+		Action action = payload.getAction();
+		model.setAction(action);
+		model.setPage(ConsolePage.VERSION);
+		
+		if (action == Action.VIEW) {
+			try {
+				List<Version> versions = m_manager.getActiveVersions();
+				model.setVersions(versions);
+//				model.setCreatingVersion("0.0.1-SNAPSHOT");
+			} catch (Exception e) {
+				ctx.addError("version.active", e);
+			}
 		}
-//		model.setAction(Action.VIEW);
-//		model.setPage(ConsolePage.VERSION);
 
 		m_jspViewer.view(ctx, model);
 	}

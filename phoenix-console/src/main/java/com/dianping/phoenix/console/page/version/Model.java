@@ -9,6 +9,8 @@ import com.dianping.phoenix.console.dal.deploy.Version;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private List<Version> m_versions;
+	
+	private String m_creatingVersion;
 
 	public Model(Context ctx) {
 		super(ctx);
@@ -25,5 +27,13 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	public void setVersions(List<Version> versions) {
 		m_versions = versions;
+	}
+
+	public String getCreatingVersion() {
+		return m_creatingVersion;
+	}
+
+	public void setCreatingVersion(String creatingVersion) {
+		m_creatingVersion = creatingVersion;
 	}
 }

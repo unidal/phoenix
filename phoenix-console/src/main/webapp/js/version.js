@@ -32,4 +32,20 @@ function bind_cmp_evt_handlers() {
 		$("#del_confirm").hide();
 		return false;
 	});
+	
+	$("#del_confirm").click(function() {
+		var removeuri = "/console/version?op=remove&id=" + $("#del_version").val();
+		$(location).attr("href", removeuri.prependcontext());
+		return false;
+	});
+	
+	$("#create_btn").click(function() {
+		var version = $("#version").val();
+		$("#error_msg").text("");
+		if (version.isBlank()) {
+			$("#error_msg").text("Version必填!");
+			return false;
+		}
+	});
+	
 }

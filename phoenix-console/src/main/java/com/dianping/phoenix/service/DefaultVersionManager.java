@@ -56,7 +56,7 @@ public class DefaultVersionManager implements VersionManager {
 
 	@Override
 	public void removeVersion(int id) throws Exception {
-
+		m_gitService.setup();
 		try {
 			Version proto = m_dao.findByPK(id, VersionEntity.READSET_FULL);
 
