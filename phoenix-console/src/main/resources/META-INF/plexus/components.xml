@@ -45,8 +45,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.service.VersionManager</role>
-			<implementation>com.dianping.phoenix.service.DefaultVersionManager</implementation>
+			<role>com.dianping.phoenix.console.page.version.VersionManager</role>
+			<implementation>com.dianping.phoenix.console.page.version.DefaultVersionManager</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.service.StatusReporter</role>
@@ -273,7 +273,7 @@
 					<role>com.dianping.phoenix.service.ProjectManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.service.VersionManager</role>
+					<role>com.dianping.phoenix.console.page.version.VersionManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -286,7 +286,7 @@
 			<implementation>com.dianping.phoenix.console.page.version.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.service.VersionManager</role>
+					<role>com.dianping.phoenix.console.page.version.VersionManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.version.JspViewer</role>

@@ -6,20 +6,22 @@ import java.util.Collection;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 
-public interface GitService {
-	public void clearWorkingDir() throws Exception;
+import com.dianping.phoenix.console.page.version.VersionContext;
 
-	public ObjectId commit(String tag, String description) throws Exception;
+public interface GitService {
+	void clearWorkingDir(VersionContext context) throws Exception;
+
+	public ObjectId commit(VersionContext context) throws Exception;
 
 	public File getWorkingDir();
 
-	public void pull() throws Exception;
-
-	public void push() throws Exception;
-
-	public void removeTag(String tag) throws Exception;
-
-	public void setup() throws Exception;
-
 	public Collection<Ref> lsRemote() throws Exception;
+
+	void pull(VersionContext context) throws Exception;
+
+	void push(VersionContext context) throws Exception;
+
+	public void removeTag(VersionContext context) throws Exception;
+
+	void setup(VersionContext context) throws Exception;
 }

@@ -12,7 +12,6 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.dal.deploy.Version;
-import com.dianping.phoenix.service.VersionManager;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
