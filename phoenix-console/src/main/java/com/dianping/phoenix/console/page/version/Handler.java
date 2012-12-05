@@ -11,7 +11,6 @@ import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
-import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Version;
 import com.dianping.phoenix.service.VersionManager;
 
@@ -48,6 +47,11 @@ public class Handler implements PageHandler<Context> {
 			} catch (Exception e) {
 				ctx.addError("version.remove", e);
 			}
+		} else if (payload.getAction() == Action.STATUS) {
+			String version = payload.getVersion();
+			int index = payload.getIndex();
+			
+			
 		}
 	}
 
@@ -57,15 +61,14 @@ public class Handler implements PageHandler<Context> {
 		Model model = new Model(ctx);
 
 		try {
-			List<Version> versions = m_manager.getActiveVersions();
+			List<Version> versions = m_manager.getFinishedVersions();
 
 			model.setVersions(versions);
 		} catch (Exception e) {
 			ctx.addError("version.active", e);
 		}
-
-		model.setAction(Action.VIEW);
-		model.setPage(ConsolePage.VERSION);
+//		model.setAction(Action.VIEW);
+//		model.setPage(ConsolePage.VERSION);
 
 		m_jspViewer.view(ctx, model);
 	}
