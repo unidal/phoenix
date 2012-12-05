@@ -71,7 +71,8 @@ public class DefaultVersionManager implements VersionManager {
 		Collections.sort(versions, new Comparator<Version>() {
 			@Override
 			public int compare(Version v1, Version v2) {
-				return v2.getVersion().compareTo(v1.getVersion());
+//				return v2.getVersion().compareTo(v1.getVersion());
+				return v2.getId() - v1.getId();
 			}
 		});
 
@@ -95,7 +96,6 @@ public class DefaultVersionManager implements VersionManager {
 
 	@Override
 	public void removeVersion(int id) throws Exception {
-		m_gitService.setup();
 		try {
 			Version v = m_dao.findByPK(id, VersionEntity.READSET_FULL);
 

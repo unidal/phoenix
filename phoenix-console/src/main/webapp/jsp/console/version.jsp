@@ -118,7 +118,7 @@
 							<button type="submit" class="btn btn-primary" id="create_btn">&nbsp;创建&nbsp; </button>
 						</c:when>
 						<c:otherwise>
-							<button type="submit" class="btn" disabled>&nbsp;创建&nbsp; </button>
+							<button type="submit" class="btn" id="create_btn" disabled>&nbsp;创建&nbsp; </button>
 						</c:otherwise>
 					</c:choose>
 					&nbsp;
@@ -128,21 +128,6 @@
 		</div>
 		<br />
 		<div id="log-plane" class="terminal-like" style="height: 200px; line-height: 20px; overflow: auto;">
-			Git pull from remote repository<br/>
-			Pull succeed<br/>
-			Download phoenix.war from maven repository<br/>
-			Download succeed<br/>
-			Clear the local phoenix working directory<br/>
-			Decompress phoenix.war to local working directory<br/>
-			Commit working directory to master branch<br/>
-			Commit succeed<br/>
-			Create a tag and push it to remote repository<br/>
-			Succeed!<br/>
-			滚动条....<br/>
-			滚动条....<br/>
-			滚动条....<br/>
-			滚动条....<br/>
-			滚动条....<br/>
 		</div>
 	</div>
 	<res:useJs value="${res.js.local.version_js}" target="version-js" />

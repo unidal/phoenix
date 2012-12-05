@@ -37,13 +37,18 @@ function fetch_create_log() {
 function update_create_log(result) {
 	var creating_version = $("#creating_version").val();
 	var return_version = result.version;
-	if (creating_version == return_version) {
+	if (result.index >= 0) {
 		$("#log_index").val(result.index);
+	}
+	if (result.log != null && !result.log.isBlank()) {
 		var $logplane = $("#log-plane");
 		$logplane.append("<div class=\"terminal-like\">" + result.log + "</div>");
 		$logplane.scrollTop($logplane.get(0).scrollHeight);
-	} else {
+	}
+	if (creating_version != return_version) {
 		$("#creating_version").val("");
+		$("#log_index").val("0");
+		$("#create_btn").attr("disabled", false).addClass("btn-primary");
 	}
 }
 

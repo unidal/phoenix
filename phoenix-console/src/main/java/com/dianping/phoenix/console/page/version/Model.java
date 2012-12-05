@@ -13,6 +13,8 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private String m_creatingVersion;
 	
 	private String m_logcontent;
+	
+	private int m_index = -1;
 
 	public Model(Context ctx) {
 		super(ctx);
@@ -45,5 +47,13 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	public String getLogcontent() {
 		return m_logcontent;
+	}
+
+	public void setIndex(int index) {
+		m_index = index;
+	}
+
+	public int getIndex() {
+		return m_index;
 	}
 }

@@ -13,6 +13,7 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Version;
+import com.dianping.phoenix.console.page.version.DefaultVersionManager.VersionLog;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
@@ -45,9 +46,31 @@ public class Handler implements PageHandler<Context> {
 				removeVersion(ctx, payload, model);
 				break;
 			case STATUS:
-				String version = payload.getVersion();
-				int index = payload.getIndex();
-				
+				try {
+					String version = payload.getVersion();
+					int index = payload.getIndex();
+					Version activeVersion = m_manager.getActiveVersion();
+					if (activeVersion != null) {
+						model.setCreatingVersion(activeVersion.getVersion());
+					}
+					VersionLog statusLog = m_manager.getStatus(version, index);
+					if (statusLog != null) {
+						List<String> messages = statusLog.getMessages();
+						if (messages != null) {
+							StringBuffer buffer = new StringBuffer();
+							for (String message : messages) {
+								if (message != null) {
+									buffer.append(message.replace("\"", "\\\"").replace("\n", "<br>"))
+											.append("<br>");
+								}
+							}
+							model.setLogcontent(buffer.toString());
+						}
+						model.setIndex(statusLog.getIndex());
+					}
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
 				break;
 			case VIEW:
 				viewVersions(ctx, model);
