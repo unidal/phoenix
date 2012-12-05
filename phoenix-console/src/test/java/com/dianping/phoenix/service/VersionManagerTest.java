@@ -10,17 +10,30 @@ import com.dianping.phoenix.console.dal.deploy.Version;
 
 public class VersionManagerTest extends ComponentTestCase {
 	@Test
-	public void test() throws Exception {
+	public void testSubmitVersion() throws Exception {
 		VersionManager manager = lookup(VersionManager.class);
 		GitService git = lookup(GitService.class);
 
 		git.setup();
 
 		String tag = "mock-1.0" + System.currentTimeMillis();
-		Version version = manager.createVersion(tag, "mock description", "this is release notes", "mock");
-		List<Version> versions = manager.getActiveVersions();
+		
+		Version version = manager.store(tag, "mock description", "test", "mock");
+		
+		manager.submitVersion(tag, "mock description");
+		
+		version = manager.getActiveVersion();
+		Assert.assertTrue(version != null);
+		
+		manager.updateVersionSuccessed(version.getId());
+		
+		List<Version> versions = manager.getFinishedVersions();
+		
 		Assert.assertTrue(versions.size() > 0);
 		
-		manager.removeVersion(version.getId());
+		for(Version v : versions){
+			manager.removeVersion(version.getId());
+		}
+		
 	}
 }
