@@ -182,7 +182,7 @@
 					<driver>com.mysql.jdbc.Driver</driver>
 					<URL>jdbc:mysql://localhost:3306/phoenix</URL>
 					<user>root</user>
-					<password>12qwaszx</password>
+					<password></password>
 					<connectionProperties><![CDATA[useUnicode=true&autoReconnect=true]]></connectionProperties>
 				</properties>
 			</configuration>
