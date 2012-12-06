@@ -15,9 +15,11 @@
 	<res:cssSlot id="head-css"/>
 	<res:jsSlot id="head-js"/>
 	<res:useJs value="${res.js.local['jquery-1.8.1.min.js']}" target="head-js"/>
+	<res:useJs value="${res.js.local['core.js']}" target="head-js"/>
 	<res:useCss value='${res.css.local.bootstrap_css}' target="head-css"/>
 	<res:useCss value="${res.js.local['bootstrap-responsive.css']}" target="head-css"/>
 	<res:useCss value='${res.css.local.phoenix_css}' target="head-css"/>
+	<script type="text/javascript">var contextpath = "${model.webapp}";</script>
 </head>
 
 <body data-spy="scroll" data-target=".subnav" data-offset="50">

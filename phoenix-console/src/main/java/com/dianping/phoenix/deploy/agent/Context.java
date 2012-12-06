@@ -22,7 +22,7 @@ public interface Context {
 	public State getState();
 
 	public String getVersion();
-
+	
 	public String openUrl(String url) throws IOException;
 
 	public Context print(String string, Object... args);
@@ -34,4 +34,6 @@ public interface Context {
 	public void setRetryCount(int retryCount);
 
 	public void setState(State state);
+
+	public void updateStatus(String status, String message);
 }

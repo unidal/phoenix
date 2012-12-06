@@ -78,6 +78,7 @@ public class SegmentReader {
 					break;
 				} else {
 					if (header) {
+						System.out.println(line);
 						if (line.length() == 0) { // first blank line
 							header = false;
 						} else if (line.startsWith("Progress: ")) {
@@ -90,6 +91,10 @@ public class SegmentReader {
 							int pos = "Status: ".length();
 
 							progress.setStatus(line.substring(pos).trim());
+						} else if (line.startsWith("Step: ")) {
+							int pos = "Step: ".length();
+							
+							progress.setStep(line.substring(pos).trim());
 						}
 					} else {
 						sb.append(line).append("\r\n");

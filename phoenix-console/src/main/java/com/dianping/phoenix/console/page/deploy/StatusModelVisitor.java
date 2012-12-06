@@ -1,8 +1,10 @@
 package com.dianping.phoenix.console.page.deploy;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
@@ -32,7 +34,7 @@ class StatusModelVisitor extends BaseVisitor {
 			case '\r':
 				break;
 			case '\n':
-				sb.append("\r\n<br>");
+				sb.append("<br>");
 				break;
 			default:
 				sb.append(ch);
@@ -53,6 +55,63 @@ class StatusModelVisitor extends BaseVisitor {
 		m_model.mergeAttributes(other);
 
 		super.visitDeploy(other);
+
+		HostModel summary = m_model.findHost("summary");
+		Set<String> set = new HashSet<String>();
+		int size = other.getHosts().size();
+		int progress = 0;
+
+		if (summary == null) { // it always has summary
+			Integer offset = m_map.get("summary");
+
+			summary = new HostModel("summary");
+			summary.setOffset(offset == null ? 0 : offset);
+			m_model.addHost(summary);
+		}
+
+		for (HostModel host : other.getHosts().values()) {
+			if (!host.getIp().equals("summary")) {
+				int p = 0;
+				String status = null;
+
+				for (SegmentModel segment : host.getSegments()) {
+					if (segment.getTotalTicks() > 0) {
+						p = segment.getCurrentTicks() * 100 / segment.getTotalTicks();
+					}
+
+					if (segment.getStatus() != null) {
+						status = segment.getStatus();
+					}
+
+				}
+
+				progress += p;
+
+				if (status == null) {
+					set.add("doing");
+				} else {
+					set.add(status);
+				}
+			}
+		}
+
+		String status = null;
+
+		if (set.contains("doing")) {
+			status = "doing";
+		} else if (set.contains("failed")) {
+			status = "failed";
+		} else if (set.contains("cancelled")) {
+			status = "cancelled";
+		} else if (set.contains("successful")) {
+			status = "successful";
+		} else {
+			status = "pending";
+		}
+
+		summary.setProgress(progress / (size > 1 ? size - 1 : 1));
+		summary.setStatus(status);
+		m_model.setStatus(status);
 	}
 
 	@Override
@@ -64,18 +123,20 @@ class StatusModelVisitor extends BaseVisitor {
 		StringBuilder sb = new StringBuilder(1024);
 		int progress = 0;
 		String step = null;
+		String status = null;
 
 		if (index == null) {
 			index = 0;
 		}
 
-		for (int i = 0; i < index && index < size; i++) {
+		for (int i = 0; i < index && i < size; i++) {
 			SegmentModel segment = segments.get(i);
 
 			if (segment.getStep() != null) {
 				step = segment.getStep();
 			}
 		}
+
 		for (int i = index; i < size; i++) {
 			SegmentModel segment = segments.get(i);
 
@@ -87,6 +148,10 @@ class StatusModelVisitor extends BaseVisitor {
 				step = segment.getStep();
 			}
 
+			if (segment.getStatus() != null) {
+				status = segment.getStatus();
+			}
+
 			String text = segment.getText();
 
 			if (text != null) {
@@ -94,11 +159,12 @@ class StatusModelVisitor extends BaseVisitor {
 			}
 		}
 
-		if (sb.length() > 0) {
+		if (sb.length() > 0 || status != null || step != null || progress > 0) {
 			HostModel host = new HostModel().setIp(ip);
 
 			host.setProgress(progress);
 			host.setCurrentStep(step);
+			host.setStatus(status);
 			host.setLog(escape(sb.toString()));
 			host.setOffset(size);
 			m_model.addHost(host);

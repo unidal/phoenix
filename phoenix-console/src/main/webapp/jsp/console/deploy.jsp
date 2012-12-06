@@ -8,29 +8,30 @@
 
 <a:layout>
 	
+	<c:set var="deploy" value="${model.deploy}"/>
 	<div class="row-fluid">
 		<div class="span4">
 			<div class="page-header">
-                <input type="hidden" id="deploy_id" value="${model.deploy.id}">
-				<strong style="font-size: medium;">${model.deploy.domain}</strong>：
-				[<font color="blue">${model.deploy.version}</font>, 方式：1->1->1->1, 错误：终断后续发布], 结果：[<strong><span id="deploy_status">doing</span></strong>]
+                <input type="hidden" id="deploy_id" value="${deploy.id}">
+				<strong style="font-size: medium;">${deploy.domain}</strong>：
+				[<font color="blue">${deploy.version}</font>, 方式：1->1->1->1, 错误：终断后续发布], 结果：[<strong><span id="deploy_status">${deploy.status}</span></strong>]
 			</div>
 			<div class="row-fluid">
 				<div class="span12 thumbnail" style="height: 440px; overflow: auto;">
 					<table class="table table-condensed nohover">
 						<thead>
 							<tr>
-								<th width="90">Machine</th>
+								<th width="105">Machine</th>
 								<th>Progress</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="entry" items="${model.deploy.hosts}" varStatus="status">
+							<c:forEach var="entry" items="${deploy.hosts}" varStatus="status">
 								<c:set var="host" value="${entry.value}"/>
-								<tr class="host_status<c:if test="${status.index == 0}"> selected</c:if>" id="${host.ip}" data-offset="${host.offset}">
-									<td>${host.ip}</td>
+								<tr class="host_status" id="${host.ip}" data-offset="${host.offset}">
+									<td>${host.ip}<i class="log-arrow icon-chevron-left<c:if test="${status.index > 0}"> hide</c:if>"></i></td>
 									<td>
-                                        <div class="progress">
+                                        <div class="progress ${host.status eq 'successful' ? 'progress-success' : (host.status eq 'failed' ? 'progress-danger' : (host.status eq 'doing' ? 'progress-striped active' : ''))}">
                                             <div class="bar" style="width: ${host.progress}%;">
                                                 <div class="step" style="width: 250px;color: #000000;">${host.currentStep}</div>
                                             </div>
@@ -44,8 +45,10 @@
 			</div>
 			<div class="row" style="margin-top: 5px;">
 				<p class="pull-right">
-					<span class="label label-todo">pending&nbsp;&nbsp;&nbsp;</span> <span class="label label-doing">doing&nbsp;&nbsp;</span> <span
-						class="label label-success">success</span> <span class="label label-failed">failed&nbsp;</span>
+					<span class="label label-todo">pending&nbsp;&nbsp;&nbsp;</span> 
+					<span class="label label-doing">doing&nbsp;&nbsp;</span> 
+					<span class="label label-success">success</span> 
+					<span class="label label-failed">failed&nbsp;</span>
 				</p>
 			</div>
 
@@ -56,7 +59,7 @@
 				<div class="page-header">
 					<h4>Deployment Details</h4>
 				</div>
-				<c:forEach var="entry" items="${model.deploy.hosts}" varStatus="status">
+				<c:forEach var="entry" items="${deploy.hosts}" varStatus="status">
 					<c:set var="host" value="${entry.value}"/>
 					<div id="log-${host.ip}" data-spy="scroll" data-offset="0" style="height: 508px; line-height: 20px; overflow: auto;"
 						 class="terminal terminal-like<c:if test="${status.index > 0}"> hide</c:if>">

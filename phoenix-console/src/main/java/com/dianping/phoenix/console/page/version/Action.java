@@ -3,11 +3,15 @@ package com.dianping.phoenix.console.page.version;
 public enum Action implements org.unidal.web.mvc.Action {
 	VIEW("view"),
 	
-	ADD("add"),
+	CREATE("create"),
 	
 	REMOVE("remove"),
 	
-	STATUS("status");
+	STATUS("status"),
+	
+	GET_VERSIONS("getVersions"),
+	
+	GET_ARTIFACTS("getArtifacts");
 
 	private String m_name;
 
