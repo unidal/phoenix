@@ -9,7 +9,7 @@ import com.dianping.phoenix.console.page.version.DefaultVersionManager.VersionLo
 import com.dianping.phoenix.service.StatusReporter;
 
 public interface VersionManager {
-	public Version createVersion(String version, String description,
+	Version createVersion(String version, String description,
 			String releaseNotes, String createdBy) throws Exception;
 
 	void submitVersion(VersionContext context) throws VersionException;
@@ -29,5 +29,5 @@ public interface VersionManager {
 	Version store(String version, String description, String releaseNotes,
 			String createdBy) throws DalException;
 
-	public StatusReporter getReporter();
+	StatusReporter getReporter();
 }
