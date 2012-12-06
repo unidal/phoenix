@@ -46,10 +46,30 @@ function update_create_log(result) {
 		$logplane.scrollTop($logplane.get(0).scrollHeight);
 	}
 	if (creating_version != return_version) {
-		$("#creating_version").val("");
-		$("#log_index").val("0");
-		$("#create_btn").attr("disabled", false).addClass("btn-primary");
+		version_create_complete();
 	}
+}
+
+function version_create_complete() {
+	$("#creating_version").val("");
+	$("#creating_version_note").text("");
+	$("#log_index").val("0");
+	$("#create_btn").attr("disabled", false).addClass("btn-primary");
+	refresh_version_table();
+}
+
+function refresh_version_table() {
+	$.ajax("", {
+		data : $.param({
+            "op" : "getVersions"
+        }, true),
+        dataType: "html",
+        cache: false,
+        success: function(result) {
+			$("#version_panel").html(result);
+			bind_version_cmp_evt_handlers();
+        }
+	});
 }
 
 function is_version_creating() {
@@ -58,7 +78,7 @@ function is_version_creating() {
 
 var confirm_timeout_id;
 
-function bind_cmp_evt_handlers() {
+function bind_version_cmp_evt_handlers() {
 	$(".version_row").hover(
 		function() {
 			$(this).find(".btn_container").show();
@@ -78,6 +98,10 @@ function bind_cmp_evt_handlers() {
 			}, 3000);
 		});
 	});
+}
+
+function bind_cmp_evt_handlers() {
+	bind_version_cmp_evt_handlers();
 	
 	$("#del_cancel").click(function() {
 		$("#del_confirm").hide();

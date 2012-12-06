@@ -16,94 +16,106 @@
 		            <input type="hidden" id="creating_version" value="${model.creatingVersion != null ? model.creatingVersion : ""}">
 		            <input type="hidden" id="log_index" value="0">
 		            <c:if test="${model.creatingVersion != null}">
-		            &nbsp;&nbsp;&nbsp;<span style="color: blue;">"${model.creatingVersion}" IS Creating...</span>
+		            &nbsp;&nbsp;&nbsp;<span style="color: blue;" id="creating_version_note">"${model.creatingVersion}" IS Creating...</span>
 		            </c:if>
 		        </div>
 			</div>
 		</div>
 		<div class="row-fluid">
-			<div class="span5 thumbnail" style="height:200px;overflow-y: auto;">
-				<table class="table table-striped table-condensed lion">
-					<thead>
-						<tr>
-							<th width="120">Version</th>
-							<th>
-								Description
-								<span id="del_confirm" class="pull-right hide">
-									<input type="hidden" id="del_version">
-									<a href="#" id="del_confirm" class="no-dec">确认</a>&nbsp;
-									<a href="#" id="del_cancel" class="no-dec">取消</a>
-								</span>
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach var="version" items="${model.versions}">
-							<tr class="version_row">
-								<td>${version.version}</td>
-								<td>
-									${version.description}
-									<span class="pull-right hide btn_container">
-										<button version="${version.id}" class="btn btn-mini2 pull-right" name="btn_del" type="button">删除</button>
+			<div class="span5 thumbnail">
+				<div>
+					<table class="table table-striped table-condensed lion" style="margin-bottom:0px;">
+						<thead>
+							<tr>
+								<th width="120">Version</th>
+								<th>
+									Description
+									<span id="del_confirm" class="pull-right hide">
+										<input type="hidden" id="del_version">
+										<a href="#" id="del_confirm" class="no-dec">确认</a>&nbsp;
+										<a href="#" id="del_cancel" class="no-dec">取消</a>
 									</span>
-								</td>
+								</th>
 							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
+						</thead>
+					</table>
+				</div>
+				<div id="version_panel" style="height:200px;overflow-y: auto;">
+					<table class="table table-striped table-condensed lion">
+						<tbody>
+							<c:forEach var="version" items="${model.versions}">
+								<tr class="version_row">
+									<td width="120">${version.version}</td>
+									<td>
+										${version.description}
+										<span class="pull-right hide btn_container">
+											<button version="${version.id}" class="btn btn-mini2 pull-right" name="btn_del" type="button">删除</button>
+										</span>
+									</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</div>
 			</div>
-			<div class="span7 thumbnail" style="height:200px;overflow-y: auto;">
-				<table class="table table-striped table-condensed lion">
-					<thead>
-						<tr>
-							<th>Group Id</th>
-							<th>Artifact Id</th>
-							<th>Version</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>com.dianping.dpsf</td>
-							<td>dpsf-net</td>
-							<td>1.8.0</td>
-						</tr>
-						<tr>
-							<td>com.dianping.lion</td>
-							<td>lion-client</td>
-							<td>0.2.2</td>
-						</tr>
-						<tr>
-							<td>com.dianping.swallow</td>
-							<td>swallow-client</td>
-							<td>0.5.4</td>
-						</tr>
-						<tr>
-							<td>com.dianping.zebra</td>
-							<td>zebra-client</td>
-							<td>0.1.5</td>
-						</tr>
-						<tr>
-							<td>com.dianping.dpsf</td>
-							<td>dpsf-net</td>
-							<td>1.8.0</td>
-						</tr>
-						<tr>
-							<td>com.dianping.lion</td>
-							<td>lion-client</td>
-							<td>0.2.2</td>
-						</tr>
-						<tr>
-							<td>com.dianping.swallow</td>
-							<td>swallow-client</td>
-							<td>0.5.4</td>
-						</tr>
-						<tr>
-							<td>com.dianping.zebra</td>
-							<td>zebra-client</td>
-							<td>0.1.5</td>
-						</tr>
-					</tbody>
-				</table>
+			<div class="span7 thumbnail">
+				<div>
+					<table class="table table-striped table-condensed lion" style="margin-bottom:0px;">
+						<thead>
+							<tr>
+								<th width="150">Group Id</th>
+								<th width="150">Artifact Id</th>
+								<th>Version</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+				<div style="height:200px;overflow-y: auto;">
+					<table class="table table-striped table-condensed lion">
+						<tbody>
+							<tr>
+								<td width="150">com.dianping.dpsf</td>
+								<td width="150">dpsf-net</td>
+								<td>1.8.0</td>
+							</tr>
+							<tr>
+								<td>com.dianping.lion</td>
+								<td>lion-client</td>
+								<td>0.2.2</td>
+							</tr>
+							<tr>
+								<td>com.dianping.swallow</td>
+								<td>swallow-client</td>
+								<td>0.5.4</td>
+							</tr>
+							<tr>
+								<td>com.dianping.zebra</td>
+								<td>zebra-client</td>
+								<td>0.1.5</td>
+							</tr>
+							<tr>
+								<td>com.dianping.dpsf</td>
+								<td>dpsf-net</td>
+								<td>1.8.0</td>
+							</tr>
+							<tr>
+								<td>com.dianping.lion</td>
+								<td>lion-client</td>
+								<td>0.2.2</td>
+							</tr>
+							<tr>
+								<td>com.dianping.swallow</td>
+								<td>swallow-client</td>
+								<td>0.5.4</td>
+							</tr>
+							<tr>
+								<td>com.dianping.zebra</td>
+								<td>zebra-client</td>
+								<td>0.1.5</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 		<br />

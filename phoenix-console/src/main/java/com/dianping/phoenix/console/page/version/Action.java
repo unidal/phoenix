@@ -7,7 +7,11 @@ public enum Action implements org.unidal.web.mvc.Action {
 	
 	REMOVE("remove"),
 	
-	STATUS("status");
+	STATUS("status"),
+	
+	GET_VERSIONS("getVersions"),
+	
+	GET_ARTIFACTS("getArtifacts");
 
 	private String m_name;
 
