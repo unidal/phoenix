@@ -7,6 +7,9 @@ import org.apache.log4j.Logger;
 
 public class DeployWorkflow {
 
+	public static final String CHUNK_TERMINATOR = "--9ed2b78c112fbd17a8511812c554da62941629a8--\r\n";
+	public static final String LOG_TERMINATOR = "--255220d51dc7fb4aacddadedfe252a346da267d4--\r\n";
+
 	private final static Logger logger = Logger.getLogger(DeployWorkflow.class);
 
 	private Context ctx;
@@ -54,7 +57,8 @@ public class DeployWorkflow {
 		BEFORE_START(-1, 500, 0) {
 			@Override
 			protected int doStep(DeployStep steps, Context ctx) throws Exception {
-				return steps.start();
+				// will never be called
+				return DeployStep.CODE_OK;
 			}
 		},
 
@@ -233,7 +237,7 @@ public class DeployWorkflow {
 
 		private static void writeLogChunkTerminator(OutputStream logOut, Step step) {
 			try {
-				logOut.write("--9ed2b78c112fbd17a8511812c554da62941629a8--\r\n".getBytes("ascii"));
+				logOut.write(CHUNK_TERMINATOR.getBytes("ascii"));
 				logOut.flush();
 			} catch (Exception e) {
 				logger.error(String.format("error write log chunk terminator for %s", step), e);
@@ -247,7 +251,7 @@ public class DeployWorkflow {
 			sb.append(step.getProgressInfo());
 
 			sb.append("\r\n");
-			sb.append("Step:");
+			sb.append("Step: ");
 			sb.append(step);
 
 			if (step == SUCCESS || step == FAILED) {
@@ -268,7 +272,7 @@ public class DeployWorkflow {
 
 	private void writeLogTerminator(OutputStream logOut) {
 		try {
-			logOut.write("--255220d51dc7fb4aacddadedfe252a346da267d4--\r\n".getBytes("ascii"));
+			logOut.write(LOG_TERMINATOR.getBytes("ascii"));
 		} catch (Exception e) {
 			logger.error(String.format("error write log terminator for %s", this), e);
 		}

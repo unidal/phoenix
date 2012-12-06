@@ -8,6 +8,7 @@
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep</role>

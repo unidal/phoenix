@@ -9,8 +9,6 @@ public interface DeployStep {
 
 	void prepare(String domain, String kernelVersion, OutputStream logOut);
 
-	int start() throws Exception;
-
 	int init() throws Exception;
 
 	int checkArgument() throws Exception;

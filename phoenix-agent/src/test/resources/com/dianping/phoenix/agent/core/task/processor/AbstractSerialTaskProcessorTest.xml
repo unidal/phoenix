@@ -3,6 +3,7 @@
 		<component>
 			<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 			<implementation>com.dianping.phoenix.agent.core.tx.MockTransactionManager</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</role>
@@ -17,6 +18,7 @@
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.MockTaskProcessorA1</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.MockTaskProcessorA1</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</role>
@@ -30,6 +32,7 @@
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.MockTaskProcessorA2</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.MockTaskProcessorA2</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</role>
@@ -43,6 +46,7 @@
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.MockTaskProcessorB</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.MockTaskProcessorB</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</role>
