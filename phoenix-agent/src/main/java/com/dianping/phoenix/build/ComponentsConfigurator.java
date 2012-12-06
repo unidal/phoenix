@@ -29,7 +29,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(C(SemaphoreWrapper.class, "kernel", SemaphoreWrapper.class));
-		all.add(C(DeployWorkflow.class));
+		all.add(C(DeployWorkflow.class).is(PER_LOOKUP));
 		all.add(C(DeployStep.class, DefaultDeployStep.class) //
 				.req(Config.class).req(ScriptExecutor.class) //
 				.is(PER_LOOKUP));

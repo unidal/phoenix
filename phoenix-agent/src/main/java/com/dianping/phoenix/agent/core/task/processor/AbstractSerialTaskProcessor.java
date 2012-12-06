@@ -53,23 +53,19 @@ public abstract class AbstractSerialTaskProcessor<T> extends ContainerHolder imp
 					String eventMsg = "ok";
 					try {
 						startTransaction(tx);
-						eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), "", tx.getStatus()));
 						try {
 							tx.setStatus(doTransaction(tx));
 						} catch (Exception e) {
+							getLogger().error(String.format("error do transaction %s", tx), e);
 							tx.setStatus(Status.FAILED);
 							eventMsg = e.getMessage();
-						} finally {
-							txMgr.saveTransaction(tx);
-							getLogger().info("end processing " + tx);
 						}
 					} catch (Exception e) {
-						getLogger().error("error preparing transaction", e);
+						getLogger().error(String.format("error preparing transaction %s", tx), e);
+						tx.setStatus(Status.FAILED);
 						throw new RuntimeException(e);
 					} finally {
-						semaphoreWrapper.getSemaphore().release();
-						endTransaction(tx.getTxId());
-						eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), eventMsg, tx.getStatus()));
+						endTransaction(tx, eventMsg);
 					}
 				}
 
@@ -99,17 +95,32 @@ public abstract class AbstractSerialTaskProcessor<T> extends ContainerHolder imp
 	}
 
 	private synchronized void startTransaction(Transaction tx) throws IOException {
-		getLogger().info("start processing " + tx);
+		getLogger().info(String.format("start processing ", tx));
 		currentTx = tx;
+		
 		initEventTrackerChain(tx.getEventTracker());
+		
 		tx.setStatus(Status.PROCESSING);
+		eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), "", tx.getStatus()));
+		
 		txMgr.saveTransaction(tx);
 	}
 
-	private synchronized void endTransaction(TransactionId txId) {
-		if (currentTx != null && currentTx.getTxId().equals(txId)) {
+	private synchronized void endTransaction(Transaction tx, String eventMsg) {
+		if (currentTx != null && currentTx.getTxId().equals(tx.getTxId())) {
 			currentTx = null;
 		}
+		
+		semaphoreWrapper.getSemaphore().release();
+		eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), eventMsg, tx.getStatus()));
+		
+		try {
+			txMgr.saveTransaction(tx);
+		} catch (Exception e) {
+			getLogger().error(String.format("error save transaction %s", tx), e);
+		}
+		
+		getLogger().info(String.format("end processing %s", tx));
 	}
 
 	@Override

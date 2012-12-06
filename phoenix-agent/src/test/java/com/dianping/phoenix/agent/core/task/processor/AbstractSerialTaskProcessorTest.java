@@ -1,5 +1,7 @@
 package com.dianping.phoenix.agent.core.task.processor;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 import java.util.concurrent.CountDownLatch;
@@ -10,14 +12,18 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.unidal.lookup.ComponentTestCase;
 
+import com.dianping.phoenix.agent.core.TestUtil;
 import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
+import com.dianping.phoenix.agent.core.tx.TransactionManager;
 
 public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 
@@ -152,6 +158,30 @@ public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 		}
 
 	}
+	
+	@Test
+	public void testSubmitAfterAFailedTransaction() throws Exception {
+		MockTaskProcessorA2 a2 = lookup(MockTaskProcessorA2.class);
+		a2.setThrowException(true);
+		
+		final CountDownLatch failedEventLatch = new CountDownLatch(1);
+		Transaction tx = new Transaction(mock(Task.class), mock(TransactionId.class), new AbstractEventTracker() {
+
+			@Override
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				if(event.getStatus() == Status.FAILED) {
+					failedEventLatch.countDown();
+				}
+			}
+			
+		});
+		
+		Assert.assertTrue(a2.submit(tx).isAccepted());
+		
+		Assert.assertTrue(failedEventLatch.await(1, TimeUnit.SECONDS));
+		
+		Assert.assertTrue(a2.submit(mock(Transaction.class)).isAccepted());
+	}
 
 	@Test
 	public void testAttachEventTracker() throws Exception {
@@ -191,4 +221,85 @@ public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 
 	}
 
+	@Test
+	public void testBasicLifecycleEvents() throws Exception {
+		TaskProcessor<Task> a2 = lookup(MockTaskProcessorA2.class);
+		final CountDownLatch processingLatch = new CountDownLatch(1);
+		final CountDownLatch successLatch = new CountDownLatch(1);
+		
+		Transaction tx = new Transaction(mock(Task.class), mock(TransactionId.class), new AbstractEventTracker() {
+
+			@Override
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				if (event.getStatus() == Status.PROCESSING) {
+					processingLatch.countDown();
+				} else if (event.getStatus() == Status.SUCCESS) {
+					successLatch.countDown();
+				}
+			}
+		});
+		
+		a2.submit(tx);
+
+		boolean processingEventGot = processingLatch.await(1, TimeUnit.SECONDS);
+		boolean successEventGot = successLatch.await(1, TimeUnit.SECONDS);
+
+		Assert.assertTrue(processingEventGot);
+		Assert.assertTrue(successEventGot);
+	}
+	
+	@Test
+	public void testExceptionInDoTransaction() throws Exception {
+		MockTaskProcessorA2 a2 = lookup(MockTaskProcessorA2.class);
+		a2.setThrowException(true);
+		
+		final CountDownLatch failedEventLatch = new CountDownLatch(1);
+		Transaction tx = new Transaction(mock(Task.class), mock(TransactionId.class), new AbstractEventTracker() {
+
+			@Override
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				if(event.getStatus() == Status.FAILED) {
+					failedEventLatch.countDown();
+				}
+			}
+			
+		});
+		
+		a2.submit(tx );
+		
+		Assert.assertTrue(failedEventLatch.await(1, TimeUnit.SECONDS));
+		
+	}
+	
+	@Test
+	public void testExceptionWhenPreparingTransaction() throws Exception {
+		MockTaskProcessorA2 a2 = lookup(MockTaskProcessorA2.class);
+		TransactionManager mockTxMgr = mock(TransactionManager.class);
+		doAnswer(new Answer<Object>() {
+
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				throw new Exception("fake exception");
+			}
+		}).when(mockTxMgr).saveTransaction(any(Transaction.class));
+		
+		TestUtil.replaceFieldByReflection(a2, "txMgr", mockTxMgr);
+		
+		final CountDownLatch failedEventLatch = new CountDownLatch(1);
+		Transaction tx = new Transaction(mock(Task.class), mock(TransactionId.class), new AbstractEventTracker() {
+
+			@Override
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				if(event.getStatus() == Status.FAILED) {
+					failedEventLatch.countDown();
+				}
+			}
+			
+		});
+		
+		a2.submit(tx);
+		
+		Assert.assertTrue(failedEventLatch.await(1, TimeUnit.DAYS));
+	}
+	
 }

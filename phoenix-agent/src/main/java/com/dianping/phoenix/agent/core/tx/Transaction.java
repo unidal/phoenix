@@ -13,13 +13,14 @@ import com.dianping.phoenix.agent.core.task.Task;
 public class Transaction {
 
 	public static enum Status {
-		INIT, REJECTED, PROCESSING, FAILED, SUCCESS;
+		INIT, REJECTED, PROCESSING, FAILED, SUCCESS, KILLED;
 
 		private final static Set<Status> COMPLETED_STATUS_SET = new HashSet<Transaction.Status>();
 		static {
 			COMPLETED_STATUS_SET.add(REJECTED);
 			COMPLETED_STATUS_SET.add(FAILED);
 			COMPLETED_STATUS_SET.add(SUCCESS);
+			COMPLETED_STATUS_SET.add(KILLED);
 		};
 
 		/**
@@ -80,7 +81,7 @@ public class Transaction {
 
 	public void setStatus(Status status) {
 		if(status == null) {
-			throw new IllegalStateException("status of transaction can't be set to null");
+			throw new IllegalStateException(String.format("status of transaction can't be set to null %s", this));
 		}
 		this.status = status;
 	}

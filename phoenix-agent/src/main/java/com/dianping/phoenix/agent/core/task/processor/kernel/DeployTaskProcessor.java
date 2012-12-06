@@ -2,6 +2,7 @@ package com.dianping.phoenix.agent.core.task.processor.kernel;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Logger;
 import org.codehaus.plexus.util.IOUtil;
@@ -19,13 +20,15 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 
 	@Inject
 	DeployWorkflow workflow;
+	AtomicReference<Transaction> currentTxRef = new AtomicReference<Transaction>();
 
 	public DeployTaskProcessor() {
 	}
-	
+
 	@Override
 	protected Status doTransaction(final Transaction tx) throws IOException {
 
+		currentTxRef.set(tx);
 		DeployTask task = (DeployTask) tx.getTask();
 		String domain = task.getDomain();
 
@@ -47,7 +50,7 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 	private Status updateKernel(String domain, String kernelVersion, OutputStream stdOut) throws Exception {
 		DeployStep steps = lookup(DeployStep.class);
 		int exitCode = workflow.start(domain, kernelVersion, steps, stdOut);
-		if(exitCode == DeployStep.CODE_OK) {
+		if (exitCode == DeployStep.CODE_OK) {
 			return Status.SUCCESS;
 		} else {
 			return Status.FAILED;
@@ -56,8 +59,14 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 
 	@Override
 	public boolean cancel(TransactionId txId) {
-		workflow.kill();
-		return true;
+		Transaction currentTx = currentTxRef.get();
+		if (currentTx != null && currentTx.getTxId().equals(txId)) {
+			if (workflow.kill()) {
+				currentTx.setStatus(Status.KILLED);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

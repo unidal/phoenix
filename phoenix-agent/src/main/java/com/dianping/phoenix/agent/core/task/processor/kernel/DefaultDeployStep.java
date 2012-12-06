@@ -58,11 +58,6 @@ public class DefaultDeployStep implements DeployStep {
 	}
 
 	@Override
-	public int start() throws Exception {
-		return DeployStep.CODE_OK;
-	}
-
-	@Override
 	public int init() throws Exception {
 		return runShellCmd("init");
 	}

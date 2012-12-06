@@ -29,6 +29,34 @@ public class ServerXmlUtilTest {
 	}
 
 	@Test
+	public void testIsDocBaseMatch() {
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b", "/a/b"));
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b", "/a/b/"));
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b/", "/a/b"));
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b/", "/a/b/"));
+
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b", "/b"));
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b", "/b/"));
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b/", "/b"));
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b/", "/b/"));
+
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b//", "/b/"));
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b//", "/b"));
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b", "/b//"));
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b", "/b//"));
+
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b\\", "/b"));
+		Assert.assertTrue(ServerXmlUtil.isDocBaseMatch("/a/b", "/b\\\\"));
+
+		Assert.assertFalse(ServerXmlUtil.isDocBaseMatch("/a/b", "/a"));
+		Assert.assertFalse(ServerXmlUtil.isDocBaseMatch("/a/b", "/a/"));
+
+		Assert.assertFalse(ServerXmlUtil.isDocBaseMatch("/a/b2", "b"));
+		Assert.assertFalse(ServerXmlUtil.isDocBaseMatch("/a/b2", "/b"));
+		Assert.assertFalse(ServerXmlUtil.isDocBaseMatch("/a/b2", "/a/b"));
+	}
+
+	@Test
 	public void testInjectPhoenixLoader() throws Exception {
 		ServerXmlUtil.attachPhoenixContextLoader(serverXmlFile, "sample-app/current", loaderClass, kernelDocBase);
 		String content = IOUtils.toString(new FileInputStream(serverXmlFile));
@@ -63,6 +91,13 @@ public class ServerXmlUtilTest {
 	}
 
 	@Test
+	public void testInjectPhoenixLoaderNotFound() throws Exception {
+		ServerXmlUtil.attachPhoenixContextLoader(serverXmlFile, "sample-app3/current", loaderClass, kernelDocBase);
+		String content = IOUtils.toString(new FileInputStream(serverXmlFile));
+		Assert.assertTrue(content.indexOf("<Loader") < 0);
+	}
+
+	@Test
 	public void testRemovePhoenixLoader() throws Exception {
 		String docBasePattern = "sample-app/current";
 		String docBasePattern2 = "sample-app2/current";
@@ -82,5 +117,18 @@ public class ServerXmlUtilTest {
 		// no second <Loader>
 		int sndLoaderIdx = content.indexOf("<Loader", fstLoaderIdx + 1);
 		Assert.assertTrue(sndLoaderIdx < 0);
+	}
+	
+	@Test
+	public void testRemovePhoenixLoaderNotFound() throws Exception {
+		String docBasePattern = "sample-app/current";
+		String docBasePatternNotFound = "sample-app3/current";
+		
+		ServerXmlUtil.attachPhoenixContextLoader(serverXmlFile, docBasePattern, loaderClass, kernelDocBase);
+		ServerXmlUtil.detachPhoenixContextLoader(serverXmlFile, docBasePatternNotFound);
+
+		String content = IOUtils.toString(new FileInputStream(serverXmlFile));
+		
+		Assert.assertTrue(content.indexOf("<Loader") > 0);
 	}
 }
