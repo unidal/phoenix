@@ -4,7 +4,7 @@
 <jsp:useBean id="payload" type="com.dianping.phoenix.console.page.version.Payload" scope="request" />
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.version.Model" scope="request" />
 {
-"version":"0.0.1-SNAPSHOT", 
-"index":"0",
-"log":"done.......<br/>dfsdfff"
+	"version":"${model.creatingVersion}", 
+	"index":${model.index},
+	"log":"${model.logcontent}"
 }

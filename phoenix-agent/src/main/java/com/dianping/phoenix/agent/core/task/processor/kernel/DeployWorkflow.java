@@ -6,12 +6,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.log4j.Logger;
 
 public class DeployWorkflow {
-	
+
 	private final static Logger logger = Logger.getLogger(DeployWorkflow.class);
 
 	private Context ctx;
 	private DeployStep steps;
-	private AtomicBoolean started = new AtomicBoolean(false);
 
 	@SuppressWarnings("unused")
 	private class Context {
@@ -207,6 +206,7 @@ public class DeployWorkflow {
 
 			writeLogChunkHeader(logOut, nextStep);
 			int exitCode = DeployStep.CODE_ERROR;
+			logger.info(String.format("current step %s", nextStep));
 			try {
 				exitCode = nextStep.doStep(steps, ctx);
 			} catch (Exception e) {
@@ -215,10 +215,12 @@ public class DeployWorkflow {
 			writeLogChunkTerminator(logOut, nextStep);
 
 			if (exitCode != DeployStep.CODE_OK) {
+				logger.info("failed");
 				if (nextStep.nextIdWhenFail != null) {
 					nextStep.moveTo(steps, get(nextStep.nextIdWhenFail), logOut, ctx);
 				}
 			} else {
+				logger.info("successful");
 				if (nextStep.nextIdWhenSuccess != null) {
 					nextStep.moveTo(steps, get(nextStep.nextIdWhenSuccess), logOut, ctx);
 				}
@@ -240,10 +242,10 @@ public class DeployWorkflow {
 
 		private static void writeLogChunkHeader(OutputStream logOut, Step step) {
 			StringBuilder sb = new StringBuilder();
-			
+
 			sb.append("Progress: ");
 			sb.append(step.getProgressInfo());
-			
+
 			sb.append("\r\n");
 			sb.append("Step:");
 			sb.append(step);
@@ -263,7 +265,7 @@ public class DeployWorkflow {
 			}
 		}
 	}
-	
+
 	private void writeLogTerminator(OutputStream logOut) {
 		try {
 			logOut.write("--255220d51dc7fb4aacddadedfe252a346da267d4--\r\n".getBytes("ascii"));
@@ -273,17 +275,12 @@ public class DeployWorkflow {
 	}
 
 	public int start(String domain, String kernelVersion, DeployStep steps, OutputStream logOut) {
-		boolean notStarted = started.compareAndSet(false, true);
-		if (notStarted) {
-			this.steps = steps;
-			steps.prepare(domain, kernelVersion, logOut);
-			ctx = new Context(logOut);
-			Step.BEFORE_START.moveTo(steps, Step.INIT, logOut, ctx);
-			writeLogTerminator(logOut);
-			return ctx.getExitcode();
-		} else {
-			throw new IllegalStateException("can not start workflow more than once");
-		}
+		this.steps = steps;
+		steps.prepare(domain, kernelVersion, logOut);
+		ctx = new Context(logOut);
+		Step.BEFORE_START.moveTo(steps, Step.INIT, logOut, ctx);
+		writeLogTerminator(logOut);
+		return ctx.getExitcode();
 	}
 
 	public boolean kill() {

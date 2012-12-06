@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.unidal.helper.Threads;
+import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.agent.core.event.EventTracker;
@@ -17,7 +18,7 @@ import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
 
-public abstract class AbstractSerialTaskProcessor<T> implements TaskProcessor<T> {
+public abstract class AbstractSerialTaskProcessor<T> extends ContainerHolder implements TaskProcessor<T> {
 
 	@Inject
 	protected TransactionManager txMgr;

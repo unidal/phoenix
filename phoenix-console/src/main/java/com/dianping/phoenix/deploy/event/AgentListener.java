@@ -10,5 +10,5 @@ public interface AgentListener {
 
 	public void onEnd(Context ctx, String status) throws Exception;
 
-	public void onError(Context ctx, Throwable e) throws Exception;
+	public void onCancel(Context ctx) throws Exception;
 }

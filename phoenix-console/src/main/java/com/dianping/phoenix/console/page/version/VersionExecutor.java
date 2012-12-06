@@ -2,6 +2,9 @@ package com.dianping.phoenix.console.page.version;
 
 import org.unidal.helper.Threads.Task;
 
+import com.dianping.phoenix.service.DefaultStatusReporter;
+import com.dianping.phoenix.service.StatusReporter;
+
 public class VersionExecutor implements Task {
 
 	private boolean m_active;
@@ -39,6 +42,15 @@ public class VersionExecutor implements Task {
 				e.printStackTrace();
 			}
 
+			m_manager
+			.getReporter()
+			.categoryLog(
+					DefaultStatusReporter.VERSION_LOG,
+					m_context.getVersion(),
+					String.format(
+							"Create version(%s) >>>>>>>>>>>>>>>DONE<<<<<<<<<<<<<<<<<",
+							m_context.getVersion()));
+			
 			try {
 				Thread.sleep(30 * 1000);
 			} catch (InterruptedException e) {
@@ -46,6 +58,8 @@ public class VersionExecutor implements Task {
 			}
 
 			m_manager.clearVersion(m_context.getVersion());
+
+			
 		}
 	}
 

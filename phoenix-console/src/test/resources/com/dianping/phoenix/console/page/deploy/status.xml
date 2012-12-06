@@ -3,9 +3,6 @@
 <segment step="step1" current-ticks="11" total-ticks="91"><![CDATA[
 First segment
 ]]></segment>
-<segment current-ticks="31" total-ticks="91" status="failed"><![CDATA[
-Second segment
-]]></segment>
 	</host>
 	<host ip="192.168.66.132">
 <segment step="step1" current-ticks="11" total-ticks="91"><![CDATA[
@@ -21,6 +18,17 @@ First segment
 ]]></segment>
 <segment current-ticks="31" total-ticks="91" status="failed"><![CDATA[
 Second segment
+]]></segment>
+<segment step="step2" current-ticks="51" total-ticks="91"><![CDATA[
+Third segment
+]]></segment>
+	</host>
+	<host ip="192.168.66.134">
+<segment current-ticks="91" total-ticks="91" status="failed"></segment>
+	</host>
+	<host ip="summary">
+<segment><![CDATA[
+Summary segment
 ]]></segment>
 	</host>
 </deploy>

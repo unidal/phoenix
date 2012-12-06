@@ -2,7 +2,7 @@ var continuous_err_times = 0;
 var MAX_CON_ERR_TIMES = 10;
 $(function() {
     if (!is_deploy_finished()) {
-        setTimeout(fetch_deploy_status, 1000);
+        setTimeout(fetch_deploy_status, 500);
     }
     bind_cmp_evt_handlers();
 });
@@ -10,8 +10,8 @@ $(function() {
 function bind_cmp_evt_handlers() {
     $(".host_status").click(function() {
         var host = $(this).attr("id");
-        $(".host_status").removeClass("selected");
-        $(this).addClass("selected");
+        $(".log-arrow").addClass("hide");
+        $(this).find(".log-arrow").removeClass("hide");
         $(".terminal").hide();
         $("#log-" + host.replace(/\./g, "\\.")).show();
     });
@@ -71,7 +71,7 @@ function update_host_status(host, data) {
     }
     $("#" + host).attr("data-offset", data.offset);
     $hostProgress.removeClass().addClass("progress");
-    if ("success" == hostStatus) {
+    if ("successful" == hostStatus) {
         $hostProgress.addClass("progress-success");
     } else if ("failed" == hostStatus) {
         $hostProgress.addClass("progress-danger");

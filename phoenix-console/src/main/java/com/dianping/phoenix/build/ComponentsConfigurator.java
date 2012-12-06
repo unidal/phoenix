@@ -26,7 +26,6 @@ import com.dianping.phoenix.service.DefaultGitService;
 import com.dianping.phoenix.service.DefaultProjectManager;
 import com.dianping.phoenix.service.DefaultStatusReporter;
 import com.dianping.phoenix.service.DefaultWarService;
-import com.dianping.phoenix.service.GitProgressMonitor;
 import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.StatusReporter;

@@ -32,7 +32,7 @@ public class ConfigManager implements Initializable {
 		if (m_config == null) {
 			throw new RuntimeException("ConfigManager is not initialized properly!");
 		} else {
-			int interval = m_config.getAgent().getDeployRetryInterval(); // in minute
+			int interval = m_config.getAgent().getDeployRetryInterval(); // in second
 
 			return interval * 1000L;
 		}

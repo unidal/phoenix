@@ -68,5 +68,8 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		if (m_action == null) {
 			m_action = Action.VIEW;
 		}
+		if (m_version != null) {
+			m_version = m_version.trim();
+		}
 	}
 }
