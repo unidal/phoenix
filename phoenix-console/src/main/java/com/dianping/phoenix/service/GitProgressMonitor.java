@@ -1,12 +1,26 @@
 package com.dianping.phoenix.service;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.jgit.lib.BatchingProgressMonitor;
 
-import com.site.lookup.annotation.Inject;
+import com.dianping.phoenix.console.page.version.VersionContext;
 
 public class GitProgressMonitor extends BatchingProgressMonitor {
-	@Inject
+
 	private StatusReporter m_reporter;
+
+	private String m_logType = DefaultStatusReporter.VERSION_LOG;
+
+	private VersionContext m_context;
+
+	public GitProgressMonitor(String logType, VersionContext context,
+			StatusReporter reporter) {
+		m_logType = logType;
+		m_context = context;
+		m_reporter = reporter;
+		setDelayStart(10, TimeUnit.SECONDS);
+	}
 
 	private void format(StringBuilder s, String taskName, int workCurr) {
 		s.append(taskName);
@@ -70,7 +84,7 @@ public class GitProgressMonitor extends BatchingProgressMonitor {
 	}
 
 	private void send(StringBuilder s) {
-		m_reporter.log(s.toString());
+		m_reporter.categoryLog(m_logType, m_context.getVersion(), s.toString());
 	}
 
 }

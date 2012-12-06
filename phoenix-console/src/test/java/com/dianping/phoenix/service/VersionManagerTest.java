@@ -63,6 +63,12 @@ public class VersionManagerTest extends ComponentTestCase {
 		VersionLog log = manager.getStatus(version.getVersion(), 0);
 
 		Assert.assertNotNull(log);
+		
+//		Thread.sleep(30 * 1000);
+//
+//		log = manager.getStatus(version.getVersion(), 0);
+//
+//		Assert.assertNull(log);
 
 	}
 }

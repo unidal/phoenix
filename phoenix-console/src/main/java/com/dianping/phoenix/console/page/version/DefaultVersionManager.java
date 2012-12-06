@@ -46,6 +46,21 @@ public class DefaultVersionManager implements VersionManager {
 
 		Version v = store(version, description, releaseNotes, createdBy);
 
+		if (v == null) {
+			m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
+					String.format("Kernel version(%s) creation failed!",
+							version));
+			m_reporter
+					.categoryLog(
+							DefaultStatusReporter.VERSION_LOG,
+							version,
+							String.format(
+									"Create version(%s) >>>>>>>>>>>>>>>DONE<<<<<<<<<<<<<<<<<",
+									version));
+			throw new VersionException(String.format(
+					"Kernel version(%s) is already existed!", version));
+		}
+
 		Threads.forGroup("Phoenix").start(
 				new VersionExecutor(new VersionContext(v.getId(), version,
 						description, releaseNotes, createdBy), this));
@@ -71,7 +86,6 @@ public class DefaultVersionManager implements VersionManager {
 		Collections.sort(versions, new Comparator<Version>() {
 			@Override
 			public int compare(Version v1, Version v2) {
-//				return v2.getVersion().compareTo(v1.getVersion());
 				return v2.getId() - v1.getId();
 			}
 		});
@@ -126,6 +140,7 @@ public class DefaultVersionManager implements VersionManager {
 			m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
 					String.format("Kernel version(%s) is already existed!",
 							version));
+			return null;
 		} catch (DalNotFoundException e) {
 			// expected
 		}
@@ -204,6 +219,11 @@ public class DefaultVersionManager implements VersionManager {
 			this.m_messages = messages;
 		}
 
+	}
+
+	@Override
+	public StatusReporter getReporter() {
+		return m_reporter;
 	}
 
 }
