@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.page.version;
+package com.dianping.phoenix.version;
 
 import org.unidal.helper.Threads.Task;
 

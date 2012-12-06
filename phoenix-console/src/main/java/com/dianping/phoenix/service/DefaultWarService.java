@@ -10,7 +10,7 @@ import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.console.page.version.VersionContext;
+import com.dianping.phoenix.version.VersionContext;
 
 public class DefaultWarService implements WarService {
 	@Inject

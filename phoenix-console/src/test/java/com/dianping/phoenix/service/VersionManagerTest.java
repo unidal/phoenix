@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.phoenix.console.dal.deploy.Version;
-import com.dianping.phoenix.console.page.version.DefaultVersionManager.VersionLog;
-import com.dianping.phoenix.console.page.version.VersionContext;
-import com.dianping.phoenix.console.page.version.VersionManager;
+import com.dianping.phoenix.version.VersionContext;
+import com.dianping.phoenix.version.VersionManager;
+import com.dianping.phoenix.version.VersionManager.VersionLog;
 
 public class VersionManagerTest extends ComponentTestCase {
 
