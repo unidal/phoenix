@@ -10,8 +10,8 @@ $(function() {
 function bind_cmp_evt_handlers() {
     $(".host_status").click(function() {
         var host = $(this).attr("id");
-        $(".host_status").removeClass("selected");
-        $(this).addClass("selected");
+        $(".log-arrow").addClass("hide");
+        $(this).find(".log-arrow").removeClass("hide");
         $(".terminal").hide();
         $("#log-" + host.replace(/\./g, "\\.")).show();
     });

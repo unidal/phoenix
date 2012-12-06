@@ -38,19 +38,11 @@
 		<component>
 			<role>org.eclipse.jgit.lib.ProgressMonitor</role>
 			<implementation>com.dianping.phoenix.service.GitProgressMonitor</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.service.StatusReporter</role>
-				</requirement>
-			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.console.page.version.VersionManager</role>
-			<implementation>com.dianping.phoenix.console.page.version.DefaultVersionManager</implementation>
+			<role>com.dianping.phoenix.service.VersionManager</role>
+			<implementation>com.dianping.phoenix.service.DefaultVersionManager</implementation>
 			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.service.StatusReporter</role>
-				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.service.WarService</role>
 				</requirement>
@@ -83,10 +75,7 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.deploy.event.AgentListener</role>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -102,10 +91,7 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.deploy.event.AgentListener</role>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -121,10 +107,7 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.deploy.event.AgentListener</role>
+					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -133,28 +116,7 @@
 			<implementation>com.dianping.phoenix.deploy.DefaultDeployManager</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.deploy.event.DeployListener</role>
-			<implementation>com.dianping.phoenix.deploy.event.DefaultDeployListener</implementation>
-			<requirements>
-				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDao</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.deploy.event.AgentListener</role>
-			<implementation>com.dianping.phoenix.deploy.event.DefaultAgentListener</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
@@ -180,9 +142,9 @@
 				<statement-cache-size>1000</statement-cache-size>
 				<properties>
 					<driver>com.mysql.jdbc.Driver</driver>
-					<URL>jdbc:mysql://localhost:3306/phoenix</URL>
+					<URL>jdbc:mysql://192.168.8.45:3306/phoenix</URL>
 					<user>root</user>
-					<password>12qwaszx</password>
+					<password>dianpingadmin</password>
 					<connectionProperties><![CDATA[useUnicode=true&autoReconnect=true]]></connectionProperties>
 				</properties>
 			</configuration>
@@ -273,7 +235,7 @@
 					<role>com.dianping.phoenix.service.ProjectManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.console.page.version.VersionManager</role>
+					<role>com.dianping.phoenix.service.VersionManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -286,7 +248,7 @@
 			<implementation>com.dianping.phoenix.console.page.version.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.console.page.version.VersionManager</role>
+					<role>com.dianping.phoenix.service.VersionManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.version.JspViewer</role>
@@ -303,6 +265,9 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.deploy.DeployManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.DeployExecutor</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.deploy.JspViewer</role>

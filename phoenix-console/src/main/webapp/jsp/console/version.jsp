@@ -13,6 +13,11 @@
 				<div class="alert fade in">
 		            <a class="close" data-dismiss="alert" href="#">×</a>
 		            <strong>Note：</strong> 同一时刻仅允许一个构建任务!
+		            <input type="hidden" id="creating_version" value="${model.creatingVersion != null ? model.creatingVersion : ""}">
+		            <input type="hidden" id="log_index" value="0">
+		            <c:if test="${model.creatingVersion != null}">
+		            &nbsp;&nbsp;&nbsp;<span style="color: blue;">"${model.creatingVersion}" IS Creating...</span>
+		            </c:if>
 		        </div>
 			</div>
 		</div>
@@ -37,9 +42,9 @@
 							<tr class="version_row">
 								<td>${version.version}</td>
 								<td>
-									${version.description} <font color="white">${version.id}</font>
+									${version.description}
 									<span class="pull-right hide btn_container">
-										<button version="${version.version}" class="btn btn-mini2 pull-right" name="btn_del" type="button">删除</button>
+										<button version="${version.id}" class="btn btn-mini2 pull-right" name="btn_del" type="button">删除</button>
 									</span>
 								</td>
 							</tr>
@@ -101,34 +106,28 @@
 				</table>
 			</div>
 		</div>
-		
+		<br />
 		<div class="row-fluid">
 			<div class="span12 thumbnail">
 				<form method="get" class="no-vertial-margin">
-				<input type="hidden" name="op" value="add">
-				Version：<input type="text" name="version" value="${payload.version}" class="no-vertial-margin">&nbsp;&nbsp;&nbsp;
-				Description：<input type="text" name="desc" value="${payload.description}" class="input-xxlarge no-vertial-margin">
-				<button type="submit" class="btn btn-primary">&nbsp;创建&nbsp; </button>
+					<input type="hidden" name="op" value="create">
+					Version：<input type="text" id="version" name="version" value="${payload.version}" class="no-vertial-margin">&nbsp;&nbsp;&nbsp;
+					Description：<input type="text" id="desc" name="desc" value="${payload.description}" class="input-xxlarge no-vertial-margin">
+					<c:choose>
+						<c:when test="${model.creatingVersion == null}">
+							<button type="submit" class="btn btn-primary" id="create_btn">&nbsp;创建&nbsp; </button>
+						</c:when>
+						<c:otherwise>
+							<button type="submit" class="btn" id="create_btn" disabled>&nbsp;创建&nbsp; </button>
+						</c:otherwise>
+					</c:choose>
+					&nbsp;
+					<span style="color: red;" id="error_msg"></span>
 				</form>
 			</div>
 		</div>
 		<br />
-		<div class="terminal-like" style="height: 200px;overflow-y: auto;">
-			Git pull from remote repository<br/>
-			Pull succeed<br/>
-			Download phoenix.war from maven repository<br/>
-			Download succeed<br/>
-			Clear the local phoenix working directory<br/>
-			Decompress phoenix.war to local working directory<br/>
-			Commit working directory to master branch<br/>
-			Commit succeed<br/>
-			Create a tag and push it to remote repository<br/>
-			Succeed!<br/>
-			滚动条....<br/>
-			滚动条....<br/>
-			滚动条....<br/>
-			滚动条....<br/>
-			滚动条....<br/>
+		<div id="log-plane" class="terminal-like" style="height: 200px; line-height: 20px; overflow: auto;">
 		</div>
 	</div>
 	<res:useJs value="${res.js.local.version_js}" target="version-js" />

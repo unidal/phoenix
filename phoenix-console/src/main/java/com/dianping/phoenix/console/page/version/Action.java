@@ -3,7 +3,7 @@ package com.dianping.phoenix.console.page.version;
 public enum Action implements org.unidal.web.mvc.Action {
 	VIEW("view"),
 	
-	ADD("add"),
+	CREATE("create"),
 	
 	REMOVE("remove"),
 	
