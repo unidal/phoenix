@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.page.version;
+package com.dianping.phoenix.version;
 
 public class VersionContext {
 

@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.page.version;
+package com.dianping.phoenix.version;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,46 +41,36 @@ public class DefaultVersionManager implements VersionManager {
 	}
 
 	@Override
-	public Version createVersion(String version, String description,
-			String releaseNotes, String createdBy) throws Exception {
+	public Version createVersion(String version, String description, String releaseNotes, String createdBy)
+	      throws Exception {
 
 		Version v = store(version, description, releaseNotes, createdBy);
 
 		if (v == null) {
 			m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
-					String.format("Kernel version(%s) creation failed!",
-							version));
-			m_reporter
-					.categoryLog(
-							DefaultStatusReporter.VERSION_LOG,
-							version,
-							String.format(
-									"Create version(%s) >>>>>>>>>>>>>>>DONE<<<<<<<<<<<<<<<<<",
-									version));
-			throw new VersionException(String.format(
-					"Kernel version(%s) is already existed!", version));
+			      String.format("Kernel version(%s) creation failed!", version));
+			m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
+			      String.format("Create version(%s) >>>>>>>>>>>>>>>DONE<<<<<<<<<<<<<<<<<", version));
+			throw new VersionException(String.format("Kernel version(%s) is already existed!", version));
 		}
 
 		Threads.forGroup("Phoenix").start(
-				new VersionExecutor(new VersionContext(v.getId(), version,
-						description, releaseNotes, createdBy), this));
+		      new VersionExecutor(new VersionContext(v.getId(), version, description, releaseNotes, createdBy), this));
 
 		return v;
 	}
 
 	@Override
 	public Version getActiveVersion() throws Exception {
-		List<Version> versions = m_dao.findAllActive(KERNEL, new Date(
-				new Date().getTime() - 5 * 60 * 1000),
-				VersionEntity.READSET_FULL);
+		List<Version> versions = m_dao.findAllActive(KERNEL, new Date(new Date().getTime() - 5 * 60 * 1000),
+		      VersionEntity.READSET_FULL);
 
 		return versions != null && versions.size() > 0 ? versions.get(0) : null;
 	}
 
 	@Override
 	public List<Version> getFinishedVersions() throws Exception {
-		List<Version> versions = m_dao.findAllFinished(KERNEL,
-				VersionEntity.READSET_FULL);
+		List<Version> versions = m_dao.findAllFinished(KERNEL, VersionEntity.READSET_FULL);
 
 		// order in descend
 		Collections.sort(versions, new Comparator<Version>() {
@@ -94,12 +84,16 @@ public class DefaultVersionManager implements VersionManager {
 	}
 
 	@Override
+	public StatusReporter getReporter() {
+		return m_reporter;
+	}
+
+	@Override
 	public VersionLog getStatus(String version, int index) {
 
 		VersionLog vl = null;
 
-		List<String> results = m_reporter.getMessage(
-				DefaultStatusReporter.VERSION_LOG, version, index);
+		List<String> results = m_reporter.getMessage(DefaultStatusReporter.VERSION_LOG, version, index);
 
 		if (results != null && results.size() > 0) {
 			vl = new VersionLog(index + results.size(), results);
@@ -113,9 +107,8 @@ public class DefaultVersionManager implements VersionManager {
 		try {
 			Version v = m_dao.findByPK(id, VersionEntity.READSET_FULL);
 
-			VersionContext context = new VersionContext(v.getId(),
-					v.getVersion(), v.getDescription(), v.getReleaseNotes(),
-					v.getCreatedBy());
+			VersionContext context = new VersionContext(v.getId(), v.getVersion(), v.getDescription(),
+			      v.getReleaseNotes(), v.getCreatedBy());
 
 			m_gitService.setup(context);
 
@@ -131,15 +124,12 @@ public class DefaultVersionManager implements VersionManager {
 	}
 
 	@Override
-	public Version store(String version, String description,
-			String releaseNotes, String createdBy) throws DalException {
+	public Version store(String version, String description, String releaseNotes, String createdBy) throws DalException {
 		try {
-			m_dao.findByDomainVersion(KERNEL, version,
-					VersionEntity.READSET_FULL);
+			m_dao.findByDomainVersion(KERNEL, version, VersionEntity.READSET_FULL);
 
 			m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
-					String.format("Kernel version(%s) is already existed!",
-							version));
+			      String.format("Kernel version(%s) is already existed!", version));
 			return null;
 		} catch (DalNotFoundException e) {
 			// expected
@@ -169,11 +159,8 @@ public class DefaultVersionManager implements VersionManager {
 			try {
 				m_warService.downloadAndExtractTo(context, gitDir);
 			} catch (FileNotFoundException fe) {
-				String log = String.format(
-						"can not find war for version: %s ...",
-						context.getVersion());
-				m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG,
-						context.getVersion(), log);
+				String log = String.format("can not find war for version: %s ...", context.getVersion());
+				m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, context.getVersion(), log);
 				throw new RuntimeException(log);
 			}
 
@@ -193,37 +180,4 @@ public class DefaultVersionManager implements VersionManager {
 			m_dao.updateByPK(proto, VersionEntity.UPDATESET_FULL);
 		}
 	}
-
-	public class VersionLog {
-		private int m_index;
-		private List<String> m_messages;
-
-		public VersionLog(int index, List<String> messages) {
-			m_index = index;
-			m_messages = messages;
-		}
-
-		public int getIndex() {
-			return m_index;
-		}
-
-		public List<String> getMessages() {
-			return m_messages;
-		}
-
-		public void setIndex(int m_index) {
-			this.m_index = m_index;
-		}
-
-		public void setMessages(List<String> messages) {
-			this.m_messages = messages;
-		}
-
-	}
-
-	@Override
-	public StatusReporter getReporter() {
-		return m_reporter;
-	}
-
 }

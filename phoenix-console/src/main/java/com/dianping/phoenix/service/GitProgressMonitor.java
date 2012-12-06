@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jgit.lib.BatchingProgressMonitor;
 
-import com.dianping.phoenix.console.page.version.VersionContext;
+import com.dianping.phoenix.version.VersionContext;
 
 public class GitProgressMonitor extends BatchingProgressMonitor {
 
