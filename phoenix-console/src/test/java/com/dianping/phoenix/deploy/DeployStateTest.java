@@ -90,7 +90,7 @@ public class DeployStateTest extends ComponentTestCase {
 		State.execute(ctx);
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \n"
+		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
@@ -114,7 +114,7 @@ public class DeployStateTest extends ComponentTestCase {
 		State.execute(ctx);
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \n"
+		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
@@ -171,7 +171,7 @@ public class DeployStateTest extends ComponentTestCase {
 		State.execute(ctx);
 		Assert.assertEquals(State.SUCCESSFUL, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... \n"
+		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
 		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
