@@ -46,38 +46,54 @@ public class Handler implements PageHandler<Context> {
 				removeVersion(ctx, payload, model);
 				break;
 			case STATUS:
-				try {
-					String version = payload.getVersion();
-					int index = payload.getIndex();
-					Version activeVersion = m_manager.getActiveVersion();
-					if (activeVersion != null) {
-						model.setCreatingVersion(activeVersion.getVersion());
-					}
-					VersionLog statusLog = m_manager.getStatus(version, index);
-					if (statusLog != null) {
-						List<String> messages = statusLog.getMessages();
-						if (messages != null) {
-							StringBuffer buffer = new StringBuffer();
-							for (String message : messages) {
-								if (message != null) {
-									buffer.append(message.replace("\"", "\\\"").replace("\n", "<br>"))
-											.append("<br>");
-								}
-							}
-							model.setLogcontent(buffer.toString());
-						}
-						model.setIndex(statusLog.getIndex());
-					}
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
+				showStatus(payload, model);
 				break;
 			case VIEW:
 				viewVersions(ctx, model);
 				break;
+			case GET_VERSIONS:
+				getVersions(ctx, model);
+				break;
 		}
 
 		m_jspViewer.view(ctx, model);
+	}
+
+	private void getVersions(Context ctx, Model model) {
+		try {
+			List<Version> versions = m_manager.getFinishedVersions();
+			model.setVersions(versions);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void showStatus(Payload payload, Model model) {
+		try {
+			String version = payload.getVersion();
+			int index = payload.getIndex();
+			Version activeVersion = m_manager.getActiveVersion();
+			if (activeVersion != null) {
+				model.setCreatingVersion(activeVersion.getVersion());
+			}
+			VersionLog statusLog = m_manager.getStatus(version, index);
+			if (statusLog != null) {
+				List<String> messages = statusLog.getMessages();
+				if (messages != null) {
+					StringBuffer buffer = new StringBuffer();
+					for (String message : messages) {
+						if (message != null) {
+							buffer.append(message.replace("\"", "\\\"").replace("\n", "<br>"))
+									.append("<br>");
+						}
+					}
+					model.setLogcontent(buffer.toString());
+				}
+				model.setIndex(statusLog.getIndex());
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void createVersion(Context ctx, Payload payload, Model model) {
@@ -116,7 +132,6 @@ public class Handler implements PageHandler<Context> {
 			if (activeVersion != null) {
 				model.setCreatingVersion(activeVersion.getVersion());
 			}
-//			model.setCreatingVersion("0.0.1-SNAPSHOT");
 		} catch (Exception e) {
 			ctx.addError("version.active", e);
 		}
