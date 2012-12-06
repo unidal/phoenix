@@ -3,7 +3,6 @@ package com.dianping.phoenix.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jgit.lib.ProgressMonitor;
 import org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -67,10 +66,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(WarService.class, DefaultWarService.class) //
 				.req(ConfigManager.class, StatusReporter.class));
 		all.add(C(GitService.class, DefaultGitService.class) //
-				.req(ConfigManager.class, StatusReporter.class,
-						ProgressMonitor.class));
-		all.add(C(ProgressMonitor.class, GitProgressMonitor.class) //
-				.req(StatusReporter.class));
+				.req(ConfigManager.class, StatusReporter.class));
 
 		all.add(C(VersionManager.class, DefaultVersionManager.class) //
 				.req(StatusReporter.class, WarService.class, GitService.class,

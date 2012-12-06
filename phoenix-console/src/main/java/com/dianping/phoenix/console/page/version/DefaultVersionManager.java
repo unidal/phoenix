@@ -71,7 +71,7 @@ public class DefaultVersionManager implements VersionManager {
 		Collections.sort(versions, new Comparator<Version>() {
 			@Override
 			public int compare(Version v1, Version v2) {
-				return v2.getVersion().compareTo(v1.getVersion());
+				return v2.getId() - v1.getId();
 			}
 		});
 
