@@ -20,6 +20,7 @@ import com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DetachTaskProcessor;
+import com.dianping.phoenix.agent.core.task.processor.kernel.MockDeployStep;
 import com.dianping.phoenix.agent.core.tx.FileBasedTransactionManager;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
 
@@ -30,9 +31,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(SemaphoreWrapper.class, "kernel", SemaphoreWrapper.class));
 		all.add(C(DeployWorkflow.class).is(PER_LOOKUP));
-		all.add(C(DeployStep.class, DefaultDeployStep.class) //
-				.req(Config.class).req(ScriptExecutor.class) //
-				.is(PER_LOOKUP));
+//		all.add(C(DeployStep.class, DefaultDeployStep.class) //
+//				.req(Config.class).req(ScriptExecutor.class) //
+//				.is(PER_LOOKUP));
+		all.add(C(DeployStep.class, MockDeployStep.class).is(PER_LOOKUP));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 		all.add(C(ScriptExecutor.class, DefaultScriptExecutor.class));
 		all.add(C(Config.class));
