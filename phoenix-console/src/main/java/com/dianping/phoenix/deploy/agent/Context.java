@@ -22,7 +22,9 @@ public interface Context {
 	public State getState();
 
 	public String getVersion();
-	
+
+	public boolean isFailed();
+
 	public String openUrl(String url) throws IOException;
 
 	public Context print(String string, Object... args);
@@ -30,6 +32,8 @@ public interface Context {
 	public Context println();
 
 	public Context println(String string, Object... args);
+
+	public void setFailed(boolean failed);
 
 	public void setRetryCount(int retryCount);
 

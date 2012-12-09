@@ -108,7 +108,11 @@ public enum State {
 				return;
 			}
 
-			moveTo(ctx, SUCCESSFUL);
+			if (ctx.isFailed()) {
+				moveTo(ctx, FAILED);
+			} else {
+				moveTo(ctx, SUCCESSFUL);
+			}
 		}
 	},
 

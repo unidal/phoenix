@@ -44,8 +44,7 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
 		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... error\n"
-		      + "deploy id is already existed.\n"
-		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
+		      + "deploy id is already existed.\n" + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -183,9 +182,11 @@ public class DeployStateTest extends ComponentTestCase {
 	static abstract class BaseContext implements Context {
 		private ConfigManager m_configManager;
 
+		private State m_state;
+
 		private int m_retryCount;
 
-		private State m_state;
+		private boolean m_failed;
 
 		private StringBuilder m_log = new StringBuilder(2048);
 
@@ -246,6 +247,11 @@ public class DeployStateTest extends ComponentTestCase {
 			return url.contains("?op=deploy&");
 		}
 
+		@Override
+		public boolean isFailed() {
+			return m_failed;
+		}
+
 		protected boolean isLog(String url) {
 			return url.contains("?op=log&");
 		}
@@ -270,6 +276,11 @@ public class DeployStateTest extends ComponentTestCase {
 
 			m_log.append(message).append("\r\n");
 			return this;
+		}
+
+		@Override
+		public void setFailed(boolean failed) {
+			m_failed = failed;
 		}
 
 		@Override

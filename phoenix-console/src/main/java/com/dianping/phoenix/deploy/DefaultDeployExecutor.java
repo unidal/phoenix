@@ -54,8 +54,8 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		DeployModel model = m_deployListener.getModel(deployId);
 		ControllerTask task = new ControllerTask(m_agentListener, model, hosts);
 
-		Threads.forGroup("Phoenix").start(task);
 		m_deployListener.onDeployStart(deployId);
+		Threads.forGroup("Phoenix").start(task);
 	}
 
 	class ControllerTask implements Task {
@@ -88,9 +88,16 @@ public class DefaultDeployExecutor implements DeployExecutor {
 				try {
 					m_agentListener.onCancel(ctx);
 
-					String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
-					String message = String.format("[%s] Rollout to host(%s) cancelled due to error happened.", timestamp,
-					      ctx.getHost());
+					String message;
+
+					if (m_configManager.isShowLogTimestamp()) {
+						String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+						message = String.format("[%s] Rollout to host(%s) cancelled due to error happened.", timestamp,
+						      ctx.getHost());
+					} else {
+						message = String.format("Rollout to host(%s) cancelled due to error happened.", ctx.getHost());
+					}
 
 					ctx.updateStatus("cancelled", message);
 				} catch (Exception e) {
@@ -109,10 +116,18 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		}
 
 		public ControllerTask log(String message) {
-			String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
 			HostModel host = m_model.findHost(SUMMARY);
+			String text;
 
-			host.addSegment(new SegmentModel().setText("[" + timestamp + "] " + message));
+			if (m_configManager.isShowLogTimestamp()) {
+				String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+				text = "[" + timestamp + "] " + message;
+			} else {
+				text = message;
+			}
+
+			host.addSegment(new SegmentModel().setText(text));
 			return this;
 		}
 
@@ -216,6 +231,8 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 		private int m_retryCount;
 
+		private boolean m_failed;
+
 		private StringBuilder m_log = new StringBuilder(256);
 
 		public RolloutContext(ControllerTask controller, AgentListener listener, DeployModel model, String host) {
@@ -277,6 +294,11 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		}
 
 		@Override
+		public boolean isFailed() {
+			return m_failed;
+		}
+
+		@Override
 		public String openUrl(String url) throws IOException {
 			if (url.contains("?op=deploy&")) {
 				String content = Files.forIO().readFrom(new URL(url).openStream(), "utf-8");
@@ -288,6 +310,10 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 				while (sr.hasNext()) {
 					String segment = sr.next(progress);
+
+					if ("failed".equals(progress.getStatus())) {
+						setFailed(true);
+					}
 
 					try {
 						m_listener.onProgress(this, progress, segment);
@@ -325,6 +351,11 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			m_controller.log(m_log.toString());
 			m_log.setLength(0);
 			return this;
+		}
+
+		@Override
+		public void setFailed(boolean failed) {
+			m_failed = failed;
 		}
 
 		@Override
