@@ -14,9 +14,10 @@ KERNEL_GIT_HOST="10.1.4.81"
 KERNEL_GIT_URL="ssh://git@${KERNEL_GIT_HOST}:58422/phoenix-kernel.git"
 
 now=`date "+%Y-%m-%d"`
-while getopts "x:c:d:v:f:" option;do
+while getopts "b:x:c:d:v:f:" option;do
 	case $option in
-			c)		container=`echo $OPTARG | tr '[A-Z]' '[a-z]'`;;
+			b)      container_install_path=$OPTARG;;
+			c)		container_type=`echo $OPTARG | tr '[A-Z]' '[a-z]'`;;
 			d)      domain=$OPTARG;;
 			v)      kernel_version=$OPTARG;;
 			f)      func=`echo $OPTARG | tr '[A-Z]' '[a-z]'`;;
@@ -131,10 +132,24 @@ function upgrade_kernel {
 	log "$domain kernel upgraded to $kernel_version"
 }
 
+function start_tomcat {
+	log "starting tomcat"
+	$container_install_path/bin/startup.sh
+	log "tomcat started"
+}
+
+function start_jboss {
+	log "starting jboss"
+	$container_install_path/bin/run.sh >/dev/null 2>&1 &
+	log "jboss started"
+}
+
 function start_container {
-	log "starting container"
-	/Users/marsqing/Downloads/apache-tomcat-6.0.35/bin/startup.sh
-	log "container started"
+	if [ $container_type ==	"tomcat" ];then
+		start_tomcat
+	else
+		start_jboss
+	fi
 }
 
 function check_container_status {
@@ -205,7 +220,7 @@ function ensure_not_empty {
 	done
 }
 
-ensure_not_empty domain="$domain" version="$kernel_version"
+ensure_not_empty domain="$domain" version="$kernel_version" container_install_path="$container_install_path" container_type="$container_type" server_xml="$server_xml"
 
 $func
 

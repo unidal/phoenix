@@ -37,8 +37,8 @@ public class DefaultDeployStep implements DeployStep {
 	}
 
 	private String jointShellCmd(String domain, String newVersion, String container, String shellFunc) {
-		return String.format("%s -x \"%s\" -c \"%s\" -d \"%s\" -v \"%s\" -f \"%s\"", getScriptPath(),
-				config.getServerXml(), container, domain, newVersion, shellFunc);
+		return String.format("%s -b \"%s\" -x \"%s\" -c \"%s\" -d \"%s\" -v \"%s\" -f \"%s\"", getScriptPath(),
+				config.getContainerInstallPath(), config.getServerXml(), container, domain, newVersion, shellFunc);
 	}
 
 	private void doInjectPhoenixLoader() throws Exception {
