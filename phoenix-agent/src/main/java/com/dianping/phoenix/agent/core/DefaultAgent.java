@@ -17,6 +17,7 @@ import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.SubmitResult;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
+import com.dianping.phoenix.agent.core.tx.Log4jAppender;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
@@ -55,6 +56,7 @@ public class DefaultAgent implements Agent {
 				@Override
 				protected void onLifecycleEvent(LifecycleEvent event) {
 					if (event.getStatus().isCompleted()) {
+						Log4jAppender.endTeeLog();
 						txId2Processor.remove(txId);
 						txMgr.endTransaction(txId);
 					}

@@ -23,7 +23,6 @@ public class FileBasedTransactionManager implements TransactionManager {
 
 	private final static String DEFAULT_LOG_ROOT = "/data/applogs/phoenix/transaction/";
 
-	private final static String ENCODING = "UTF-8";
 	private static final String PROPERTIES_FILE = "tx.properties";
 	private static final String LOG_FILE = "tx.log";
 	private static final String LOCK_FILE = "tx.lock";
@@ -76,7 +75,7 @@ public class FileBasedTransactionManager implements TransactionManager {
 		File logFile = txId2LogFile(txId);
 		if (logFile.exists()) {
 			try {
-				reader = new InputStreamReader(new FileInputStream(logFile), ENCODING);
+				reader = new InputStreamReader(new FileInputStream(logFile));
 				reader.skip(offset);
 			} catch (Exception e) {
 				logger.error(String.format("can not open file %s", txId), e);
