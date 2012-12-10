@@ -9,6 +9,4 @@ public interface AgentListener {
 	public void onStart(Context ctx) throws Exception;
 
 	public void onEnd(Context ctx, String status) throws Exception;
-
-	public void onCancel(Context ctx) throws Exception;
 }

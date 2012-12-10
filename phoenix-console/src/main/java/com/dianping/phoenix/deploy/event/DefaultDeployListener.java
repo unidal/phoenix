@@ -16,6 +16,7 @@ import com.dianping.phoenix.console.dal.deploy.DeploymentEntity;
 import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
+import com.dianping.phoenix.deploy.model.entity.SegmentModel;
 
 public class DefaultDeployListener implements DeployListener {
 	@Inject
@@ -59,7 +60,7 @@ public class DefaultDeployListener implements DeployListener {
 	}
 
 	@Override
-	public DeployModel onDeployCreate(String name, List<String> hosts, DeployPlan plan) throws Exception {
+	public DeployModel onCreate(String name, List<String> hosts, DeployPlan plan) throws Exception {
 		DeployModel model = new DeployModel();
 		Deployment d = createDeployment(name, plan);
 
@@ -73,6 +74,12 @@ public class DefaultDeployListener implements DeployListener {
 			m_deploymentDetailsDao.insert(details);
 			model.addHost(new HostModel().setIp(host).setId(details.getId()));
 		}
+
+		// for "summary" host
+		DeploymentDetails details = createDeploymentDetails(d.getId(), "summary", plan, "TBD"); // TODO
+
+		m_deploymentDetailsDao.insert(details);
+		model.addHost(new HostModel().setIp("summary").setId(details.getId()));
 
 		model.setId(deployId);
 		model.setDomain(name);
@@ -112,5 +119,45 @@ public class DefaultDeployListener implements DeployListener {
 		d.setStatus(2); // 2 - deploying
 
 		m_deploymentDao.updateByPK(d, DeploymentEntity.UPDATESET_STATUS);
+	}
+
+	@Override
+	public void onHostCancel(int deployId, String host) throws Exception {
+		DeployModel deployModel = m_models.get(deployId);
+		HostModel hostModel = deployModel.findHost(host);
+
+		hostModel.addSegment(new SegmentModel().setCurrentTicks(100).setTotalTicks(100).setStatus("cancelled"));
+
+		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
+
+		details.setStatus(9); // 9 - cancelled
+		details.setKeyId(hostModel.getId());
+		details.setEndDate(new Date());
+		details.setRawLog(hostModel.getLog());
+		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
+
+	}
+
+	@Override
+	public void onHostEnd(int deployId, String host) throws Exception {
+		DeployModel deployModel = m_models.get(deployId);
+		HostModel hostModel = deployModel.findHost("summary");
+		String status = hostModel.getStatus();
+
+		// flush the summary log
+		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
+
+		if ("successful".equals(status)) {
+			details.setStatus(3); // 3 - successful
+		} else if ("failed".equals(status)) {
+			details.setStatus(5); // 5 - failed
+		} else {
+			throw new RuntimeException(String.format("Internal error: unknown status(%s)!", status));
+		}
+
+		details.setKeyId(hostModel.getId());
+		details.setEndDate(new Date());
+		details.setRawLog(hostModel.getLog());
+		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
 	}
 }

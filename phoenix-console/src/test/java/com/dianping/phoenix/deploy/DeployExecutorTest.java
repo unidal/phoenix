@@ -83,7 +83,7 @@ public class DeployExecutorTest extends ComponentTestCase {
 		plan.setPolicy(policy);
 		plan.setVersion("1.0.1");
 
-		DeployModel model = deployListener.onDeployCreate("demo-app", hosts, plan);
+		DeployModel model = deployListener.onCreate("demo-app", hosts, plan);
 		int deployId = model.getId();
 
 		executor.submit(deployId, hosts);
@@ -128,23 +128,6 @@ public class DeployExecutorTest extends ComponentTestCase {
 	public static class MockAgentListener implements AgentListener {
 		@Inject
 		private DeployListener m_deployListener;
-
-		@Override
-		public void onCancel(Context ctx) throws Exception {
-			log("onCancel(%s,%s)", ctx.getDeployId(), ctx.getHost());
-
-			int id = ctx.getDeployId();
-			DeployModel model = m_deployListener.getModel(id);
-
-			if (model != null) {
-				String ip = ctx.getHost();
-				HostModel host = model.findHost(ip);
-				SegmentModel segment = new SegmentModel();
-
-				segment.setCurrentTicks(100).setTotalTicks(100).setStatus("cancelled");
-				host.addSegment(segment);
-			}
-		}
 
 		@Override
 		public void onEnd(Context ctx, String status) throws Exception {
@@ -217,13 +200,15 @@ public class DeployExecutorTest extends ComponentTestCase {
 		}
 
 		@Override
-		public DeployModel onDeployCreate(String name, List<String> hosts, DeployPlan plan) throws Exception {
+		public DeployModel onCreate(String name, List<String> hosts, DeployPlan plan) throws Exception {
 			DeployModel model = new DeployModel();
 			int deployId = m_nextDeployId++;
 
 			for (String host : hosts) {
 				model.addHost(new HostModel().setIp(host).setId(-1));
 			}
+
+			model.addHost(new HostModel().setIp("summary").setId(-1));
 
 			model.setId(deployId);
 			model.setDomain(name);
@@ -244,6 +229,26 @@ public class DeployExecutorTest extends ComponentTestCase {
 		@Override
 		public void onDeployStart(int deployId) throws Exception {
 			log("onDeployStart(%s)", deployId);
+		}
+
+		@Override
+		public void onHostCancel(int deployId, String host) throws Exception {
+			log("onHostCancel(%s,%s)", deployId, host);
+
+			DeployModel deployModel = m_models.get(deployId);
+
+			if (deployModel != null) {
+				HostModel hostModel = deployModel.findHost(host);
+				SegmentModel segment = new SegmentModel();
+
+				segment.setCurrentTicks(100).setTotalTicks(100).setStatus("cancelled");
+				hostModel.addSegment(segment);
+			}
+		}
+
+		@Override
+		public void onHostEnd(int deployId, String host) throws Exception {
+			log("onHostEnd(%s, %s)", deployId, host);
 		}
 	}
 }

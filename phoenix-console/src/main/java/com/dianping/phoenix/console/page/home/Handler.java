@@ -6,6 +6,8 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.Logger;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
@@ -20,7 +22,7 @@ import com.dianping.phoenix.project.entity.Project;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.version.VersionManager;
 
-public class Handler implements PageHandler<Context> {
+public class Handler implements PageHandler<Context>, LogEnabled {
 	@Inject
 	private JspViewer m_jspViewer;
 
@@ -29,6 +31,8 @@ public class Handler implements PageHandler<Context> {
 
 	@Inject
 	private VersionManager m_versionManager;
+
+	private Logger m_logger;
 
 	@Override
 	@PayloadMeta(Payload.class)
@@ -49,7 +53,9 @@ public class Handler implements PageHandler<Context> {
 					redirect(ctx, deployUri + "?id=" + id);
 					return;
 				} catch (Exception e) {
-					e.printStackTrace();
+					m_logger.warn(String.format("Error when submitting deploy to hosts(%s) for project(%s)!", hosts, name),
+					      e);
+
 					ctx.addError("project.deploy", e);
 				}
 			}
@@ -76,6 +82,7 @@ public class Handler implements PageHandler<Context> {
 
 				model.setProjects(projects);
 			} catch (Exception e) {
+				m_logger.warn(String.format("Error when searching projects with keyword(%s)!", payload.getKeyword()), e);
 				ctx.addError("project.search", e);
 			}
 			break;
@@ -88,6 +95,7 @@ public class Handler implements PageHandler<Context> {
 				model.setVersions(versions);
 				model.setPolicies(DeployPolicy.values());
 			} catch (Exception e) {
+				m_logger.warn(String.format("Error when finding project(%s)!", payload.getProject()), e);
 				ctx.addError("project.view", e);
 			}
 
@@ -105,5 +113,10 @@ public class Handler implements PageHandler<Context> {
 		response.setHeader("location", url);
 		response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
 		ctx.stopProcess();
+	}
+
+	@Override
+	public void enableLogging(Logger logger) {
+		m_logger = logger;
 	}
 }

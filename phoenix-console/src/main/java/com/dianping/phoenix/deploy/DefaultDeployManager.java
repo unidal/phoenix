@@ -15,7 +15,7 @@ public class DefaultDeployManager extends ContainerHolder implements DeployManag
 	@Override
 	public int deploy(String name, List<String> hosts, DeployPlan plan) throws Exception {
 		DeployExecutor executor = lookup(DeployExecutor.class, plan.getPolicy());
-		DeployModel model = m_listener.onDeployCreate(name, hosts, plan);
+		DeployModel model = m_listener.onCreate(name, hosts, plan);
 		int deployId = model.getId();
 
 		executor.submit(deployId, hosts);
