@@ -63,8 +63,8 @@
 					<table class="table table-striped table-condensed lion" style="margin-bottom:0px;">
 						<thead>
 							<tr>
-								<th width="150">Group Id</th>
-								<th width="150">Artifact Id</th>
+								<th width="240">Group Id</th>
+								<th width="190">Artifact Id</th>
 								<th>Version</th>
 							</tr>
 						</thead>
@@ -74,8 +74,8 @@
 					<table class="table table-striped table-condensed lion">
 						<tbody>
 							<tr>
-								<td width="150">com.dianping.dpsf</td>
-								<td width="150">dpsf-net</td>
+								<td width="240">com.dianping.dpsf</td>
+								<td width="190">dpsf-net</td>
 								<td>1.8.0</td>
 							</tr>
 							<tr>

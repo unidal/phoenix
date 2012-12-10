@@ -71,12 +71,16 @@ function update_host_status(host, data) {
     }
     $("#" + host).attr("data-offset", data.offset);
     $hostProgress.removeClass().addClass("progress");
-    if ("successful" == hostStatus) {
+    if ("successful".equalsIgnoreCase(hostStatus)) {
         $hostProgress.addClass("progress-success");
-    } else if ("failed" == hostStatus) {
+    } else if ("failed".equalsIgnoreCase(hostStatus)) {
         $hostProgress.addClass("progress-danger");
-    } else if ("doing" == hostStatus) {
+    } else if ("doing".equalsIgnoreCase(hostStatus)) {
         $hostProgress.addClass("progress-striped active");
+    } else if ("cancelled".equalsIgnoreCase(hostStatus)) {
+    	$hostProgress.addClass("progress-cancelled");
+    } else if ("warning".equalsIgnoreCase(hostStatus)) {
+    	$hostProgress.addClass("progress-warning");
     }
 }
 

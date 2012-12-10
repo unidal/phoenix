@@ -11,6 +11,8 @@ import com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflowTest;
 import com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlUtilTest;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DefaultQaServiceTest;
 import com.dianping.phoenix.agent.core.tx.FileBasedTransactionManagerTest;
+import com.dianping.phoenix.agent.core.tx.Log4jAppenderTest;
+import com.dianping.phoenix.agent.core.tx.LogFormatterTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -20,7 +22,9 @@ import com.dianping.phoenix.agent.core.tx.FileBasedTransactionManagerTest;
 	FileBasedTransactionManagerTest.class,
 	CharacterReplaceFilterTest.class,
 	DefaultQaServiceTest.class,
-	DefaultDeployStepTest.class
+	DefaultDeployStepTest.class,
+	Log4jAppenderTest.class,
+	LogFormatterTest.class
 })
 public class AllTests {
 

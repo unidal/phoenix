@@ -212,7 +212,7 @@ public class AbstractSerialTaskProcessorTest extends ComponentTestCase {
 
 		a1.cancel(txId);
 
-		boolean awaitOk = latch.await(2, TimeUnit.SECONDS);
+		boolean awaitOk = latch.await(3, TimeUnit.SECONDS);
 		if (!awaitOk) {
 			Assert.fail();
 		} else {

@@ -11,6 +11,14 @@ String.prototype.trim = function() {
     return this.replace(/(^\s+)|(\s+$)/g, "");
 }
 
+String.prototype.equalsIgnoreCase = function(str) {
+	if (this == void 0) {throw new Error("Illegal argument error.");}
+	if (str == null || typeof str == "undefined") {
+		return false;
+	}
+	return this.toLowerCase() == str.toLowerCase();
+}
+
 String.prototype.isBlank = function() {
     if (this == void 0) {throw new Error("Illegal argument error.");}
     return this == null || this.trim().length == 0;
