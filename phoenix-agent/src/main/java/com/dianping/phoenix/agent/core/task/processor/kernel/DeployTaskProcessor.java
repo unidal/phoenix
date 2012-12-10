@@ -10,6 +10,7 @@ import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.agent.core.event.MessageEvent;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessor;
+import com.dianping.phoenix.agent.core.tx.LogFormatter;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
@@ -20,6 +21,8 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 
 	@Inject
 	DeployWorkflow workflow;
+	@Inject
+	LogFormatter logFormatter;
 	AtomicReference<Transaction> currentTxRef = new AtomicReference<Transaction>();
 
 	public DeployTaskProcessor() {
@@ -37,7 +40,7 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 		OutputStream stdOut = txMgr.getLogOutputStream(tx.getTxId());
 		Status exitStatus = Status.SUCCESS;
 		try {
-			exitStatus = updateKernel(domain, task.getKernelVersion(), stdOut);
+			exitStatus = updateKernel(task, stdOut);
 		} catch (Exception e) {
 			logger.error("error update kernel", e);
 			exitStatus = Status.FAILED;
@@ -47,9 +50,9 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 		return exitStatus;
 	}
 
-	private Status updateKernel(String domain, String kernelVersion, OutputStream stdOut) throws Exception {
+	private Status updateKernel(DeployTask task, OutputStream stdOut) throws Exception {
 		DeployStep steps = lookup(DeployStep.class);
-		int exitCode = workflow.start(domain, kernelVersion, steps, stdOut);
+		int exitCode = workflow.start(task, steps, stdOut, logFormatter);
 		if (exitCode == DeployStep.CODE_OK) {
 			return Status.SUCCESS;
 		} else {

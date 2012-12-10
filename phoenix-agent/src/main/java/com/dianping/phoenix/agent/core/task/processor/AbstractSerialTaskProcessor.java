@@ -107,12 +107,13 @@ public abstract class AbstractSerialTaskProcessor<T> extends ContainerHolder imp
 	}
 
 	private synchronized void endTransaction(Transaction tx, String eventMsg) {
+		eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), eventMsg, tx.getStatus()));
+		
 		if (currentTx != null && currentTx.getTxId().equals(tx.getTxId())) {
 			currentTx = null;
 		}
 		
 		semaphoreWrapper.getSemaphore().release();
-		eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), eventMsg, tx.getStatus()));
 		
 		try {
 			txMgr.saveTransaction(tx);

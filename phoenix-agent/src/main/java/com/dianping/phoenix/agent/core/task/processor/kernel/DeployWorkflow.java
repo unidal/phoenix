@@ -1,14 +1,15 @@
 package com.dianping.phoenix.agent.core.task.processor.kernel;
 
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
-public class DeployWorkflow {
+import com.dianping.phoenix.agent.core.tx.LogFormatter;
 
-	public static final String CHUNK_TERMINATOR = "--9ed2b78c112fbd17a8511812c554da62941629a8--\r\n";
-	public static final String LOG_TERMINATOR = "--255220d51dc7fb4aacddadedfe252a346da267d4--\r\n";
+public class DeployWorkflow {
 
 	private final static Logger logger = Logger.getLogger(DeployWorkflow.class);
 
@@ -21,9 +22,15 @@ public class DeployWorkflow {
 		private Step endStep;
 		private OutputStream logOut;
 		private AtomicBoolean killed = new AtomicBoolean(false);
+		private LogFormatter logFormatter;
 
-		public Context(OutputStream logOut) {
+		public Context(OutputStream logOut, LogFormatter logFormatter) {
 			this.logOut = logOut;
+			this.logFormatter = logFormatter;
+		}
+		
+		public LogFormatter getLogFormatter() {
+			return logFormatter;
 		}
 
 		public OutputStream getLogOut() {
@@ -208,7 +215,7 @@ public class DeployWorkflow {
 				throw new IllegalStateException(String.format("Can't move deploy step from %s to %s", this, nextStep));
 			}
 
-			writeLogChunkHeader(logOut, nextStep);
+			writeLogChunkHeader(ctx, nextStep);
 			int exitCode = DeployStep.CODE_ERROR;
 			logger.info(String.format("current step %s", nextStep));
 			try {
@@ -216,7 +223,7 @@ public class DeployWorkflow {
 			} catch (Exception e) {
 				logger.error(String.format("error doing step %s", nextStep), e);
 			}
-			writeLogChunkTerminator(logOut, nextStep);
+			writeLogChunkTerminator(ctx, nextStep);
 
 			if (exitCode != DeployStep.CODE_OK) {
 				logger.info("failed");
@@ -235,55 +242,47 @@ public class DeployWorkflow {
 			return nextIdWhenFail == nextStep.getId() || nextIdWhenSuccess == nextStep.getId();
 		}
 
-		private static void writeLogChunkTerminator(OutputStream logOut, Step step) {
+		private void writeLogChunkTerminator(Context ctx, Step step) {
 			try {
-				logOut.write(CHUNK_TERMINATOR.getBytes("ascii"));
-				logOut.flush();
+				ctx.getLogFormatter().writeChunkTerminator(ctx.getLogOut());
 			} catch (Exception e) {
 				logger.error(String.format("error write log chunk terminator for %s", step), e);
 			}
 		}
 
-		private static void writeLogChunkHeader(OutputStream logOut, Step step) {
-			StringBuilder sb = new StringBuilder();
+		private static void writeLogChunkHeader(Context ctx, Step step) {
 
-			sb.append("Progress: ");
-			sb.append(step.getProgressInfo());
-
-			sb.append("\r\n");
-			sb.append("Step: ");
-			sb.append(step);
+			Map<String, String> headers = new HashMap<String, String>();
+			
+			headers.put("Progress", step.getProgressInfo());
+			headers.put("Step", step.toString());
 
 			if (step == SUCCESS || step == FAILED) {
-				sb.append("\r\n");
-				sb.append("Status: ");
-				sb.append(step == SUCCESS ? "successful" : "failed");
+				headers.put("Status", step == SUCCESS ? "successful" : "failed");
 			}
 
-			sb.append("\r\n\r\n");
-
 			try {
-				logOut.write(sb.toString().getBytes());
+				ctx.getLogFormatter().writeHeader(ctx.getLogOut(), headers);
 			} catch (Exception e) {
 				logger.error(String.format("error write log chunk header for %s", step), e);
 			}
 		}
 	}
 
-	private void writeLogTerminator(OutputStream logOut) {
+	private void writeLogTerminator(Context ctx) {
 		try {
-			logOut.write(LOG_TERMINATOR.getBytes("ascii"));
+			ctx.getLogFormatter().writeTerminator(ctx.getLogOut());
 		} catch (Exception e) {
 			logger.error(String.format("error write log terminator for %s", this), e);
 		}
 	}
 
-	public int start(String domain, String kernelVersion, DeployStep steps, OutputStream logOut) {
+	public int start(DeployTask task, DeployStep steps, OutputStream logOut, LogFormatter logFormatter) {
 		this.steps = steps;
-		steps.prepare(domain, kernelVersion, logOut);
-		ctx = new Context(logOut);
+		steps.prepare(task, logOut);
+		ctx = new Context(logOut, logFormatter);
 		Step.BEFORE_START.moveTo(steps, Step.INIT, logOut, ctx);
-		writeLogTerminator(logOut);
+		writeLogTerminator(ctx);
 		return ctx.getExitcode();
 	}
 

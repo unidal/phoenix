@@ -9,10 +9,12 @@ public class DeployTask extends AbstractTask {
 
 	private String domain;
 	private String kernelVersion;
+	private String qaServiceUrlPrefix;
 
-	public DeployTask(String domain, String kernelVersion) {
+	public DeployTask(String domain, String kernelVersion, String qaServiceUrlPrefix) {
 		this.domain = domain;
 		this.kernelVersion = kernelVersion;
+		this.qaServiceUrlPrefix = qaServiceUrlPrefix;
 	}
 
 	/**
@@ -37,7 +39,15 @@ public class DeployTask extends AbstractTask {
 	public void setKernelVersion(String kernelVersion) {
 		this.kernelVersion = kernelVersion;
 	}
-	
+
+	public String getQaServiceUrlPrefix() {
+		return qaServiceUrlPrefix;
+	}
+
+	public void setQaServiceUrlPrefix(String qaServiceUrlPrefix) {
+		this.qaServiceUrlPrefix = qaServiceUrlPrefix;
+	}
+
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);

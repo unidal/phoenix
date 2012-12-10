@@ -20,8 +20,10 @@ import com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DetachTaskProcessor;
-import com.dianping.phoenix.agent.core.task.processor.kernel.MockDeployStep;
+import com.dianping.phoenix.agent.core.task.processor.kernel.qa.MockQaService;
+import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.tx.FileBasedTransactionManager;
+import com.dianping.phoenix.agent.core.tx.LogFormatter;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
@@ -30,11 +32,12 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(C(SemaphoreWrapper.class, "kernel", SemaphoreWrapper.class));
+		all.add(C(LogFormatter.class));
 		all.add(C(DeployWorkflow.class).is(PER_LOOKUP));
-//		all.add(C(DeployStep.class, DefaultDeployStep.class) //
-//				.req(Config.class).req(ScriptExecutor.class) //
-//				.is(PER_LOOKUP));
-		all.add(C(DeployStep.class, MockDeployStep.class).is(PER_LOOKUP));
+		all.add(C(QaService.class, MockQaService.class));
+		all.add(C(DeployStep.class, DefaultDeployStep.class) //
+				.req(Config.class).req(ScriptExecutor.class) //
+				.req(QaService.class).is(PER_LOOKUP));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 		all.add(C(ScriptExecutor.class, DefaultScriptExecutor.class));
 		all.add(C(Config.class));
@@ -42,7 +45,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(TaskProcessorFactory.class));
 		all.add(C(TaskProcessor.class, "deploy", DeployTaskProcessor.class) //
 				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
-				.req(DeployWorkflow.class));
+				.req(DeployWorkflow.class).req(LogFormatter.class));
 		all.add(C(TaskProcessor.class, "detach", DetachTaskProcessor.class) //
 				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
 				.req(Config.class));
