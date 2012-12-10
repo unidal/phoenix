@@ -78,21 +78,20 @@ public class SegmentReader {
 					break;
 				} else {
 					if (header) {
-						System.out.println(line);
 						if (line.length() == 0) { // first blank line
 							header = false;
-						} else if (line.startsWith("Progress: ")) {
-							int pos1 = "Progress: ".length();
+						} else if (line.startsWith("Progress:")) {
+							int pos1 = "Progress:".length();
 							int pos2 = line.indexOf('/', pos1);
 
 							progress.setCurrent(Integer.parseInt(line.substring(pos1, pos2).trim()));
 							progress.setTotal(Integer.parseInt(line.substring(pos2 + 1).trim()));
-						} else if (line.startsWith("Status: ")) {
-							int pos = "Status: ".length();
+						} else if (line.startsWith("Status:")) {
+							int pos = "Status:".length();
 
 							progress.setStatus(line.substring(pos).trim());
-						} else if (line.startsWith("Step: ")) {
-							int pos = "Step: ".length();
+						} else if (line.startsWith("Step:")) {
+							int pos = "Step:".length();
 							
 							progress.setStep(line.substring(pos).trim());
 						}

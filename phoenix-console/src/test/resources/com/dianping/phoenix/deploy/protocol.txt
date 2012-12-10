@@ -55,5 +55,6 @@ Progress: 71/100
 [11-27 16:34:35] [INFO] traffic turned on
 --9ed2b78c112fbd17a8511812c554da62941629a8--
 Progress: 100/100
+Step: rollback
 
 --255220d51dc7fb4aacddadedfe252a346da267d4--

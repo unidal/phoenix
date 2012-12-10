@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.phoenix.console.page.version.VersionContext;
+import com.dianping.phoenix.version.VersionContext;
 
 public class GitServiceTest extends ComponentTestCase {
 

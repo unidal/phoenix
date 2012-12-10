@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 
-import com.dianping.phoenix.console.page.version.VersionContext;
+import com.dianping.phoenix.version.VersionContext;
 
 public interface GitService {
 	void clearWorkingDir(VersionContext context) throws Exception;

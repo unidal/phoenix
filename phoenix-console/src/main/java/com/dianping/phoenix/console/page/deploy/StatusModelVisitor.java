@@ -159,7 +159,7 @@ class StatusModelVisitor extends BaseVisitor {
 			}
 		}
 
-		if (sb.length() > 0 || status != null || step != null || progress > 0) {
+		if (index < size) {
 			HostModel host = new HostModel().setIp(ip);
 
 			host.setProgress(progress);

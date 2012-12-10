@@ -35,7 +35,7 @@ public class DeployPolicyExecutorTest extends ComponentTestCase {
 			sb.append(segment);
 		}
 
-		Assert.assertEquals("Progress[100/100, failed]", progress.toString());
+		Assert.assertEquals("Progress[100/100, failed, rollback]", progress.toString());
 		Assert.assertEquals(1977, sb.length());
 	}
 }

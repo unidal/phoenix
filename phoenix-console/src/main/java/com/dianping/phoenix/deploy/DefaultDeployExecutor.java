@@ -87,6 +87,12 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 				try {
 					m_agentListener.onCancel(ctx);
+
+					String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+					String message = String.format("[%s] Rollout to host(%s) cancelled due to error happened.", timestamp,
+					      ctx.getHost());
+
+					ctx.updateStatus("cancelled", message);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -352,7 +358,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			HostModel host = m_model.findHost(m_host);
 
 			host.addSegment(new SegmentModel().setStatus(status) //
-			      .setCurrentTicks(100).setTotalTicks(100).setText(message));
+			      .setCurrentTicks(100).setTotalTicks(100).setStep(status).setText(message));
 		}
 	}
 

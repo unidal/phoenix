@@ -26,6 +26,7 @@ public class StatusModelVisitorTest {
 
 		DeployModel model = visitor.getModel();
 
+		// System.out.println(model);
 		Assert.assertEquals(4, model.getHosts().size());
 
 		HostModel summary = model.findHost("summary");
@@ -47,10 +48,8 @@ public class StatusModelVisitorTest {
 
 		HostModel host3 = model.findHost("192.168.66.133");
 		Assert.assertNull(host3);
-		
+
 		HostModel host4 = model.findHost("192.168.66.134");
 		Assert.assertEquals("failed", host4.getStatus());
-		
-		System.out.println(model);
 	}
 }

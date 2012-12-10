@@ -13,7 +13,8 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Version;
-import com.dianping.phoenix.console.page.version.DefaultVersionManager.VersionLog;
+import com.dianping.phoenix.version.VersionManager;
+import com.dianping.phoenix.version.VersionManager.VersionLog;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
@@ -26,7 +27,7 @@ public class Handler implements PageHandler<Context> {
 	@PayloadMeta(Payload.class)
 	@InboundActionMeta(name = "version")
 	public void handleInbound(Context ctx) throws ServletException, IOException {
-		
+
 	}
 
 	@Override
@@ -37,23 +38,23 @@ public class Handler implements PageHandler<Context> {
 		Action action = payload.getAction();
 		model.setAction(action);
 		model.setPage(ConsolePage.VERSION);
-		
+
 		switch (action) {
-			case CREATE:
-				createVersion(ctx, payload, model);
-				break;
-			case REMOVE:
-				removeVersion(ctx, payload, model);
-				break;
-			case STATUS:
-				showStatus(payload, model);
-				break;
-			case VIEW:
-				viewVersions(ctx, model);
-				break;
-			case GET_VERSIONS:
-				getVersions(ctx, model);
-				break;
+		case CREATE:
+			createVersion(ctx, payload, model);
+			break;
+		case REMOVE:
+			removeVersion(ctx, payload, model);
+			break;
+		case STATUS:
+			showStatus(payload, model);
+			break;
+		case VIEW:
+			viewVersions(ctx, model);
+			break;
+		case GET_VERSIONS:
+			getVersions(ctx, model);
+			break;
 		}
 
 		m_jspViewer.view(ctx, model);
@@ -76,6 +77,7 @@ public class Handler implements PageHandler<Context> {
 			if (activeVersion != null) {
 				model.setCreatingVersion(activeVersion.getVersion());
 			}
+
 			VersionLog statusLog = m_manager.getStatus(version, index);
 			if (statusLog != null) {
 				List<String> messages = statusLog.getMessages();
@@ -83,8 +85,7 @@ public class Handler implements PageHandler<Context> {
 					StringBuffer buffer = new StringBuffer();
 					for (String message : messages) {
 						if (message != null) {
-							buffer.append(message.replace("\"", "\\\"").replace("\n", "<br>"))
-									.append("<br>");
+							buffer.append(message.replace("\"", "\\\"").replace("\n", "<br>")).append("<br>");
 						}
 					}
 					model.setLogcontent(buffer.toString());

@@ -33,8 +33,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.console.page.version.VersionManager</role>
-			<implementation>com.dianping.phoenix.console.page.version.DefaultVersionManager</implementation>
+			<role>com.dianping.phoenix.version.VersionManager</role>
+			<implementation>com.dianping.phoenix.version.DefaultVersionManager</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.service.StatusReporter</role>
@@ -238,6 +238,18 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.initialization.Module</role>
+			<role-hint>phoenix-console</role-hint>
+			<implementation>com.dianping.phoenix.PhoenixConsoleModule</implementation>
+		</component>
+		<component>
+			<role>org.unidal.initialization.ModuleManager</role>
+			<implementation>org.unidal.initialization.DefaultModuleManager</implementation>
+			<configuration>
+				<topLevelModules>phoenix-console</topLevelModules>
+			</configuration>
+		</component>
+		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
@@ -261,7 +273,7 @@
 					<role>com.dianping.phoenix.service.ProjectManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.console.page.version.VersionManager</role>
+					<role>com.dianping.phoenix.version.VersionManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -274,7 +286,7 @@
 			<implementation>com.dianping.phoenix.console.page.version.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.console.page.version.VersionManager</role>
+					<role>com.dianping.phoenix.version.VersionManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.version.JspViewer</role>

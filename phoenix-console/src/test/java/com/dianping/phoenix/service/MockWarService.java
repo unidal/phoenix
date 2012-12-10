@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.console.page.version.VersionContext;
+import com.dianping.phoenix.version.VersionContext;
 
 public class MockWarService implements WarService {
 	@Inject
