@@ -29,6 +29,9 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	@FieldMeta("br")
 	private int m_br;
 
+	@FieldMeta("testServiceUrlPrefix")
+	private String m_testServiceUrlPrefix;
+
 	@Override
 	public Action getAction() {
 		return m_action == null ? Action.DEFAULT : m_action;
@@ -57,6 +60,10 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 
 	public int getBr() {
 		return m_br;
+	}
+
+	public String getTestServiceUrlPrefix() {
+		return m_testServiceUrlPrefix;
 	}
 
 	public void setAction(String action) {
@@ -92,7 +99,7 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 				sb.append("domain can not be empty");
 			}
 			break;
-			
+
 		case STATUS:
 		case CANCEL:
 		case GETLOG:
@@ -100,14 +107,14 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 			break;
 
 		}
-		
+
 		if (sb.length() > 0) {
 			ctx.addError(new ErrorObject(sb.toString()));
 		}
 	}
-	
+
 	private void checkCommonArguments(ActionContext<?> ctx, StringBuilder sb) {
-		if(!validDeployId(m_deployId)) {
+		if (!validDeployId(m_deployId)) {
 			sb.append("deployId invalid");
 		}
 	}

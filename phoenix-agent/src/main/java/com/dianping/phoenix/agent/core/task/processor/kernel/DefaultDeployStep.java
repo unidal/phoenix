@@ -1,26 +1,37 @@
 package com.dianping.phoenix.agent.core.task.processor.kernel;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
+import org.apache.log4j.Logger;
 import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.util.StringUtils;
 
+import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
+import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DomainHealthCheckInfo;
+import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
+import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService.CheckResult;
 
 public class DefaultDeployStep implements DeployStep {
+
+	private final static Logger logger = Logger.getLogger(DefaultDeployStep.class);
 
 	@Inject
 	private ScriptExecutor scriptExecutor;
 	@Inject
 	private Config config;
+	@Inject
+	private QaService qaService;
 
 	private OutputStream logOut;
-	private String domain;
-	private String kernelVersion;
+	private DeployTask task;
 
 	private int runShellCmd(String shellFunc) throws Exception {
-		String script = jointShellCmd(domain, kernelVersion, config.getContainerType().toString(), shellFunc);
+		String script = jointShellCmd(task.getDomain(), task.getKernelVersion(), config.getContainerType().toString(),
+				shellFunc);
 		int exitCode = scriptExecutor.exec(script, logOut, logOut);
 		return exitCode;
 	}
@@ -36,8 +47,9 @@ public class DefaultDeployStep implements DeployStep {
 			throw new RuntimeException("container server.xml not found");
 		}
 
-		File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), domain, kernelVersion));
-		String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), domain);
+		File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), task.getDomain(),
+				task.getKernelVersion()));
+		String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain());
 		ServerXmlUtil.attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(),
 				kernelDocBase);
 	}
@@ -51,9 +63,8 @@ public class DefaultDeployStep implements DeployStep {
 	}
 
 	@Override
-	public void prepare(String domain, String kernelVersion, OutputStream logOut) {
-		this.domain = domain;
-		this.kernelVersion = kernelVersion;
+	public void prepare(DeployTask task, OutputStream logOut) {
+		this.task = task;
 		this.logOut = logOut;
 	}
 
@@ -97,7 +108,7 @@ public class DefaultDeployStep implements DeployStep {
 	public int upgradeKernel() throws Exception {
 		return runShellCmd("upgrade_kernel");
 	}
-	
+
 	@Override
 	public int startContainer() throws Exception {
 		return runShellCmd("start_container");
@@ -105,7 +116,62 @@ public class DefaultDeployStep implements DeployStep {
 
 	@Override
 	public int checkContainerStatus() throws Exception {
-		return runShellCmd("check_container_status");
+		int exitCode = callQaService();
+		return exitCode;
+
+	}
+
+	private int callQaService() throws IOException {
+		String localIp = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
+		String qaServiceUrlPrefix = task.getQaServiceUrlPrefix();
+		DomainHealthCheckInfo deployInfo = new DomainHealthCheckInfo(task.getDomain(), config.getEnv(), localIp,
+				config.getContainerPort(), qaServiceUrlPrefix);
+
+		int exitCode = DeployStep.CODE_OK;
+		if (!StringUtils.isEmpty(StringUtils.trimAll(qaServiceUrlPrefix))) {
+			logger.info(String.format("qa service url is given, checking domain status via %s", qaServiceUrlPrefix));
+
+			CheckResult checkResult = CheckResult.FAIL;
+			try {
+				checkResult = qaService.isDomainHealthy(deployInfo, config.getQaServiceTimeout(),
+						config.getQaServiceQueryInterval());
+			} catch (RuntimeException e) {
+				checkResult = CheckResult.AGENT_LOCAL_EXCEPTION;
+				logger.error("agent local exception when calling qa service", e);
+			}
+
+			exitCode = qaCheckResultToExitCode(checkResult);
+		} else {
+			logger.info("qa service url is not given, skip checking domain status");
+		}
+		return exitCode;
+	}
+
+	private int qaCheckResultToExitCode(CheckResult checkResult) {
+		int exitCode;
+		switch (checkResult) {
+
+		case PASS:
+			exitCode = DeployStep.CODE_OK;
+			break;
+
+		// TODO
+		case TIMEOUT:
+		case AGENT_LOCAL_EXCEPTION:
+		case QA_LOCAL_EXCEPTION:
+		case SUBMIT_FAILED:
+		case FAIL:
+			exitCode = DeployStep.CODE_ERROR;
+			break;
+
+		default:
+			logger.error(String.format("unexpected CheckResult type %s, treat as %s", checkResult,
+					DeployStep.CODE_ERROR));
+			exitCode = DeployStep.CODE_ERROR;
+			break;
+
+		}
+		return exitCode;
 	}
 
 	@Override

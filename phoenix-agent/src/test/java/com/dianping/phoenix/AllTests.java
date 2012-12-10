@@ -6,8 +6,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.dianping.phoenix.agent.CharacterReplaceFilterTest;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessorTest;
+import com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStepTest;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflowTest;
 import com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlUtilTest;
+import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DefaultQaServiceTest;
 import com.dianping.phoenix.agent.core.tx.FileBasedTransactionManagerTest;
 
 @RunWith(Suite.class)
@@ -16,7 +18,9 @@ import com.dianping.phoenix.agent.core.tx.FileBasedTransactionManagerTest;
 	ServerXmlUtilTest.class,
 	AbstractSerialTaskProcessorTest.class,
 	FileBasedTransactionManagerTest.class,
-	CharacterReplaceFilterTest.class
+	CharacterReplaceFilterTest.class,
+	DefaultQaServiceTest.class,
+	DefaultDeployStepTest.class
 })
 public class AllTests {
 

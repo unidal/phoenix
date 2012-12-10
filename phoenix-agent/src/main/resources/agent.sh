@@ -4,7 +4,7 @@ set -u
 #trap "echo 'TERM signal received'" TERM
 cd `dirname $0`
 function log {
-	echo "[`date +'%m-%d %H:%M:%S'`] [INFO] $@"
+	echo "[`date +'%m-%d %H:%M:%S'`][INFO] $@"
 }
 
 KERNEL_WAR_BASE=/data/webapps/phoenix-kernel/

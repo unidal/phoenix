@@ -1,6 +1,8 @@
 package com.dianping.phoenix.agent.core.task.processor.kernel;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -14,23 +16,27 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.unidal.lookup.ComponentTestCase;
 
+import com.dianping.phoenix.agent.core.tx.LogFormatter;
+import com.dianping.phoenix.agent.core.tx.LogFormatterTest.LogState;
+
 @SuppressWarnings("unchecked")
 public class DeployWorkflowTest extends ComponentTestCase {
 
 	private final int STEP_COUNT_OF_WORKFLOW = 10;
-
-	enum LogState {
-		READING_HEADER, READING_CHUNK, END
-	}
 
 	@Test
 	public void testLogFormat() throws Exception {
 		DeployWorkflow workflow = lookup(DeployWorkflow.class);
 		DeployStep steps = lookup(DeployStep.class);
 		ByteArrayOutputStream logOut = new ByteArrayOutputStream();
-		workflow.start("domain", "kernelVersion", steps, logOut);
+		workflow.start(new DeployTask("domain", "kernelVersion", ""), steps, logOut, lookup(LogFormatter.class));
 		List<String> logLines = IOUtils.readLines(new ByteArrayInputStream(logOut.toByteArray()));
+		
+		checkLogFormat(logLines);
 
+	}
+	
+	private void checkLogFormat(List<String> logLines) {
 		LogState state = LogState.READING_HEADER;
 		boolean someChunkGot = false;
 		boolean progress100 = false;
@@ -42,9 +48,9 @@ public class DeployWorkflowTest extends ComponentTestCase {
 			case READING_HEADER:
 				if ("".equals(line)) {
 					state = LogState.READING_CHUNK;
-				} else if (DeployWorkflow.LOG_TERMINATOR.trim().equals(line)) {
+				} else if (LogFormatter.LOG_TERMINATOR.trim().equals(line)) {
 					state = LogState.END;
-				} else if (DeployWorkflow.CHUNK_TERMINATOR.trim().equals(line)) {
+				} else if (LogFormatter.CHUNK_TERMINATOR.trim().equals(line)) {
 					state = LogState.READING_HEADER;
 				} else {
 					if (!line.matches("[^:]+:.+")) {
@@ -62,7 +68,7 @@ public class DeployWorkflowTest extends ComponentTestCase {
 				break;
 
 			case READING_CHUNK:
-				if (DeployWorkflow.CHUNK_TERMINATOR.trim().equals(line)) {
+				if (LogFormatter.CHUNK_TERMINATOR.trim().equals(line)) {
 					state = LogState.READING_HEADER;
 				}
 				someChunkGot = true;
@@ -79,7 +85,6 @@ public class DeployWorkflowTest extends ComponentTestCase {
 		Assert.assertTrue(progress100);
 		Assert.assertTrue(finalStatusGot);
 		Assert.assertTrue(someStepGot);
-
 	}
 
 	@Test
@@ -89,7 +94,7 @@ public class DeployWorkflowTest extends ComponentTestCase {
 			MockDeployStep steps = (MockDeployStep) lookup(DeployStep.class);
 			steps.setThrowExceptionAtStep(i);
 			ByteArrayOutputStream logOut = new ByteArrayOutputStream();
-			int exitCode = workflow.start("domain", "kernelVersion", steps, logOut);
+			int exitCode = workflow.start(new DeployTask("domain", "kernelVersion", ""), steps, logOut, mock(LogFormatter.class));
 			Assert.assertTrue(exitCode != DeployStep.CODE_OK);
 		}
 
@@ -102,7 +107,7 @@ public class DeployWorkflowTest extends ComponentTestCase {
 			MockDeployStep steps = (MockDeployStep) lookup(DeployStep.class);
 			steps.setReturnErrorCodeAtStep(i);
 			ByteArrayOutputStream logOut = new ByteArrayOutputStream();
-			int exitCode = workflow.start("domain", "kernelVersion", steps, logOut);
+			int exitCode = workflow.start(new DeployTask("domain", "kernelVersion", ""), steps, logOut, mock(LogFormatter.class));
 			Assert.assertTrue(exitCode != DeployStep.CODE_OK);
 		}
 
@@ -145,7 +150,7 @@ public class DeployWorkflowTest extends ComponentTestCase {
 		final ByteArrayOutputStream logOut = new ByteArrayOutputStream();
 		new Thread() {
 			public void run() {
-				workflow.start("domain", "kernelVersion", steps, logOut);
+				workflow.start(new DeployTask("domain", "kernelVersion", ""), steps, logOut, mock(LogFormatter.class));
 			}
 		}.start();
 

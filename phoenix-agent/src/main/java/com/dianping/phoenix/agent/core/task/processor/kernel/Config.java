@@ -32,6 +32,27 @@ public class Config {
 	 */
 	private String domainDocBaseFeaturePattern = "/%s/current";
 
+	/**
+	 * The timeout when calling qa test service, in milliseconds
+	 */
+	private int qaServiceTimeout = 180 * 1000;
+	
+	/**
+	 * The interval when querying qa service task status, in milliseconds
+	 */
+	// TODO
+	private int qaServiceQueryInterval = 1000;
+
+	/**
+	 * The HTTP port of container
+	 */
+	private int containerPort = 8080;
+
+	/**
+	 * The env of agent
+	 */
+	private String env = "alpha";
+
 	private ContainerType containerType;
 
 	public enum ContainerType {
@@ -43,7 +64,7 @@ public class Config {
 	private File serverXml;
 
 	public Config() {
-		
+
 		File configFile = new File(CONFIG_FILE);
 		Properties props = new Properties();
 		if (configFile.exists()) {
@@ -57,10 +78,14 @@ public class Config {
 				throw new RuntimeException(msg, e);
 			}
 		}
-		
+
 		containerInstallPath = props.getProperty("containerInstallPath", containerInstallPath);
 		kernelDocBasePattern = props.getProperty("kernelDocBasePattern", kernelDocBasePattern);
 		domainDocBaseFeaturePattern = props.getProperty("domainDocBaseFeaturePattern", domainDocBaseFeaturePattern);
+		qaServiceTimeout = Integer.parseInt(props.getProperty("qaServiceTimeout", Integer.toString(qaServiceTimeout)));
+		qaServiceQueryInterval = Integer.parseInt(props.getProperty("qaServiceQueryInterval", Integer.toString(qaServiceQueryInterval)));
+		containerPort = Integer.parseInt(props.getProperty("containerPort", Integer.toString(containerPort)));
+		env = props.getProperty("env", env);
 
 		logger.info("containerInstallPath: " + containerInstallPath);
 		logger.info("kernelDocBasePattern: " + kernelDocBasePattern);
@@ -73,8 +98,8 @@ public class Config {
 		} else if (runSh.exists()) {
 			containerType = ContainerType.JBOSS;
 		} else {
-			throw new RuntimeException(
-					String.format("containerInstallPath %s does not have a valid tomcat or jboss installation", containerInstallPath));
+			throw new RuntimeException(String.format(
+					"containerInstallPath %s does not have a valid tomcat or jboss installation", containerInstallPath));
 		}
 
 		logger.info("containerType: " + containerType);
@@ -110,6 +135,22 @@ public class Config {
 
 	public File getServerXml() {
 		return serverXml;
+	}
+
+	public int getQaServiceTimeout() {
+		return qaServiceTimeout;
+	}
+
+	public int getQaServiceQueryInterval() {
+		return qaServiceQueryInterval;
+	}
+
+	public int getContainerPort() {
+		return containerPort;
+	}
+
+	public String getEnv() {
+		return env;
 	}
 
 }

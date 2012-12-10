@@ -32,7 +32,7 @@ public class MockDeployStep implements DeployStep {
 	}
 
 	@Override
-	public void prepare(String domain, String kernelVersion, OutputStream logOut) {
+	public void prepare(DeployTask task, OutputStream logOut) {
 		this.logOut = logOut;
 	}
 
