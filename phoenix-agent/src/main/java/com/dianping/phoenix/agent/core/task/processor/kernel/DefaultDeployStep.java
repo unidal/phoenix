@@ -139,7 +139,8 @@ public class DefaultDeployStep implements DeployStep {
 				checkResult = CheckResult.AGENT_LOCAL_EXCEPTION;
 				logger.error("agent local exception when calling qa service", e);
 			}
-
+			
+			logger.info(String.format("qa service check result %s", checkResult));
 			exitCode = qaCheckResultToExitCode(checkResult);
 		} else {
 			logger.info("qa service url is not given, skip checking domain status");
