@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <deploy id="100" domain="demo-app" version="1.0.1" abort-on-error="true">
-   <host ip="host-a" progress="0">
+   <host ip="host-a" status="failed" progress="0">
       <segment current-ticks="11" total-ticks="100">[11-27 16:33:44] [INFO] PID is 8728
 [11-27 16:33:44] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
 [11-27 16:33:44] [INFO] getting kernel war from git
@@ -16,15 +16,15 @@ Switched to a new branch 'dummy'
       <segment current-ticks="31" total-ticks="100" status="failed"></segment>
       <segment step="failed" current-ticks="100" total-ticks="100" status="failed">[ERROR] Failed to deploy phoenix kernel(1.0.1) to host(host-a).</segment>
    </host>
-   <host ip="host-b" progress="0">
+   <host ip="host-b" status="cancelled" progress="0">
       <segment current-ticks="100" total-ticks="100" status="cancelled"/>
       <segment step="cancelled" current-ticks="100" total-ticks="100" status="cancelled">Rollout to host(host-b) cancelled due to error happened.</segment>
    </host>
-   <host ip="host-c" progress="0">
+   <host ip="host-c" status="cancelled" progress="0">
       <segment current-ticks="100" total-ticks="100" status="cancelled"/>
       <segment step="cancelled" current-ticks="100" total-ticks="100" status="cancelled">Rollout to host(host-c) cancelled due to error happened.</segment>
    </host>
-   <host ip="host-d" progress="0">
+   <host ip="host-d" status="cancelled" progress="0">
       <segment current-ticks="100" total-ticks="100" status="cancelled"/>
       <segment step="cancelled" current-ticks="100" total-ticks="100" status="cancelled">Rollout to host(host-d) cancelled due to error happened.</segment>
    </host>

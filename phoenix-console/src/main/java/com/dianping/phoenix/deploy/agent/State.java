@@ -42,16 +42,18 @@ public enum State {
 	},
 
 	UNREACHABLE(1, 1, 2, 9) {
+		private static final int MAX_RETRY_COUNT = 2;
+
 		@Override
 		protected void doActivity(Context ctx) throws Exception {
-			int retryCount = ctx.getRetryCount();
+			int retriedCount = ctx.getRetriedCount();
 
-			if (retryCount >= 3) {
+			if (retriedCount >= MAX_RETRY_COUNT) {
 				moveTo(ctx, FAILED);
 			} else {
 				long retryInterval = ctx.getConfigManager().getDeployRetryInterval();
 
-				ctx.setRetryCount(retryCount + 1);
+				ctx.setRetriedCount(retriedCount + 1);
 
 				Thread.sleep(retryInterval); // sleep a while before retry
 

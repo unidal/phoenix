@@ -248,7 +248,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private String m_host;
 
-		private int m_retryCount;
+		private int m_retriedCount;
 
 		private boolean m_failed;
 
@@ -298,8 +298,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-		public int getRetryCount() {
-			return m_retryCount;
+		public int getRetriedCount() {
+			return m_retriedCount;
 		}
 
 		@Override
@@ -378,8 +378,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-		public void setRetryCount(int retryCount) {
-			m_retryCount = retryCount;
+		public void setRetriedCount(int retriedCount) {
+			m_retriedCount = retriedCount;
 		}
 
 		@Override
@@ -407,6 +407,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		public void updateStatus(String status, String message) {
 			HostModel host = m_model.findHost(m_host);
 
+			host.setStatus(status);
 			host.addSegment(new SegmentModel().setStatus(status) //
 			      .setCurrentTicks(100).setTotalTicks(100).setStep(status).setText(message));
 		}

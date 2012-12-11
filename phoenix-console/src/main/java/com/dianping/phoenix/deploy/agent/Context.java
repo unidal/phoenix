@@ -17,7 +17,7 @@ public interface Context {
 
 	public String getRawLog();
 
-	public int getRetryCount();
+	public int getRetriedCount();
 
 	public State getState();
 
@@ -35,7 +35,7 @@ public interface Context {
 
 	public void setFailed(boolean failed);
 
-	public void setRetryCount(int retryCount);
+	public void setRetriedCount(int retriedCount);
 
 	public void setState(State state);
 

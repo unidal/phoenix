@@ -92,7 +92,6 @@ public class DeployStateTest extends ComponentTestCase {
 		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
@@ -114,7 +113,6 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
 		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
@@ -184,7 +182,7 @@ public class DeployStateTest extends ComponentTestCase {
 
 		private State m_state;
 
-		private int m_retryCount;
+		private int m_retriedCount;
 
 		private boolean m_failed;
 
@@ -229,8 +227,8 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public int getRetryCount() {
-			return m_retryCount;
+		public int getRetriedCount() {
+			return m_retriedCount;
 		}
 
 		@Override
@@ -284,8 +282,8 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public void setRetryCount(int retryCount) {
-			m_retryCount = retryCount;
+		public void setRetriedCount(int retriedCount) {
+			m_retriedCount = retriedCount;
 		}
 
 		@Override
