@@ -29,8 +29,8 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	@FieldMeta("br")
 	private int m_br;
 
-	@FieldMeta("testServiceUrlPrefix")
-	private String m_testServiceUrlPrefix;
+	@FieldMeta("qaServiceUrlPrefix")
+	private String m_qaServiceUrlPrefix;
 
 	@Override
 	public Action getAction() {
@@ -62,8 +62,8 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 		return m_br;
 	}
 
-	public String getTestServiceUrlPrefix() {
-		return m_testServiceUrlPrefix;
+	public String getQaServiceUrlPrefix() {
+		return m_qaServiceUrlPrefix;
 	}
 
 	public void setAction(String action) {

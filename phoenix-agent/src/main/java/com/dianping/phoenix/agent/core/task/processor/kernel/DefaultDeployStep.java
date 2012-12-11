@@ -37,8 +37,8 @@ public class DefaultDeployStep implements DeployStep {
 	}
 
 	private String jointShellCmd(String domain, String newVersion, String container, String shellFunc) {
-		return String.format("%s -x \"%s\" -c \"%s\" -d \"%s\" -v \"%s\" -f \"%s\"", getScriptPath(),
-				config.getServerXml(), container, domain, newVersion, shellFunc);
+		return String.format("%s -b \"%s\" -x \"%s\" -c \"%s\" -d \"%s\" -v \"%s\" -f \"%s\"", getScriptPath(),
+				config.getContainerInstallPath(), config.getServerXml(), container, domain, newVersion, shellFunc);
 	}
 
 	private void doInjectPhoenixLoader() throws Exception {
@@ -139,7 +139,8 @@ public class DefaultDeployStep implements DeployStep {
 				checkResult = CheckResult.AGENT_LOCAL_EXCEPTION;
 				logger.error("agent local exception when calling qa service", e);
 			}
-
+			
+			logger.info(String.format("qa service check result %s", checkResult));
 			exitCode = qaCheckResultToExitCode(checkResult);
 		} else {
 			logger.info("qa service url is not given, skip checking domain status");
