@@ -51,7 +51,7 @@ public class Config {
 	/**
 	 * The env of agent
 	 */
-	private String env = "alpha";
+	private String env = "dev";
 
 	private ContainerType containerType;
 
