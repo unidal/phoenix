@@ -164,7 +164,7 @@ public class DefaultDeployStep implements DeployStep {
 			logger.info(String.format("qa service check result %s", checkResult));
 			exitCode = qaCheckResultToExitCode(checkResult);
 		} else {
-			logger.info("qa service url is not given, skip checking domain status");
+			logger.warn("qa service url is not given, skip checking domain status");
 		}
 		return exitCode;
 	}
