@@ -34,11 +34,6 @@ public class Config {
 	private String domainDocBaseFeaturePattern = "/%s/current";
 
 	/**
-	 * The timeout when calling qa test service, in milliseconds
-	 */
-	private int qaServiceTimeout = 180 * 1000;
-
-	/**
 	 * The interval when querying qa service task status, in milliseconds
 	 */
 	// TODO
@@ -85,7 +80,6 @@ public class Config {
 		containerInstallPath = props.getProperty("containerInstallPath", containerInstallPath);
 		kernelDocBasePattern = props.getProperty("kernelDocBasePattern", kernelDocBasePattern);
 		domainDocBaseFeaturePattern = props.getProperty("domainDocBaseFeaturePattern", domainDocBaseFeaturePattern);
-		qaServiceTimeout = Integer.parseInt(props.getProperty("qaServiceTimeout", Integer.toString(qaServiceTimeout)));
 		qaServiceQueryInterval = Integer.parseInt(props.getProperty("qaServiceQueryInterval",
 				Integer.toString(qaServiceQueryInterval)));
 		containerPort = Integer.parseInt(props.getProperty("containerPort", Integer.toString(containerPort)));
@@ -148,10 +142,6 @@ public class Config {
 
 	public File getServerXml() {
 		return serverXml;
-	}
-
-	public int getQaServiceTimeout() {
-		return qaServiceTimeout;
 	}
 
 	public int getQaServiceQueryInterval() {
