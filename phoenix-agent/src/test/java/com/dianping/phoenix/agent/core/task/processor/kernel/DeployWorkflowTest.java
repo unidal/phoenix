@@ -22,7 +22,7 @@ import com.dianping.phoenix.agent.core.tx.LogFormatterTest.LogState;
 @SuppressWarnings("unchecked")
 public class DeployWorkflowTest extends ComponentTestCase {
 
-	private final int STEP_COUNT_OF_WORKFLOW = 10;
+	private final int STEP_COUNT_OF_WORKFLOW = 9;
 
 	@Test
 	public void testLogFormat() throws Exception {
