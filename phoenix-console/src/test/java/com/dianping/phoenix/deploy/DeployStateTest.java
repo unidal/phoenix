@@ -44,8 +44,7 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
 		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... error\n"
-		      + "deploy id is already existed.\n"
-		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
+		      + "deploy id is already existed.\n" + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -93,7 +92,6 @@ public class DeployStateTest extends ComponentTestCase {
 		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
@@ -115,7 +113,6 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
 		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
@@ -183,9 +180,11 @@ public class DeployStateTest extends ComponentTestCase {
 	static abstract class BaseContext implements Context {
 		private ConfigManager m_configManager;
 
-		private int m_retryCount;
-
 		private State m_state;
+
+		private int m_retriedCount;
+
+		private boolean m_failed;
 
 		private StringBuilder m_log = new StringBuilder(2048);
 
@@ -228,8 +227,8 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public int getRetryCount() {
-			return m_retryCount;
+		public int getRetriedCount() {
+			return m_retriedCount;
 		}
 
 		@Override
@@ -244,6 +243,11 @@ public class DeployStateTest extends ComponentTestCase {
 
 		protected boolean isDeploy(String url) {
 			return url.contains("?op=deploy&");
+		}
+
+		@Override
+		public boolean isFailed() {
+			return m_failed;
 		}
 
 		protected boolean isLog(String url) {
@@ -273,8 +277,13 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public void setRetryCount(int retryCount) {
-			m_retryCount = retryCount;
+		public void setFailed(boolean failed) {
+			m_failed = failed;
+		}
+
+		@Override
+		public void setRetriedCount(int retriedCount) {
+			m_retriedCount = retriedCount;
 		}
 
 		@Override

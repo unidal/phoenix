@@ -18,6 +18,8 @@ public class ConfigManager implements Initializable {
 
 	private Config m_config;
 
+	private boolean m_showLogTimestamp = true; // for unit test purpose
+
 	public String getDeployLogUrl(String host, int deployId) {
 		if (m_config == null) {
 			throw new RuntimeException("ConfigManager is not initialized properly!");
@@ -109,7 +111,19 @@ public class ConfigManager implements Initializable {
 		}
 	}
 
+	public boolean isShowLogTimestamp() {
+		return m_showLogTimestamp;
+	}
+
 	public void setConfigFile(String configFile) {
 		m_configFile = configFile;
+	}
+
+	public void setDeployRetryInterval(int retryInterval) {
+		if (m_config == null) {
+			throw new RuntimeException("ConfigManager is not initialized properly!");
+		} else {
+			m_config.getAgent().setDeployRetryInterval(retryInterval); // in second
+		}
 	}
 }

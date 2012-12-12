@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<deploy id="100" domain="demo-app" version="1.0.1" abort-on-error="true">
+   <host ip="host-a" status="failed" progress="0">
+      <segment current-ticks="11" total-ticks="100">[11-27 16:33:44] [INFO] PID is 8728
+[11-27 16:33:44] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:33:44] [INFO] getting kernel war from git
+Cloning into '/data/appdata/phoenix_kernel_war_tmp'...
+Switched to a new branch 'dummy'
+[11-27 16:34:34] [INFO] got kernel war from git
+</segment>
+      <segment current-ticks="21" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8744
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] turning off traffic
+[11-27 16:34:34] [INFO] traffic turned off
+</segment>
+      <segment current-ticks="31" total-ticks="100" status="failed"></segment>
+      <segment step="failed" current-ticks="100" total-ticks="100" status="failed">[ERROR] Failed to deploy phoenix kernel(1.0.1) to host(host-a).</segment>
+   </host>
+   <host ip="host-b" status="cancelled" progress="0">
+      <segment current-ticks="100" total-ticks="100" status="cancelled"/>
+      <segment step="cancelled" current-ticks="100" total-ticks="100" status="cancelled">Rollout to host(host-b) cancelled due to error happened.</segment>
+   </host>
+   <host ip="host-c" status="cancelled" progress="0">
+      <segment current-ticks="100" total-ticks="100" status="cancelled"/>
+      <segment step="cancelled" current-ticks="100" total-ticks="100" status="cancelled">Rollout to host(host-c) cancelled due to error happened.</segment>
+   </host>
+   <host ip="host-d" status="cancelled" progress="0">
+      <segment current-ticks="100" total-ticks="100" status="cancelled"/>
+      <segment step="cancelled" current-ticks="100" total-ticks="100" status="cancelled">Rollout to host(host-d) cancelled due to error happened.</segment>
+   </host>
+   <host ip="summary" progress="0">
+      <segment current-ticks="0" total-ticks="0">[INFO] Deploying phoenix kernel(1.0.1) to host(host-a) for deploy(100) of domain(demo-app)  ... ACCEPTED</segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Getting status from host(host-a) for deploy(100) ... </segment>
+      <segment current-ticks="0" total-ticks="0">[ERROR] Failed to deploy phoenix kernel(1.0.1) to host(host-a).</segment>
+   </host>
+</deploy>

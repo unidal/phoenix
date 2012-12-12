@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<deploy id="100" domain="demo-app" version="1.0.1" abort-on-error="true">
+   <host ip="host-a" progress="0">
+      <segment current-ticks="11" total-ticks="100">[11-27 16:33:44] [INFO] PID is 8728
+[11-27 16:33:44] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:33:44] [INFO] getting kernel war from git
+Cloning into '/data/appdata/phoenix_kernel_war_tmp'...
+Switched to a new branch 'dummy'
+[11-27 16:34:34] [INFO] got kernel war from git
+</segment>
+      <segment current-ticks="21" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8744
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] turning off traffic
+[11-27 16:34:34] [INFO] traffic turned off
+</segment>
+      <segment current-ticks="31" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8754
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] stopping container
+[11-27 16:34:34] [INFO] container stopped
+</segment>
+      <segment current-ticks="41" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8769
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] upgrading sample-app kernel to 0.1-SNAPSHOT
+[11-27 16:34:34] [INFO] sample-app kernel upgraded to 0.1-SNAPSHOT
+</segment>
+      <segment current-ticks="51" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8782
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] starting container
+[11-27 16:34:35] [INFO] container started
+</segment>
+      <segment current-ticks="61" total-ticks="100">[11-27 16:34:35] [INFO] PID is 8803
+[11-27 16:34:35] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:35] [INFO] checking container status
+[11-27 16:34:35] [INFO] container status ok
+</segment>
+      <segment current-ticks="71" total-ticks="100">[11-27 16:34:35] [INFO] PID is 8813
+[11-27 16:34:35] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:35] [INFO] commiting kernel
+[master 8f95266] update to 0.1-SNAPSHOT
+ 9 files changed, 399 insertions(+), 399 deletions(-)
+[11-27 16:34:35] [INFO] kernel version 0.1-SNAPSHOT committed
+[11-27 16:34:35] [INFO] turning on traffic
+[11-27 16:34:35] [INFO] traffic turned on
+</segment>
+      <segment current-ticks="100" total-ticks="100"></segment>
+   </host>
+   <host ip="host-b" progress="0">
+      <segment current-ticks="11" total-ticks="100">[11-27 16:33:44] [INFO] PID is 8728
+[11-27 16:33:44] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:33:44] [INFO] getting kernel war from git
+Cloning into '/data/appdata/phoenix_kernel_war_tmp'...
+Switched to a new branch 'dummy'
+[11-27 16:34:34] [INFO] got kernel war from git
+</segment>
+      <segment current-ticks="21" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8744
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] turning off traffic
+[11-27 16:34:34] [INFO] traffic turned off
+</segment>
+      <segment current-ticks="31" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8754
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] stopping container
+[11-27 16:34:34] [INFO] container stopped
+</segment>
+      <segment current-ticks="41" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8769
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] upgrading sample-app kernel to 0.1-SNAPSHOT
+[11-27 16:34:34] [INFO] sample-app kernel upgraded to 0.1-SNAPSHOT
+</segment>
+      <segment current-ticks="51" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8782
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] starting container
+[11-27 16:34:35] [INFO] container started
+</segment>
+      <segment current-ticks="61" total-ticks="100">[11-27 16:34:35] [INFO] PID is 8803
+[11-27 16:34:35] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:35] [INFO] checking container status
+[11-27 16:34:35] [INFO] container status ok
+</segment>
+      <segment current-ticks="71" total-ticks="100">[11-27 16:34:35] [INFO] PID is 8813
+[11-27 16:34:35] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:35] [INFO] commiting kernel
+[master 8f95266] update to 0.1-SNAPSHOT
+ 9 files changed, 399 insertions(+), 399 deletions(-)
+[11-27 16:34:35] [INFO] kernel version 0.1-SNAPSHOT committed
+[11-27 16:34:35] [INFO] turning on traffic
+[11-27 16:34:35] [INFO] traffic turned on
+</segment>
+      <segment current-ticks="100" total-ticks="100"></segment>
+   </host>
+   <host ip="host-c" progress="0">
+      <segment current-ticks="11" total-ticks="100">[11-27 16:33:44] [INFO] PID is 8728
+[11-27 16:33:44] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:33:44] [INFO] getting kernel war from git
+Cloning into '/data/appdata/phoenix_kernel_war_tmp'...
+Switched to a new branch 'dummy'
+[11-27 16:34:34] [INFO] got kernel war from git
+</segment>
+      <segment current-ticks="21" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8744
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] turning off traffic
+[11-27 16:34:34] [INFO] traffic turned off
+</segment>
+      <segment current-ticks="31" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8754
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] stopping container
+[11-27 16:34:34] [INFO] container stopped
+</segment>
+      <segment current-ticks="41" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8769
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] upgrading sample-app kernel to 0.1-SNAPSHOT
+[11-27 16:34:34] [INFO] sample-app kernel upgraded to 0.1-SNAPSHOT
+</segment>
+      <segment current-ticks="51" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8782
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] starting container
+[11-27 16:34:35] [INFO] container started
+</segment>
+      <segment current-ticks="61" total-ticks="100">[11-27 16:34:35] [INFO] PID is 8803
+[11-27 16:34:35] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:35] [INFO] checking container status
+[11-27 16:34:35] [INFO] container status ok
+</segment>
+      <segment current-ticks="71" total-ticks="100">[11-27 16:34:35] [INFO] PID is 8813
+[11-27 16:34:35] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:35] [INFO] commiting kernel
+[master 8f95266] update to 0.1-SNAPSHOT
+ 9 files changed, 399 insertions(+), 399 deletions(-)
+[11-27 16:34:35] [INFO] kernel version 0.1-SNAPSHOT committed
+[11-27 16:34:35] [INFO] turning on traffic
+[11-27 16:34:35] [INFO] traffic turned on
+</segment>
+      <segment current-ticks="100" total-ticks="100"></segment>
+   </host>
+   <host ip="host-d" progress="0">
+      <segment current-ticks="11" total-ticks="100">[11-27 16:33:44] [INFO] PID is 8728
+[11-27 16:33:44] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:33:44] [INFO] getting kernel war from git
+Cloning into '/data/appdata/phoenix_kernel_war_tmp'...
+Switched to a new branch 'dummy'
+[11-27 16:34:34] [INFO] got kernel war from git
+</segment>
+      <segment current-ticks="21" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8744
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] turning off traffic
+[11-27 16:34:34] [INFO] traffic turned off
+</segment>
+      <segment current-ticks="31" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8754
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] stopping container
+[11-27 16:34:34] [INFO] container stopped
+</segment>
+      <segment current-ticks="41" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8769
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] upgrading sample-app kernel to 0.1-SNAPSHOT
+[11-27 16:34:34] [INFO] sample-app kernel upgraded to 0.1-SNAPSHOT
+</segment>
+      <segment current-ticks="51" total-ticks="100">[11-27 16:34:34] [INFO] PID is 8782
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] starting container
+[11-27 16:34:35] [INFO] container started
+</segment>
+      <segment current-ticks="61" total-ticks="100">[11-27 16:34:35] [INFO] PID is 8803
+[11-27 16:34:35] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:35] [INFO] checking container status
+[11-27 16:34:35] [INFO] container status ok
+</segment>
+      <segment current-ticks="71" total-ticks="100">[11-27 16:34:35] [INFO] PID is 8813
+[11-27 16:34:35] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:35] [INFO] commiting kernel
+[master 8f95266] update to 0.1-SNAPSHOT
+ 9 files changed, 399 insertions(+), 399 deletions(-)
+[11-27 16:34:35] [INFO] kernel version 0.1-SNAPSHOT committed
+[11-27 16:34:35] [INFO] turning on traffic
+[11-27 16:34:35] [INFO] traffic turned on
+</segment>
+      <segment current-ticks="100" total-ticks="100"></segment>
+   </host>
+   <host ip="summary" progress="0">
+      <segment current-ticks="0" total-ticks="0">[INFO] Deploying phoenix kernel(1.0.1) to host(host-a) for deploy(100) of domain(demo-app)  ... ACCEPTED</segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Getting status from host(host-a) for deploy(100) ... </segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Deployed phoenix kernel(1.0.1) to host(host-a) successfully.</segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Deploying phoenix kernel(1.0.1) to host(host-b) for deploy(100) of domain(demo-app)  ... ACCEPTED</segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Getting status from host(host-b) for deploy(100) ... </segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Deployed phoenix kernel(1.0.1) to host(host-b) successfully.</segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Deploying phoenix kernel(1.0.1) to host(host-c) for deploy(100) of domain(demo-app)  ... ACCEPTED</segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Getting status from host(host-c) for deploy(100) ... </segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Deployed phoenix kernel(1.0.1) to host(host-c) successfully.</segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Deploying phoenix kernel(1.0.1) to host(host-d) for deploy(100) of domain(demo-app)  ... ACCEPTED</segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Getting status from host(host-d) for deploy(100) ... </segment>
+      <segment current-ticks="0" total-ticks="0">[INFO] Deployed phoenix kernel(1.0.1) to host(host-d) successfully.</segment>
+   </host>
+</deploy>

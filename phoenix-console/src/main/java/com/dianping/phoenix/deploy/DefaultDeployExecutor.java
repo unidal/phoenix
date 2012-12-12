@@ -5,16 +5,20 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.Logger;
 import org.unidal.helper.Files;
 import org.unidal.helper.Formats;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
+import org.unidal.tuple.Pair;
 
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.agent.Context;
@@ -27,7 +31,7 @@ import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.entity.SegmentModel;
 
-public class DefaultDeployExecutor implements DeployExecutor {
+public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 	@Inject
 	private ConfigManager m_configManager;
 
@@ -39,6 +43,13 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 	@Inject
 	private DeployPolicy m_policy;
+
+	private Logger m_logger;
+
+	@Override
+	public void enableLogging(Logger logger) {
+		m_logger = logger;
+	}
 
 	@Override
 	public DeployPolicy getPolicy() {
@@ -54,13 +65,11 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		DeployModel model = m_deployListener.getModel(deployId);
 		ControllerTask task = new ControllerTask(m_agentListener, model, hosts);
 
-		Threads.forGroup("Phoenix").start(task);
 		m_deployListener.onDeployStart(deployId);
+		Threads.forGroup("Phoenix").start(task);
 	}
 
 	class ControllerTask implements Task {
-		private static final String SUMMARY = "summary";
-
 		private List<String> m_hosts;
 
 		private int m_hostIndex;
@@ -75,7 +84,6 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			m_listener = listener;
 			m_model = model;
 			m_hosts = hosts;
-			m_model.addHost(new HostModel(SUMMARY));
 		}
 
 		private void cancelResetTasks() {
@@ -83,14 +91,21 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 			while (m_hostIndex < len) {
 				String host = m_hosts.get(m_hostIndex++);
-				RolloutContext ctx = new RolloutContext(this, m_agentListener, m_model, host);
 
 				try {
-					m_agentListener.onCancel(ctx);
+					m_deployListener.onHostCancel(m_model.getId(), host);
 
-					String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
-					String message = String.format("[%s] Rollout to host(%s) cancelled due to error happened.", timestamp,
-					      ctx.getHost());
+					String message;
+
+					if (m_configManager.isShowLogTimestamp()) {
+						String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+						message = String.format("[%s] Rollout to host(%s) cancelled due to error happened.", timestamp, host);
+					} else {
+						message = String.format("Rollout to host(%s) cancelled due to error happened.", host);
+					}
+
+					RolloutContext ctx = new RolloutContext(this, m_agentListener, m_model, host);
 
 					ctx.updateStatus("cancelled", message);
 				} catch (Exception e) {
@@ -109,10 +124,18 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		}
 
 		public ControllerTask log(String message) {
-			String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
-			HostModel host = m_model.findHost(SUMMARY);
+			HostModel host = m_model.findHost("summary");
+			String text;
 
-			host.addSegment(new SegmentModel().setText("[" + timestamp + "] " + message));
+			if (m_configManager.isShowLogTimestamp()) {
+				String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+				text = "[" + timestamp + "] " + message;
+			} else {
+				text = message;
+			}
+
+			host.addSegment(new SegmentModel().setText(text));
 			return this;
 		}
 
@@ -120,35 +143,44 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		public void run() {
 			m_active = true;
 
-			CountDownLatch latch = submitNextRolloutTask(1);
+			Pair<CountDownLatch, List<String>> pair = submitNextRolloutTask(1);
 
 			try {
 				while (m_active) {
-					if (latch == null) { // no more hosts
+					if (pair == null) { // no more hosts
 						break;
 					}
 
-					boolean done = latch.await(10, TimeUnit.MILLISECONDS);
+					boolean done = pair.getKey().await(10, TimeUnit.MILLISECONDS);
 
 					if (done) {
+						for (String host : pair.getValue()) {
+							try {
+								m_deployListener.onHostEnd(m_model.getId(), host);
+							} catch (Exception e) {
+								m_logger.warn(String.format("Error when processing onHostEnd(%s) of deploy(%s)!", host,
+								      m_model.getId()), e);
+							}
+						}
+
 						if (shouldStop()) {
 							cancelResetTasks();
-							latch = null;
+							pair = null;
 						} else {
 							int batchSize = m_policy.getBatchSize();
 
-							latch = submitNextRolloutTask(batchSize);
+							pair = submitNextRolloutTask(batchSize);
 						}
 					}
 				}
 			} catch (InterruptedException e) {
 				// ignore it
 			} finally {
-				if (latch == null) {
+				if (pair == null) {
 					try {
 						m_deployListener.onDeployEnd(m_model.getId());
 					} catch (Exception e) {
-						e.printStackTrace();
+						m_logger.warn(String.format("Error when processing onEnd of deploy(%s)!", m_model.getId()), e);
 					}
 				}
 			}
@@ -177,15 +209,17 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			m_active = false;
 		}
 
-		private CountDownLatch submitNextRolloutTask(int maxCount) {
+		private Pair<CountDownLatch, List<String>> submitNextRolloutTask(int maxCount) {
 			CountDownLatch latch = new CountDownLatch(maxCount);
 			int len = m_hosts.size();
 			int count = 0;
+			List<String> hosts = new ArrayList<String>();
 
 			while (m_hostIndex < len && count < maxCount) {
 				String host = m_hosts.get(m_hostIndex++);
 
 				Threads.forGroup("Phoenix").start(new RolloutTask(this, m_listener, m_model, host, latch));
+				hosts.add(host);
 				count++;
 			}
 
@@ -196,7 +230,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 			if (count == 0) { // no more hosts
 				return null;
 			} else {
-				return latch;
+				return new Pair<CountDownLatch, List<String>>(latch, hosts);
 			}
 		}
 	}
@@ -214,7 +248,9 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 		private String m_host;
 
-		private int m_retryCount;
+		private int m_retriedCount;
+
+		private boolean m_failed;
 
 		private StringBuilder m_log = new StringBuilder(256);
 
@@ -262,8 +298,8 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		}
 
 		@Override
-		public int getRetryCount() {
-			return m_retryCount;
+		public int getRetriedCount() {
+			return m_retriedCount;
 		}
 
 		@Override
@@ -274,6 +310,11 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		@Override
 		public String getVersion() {
 			return m_model.getVersion();
+		}
+
+		@Override
+		public boolean isFailed() {
+			return m_failed;
 		}
 
 		@Override
@@ -288,6 +329,10 @@ public class DefaultDeployExecutor implements DeployExecutor {
 
 				while (sr.hasNext()) {
 					String segment = sr.next(progress);
+
+					if ("failed".equals(progress.getStatus())) {
+						setFailed(true);
+					}
 
 					try {
 						m_listener.onProgress(this, progress, segment);
@@ -328,8 +373,13 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		}
 
 		@Override
-		public void setRetryCount(int retryCount) {
-			m_retryCount = retryCount;
+		public void setFailed(boolean failed) {
+			m_failed = failed;
+		}
+
+		@Override
+		public void setRetriedCount(int retriedCount) {
+			m_retriedCount = retriedCount;
 		}
 
 		@Override
@@ -357,6 +407,7 @@ public class DefaultDeployExecutor implements DeployExecutor {
 		public void updateStatus(String status, String message) {
 			HostModel host = m_model.findHost(m_host);
 
+			host.setStatus(status);
 			host.addSegment(new SegmentModel().setStatus(status) //
 			      .setCurrentTicks(100).setTotalTicks(100).setStep(status).setText(message));
 		}

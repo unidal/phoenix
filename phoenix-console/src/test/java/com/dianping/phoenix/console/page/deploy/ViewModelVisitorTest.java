@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.unidal.helper.Files;
 import org.xml.sax.SAXException;
 
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.transform.DefaultSaxParser;
-import com.site.helper.Files;
 
 public class ViewModelVisitorTest {
 	@Test
@@ -38,6 +38,6 @@ public class ViewModelVisitorTest {
 
 		String expected = Files.forIO().readFrom(getClass().getResourceAsStream("view-after.xml"), "utf-8");
 
-		Assert.assertEquals(expected.replaceAll("\r",""), model.toString().replaceAll("\r",""));
+		Assert.assertEquals(expected.replaceAll("\r", ""), model.toString().replaceAll("\r", ""));
 	}
 }

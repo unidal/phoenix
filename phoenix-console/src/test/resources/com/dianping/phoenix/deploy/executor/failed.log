@@ -1,0 +1,20 @@
+Progress: 11/100
+
+[11-27 16:33:44] [INFO] PID is 8728
+[11-27 16:33:44] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:33:44] [INFO] getting kernel war from git
+Cloning into '/data/appdata/phoenix_kernel_war_tmp'...
+Switched to a new branch 'dummy'
+[11-27 16:34:34] [INFO] got kernel war from git
+--9ed2b78c112fbd17a8511812c554da62941629a8--
+Progress: 21/100
+
+[11-27 16:34:34] [INFO] PID is 8744
+[11-27 16:34:34] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
+[11-27 16:34:34] [INFO] turning off traffic
+[11-27 16:34:34] [INFO] traffic turned off
+--9ed2b78c112fbd17a8511812c554da62941629a8--
+Progress: 31/100
+Status: failed
+
+--255220d51dc7fb4aacddadedfe252a346da267d4--

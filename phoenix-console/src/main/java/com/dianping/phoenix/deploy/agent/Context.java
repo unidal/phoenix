@@ -17,12 +17,14 @@ public interface Context {
 
 	public String getRawLog();
 
-	public int getRetryCount();
+	public int getRetriedCount();
 
 	public State getState();
 
 	public String getVersion();
-	
+
+	public boolean isFailed();
+
 	public String openUrl(String url) throws IOException;
 
 	public Context print(String string, Object... args);
@@ -31,7 +33,9 @@ public interface Context {
 
 	public Context println(String string, Object... args);
 
-	public void setRetryCount(int retryCount);
+	public void setFailed(boolean failed);
+
+	public void setRetriedCount(int retriedCount);
 
 	public void setState(State state);
 
