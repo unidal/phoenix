@@ -32,6 +32,9 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	@FieldMeta("qaServiceUrlPrefix")
 	private String m_qaServiceUrlPrefix;
 
+	@FieldMeta("qaServiceTimeout")
+	private int m_qaServiceTimeout;
+
 	@Override
 	public Action getAction() {
 		return m_action == null ? Action.DEFAULT : m_action;
@@ -64,6 +67,10 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 
 	public String getQaServiceUrlPrefix() {
 		return m_qaServiceUrlPrefix;
+	}
+
+	public int getQaServiceTimeout() {
+		return m_qaServiceTimeout;
 	}
 
 	public void setAction(String action) {

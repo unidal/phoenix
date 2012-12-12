@@ -76,6 +76,7 @@ public class Handler implements PageHandler<Context> {
 		String version = payload.getVersion();
 		String domain = payload.getDomain();
 		String qaServiceUrlPrefix = payload.getQaServiceUrlPrefix();
+		int qaServiceTimtout = payload.getQaServiceTimeout();
 		long deployId = payload.getDeployId();
 		int offset = payload.getOffset();
 		TransactionId txId = new TransactionId(deployId);
@@ -91,7 +92,7 @@ public class Handler implements PageHandler<Context> {
 			break;
 
 		case DEPLOY:
-			task = new DeployTask(domain, version, qaServiceUrlPrefix);
+			task = new DeployTask(domain, version, qaServiceUrlPrefix, qaServiceTimtout);
 			submitResult = submitTask(task, txId);
 			if (submitResult.isAccepted()) {
 				res.setStatus("ok");

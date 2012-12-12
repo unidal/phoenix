@@ -154,7 +154,7 @@ public class DefaultDeployStep implements DeployStep {
 
 			CheckResult checkResult = CheckResult.FAIL;
 			try {
-				checkResult = qaService.isDomainHealthy(deployInfo, config.getQaServiceTimeout(),
+				checkResult = qaService.isDomainHealthy(deployInfo, task.getQaServiceTimeout(),
 						config.getQaServiceQueryInterval());
 			} catch (RuntimeException e) {
 				checkResult = CheckResult.AGENT_LOCAL_EXCEPTION;

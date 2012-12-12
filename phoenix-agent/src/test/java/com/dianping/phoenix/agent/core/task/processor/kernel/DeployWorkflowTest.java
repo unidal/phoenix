@@ -29,7 +29,7 @@ public class DeployWorkflowTest extends ComponentTestCase {
 		DeployWorkflow workflow = lookup(DeployWorkflow.class);
 		DeployStep steps = lookup(DeployStep.class);
 		ByteArrayOutputStream logOut = new ByteArrayOutputStream();
-		workflow.start(new DeployTask("domain", "kernelVersion", ""), steps, logOut, lookup(LogFormatter.class));
+		workflow.start(new DeployTask("domain", "kernelVersion", "", 1), steps, logOut, lookup(LogFormatter.class));
 		List<String> logLines = IOUtils.readLines(new ByteArrayInputStream(logOut.toByteArray()));
 		
 		checkLogFormat(logLines);
@@ -94,7 +94,7 @@ public class DeployWorkflowTest extends ComponentTestCase {
 			MockDeployStep steps = (MockDeployStep) lookup(DeployStep.class);
 			steps.setThrowExceptionAtStep(i);
 			ByteArrayOutputStream logOut = new ByteArrayOutputStream();
-			int exitCode = workflow.start(new DeployTask("domain", "kernelVersion", ""), steps, logOut, mock(LogFormatter.class));
+			int exitCode = workflow.start(new DeployTask("domain", "kernelVersion", "", 1), steps, logOut, mock(LogFormatter.class));
 			Assert.assertTrue(exitCode != DeployStep.CODE_OK);
 		}
 
@@ -107,7 +107,7 @@ public class DeployWorkflowTest extends ComponentTestCase {
 			MockDeployStep steps = (MockDeployStep) lookup(DeployStep.class);
 			steps.setReturnErrorCodeAtStep(i);
 			ByteArrayOutputStream logOut = new ByteArrayOutputStream();
-			int exitCode = workflow.start(new DeployTask("domain", "kernelVersion", ""), steps, logOut, mock(LogFormatter.class));
+			int exitCode = workflow.start(new DeployTask("domain", "kernelVersion", "", 1), steps, logOut, mock(LogFormatter.class));
 			Assert.assertTrue(exitCode != DeployStep.CODE_OK);
 		}
 
@@ -150,7 +150,7 @@ public class DeployWorkflowTest extends ComponentTestCase {
 		final ByteArrayOutputStream logOut = new ByteArrayOutputStream();
 		new Thread() {
 			public void run() {
-				workflow.start(new DeployTask("domain", "kernelVersion", ""), steps, logOut, mock(LogFormatter.class));
+				workflow.start(new DeployTask("domain", "kernelVersion", "", 1), steps, logOut, mock(LogFormatter.class));
 			}
 		}.start();
 
