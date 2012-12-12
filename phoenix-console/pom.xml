@@ -88,12 +88,10 @@
                      <goal>dal-model</goal>
                   </goals>
                   <configuration>
-                     <manifest>
-                     ${basedir}/src/main/resources/META-INF/dal/model/response-manifest.xml,
+                     <manifest>${basedir}/src/main/resources/META-INF/dal/model/response-manifest.xml,
                      ${basedir}/src/main/resources/META-INF/dal/model/config-manifest.xml,
                      ${basedir}/src/main/resources/META-INF/dal/model/project-manifest.xml,
-                     ${basedir}/src/main/resources/META-INF/dal/model/deploy-manifest.xml,
-                     </manifest>
+                     ${basedir}/src/main/resources/META-INF/dal/model/deploy-manifest.xml,</manifest>
                   </configuration>
                </execution>
                <execution>
@@ -114,6 +112,16 @@
                   </goals>
                   <configuration>
                      <manifest><![CDATA[${basedir}/src/main/resources/META-INF/dal/jdbc/deploy-manifest.xml,]]></manifest>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>generate dal model files</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                     <goal>dal-model</goal>
+                  </goals>
+                  <configuration>
+                     <manifest><![CDATA[${basedir}/src/main/resources/META-INF/dal/model/config-manifest.xml,]]></manifest>
                   </configuration>
                </execution>
             </executions>

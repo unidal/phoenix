@@ -57,7 +57,7 @@ public class Handler implements PageHandler<Context> {
 		if (ctx.hasErrors()) {
 			res.setStatus("error");
 			// at most one error
-			res.setMessage(ctx.getErrors().get(0).getId());
+			res.setMessage(ctx.getErrors().get(0).getCode());
 			ctx.getHttpServletResponse().getWriter().write(new DefaultJsonBuilder().buildJson(res));
 			return;
 		}

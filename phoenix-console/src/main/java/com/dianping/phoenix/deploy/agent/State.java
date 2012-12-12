@@ -18,6 +18,7 @@ public enum State {
 
 			ctx.print("[INFO] Deploying phoenix kernel(%s) to host(%s) for deploy(%s) of domain(%s)  ... ", version, host,
 			      id, domain);
+			ctx.println(String.format("[INFO] Deploy URL: %s", url));
 
 			try {
 				json = ctx.openUrl(url);
