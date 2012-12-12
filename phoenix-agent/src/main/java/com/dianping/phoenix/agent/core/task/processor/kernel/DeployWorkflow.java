@@ -94,24 +94,17 @@ public class DeployWorkflow {
 
 		},
 
-		GET_KERNEL_WAR(10, 80, 20) {
+		GET_KERNEL_WAR(10, 80, 30) {
 			@Override
 			protected int doStep(DeployStep steps, Context ctx) throws Exception {
 				return steps.getKernelWar();
 			}
 		},
 
-		TURN_OFF_TRAFFIC(20, 80, 30) {
+		STOP_ALL(30, 80, 40) {
 			@Override
 			protected int doStep(DeployStep steps, Context ctx) throws Exception {
-				return steps.turnOffTraffic();
-			}
-		},
-
-		STOP_CONTAINER(30, 80, 40) {
-			@Override
-			protected int doStep(DeployStep steps, Context ctx) throws Exception {
-				return steps.stopContainer();
+				return steps.stopAll();
 			}
 		},
 

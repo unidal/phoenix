@@ -17,9 +17,7 @@ public interface DeployStep {
 
 	int getKernelWar() throws Exception;
 
-	int turnOffTraffic() throws Exception;
-
-	int stopContainer() throws Exception;
+	int stopAll() throws Exception;
 
 	int upgradeKernel() throws Exception;
 

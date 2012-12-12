@@ -30,15 +30,27 @@ public class DefaultDeployStep implements DeployStep {
 	private DeployTask task;
 
 	private int runShellCmd(String shellFunc) throws Exception {
-		String script = jointShellCmd(task.getDomain(), task.getKernelVersion(), config.getContainerType().toString(),
-				shellFunc);
+		String script = jointShellCmd(shellFunc);
 		int exitCode = scriptExecutor.exec(script, logOut, logOut);
 		return exitCode;
 	}
 
-	private String jointShellCmd(String domain, String newVersion, String container, String shellFunc) {
-		return String.format("%s -b \"%s\" -x \"%s\" -c \"%s\" -d \"%s\" -v \"%s\" -f \"%s\"", getScriptPath(),
-				config.getContainerInstallPath(), config.getServerXml(), container, domain, newVersion, shellFunc);
+	private String jointShellCmd(String shellFunc) {
+		StringBuilder sb = new StringBuilder();
+		String kernelDocBase = String.format(config.getKernelDocBasePattern(), task.getDomain(),
+				task.getKernelVersion());
+
+		sb.append(getScriptPath());
+		sb.append(String.format(" -b \"%s\" ", config.getContainerInstallPath()));
+		sb.append(String.format(" -x \"%s\" ", config.getServerXml()));
+		sb.append(String.format(" -c \"%s\" ", config.getContainerType().toString()));
+		sb.append(String.format(" -d \"%s\" ", task.getDomain()));
+		sb.append(String.format(" -v \"%s\" ", task.getKernelVersion()));
+		sb.append(String.format(" -f \"%s\" ", shellFunc));
+		sb.append(String.format(" -k \"%s\" ", kernelDocBase));
+		sb.append(String.format(" -e \"%s\" ", config.getEnv()));
+
+		return sb.toString();
 	}
 
 	private void doInjectPhoenixLoader() throws Exception {
@@ -95,13 +107,8 @@ public class DefaultDeployStep implements DeployStep {
 	}
 
 	@Override
-	public int turnOffTraffic() throws Exception {
-		return runShellCmd("turn_off_traffic");
-	}
-
-	@Override
-	public int stopContainer() throws Exception {
-		return runShellCmd("stop_container");
+	public int stopAll() throws Exception {
+		return runShellCmd("stop_all");
 	}
 
 	@Override
@@ -139,7 +146,7 @@ public class DefaultDeployStep implements DeployStep {
 				checkResult = CheckResult.AGENT_LOCAL_EXCEPTION;
 				logger.error("agent local exception when calling qa service", e);
 			}
-			
+
 			logger.info(String.format("qa service check result %s", checkResult));
 			exitCode = qaCheckResultToExitCode(checkResult);
 		} else {
