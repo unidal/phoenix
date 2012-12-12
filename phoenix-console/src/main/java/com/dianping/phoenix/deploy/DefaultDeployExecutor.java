@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -321,12 +320,14 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public String openUrl(String url) throws IOException {
+			ConfigManager configManager = m_controller.getConfigManager();
+
 			if (url.contains("?op=deploy&")) {
-				String content = Files.forIO().readFrom(new URL(url).openStream(), "utf-8");
+				InputStream in = Urls.forIO().connectTimeout(configManager.getDeployConnectTimeout()).openStream(url);
+				String content = Files.forIO().readFrom(in, "utf-8");
 
 				return content;
 			} else if (url.contains("?op=log&")) {
-				ConfigManager configManager = m_controller.getConfigManager();
 				InputStream in = Urls.forIO().connectTimeout(configManager.getDeployConnectTimeout()).openStream(url);
 				SegmentReader sr = new SegmentReader(new InputStreamReader(in, "utf-8"));
 				Progress progress = new Progress();

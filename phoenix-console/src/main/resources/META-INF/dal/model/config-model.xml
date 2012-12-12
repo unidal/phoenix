@@ -19,6 +19,8 @@
     <element name="deploy-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=deploy&amp;deployId=%s&amp;domain=%s&amp;version=%s&amp;qaServiceUrlPrefix=%s&amp;qaServiceTimeout=%s" />
     <element name="deploy-status-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=status&amp;deployId=%s" />
     <element name="deploy-log-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=log&amp;deployId=%s" />
+    <element name="deploy-connect-timeout" value-type="int" default-value="1000" primitive="true"/>
+    <element name="deploy-read-timeout" value-type="int" default-value="360000" primitive="true"/>
     <element name="test-service-url-prefix" value-type="String" default-value="http://192.168.26.23:8080/qa/service/task"/>
     <element name="test-service-timeout" value-type="long" default-value="300000" primitive="true"/>
   </entity>
