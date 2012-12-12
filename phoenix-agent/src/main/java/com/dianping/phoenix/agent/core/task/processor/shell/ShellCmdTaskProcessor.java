@@ -26,7 +26,7 @@ public class ShellCmdTaskProcessor implements TaskProcessor<ShellCmdTask> {
 			status = Transaction.Status.SUCCESS;
 		}
 		tx.getEventTracker().onEvent(new LifecycleEvent(tx.getTxId(), "success", status));
-		return new SubmitResult(true, "");
+		return new SubmitResult(true);
 	}
 
 	@Override
