@@ -1,6 +1,7 @@
 package com.dianping.phoenix.deploy;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -17,6 +18,7 @@ import org.unidal.helper.Files;
 import org.unidal.helper.Formats;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
+import org.unidal.helper.Urls;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.tuple.Pair;
 
@@ -324,7 +326,9 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 				return content;
 			} else if (url.contains("?op=log&")) {
-				SegmentReader sr = new SegmentReader(new InputStreamReader(new URL(url).openStream(), "utf-8"));
+				ConfigManager configManager = m_controller.getConfigManager();
+				InputStream in = Urls.forIO().connectTimeout(configManager.getDeployConnectTimeout()).openStream(url);
+				SegmentReader sr = new SegmentReader(new InputStreamReader(in, "utf-8"));
 				Progress progress = new Progress();
 
 				while (sr.hasNext()) {
