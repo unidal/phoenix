@@ -6,9 +6,17 @@
 			<implementation>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</implementation>
 		</component>
 		<component>
+			<role>com.dianping.phoenix.agent.core.tx.LogFormatter</role>
+			<implementation>com.dianping.phoenix.agent.core.tx.LogFormatter</implementation>
+		</component>
+		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.qa.MockQaService</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep</role>
@@ -20,6 +28,9 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -61,6 +72,9 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.tx.LogFormatter</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -129,6 +143,9 @@
 			<implementation>com.dianping.phoenix.agent.page.deploy.Handler</implementation>
 			<requirements>
 				<requirement>
+					<role>com.dianping.phoenix.agent.page.deploy.JspViewer</role>
+				</requirement>
+				<requirement>
 					<role>com.dianping.phoenix.agent.core.Agent</role>
 				</requirement>
 				<requirement>
@@ -138,6 +155,10 @@
 					<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.page.deploy.JspViewer</role>
+			<implementation>com.dianping.phoenix.agent.page.deploy.JspViewer</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>

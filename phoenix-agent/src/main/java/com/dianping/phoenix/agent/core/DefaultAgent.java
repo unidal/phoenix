@@ -15,8 +15,10 @@ import com.dianping.phoenix.agent.core.event.EventTrackerChain;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.SubmitResult;
+import com.dianping.phoenix.agent.core.task.processor.SubmitResult.REASON;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
+import com.dianping.phoenix.agent.core.tx.Log4jAppender;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
@@ -38,7 +40,7 @@ public class DefaultAgent implements Agent {
 	@Override
 	public SubmitResult submit(Transaction tx) throws Exception {
 		logger.info("try to submit " + tx);
-		SubmitResult submitResult = new SubmitResult(false, "");
+		SubmitResult submitResult = new SubmitResult(false);
 		final TransactionId txId = tx.getTxId();
 
 		if (!txMgr.startTransaction(txId)) {
@@ -46,7 +48,7 @@ public class DefaultAgent implements Agent {
 			logger.warn(String.format(msg, txId));
 			logger.info("reject " + tx);
 			submitResult.setAccepted(false);
-			submitResult.setMsg(msg);
+			submitResult.setReason(REASON.DUPLICATE_TXID);
 		} else {
 
 			EventTrackerChain eventTrackerChain = new EventTrackerChain();
@@ -55,6 +57,7 @@ public class DefaultAgent implements Agent {
 				@Override
 				protected void onLifecycleEvent(LifecycleEvent event) {
 					if (event.getStatus().isCompleted()) {
+						Log4jAppender.endTeeLog();
 						txId2Processor.remove(txId);
 						txMgr.endTransaction(txId);
 					}

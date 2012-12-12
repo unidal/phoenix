@@ -60,7 +60,8 @@ public class ServerXmlUtil {
 	 */
 	public static void attachPhoenixContextLoader(File serverXml, String docBasePattern, String loaderClass,
 			File kernelDocBase) throws Exception {
-		logger.info(String.format("try to add <Loader> whose docBase matches %s", docBasePattern));
+		logger.info(String.format("try to add <Loader> whose docBase matches %s in %s", docBasePattern,
+				serverXml.getAbsolutePath()));
 
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document doc = builder.parse(serverXml);

@@ -7,7 +7,7 @@ public interface DeployStep {
 	public final int CODE_OK = 0;
 	public final int CODE_ERROR = -1;
 
-	void prepare(String domain, String kernelVersion, OutputStream logOut);
+	void prepare(DeployTask task, OutputStream logOut);
 
 	int init() throws Exception;
 
@@ -17,9 +17,7 @@ public interface DeployStep {
 
 	int getKernelWar() throws Exception;
 
-	int turnOffTraffic() throws Exception;
-
-	int stopContainer() throws Exception;
+	int stopAll() throws Exception;
 
 	int upgradeKernel() throws Exception;
 

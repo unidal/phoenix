@@ -31,7 +31,14 @@
 								<tr class="host_status" id="${host.ip}" data-offset="${host.offset}">
 									<td>${host.ip}<i class="log-arrow icon-chevron-left<c:if test="${status.index > 0}"> hide</c:if>"></i></td>
 									<td>
-                                        <div class="progress ${host.status eq 'successful' ? 'progress-success' : (host.status eq 'failed' ? 'progress-danger' : (host.status eq 'doing' ? 'progress-striped active' : ''))}">
+                                        <div class="progress ${
+                                        	host.status eq 'successful' ? 'progress-success' 
+	                                        	: (host.status eq 'failed' ? 'progress-danger' 
+	                                        	: (host.status eq 'doing' ? 'progress-striped active' 
+	                                        	: (host.status eq 'cancelled' ? 'progress-cancelled' 
+	                                        	: (host.status eq 'warning' ? 'progress-warning' 
+	                                        	: ''))))
+	                                        }">
                                             <div class="bar" style="width: ${host.progress}%;">
                                                 <div class="step" style="width: 250px;color: #000000;">${host.currentStep}</div>
                                             </div>
@@ -45,8 +52,10 @@
 			</div>
 			<div class="row" style="margin-top: 5px;">
 				<p class="pull-right">
-					<span class="label label-todo">pending&nbsp;&nbsp;&nbsp;</span> 
+					<span class="label label-pending">pending&nbsp;&nbsp;&nbsp;</span> 
 					<span class="label label-doing">doing&nbsp;&nbsp;</span> 
+					<span class="label label-warning">warning</span> 
+					<span class="label label-cancelled">cancelled</span> 
 					<span class="label label-success">success</span> 
 					<span class="label label-failed">failed&nbsp;</span>
 				</p>

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=utf-8"%>
 <%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
+<%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:useBean id="ctx" type="com.dianping.phoenix.console.page.version.Context" scope="request"/>
 <jsp:useBean id="payload" type="com.dianping.phoenix.console.page.version.Payload" scope="request"/>
@@ -10,6 +11,14 @@
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span12">
+				<w:errors>
+		        <div class="alert alert-error error-panel">
+		        	<a class="close" data-dismiss="alert" href="#">×</a>
+					<ul>
+						<w:error code="version.create"><li>创建Version失败：\${message}</li></w:error>
+					</ul>
+				</div>
+				</w:errors>
 				<div class="alert fade in">
 		            <a class="close" data-dismiss="alert" href="#">×</a>
 		            <strong>Note：</strong> 同一时刻仅允许一个构建任务!
@@ -63,8 +72,8 @@
 					<table class="table table-striped table-condensed lion" style="margin-bottom:0px;">
 						<thead>
 							<tr>
-								<th width="150">Group Id</th>
-								<th width="150">Artifact Id</th>
+								<th width="240">Group Id</th>
+								<th width="190">Artifact Id</th>
 								<th>Version</th>
 							</tr>
 						</thead>
@@ -74,8 +83,8 @@
 					<table class="table table-striped table-condensed lion">
 						<tbody>
 							<tr>
-								<td width="150">com.dianping.dpsf</td>
-								<td width="150">dpsf-net</td>
+								<td width="240">com.dianping.dpsf</td>
+								<td width="190">dpsf-net</td>
 								<td>1.8.0</td>
 							</tr>
 							<tr>

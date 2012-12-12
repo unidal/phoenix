@@ -12,7 +12,7 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	private AgentPage m_page;
 
 	@FieldMeta("op")
-	private Action m_action;
+	private Action m_action = Action.DEFAULT;
 
 	@FieldMeta("deployId")
 	private long m_deployId;
@@ -28,6 +28,12 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 
 	@FieldMeta("br")
 	private int m_br;
+
+	@FieldMeta("qaServiceUrlPrefix")
+	private String m_qaServiceUrlPrefix;
+
+	@FieldMeta("qaServiceTimeout")
+	private int m_qaServiceTimeout;
 
 	@Override
 	public Action getAction() {
@@ -59,6 +65,14 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 		return m_br;
 	}
 
+	public String getQaServiceUrlPrefix() {
+		return m_qaServiceUrlPrefix;
+	}
+
+	public int getQaServiceTimeout() {
+		return m_qaServiceTimeout;
+	}
+
 	public void setAction(String action) {
 		m_action = Action.getByName(action, Action.DEFAULT);
 	}
@@ -74,41 +88,37 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 
 	@Override
 	public void validate(ActionContext<?> ctx) {
-		StringBuilder sb = new StringBuilder();
 		switch (m_action) {
 		case DEPLOY:
-			checkCommonArguments(ctx, sb);
+			checkCommonArguments(ctx);
 			if (StringUtils.isEmpty(StringUtils.trimAll(m_domain))) {
-				sb.append("domain can not be null,");
+				ctx.addError(new ErrorObject("domain.invalid,"));
 			}
 			if (StringUtils.isEmpty(StringUtils.trimAll(m_version))) {
-				sb.append("version can not be null,");
+				ctx.addError(new ErrorObject("version.invalid"));
 			}
 			break;
 
 		case DETACH:
-			checkCommonArguments(ctx, sb);
+			checkCommonArguments(ctx);
 			if (StringUtils.isEmpty(StringUtils.trimAll(m_domain))) {
-				sb.append("domain can not be empty");
+				ctx.addError(new ErrorObject("domain.invalid"));
 			}
 			break;
-			
+
 		case STATUS:
 		case CANCEL:
 		case GETLOG:
-			checkCommonArguments(ctx, sb);
+			checkCommonArguments(ctx);
 			break;
 
 		}
-		
-		if (sb.length() > 0) {
-			ctx.addError(new ErrorObject(sb.toString()));
-		}
+
 	}
-	
-	private void checkCommonArguments(ActionContext<?> ctx, StringBuilder sb) {
-		if(!validDeployId(m_deployId)) {
-			sb.append("deployId invalid");
+
+	private void checkCommonArguments(ActionContext<?> ctx) {
+		if (!validDeployId(m_deployId)) {
+			ctx.addError(new ErrorObject("deployId.invalid"));
 		}
 	}
 

@@ -1,0 +1,25 @@
+<plexus>
+	<components>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.Config</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.MockQaService</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.qa.MockQaService</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStep</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStep</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.MockQaService</role>
+				</requirement>
+			</requirements>
+		</component>
+	</components>
+</plexus>

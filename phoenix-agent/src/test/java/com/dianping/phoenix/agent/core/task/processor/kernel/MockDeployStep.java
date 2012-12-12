@@ -32,7 +32,7 @@ public class MockDeployStep implements DeployStep {
 	}
 
 	@Override
-	public void prepare(String domain, String kernelVersion, OutputStream logOut) {
+	public void prepare(DeployTask task, OutputStream logOut) {
 		this.logOut = logOut;
 	}
 
@@ -61,13 +61,7 @@ public class MockDeployStep implements DeployStep {
 	}
 
 	@Override
-	public int turnOffTraffic() throws Exception {
-		logOut.write("mock turnOffTraffic".getBytes());
-		return mockActivity();
-	}
-
-	@Override
-	public int stopContainer() throws Exception {
+	public int stopAll() throws Exception {
 		logOut.write("mock stopContainer".getBytes());
 		return mockActivity();
 	}
