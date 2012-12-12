@@ -61,13 +61,7 @@ public class MockDeployStep implements DeployStep {
 	}
 
 	@Override
-	public int turnOffTraffic() throws Exception {
-		logOut.write("mock turnOffTraffic".getBytes());
-		return mockActivity();
-	}
-
-	@Override
-	public int stopContainer() throws Exception {
+	public int stopAll() throws Exception {
 		logOut.write("mock stopContainer".getBytes());
 		return mockActivity();
 	}

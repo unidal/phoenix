@@ -119,7 +119,7 @@ public class DeployWorkflowTest extends ComponentTestCase {
 
 		final CountDownLatch entryLatch = new CountDownLatch(1);
 		final CountDownLatch exitLatch = new CountDownLatch(1);
-		when(steps.stopContainer()).then(new Answer<Object>() {
+		when(steps.stopAll()).then(new Answer<Object>() {
 
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {
