@@ -1,6 +1,6 @@
 
 function log {
-	echo "[`date +'%m-%d %H:%M:%S'`][INFO] $@"
+	echo "[`date +'%m-%d %H:%M:%S'`] [INFO] $@"
 }
 
 function ensure_not_empty {
