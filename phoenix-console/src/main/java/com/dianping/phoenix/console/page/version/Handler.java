@@ -5,7 +5,10 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.unidal.lookup.annotation.Inject;
+import org.unidal.web.mvc.ErrorObject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
@@ -17,6 +20,9 @@ import com.dianping.phoenix.version.VersionManager;
 import com.dianping.phoenix.version.VersionManager.VersionLog;
 
 public class Handler implements PageHandler<Context> {
+    
+    private static Log logger = LogFactory.getLog(Handler.class);
+    
 	@Inject
 	private VersionManager m_manager;
 
@@ -62,8 +68,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void getVersions(Context ctx, Model model) {
 		try {
-			List<Version> versions = m_manager.getFinishedVersions();
-			model.setVersions(versions);
+			model.setVersions(m_manager.getFinishedVersions());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -106,8 +111,8 @@ public class Handler implements PageHandler<Context> {
 			m_manager.createVersion(version, description, releaseNotes, createdBy);
 			ctx.redirect(getActionUri(ctx, ConsolePage.VERSION));
 		} catch (Exception e) {
-			e.printStackTrace(); // TODO remove it
-			ctx.addError("version.create", e);
+		    logger.error("Create version[" + version + "] failed.", e);
+			ctx.addError(new ErrorObject("version.create", e).addArgument("message", e.getMessage()));
 			model.setAction(Action.VIEW);
 			viewVersions(ctx, model);
 		}
@@ -119,7 +124,8 @@ public class Handler implements PageHandler<Context> {
 			m_manager.removeVersion(id);
 			ctx.redirect(getActionUri(ctx, ConsolePage.VERSION));
 		} catch (Exception e) {
-			ctx.addError("version.remove", e);
+		    logger.error("Remove version[id=" + id + "] failed.", e);
+		    ctx.addError(new ErrorObject("version.remove", e).addArgument("message", e.getMessage()));
 			model.setAction(Action.VIEW);
 			viewVersions(ctx, model);
 		}
@@ -127,14 +133,14 @@ public class Handler implements PageHandler<Context> {
 
 	private void viewVersions(Context ctx, Model model) {
 		try {
-			List<Version> versions = m_manager.getFinishedVersions();
-			model.setVersions(versions);
+			getVersions(ctx, model);
 			Version activeVersion = m_manager.getActiveVersion();
 			if (activeVersion != null) {
 				model.setCreatingVersion(activeVersion.getVersion());
 			}
 		} catch (Exception e) {
-			ctx.addError("version.active", e);
+		    logger.error("View versions failed.", e);
+		    throw new RuntimeException(e);
 		}
 	}
 

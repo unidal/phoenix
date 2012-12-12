@@ -96,3 +96,15 @@ tr.selected {
     background-color: #dff0d8;
 }
 
+.error-panel {
+	margin-bottom : 8px;
+	padding-bottom : 0px;
+}
+.error-panel ul {
+	margin-left : 14px;	
+}
+
+
+
+
+
