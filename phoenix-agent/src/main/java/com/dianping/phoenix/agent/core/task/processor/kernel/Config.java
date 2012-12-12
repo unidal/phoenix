@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -33,11 +34,6 @@ public class Config {
 	private String domainDocBaseFeaturePattern = "/%s/current";
 
 	/**
-	 * The timeout when calling qa test service, in milliseconds
-	 */
-	private int qaServiceTimeout = 180 * 1000;
-	
-	/**
 	 * The interval when querying qa service task status, in milliseconds
 	 */
 	// TODO
@@ -51,7 +47,9 @@ public class Config {
 	/**
 	 * The env of agent
 	 */
-	private String env = "alpha";
+	private String env = "dev";
+
+	private String kernelGitUrl = "ssh://git@10.1.4.81:58422/phoenix-kernel.git";
 
 	private ContainerType containerType;
 
@@ -82,14 +80,11 @@ public class Config {
 		containerInstallPath = props.getProperty("containerInstallPath", containerInstallPath);
 		kernelDocBasePattern = props.getProperty("kernelDocBasePattern", kernelDocBasePattern);
 		domainDocBaseFeaturePattern = props.getProperty("domainDocBaseFeaturePattern", domainDocBaseFeaturePattern);
-		qaServiceTimeout = Integer.parseInt(props.getProperty("qaServiceTimeout", Integer.toString(qaServiceTimeout)));
-		qaServiceQueryInterval = Integer.parseInt(props.getProperty("qaServiceQueryInterval", Integer.toString(qaServiceQueryInterval)));
+		qaServiceQueryInterval = Integer.parseInt(props.getProperty("qaServiceQueryInterval",
+				Integer.toString(qaServiceQueryInterval)));
 		containerPort = Integer.parseInt(props.getProperty("containerPort", Integer.toString(containerPort)));
 		env = props.getProperty("env", env);
-
-		logger.info("containerInstallPath: " + containerInstallPath);
-		logger.info("kernelDocBasePattern: " + kernelDocBasePattern);
-		logger.info("domainDocBaseFeaturePattern: " + domainDocBaseFeaturePattern);
+		kernelGitUrl = props.getProperty("kernelGitUrl", kernelGitUrl);
 
 		File startupSh = new File(containerInstallPath + "/bin/startup.sh");
 		File runSh = new File(containerInstallPath + "/bin/run.sh");
@@ -102,14 +97,26 @@ public class Config {
 					"containerInstallPath %s does not have a valid tomcat or jboss installation", containerInstallPath));
 		}
 
-		logger.info("containerType: " + containerType);
-
 		if (containerType == ContainerType.TOMCAT) {
 			loaderClass = TOMCAT_LOADER_CLASS;
 			serverXml = new File(containerInstallPath + "/conf/server.xml");
 		} else {
 			loaderClass = JBOSS_LOADER_CLASS;
 			serverXml = new File(containerInstallPath + "/server/default/deploy/jboss-web.deployer/server.xml");
+		}
+		
+		logConfig();
+	}
+
+	private void logConfig() {
+		Field[] fields = this.getClass().getDeclaredFields();
+		for (int i = 0; i < fields.length; i++) {
+			Field field = fields[i];
+			try {
+				logger.info(String.format("%s=%s", field.getName(), field.get(this)));
+			} catch (Exception e) {
+				logger.info(String.format("error log config field", field), e);
+			}
 		}
 	}
 
@@ -137,10 +144,6 @@ public class Config {
 		return serverXml;
 	}
 
-	public int getQaServiceTimeout() {
-		return qaServiceTimeout;
-	}
-
 	public int getQaServiceQueryInterval() {
 		return qaServiceQueryInterval;
 	}
@@ -153,4 +156,8 @@ public class Config {
 		return env;
 	}
 
+	public String getKernelGitUrl() {
+		return kernelGitUrl;
+	}
+	
 }

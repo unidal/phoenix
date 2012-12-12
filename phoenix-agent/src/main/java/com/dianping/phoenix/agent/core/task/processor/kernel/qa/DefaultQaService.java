@@ -32,7 +32,7 @@ public class DefaultQaService implements QaService {
 				domainInfo.getHost(), domainInfo.getPort());
 		String submitUrl = domainInfo.getQaServiceUrlPrefix() + submitArgument;
 
-		String submitResultJson = readUrlToJsonString(submitUrl, timeout);
+		String submitResultJson = readUrlToJsonString(submitUrl);
 
 		Map submitResultMap = safeJsonToMap(submitResultJson);
 
@@ -47,7 +47,7 @@ public class DefaultQaService implements QaService {
 		while (System.currentTimeMillis() < endBefore) {
 			String queryArgument = String.format(queryArgumentPattern, token);
 			String queryUrl = String.format(domainInfo.getQaServiceUrlPrefix() + queryArgument);
-			String queryResultJson = readUrlToJsonString(queryUrl, timeout);
+			String queryResultJson = readUrlToJsonString(queryUrl);
 			Map queryResultMap = safeJsonToMap(queryResultJson);
 			// FAIL, PENDING, RUNNING, SUCCESS
 			String taskStatus = (String) queryResultMap.get("status");
@@ -72,11 +72,12 @@ public class DefaultQaService implements QaService {
 		return result;
 	}
 
-	String readUrlToJsonString(String url, int timeout) {
+	String readUrlToJsonString(String url) {
 		logger.info(String.format("calling qa service %s", url));
 		String content = "{}";
 		try {
-			content = StringUtils.trimAll(urlContentFetcher.fetchUrlContent(url, timeout));
+			// TODO
+			content = StringUtils.trimAll(urlContentFetcher.fetchUrlContent(url, 2000));
 			logger.info(String.format("got %s", content));
 		} catch (Exception e) {
 			logger.error("error get url content", e);

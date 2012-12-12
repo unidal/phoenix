@@ -13,6 +13,7 @@ import org.unidal.lookup.annotation.Inject;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.event.EventTrackerChain;
 import com.dianping.phoenix.agent.core.event.LifecycleEvent;
+import com.dianping.phoenix.agent.core.task.processor.SubmitResult.REASON;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
@@ -41,7 +42,7 @@ public abstract class AbstractSerialTaskProcessor<T> extends ContainerHolder imp
 	@Override
 	public SubmitResult submit(final Transaction tx) {
 		Logger logger = getLogger();
-		SubmitResult submitResult = new SubmitResult(false, "");
+		SubmitResult submitResult = new SubmitResult(false);
 		if (semaphoreWrapper.getSemaphore().tryAcquire()) {
 			logger.info("accept " + tx);
 
@@ -84,7 +85,7 @@ public abstract class AbstractSerialTaskProcessor<T> extends ContainerHolder imp
 		} else {
 			logger.info("reject " + tx);
 			submitResult.setAccepted(false);
-			submitResult.setMsg("another transaction is running");
+			submitResult.setReason(REASON.ANOTHER_TX_RUNNING);
 		}
 		return submitResult;
 	}

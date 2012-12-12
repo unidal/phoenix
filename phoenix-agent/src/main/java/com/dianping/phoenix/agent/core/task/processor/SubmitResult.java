@@ -2,12 +2,20 @@ package com.dianping.phoenix.agent.core.task.processor;
 
 public class SubmitResult {
 
-	private boolean accepted;
-	private String msg;
+	public enum REASON {
+		DUPLICATE_TXID, ANOTHER_TX_RUNNING
+	}
 
-	public SubmitResult(boolean accepted, String msg) {
+	private boolean accepted;
+	private REASON reason;
+
+	public SubmitResult(boolean accepted) {
 		this.accepted = accepted;
-		this.msg = msg;
+	}
+
+	public SubmitResult(boolean accepted, REASON reason) {
+		this.accepted = accepted;
+		this.reason = reason;
 	}
 
 	public boolean isAccepted() {
@@ -18,12 +26,12 @@ public class SubmitResult {
 		this.accepted = accepted;
 	}
 
-	public String getMsg() {
-		return msg;
+	public REASON getReason() {
+		return reason;
 	}
 
-	public void setMsg(String msg) {
-		this.msg = msg;
+	public void setReason(REASON reason) {
+		this.reason = reason;
 	}
 
 }

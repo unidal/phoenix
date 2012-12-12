@@ -143,6 +143,9 @@
 			<implementation>com.dianping.phoenix.agent.page.deploy.Handler</implementation>
 			<requirements>
 				<requirement>
+					<role>com.dianping.phoenix.agent.page.deploy.JspViewer</role>
+				</requirement>
+				<requirement>
 					<role>com.dianping.phoenix.agent.core.Agent</role>
 				</requirement>
 				<requirement>
@@ -152,6 +155,10 @@
 					<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.page.deploy.JspViewer</role>
+			<implementation>com.dianping.phoenix.agent.page.deploy.JspViewer</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>

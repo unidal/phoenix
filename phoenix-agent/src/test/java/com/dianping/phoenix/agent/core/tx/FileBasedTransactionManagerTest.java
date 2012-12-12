@@ -58,7 +58,7 @@ public class FileBasedTransactionManagerTest {
 		TransactionId txId = new TransactionId(1L);
 		String domain = "user-web";
 		String newVersion = "1.1";
-		Task task = new DeployTask(domain, newVersion, "");
+		Task task = new DeployTask(domain, newVersion, "", 1);
 		Transaction tx = new Transaction(task, txId, EventTracker.DUMMY_TRACKER);
 		txMgr.saveTransaction(tx);
 		Transaction loadedTx = txMgr.loadTransaction(txId);

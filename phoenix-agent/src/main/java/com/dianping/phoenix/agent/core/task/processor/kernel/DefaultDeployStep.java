@@ -3,6 +3,8 @@ package com.dianping.phoenix.agent.core.task.processor.kernel;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -30,21 +32,45 @@ public class DefaultDeployStep implements DeployStep {
 	private DeployTask task;
 
 	private int runShellCmd(String shellFunc) throws Exception {
-		String script = jointShellCmd(task.getDomain(), task.getKernelVersion(), config.getContainerType().toString(),
-				shellFunc);
+		String script = jointShellCmd(shellFunc);
 		int exitCode = scriptExecutor.exec(script, logOut, logOut);
 		return exitCode;
 	}
 
-	private String jointShellCmd(String domain, String newVersion, String container, String shellFunc) {
-		return String.format("%s -b \"%s\" -x \"%s\" -c \"%s\" -d \"%s\" -v \"%s\" -f \"%s\"", getScriptPath(),
-				config.getContainerInstallPath(), config.getServerXml(), container, domain, newVersion, shellFunc);
+	private String jointShellCmd(String shellFunc) {
+		StringBuilder sb = new StringBuilder();
+		
+		String kernelDocBase = String.format(config.getKernelDocBasePattern(), task.getDomain(),
+				task.getKernelVersion());
+		
+		String kernelGitHost = null;
+		try {
+			kernelGitHost = new URI(config.getKernelGitUrl()).getHost();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(String.format("error parsing host from kernel git url %s",
+					config.getKernelGitUrl()), e);
+		}
+
+		sb.append(getScriptPath());
+		sb.append(String.format(" -b \"%s\" ", config.getContainerInstallPath()));
+		sb.append(String.format(" -x \"%s\" ", config.getServerXml()));
+		sb.append(String.format(" -c \"%s\" ", config.getContainerType().toString()));
+		sb.append(String.format(" -d \"%s\" ", task.getDomain()));
+		sb.append(String.format(" -v \"%s\" ", task.getKernelVersion()));
+		sb.append(String.format(" -k \"%s\" ", kernelDocBase));
+		sb.append(String.format(" -e \"%s\" ", config.getEnv()));
+		sb.append(String.format(" -g \"%s\" ", config.getKernelGitUrl()));
+		sb.append(String.format(" -h \"%s\" ", kernelGitHost));
+		sb.append(String.format(" -f \"%s\" ", shellFunc));
+
+		return sb.toString();
 	}
 
 	private void doInjectPhoenixLoader() throws Exception {
 		File serverXml = config.getServerXml();
 		if (serverXml == null || !serverXml.exists()) {
-			throw new RuntimeException("container server.xml not found");
+			String path = serverXml == null ? null : serverXml.getAbsolutePath();
+			throw new RuntimeException(String.format("container server.xml not found %s", path));
 		}
 
 		File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), task.getDomain(),
@@ -95,13 +121,8 @@ public class DefaultDeployStep implements DeployStep {
 	}
 
 	@Override
-	public int turnOffTraffic() throws Exception {
-		return runShellCmd("turn_off_traffic");
-	}
-
-	@Override
-	public int stopContainer() throws Exception {
-		return runShellCmd("stop_container");
+	public int stopAll() throws Exception {
+		return runShellCmd("stop_all");
 	}
 
 	@Override
@@ -133,17 +154,17 @@ public class DefaultDeployStep implements DeployStep {
 
 			CheckResult checkResult = CheckResult.FAIL;
 			try {
-				checkResult = qaService.isDomainHealthy(deployInfo, config.getQaServiceTimeout(),
+				checkResult = qaService.isDomainHealthy(deployInfo, task.getQaServiceTimeout(),
 						config.getQaServiceQueryInterval());
 			} catch (RuntimeException e) {
 				checkResult = CheckResult.AGENT_LOCAL_EXCEPTION;
 				logger.error("agent local exception when calling qa service", e);
 			}
-			
+
 			logger.info(String.format("qa service check result %s", checkResult));
 			exitCode = qaCheckResultToExitCode(checkResult);
 		} else {
-			logger.info("qa service url is not given, skip checking domain status");
+			logger.warn("qa service url is not given, skip checking domain status");
 		}
 		return exitCode;
 	}

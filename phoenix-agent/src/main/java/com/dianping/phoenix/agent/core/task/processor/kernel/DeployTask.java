@@ -10,11 +10,13 @@ public class DeployTask extends AbstractTask {
 	private String domain;
 	private String kernelVersion;
 	private String qaServiceUrlPrefix;
+	private int qaServiceTimeout;
 
-	public DeployTask(String domain, String kernelVersion, String qaServiceUrlPrefix) {
+	public DeployTask(String domain, String kernelVersion, String qaServiceUrlPrefix, int qaServiceTimtout) {
 		this.domain = domain;
 		this.kernelVersion = kernelVersion;
 		this.qaServiceUrlPrefix = qaServiceUrlPrefix;
+		this.qaServiceTimeout = qaServiceTimtout;
 	}
 
 	/**
@@ -46,6 +48,14 @@ public class DeployTask extends AbstractTask {
 
 	public void setQaServiceUrlPrefix(String qaServiceUrlPrefix) {
 		this.qaServiceUrlPrefix = qaServiceUrlPrefix;
+	}
+
+	public int getQaServiceTimeout() {
+		return qaServiceTimeout;
+	}
+
+	public void setQaServiceTimeout(int qaServiceTimeout) {
+		this.qaServiceTimeout = qaServiceTimeout;
 	}
 
 	@Override
