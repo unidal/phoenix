@@ -8,7 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.mortbay.jetty.HttpHeaders;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.ErrorObject;
 import org.unidal.web.mvc.PageHandler;
@@ -125,7 +124,7 @@ public class Handler implements PageHandler<Context> {
 
 			if (logReader != null) {
 				HttpServletResponse resp = ctx.getHttpServletResponse();
-				resp.setHeader(HttpHeaders.CONTENT_TYPE, "text/html; charset=UTF-8");
+				resp.setHeader("Content-Type", "text/html; charset=UTF-8");
 				Writer writer = resp.getWriter();
 				if (payload.getBr() > 0) {
 					writer = new CharacterReplaceFilterWriter(writer, '\n', "<br/>");
