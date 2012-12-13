@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.unidal.web.mvc.Action;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
-import org.unidal.web.mvc.ErrorObject;
 import org.unidal.web.mvc.Page;
 import org.unidal.webres.resource.runtime.ResourceConfigurator;
 import org.unidal.webres.resource.runtime.ResourceInitializer;
@@ -20,10 +19,6 @@ import org.unidal.webres.tag.resource.ResourceTagConfigurator;
 import org.unidal.webres.taglib.basic.ResourceTagLibConfigurator;
 
 public class ConsoleContext<T extends ActionPayload<? extends Page, ? extends Action>> extends ActionContext<T> {
-	public void addError(String id, Exception e) {
-		super.addError(new ErrorObject(id, e));
-	}
-
 	@Override
 	public void initialize(HttpServletRequest request, HttpServletResponse response) {
 		super.initialize(request, response);

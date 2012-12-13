@@ -100,7 +100,11 @@ class StatusModelVisitor extends BaseVisitor {
 		if (set.contains("doing")) {
 			status = "doing";
 		} else if (set.contains("failed")) {
-			status = "failed";
+			if (set.contains("successful")) {
+				status = "warning";
+			} else {
+				status = "failed";
+			}
 		} else if (set.contains("cancelled")) {
 			status = "cancelled";
 		} else if (set.contains("successful")) {

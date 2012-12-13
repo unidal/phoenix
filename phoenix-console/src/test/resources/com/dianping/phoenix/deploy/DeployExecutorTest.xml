@@ -7,11 +7,6 @@
 		<component>
 			<role>com.dianping.phoenix.deploy.event.AgentListener</role>
 			<implementation>com.dianping.phoenix.deploy.DeployExecutorTest$MockAgentListener</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
-				</requirement>
-			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.configure.ConfigManager</role>

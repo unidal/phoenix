@@ -2,13 +2,17 @@ package com.dianping.phoenix.service;
 
 import java.util.List;
 
-import com.dianping.phoenix.deploy.DeployPlan;
+import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.project.entity.Project;
 
 public interface ProjectManager {
-	public List<Project> searchProjects(String keyword) throws Exception;
+	public Integer findActiveDeployId(String name);
+
+	public DeployModel findModel(int deployId);
 
 	public Project findProjectBy(String name) throws Exception;
 
-	public int deployToProject(String name, List<String> hosts, DeployPlan plan) throws Exception;
+	public List<Project> searchProjects(String keyword) throws Exception;
+
+	public void storeModel(DeployModel model);
 }

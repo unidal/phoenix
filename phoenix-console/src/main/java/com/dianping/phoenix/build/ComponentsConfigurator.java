@@ -72,8 +72,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(VersionManager.class, DefaultVersionManager.class) //
 		      .req(StatusReporter.class, WarService.class, GitService.class, VersionDao.class));
-		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
-		      .req(DeployManager.class));
+		all.add(C(ProjectManager.class, DefaultProjectManager.class));
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
@@ -84,9 +83,9 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(DeployManager.class, DefaultDeployManager.class) //
 		      .req(DeployListener.class));
 		all.add(C(DeployListener.class, DefaultDeployListener.class) //
-		      .req(DeploymentDao.class, DeploymentDetailsDao.class));
+		      .req(DeploymentDao.class, DeploymentDetailsDao.class, ProjectManager.class));
 		all.add(C(AgentListener.class, DefaultAgentListener.class) //
-		      .req(DeployListener.class, DeploymentDetailsDao.class));
+		      .req(DeploymentDetailsDao.class));
 	}
 
 	private void defineWebComponents(List<Component> all) {

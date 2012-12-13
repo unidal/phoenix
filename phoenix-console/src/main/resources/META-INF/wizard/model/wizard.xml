@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wizard package="com.dianping.phoenix">
+   <model package="com.dianping.phoenix.project" name="project">
+      <sample-model>src/test/resources/com/dianping/phoenix/deploy/project.xml</sample-model>
+   </model>
+   <model package="com.dianping.phoenix.configure" name="config">
+      <sample-model>src/test/resources/com/dianping/phoenix/configure/config.xml</sample-model>
+   </model>
+   <model package="com.dianping.phoenix.deploy.model" name="deploy">
+      <sample-model>src/test/resources/com/dianping/phoenix/deploy/deploy.xml</sample-model>
+   </model>
+   <model package="com.dianping.phoenix.agent.response" name="response">
+      <sample-model>src/test/resources/com/dianping/phoenix/agent/response/response.xml</sample-model>
+   </model>
+</wizard>

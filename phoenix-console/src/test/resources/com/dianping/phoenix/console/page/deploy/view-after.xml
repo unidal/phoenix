@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<deploy id="123" domain="sample-app" version="0.1-SNAPSHOT" status="doing">
+<deploy id="123" domain="sample-app" version="0.1-SNAPSHOT" abortOnError="true" status="doing">
    <host ip="summary" status="doing" progress="34">
       <segment current-ticks="0" total-ticks="0">
 Summary segment

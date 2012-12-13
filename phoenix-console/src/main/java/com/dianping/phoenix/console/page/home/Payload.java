@@ -35,6 +35,9 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("deploy")
 	private boolean m_deploy;
 
+	@FieldMeta("watch")
+	private boolean m_watch;
+
 	@Override
 	public Action getAction() {
 		return m_action;
@@ -63,6 +66,10 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	public boolean isDeploy() {
 		return m_deploy;
+	}
+
+	public boolean isWatch() {
+		return m_watch;
 	}
 
 	public String getProject() {

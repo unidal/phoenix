@@ -13,6 +13,7 @@ import org.unidal.lookup.ComponentTestCase;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.agent.Context;
 import com.dianping.phoenix.deploy.agent.State;
+import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
 public class DeployStateTest extends ComponentTestCase {
 	private ConfigManager m_configManager;
@@ -43,7 +44,8 @@ public class DeployStateTest extends ComponentTestCase {
 		State.execute(ctx);
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... error\n"
+		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... error\n"
 		      + "deploy id is already existed.\n" + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
@@ -66,7 +68,8 @@ public class DeployStateTest extends ComponentTestCase {
 		State.execute(ctx);
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
 		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
 		      + "java.lang.RuntimeException: Unexpected exception threw.\n"
 		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
@@ -89,7 +92,8 @@ public class DeployStateTest extends ComponentTestCase {
 		State.execute(ctx);
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
+		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
 		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
@@ -112,7 +116,8 @@ public class DeployStateTest extends ComponentTestCase {
 		State.execute(ctx);
 		Assert.assertEquals(State.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
+		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
 		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
@@ -137,7 +142,8 @@ public class DeployStateTest extends ComponentTestCase {
 		State.execute(ctx);
 		Assert.assertEquals(State.SUCCESSFUL, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
 		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
 		      + "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\n"
 		      + "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\n";
@@ -168,7 +174,8 @@ public class DeployStateTest extends ComponentTestCase {
 		State.execute(ctx);
 		Assert.assertEquals(State.SUCCESSFUL, ctx.getState());
 
-		String expected = "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
+		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
 		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
@@ -186,6 +193,8 @@ public class DeployStateTest extends ComponentTestCase {
 
 		private boolean m_failed;
 
+		private DeployModel m_model = new DeployModel().setId(123);
+
 		private StringBuilder m_log = new StringBuilder(2048);
 
 		public BaseContext(ConfigManager configManager) {
@@ -199,7 +208,12 @@ public class DeployStateTest extends ComponentTestCase {
 
 		@Override
 		public int getDeployId() {
-			return 123;
+			return m_model.getId();
+		}
+
+		@Override
+		public DeployModel getDeployModel() {
+			return m_model;
 		}
 
 		@Override

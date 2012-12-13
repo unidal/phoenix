@@ -53,11 +53,6 @@
 		<component>
 			<role>com.dianping.phoenix.service.ProjectManager</role>
 			<implementation>com.dianping.phoenix.service.DefaultProjectManager</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.deploy.DeployManager</role>
-				</requirement>
-			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.deploy.DeployExecutor</role>
@@ -135,15 +130,15 @@
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.ProjectManager</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.deploy.event.AgentListener</role>
 			<implementation>com.dianping.phoenix.deploy.event.DefaultAgentListener</implementation>
 			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
-				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
 				</requirement>
@@ -267,13 +262,16 @@
 			<implementation>com.dianping.phoenix.console.page.home.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.console.page.home.JspViewer</role>
-				</requirement>
-				<requirement>
 					<role>com.dianping.phoenix.service.ProjectManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.version.VersionManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.DeployManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.page.home.JspViewer</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -302,7 +300,7 @@
 			<implementation>com.dianping.phoenix.console.page.deploy.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.DeployManager</role>
+					<role>com.dianping.phoenix.service.ProjectManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.deploy.JspViewer</role>

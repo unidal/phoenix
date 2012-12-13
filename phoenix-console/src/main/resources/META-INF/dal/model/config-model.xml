@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model model-package="com.dianping.phoenix.configure" enable-sax-parser="true">
   <entity name="config" root="true">
-    <element name="war-url-pattern" value-type="String"  default-value="http://192.168.8.45:8080/artifactory/dianping-snapshots/com/dianping/platform/phoenix-kernel/%s/phoenix-kernel-%1$s.war"/>
+    <attribute name="env" value-type="String" default-value="dev" />
+    <element name="war-url-pattern" value-type="String" default-value="http://192.168.8.45:8080/artifactory/dianping-snapshots/com/dianping/platform/phoenix-kernel/%s/phoenix-kernel-%1$s.war"/>
   </entity>
   <entity name="git" class-name="GitConfig">
     <element name="origin-url" value-type="String" default-value="ssh://git@10.1.4.81:58422/phoenix-kernel.git" />
@@ -19,6 +20,8 @@
     <element name="deploy-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=deploy&amp;deployId=%s&amp;domain=%s&amp;version=%s&amp;qaServiceUrlPrefix=%s&amp;qaServiceTimeout=%s" />
     <element name="deploy-status-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=status&amp;deployId=%s" />
     <element name="deploy-log-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=log&amp;deployId=%s" />
+    <element name="deploy-connect-timeout" value-type="int" default-value="1000" primitive="true"/>
+    <element name="deploy-read-timeout" value-type="int" default-value="360000" primitive="true"/>
     <element name="test-service-url-prefix" value-type="String" default-value="http://192.168.26.23:8080/qa/service/task"/>
     <element name="test-service-timeout" value-type="long" default-value="300000" primitive="true"/>
   </entity>
