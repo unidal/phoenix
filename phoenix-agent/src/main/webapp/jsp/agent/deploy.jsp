@@ -7,12 +7,7 @@
 <c:if test="${not empty ctx.errors}">
 {
 	"status" : "error",
-	"error" : "
-		<w:error code="deployId.invalid">deployId invalid</w:error>
-		<w:error code="version.invalid">version invalid</w:error>
-		<w:error code="duplicate_txid">duplicate txid</w:error>
-		<w:error code="another_tx_runnint">another tx runnint</w:error>
-	"
+	"message" : "<w:errors bundle="/META-INF/error.properties"><w:error code="*"/></w:errors>"
 }
 </c:if>
 <c:if test="${empty ctx.errors}">

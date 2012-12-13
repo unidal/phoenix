@@ -67,10 +67,12 @@ public class ServerXmlUtil {
 		Document doc = builder.parse(serverXml);
 		NodeList ctxList = doc.getElementsByTagName("Context");
 
+		int ctxFound = 0;
 		for (int i = 0; i < ctxList.getLength(); i++) {
 			Element ctx = (Element) ctxList.item(i);
 			String docBase = ctx.getAttribute("docBase");
 			if (isDocBaseMatch(docBase, docBasePattern)) {
+				ctxFound++;
 				logger.info(String.format("found matched <Context docBase=\"%s\">", docBase));
 				int loaderCnt = ((Element) ctx).getElementsByTagName("Loader").getLength();
 				if (loaderCnt == 0) {
@@ -83,9 +85,10 @@ public class ServerXmlUtil {
 				} else {
 					logger.info("<Loader> already exists, won't add");
 				}
-				return;
+				break;
 			}
 		}
+		logger.info(String.format("found %d matched <Context>", ctxFound));
 	}
 
 	/**
