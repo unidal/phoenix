@@ -12,12 +12,12 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
-import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
+import com.dianping.phoenix.service.ProjectManager;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
-	private DeployManager m_deployManager;
+	private ProjectManager m_projectManager;
 
 	@Inject
 	private JspViewer m_jspViewer;
@@ -64,7 +64,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void showStatus(Model model, Payload payload) {
 		int id = payload.getId();
-		DeployModel deployModel = m_deployManager.getModel(id);
+		DeployModel deployModel = m_projectManager.findModel(id);
 		Map<String, Integer> progressMap = payload.getProgressMap();
 		StatusModelVisitor visitor = new StatusModelVisitor(progressMap);
 
@@ -74,7 +74,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void showView(Model model, Payload payload) throws Exception {
 		int id = payload.getId();
-		DeployModel deployModel = m_deployManager.getModel(id);
+		DeployModel deployModel = m_projectManager.findModel(id);
 		ViewModelVisitor visitor = new ViewModelVisitor();
 
 		deployModel.accept(visitor);

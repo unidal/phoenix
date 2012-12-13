@@ -23,8 +23,7 @@ public class DeployExecutorTestConfigurator extends AbstractResourceConfigurator
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(C(DeployListener.class, MockDeployListener.class));
-		all.add(C(AgentListener.class, MockAgentListener.class) //
-		      .req(DeployListener.class));
+		all.add(C(AgentListener.class, MockAgentListener.class));
 		all.add(C(ConfigManager.class, MockConfigManager.class) //
 		      .config(E("configFile").value("N/A")));
 

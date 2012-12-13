@@ -3,11 +3,14 @@ package com.dianping.phoenix.deploy.agent;
 import java.io.IOException;
 
 import com.dianping.phoenix.configure.ConfigManager;
+import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
 public interface Context {
 	public ConfigManager getConfigManager();
 
 	public int getDeployId();
+
+	public DeployModel getDeployModel();
 
 	public String getDomain();
 

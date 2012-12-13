@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<deploy id="100" domain="demo-app" version="1.0.1" abort-on-error="true">
+<deploy id="100" domain="demo-app" version="1.0.1" abortOnError="true">
    <host ip="host-a" status="failed" progress="0">
       <segment current-ticks="11" total-ticks="100">[11-27 16:33:44] [INFO] PID is 8728
 [11-27 16:33:44] [INFO] CMD is /Users/marsqing/Projects/phoenix/phoenix-agent/target/classes/agent.sh -c
@@ -29,6 +29,7 @@ Switched to a new branch 'dummy'
       <segment step="cancelled" current-ticks="100" total-ticks="100" status="cancelled">Rollout to host(host-d) cancelled due to error happened.</segment>
    </host>
    <host ip="summary" progress="0">
+      <segment current-ticks="0" total-ticks="0">[INFO] Deploy URL: file:/Users/qmwu/project/phoenix/phoenix-console/target/test-classes/com/dianping/phoenix/deploy/executor/ok.json?op=deploy&amp;</segment>
       <segment current-ticks="0" total-ticks="0">[INFO] Deploying phoenix kernel(1.0.1) to host(host-a) for deploy(100) of domain(demo-app)  ... ACCEPTED</segment>
       <segment current-ticks="0" total-ticks="0">[INFO] Getting status from host(host-a) for deploy(100) ... </segment>
       <segment current-ticks="0" total-ticks="0">[ERROR] Failed to deploy phoenix kernel(1.0.1) to host(host-a).</segment>

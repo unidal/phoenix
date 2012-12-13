@@ -16,6 +16,7 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Version;
+import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.DeployPolicy;
 import com.dianping.phoenix.project.entity.Project;
@@ -24,13 +25,16 @@ import com.dianping.phoenix.version.VersionManager;
 
 public class Handler implements PageHandler<Context>, LogEnabled {
 	@Inject
-	private JspViewer m_jspViewer;
-
-	@Inject
 	private ProjectManager m_projectManager;
 
 	@Inject
 	private VersionManager m_versionManager;
+
+	@Inject
+	private DeployManager m_deployManager;
+
+	@Inject
+	private JspViewer m_jspViewer;
 
 	private Logger m_logger;
 
@@ -44,19 +48,35 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 		if (action == Action.DEPLOY) {
 			if (!ctx.hasErrors()) {
 				String name = payload.getProject();
-				List<String> hosts = payload.getHosts();
-				DeployPlan plan = payload.getPlan();
 				String deployUri = ctx.getRequestContext().getActionUri(ConsolePage.DEPLOY.getName());
 
-				try {
-					int id = m_projectManager.deployToProject(name, hosts, plan);
-					redirect(ctx, deployUri + "?id=" + id);
-					return;
-				} catch (Exception e) {
-					m_logger.warn(String.format("Error when submitting deploy to hosts(%s) for project(%s)!", hosts, name),
-					      e);
+				if (payload.isDeploy()) {
+					List<String> hosts = payload.getHosts();
+					DeployPlan plan = payload.getPlan();
 
-					ctx.addError("project.deploy", e);
+					try {
+						int id = m_deployManager.deploy(name, hosts, plan);
+						redirect(ctx, deployUri + "?id=" + id);
+						return;
+					} catch (Exception e) {
+						m_logger.warn(
+						      String.format("Error when submitting deploy to hosts(%s) for project(%s)!", hosts, name), e);
+
+						ctx.addError("project.deploy", e);
+					}
+				} else if (payload.isWatch()) {
+					try {
+						Integer id = m_projectManager.findActiveDeployId(name);
+
+						if (id != null) {
+							redirect(ctx, deployUri + "?id=" + id);
+						}
+						return;
+					} catch (Exception e) {
+						m_logger.warn(String.format("Error when finding active deploy id for project(%s)!", name), e);
+
+						ctx.addError("project.watch", e);
+					}
 				}
 			}
 
@@ -87,15 +107,19 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 			}
 			break;
 		case PROJECT:
+			String name = payload.getProject();
+
 			try {
-				Project project = m_projectManager.findProjectBy(payload.getProject());
+				Project project = m_projectManager.findProjectBy(name);
 				List<Version> versions = m_versionManager.getFinishedVersions();
+				Integer activeDeployId = m_projectManager.findActiveDeployId(name);
 
 				model.setProject(project);
 				model.setVersions(versions);
 				model.setPolicies(DeployPolicy.values());
+				model.setRolling(activeDeployId != null);
 			} catch (Exception e) {
-				m_logger.warn(String.format("Error when finding project(%s)!", payload.getProject()), e);
+				m_logger.warn(String.format("Error when finding project(%s)!", name), e);
 				ctx.addError("project.view", e);
 			}
 

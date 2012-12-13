@@ -13,7 +13,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
-import org.unidal.lookup.annotation.Inject;
 import org.unidal.tuple.Triple;
 import org.unidal.webres.helper.Files;
 
@@ -84,9 +83,8 @@ public class DeployExecutorTest extends ComponentTestCase {
 		plan.setVersion("1.0.1");
 
 		DeployModel model = deployListener.onCreate("demo-app", hosts, plan);
-		int deployId = model.getId();
 
-		executor.submit(deployId, hosts);
+		executor.submit(model, hosts);
 
 		if (!deployListener.getLatch().await(5, m_debug ? TimeUnit.HOURS : TimeUnit.SECONDS)) {
 			Assert.fail("Deploy flow was blocked! " + model);
@@ -126,9 +124,6 @@ public class DeployExecutorTest extends ComponentTestCase {
 	}
 
 	public static class MockAgentListener implements AgentListener {
-		@Inject
-		private DeployListener m_deployListener;
-
 		@Override
 		public void onEnd(Context ctx, String status) throws Exception {
 			log("onEnd(%s,%s,%s)", ctx.getDeployId(), ctx.getHost(), status);
@@ -138,21 +133,17 @@ public class DeployExecutorTest extends ComponentTestCase {
 		public void onProgress(Context ctx, Progress progress, String log) throws Exception {
 			log("onProgress(%s,%s)", ctx.getHost(), progress);
 
-			int id = ctx.getDeployId();
-			DeployModel model = m_deployListener.getModel(id);
+			DeployModel model = ctx.getDeployModel();
+			String ip = ctx.getHost();
+			HostModel host = model.findHost(ip);
+			SegmentModel segment = new SegmentModel();
 
-			if (model != null) {
-				String ip = ctx.getHost();
-				HostModel host = model.findHost(ip);
-				SegmentModel segment = new SegmentModel();
-
-				segment.setCurrentTicks(progress.getCurrent());
-				segment.setTotalTicks(progress.getTotal());
-				segment.setStatus(progress.getStatus());
-				segment.setStep(progress.getStep());
-				segment.setText(log);
-				host.addSegment(segment);
-			}
+			segment.setCurrentTicks(progress.getCurrent());
+			segment.setTotalTicks(progress.getTotal());
+			segment.setStatus(progress.getStatus());
+			segment.setStep(progress.getStep());
+			segment.setText(log);
+			host.addSegment(segment);
 		}
 
 		@Override
@@ -192,11 +183,6 @@ public class DeployExecutorTest extends ComponentTestCase {
 
 		public CountDownLatch getLatch() {
 			return m_latch;
-		}
-
-		@Override
-		public DeployModel getModel(int deployId) {
-			return m_models.get(deployId);
 		}
 
 		@Override

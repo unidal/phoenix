@@ -15,9 +15,6 @@ import com.dianping.phoenix.deploy.model.entity.SegmentModel;
 
 public class DefaultAgentListener implements AgentListener {
 	@Inject
-	private DeployListener m_deployListener;
-
-	@Inject
 	private DeploymentDetailsDao m_detailsDao;
 
 	@Override
@@ -40,21 +37,17 @@ public class DefaultAgentListener implements AgentListener {
 
 	@Override
 	public void onProgress(Context ctx, Progress progress, String log) throws Exception {
-		int id = ctx.getDeployId();
-		DeployModel model = m_deployListener.getModel(id);
+		DeployModel model = ctx.getDeployModel();
+		String ip = ctx.getHost();
+		HostModel host = model.findHost(ip);
+		SegmentModel segment = new SegmentModel();
 
-		if (model != null) {
-			String ip = ctx.getHost();
-			HostModel host = model.findHost(ip);
-			SegmentModel segment = new SegmentModel();
-
-			segment.setCurrentTicks(progress.getCurrent());
-			segment.setTotalTicks(progress.getTotal());
-			segment.setStatus(progress.getStatus());
-			segment.setStep(progress.getStep());
-			segment.setText(log);
-			host.addSegment(segment);
-		}
+		segment.setCurrentTicks(progress.getCurrent());
+		segment.setTotalTicks(progress.getTotal());
+		segment.setStatus(progress.getStatus());
+		segment.setStep(progress.getStep());
+		segment.setText(log);
+		host.addSegment(segment);
 	}
 
 	@Override

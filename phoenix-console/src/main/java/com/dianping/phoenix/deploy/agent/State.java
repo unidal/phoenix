@@ -1,7 +1,5 @@
 package com.dianping.phoenix.deploy.agent;
 
-import java.io.IOException;
-
 import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.transform.DefaultJsonParser;
 
@@ -16,13 +14,13 @@ public enum State {
 			String url = ctx.getConfigManager().getDeployUrl(host, id, domain, version);
 			String json = null;
 
+			ctx.println(String.format("[INFO] Deploy URL: %s", url));
 			ctx.print("[INFO] Deploying phoenix kernel(%s) to host(%s) for deploy(%s) of domain(%s)  ... ", version, host,
 			      id, domain);
-			ctx.println(String.format("[INFO] Deploy URL: %s", url));
 
 			try {
 				json = ctx.openUrl(url);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				ctx.println(e.toString());
 				moveTo(ctx, UNREACHABLE);
 				return;
@@ -70,7 +68,7 @@ public enum State {
 
 				try {
 					json = ctx.openUrl(url);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					ctx.println(e.toString());
 					moveTo(ctx, UNREACHABLE);
 					return;
