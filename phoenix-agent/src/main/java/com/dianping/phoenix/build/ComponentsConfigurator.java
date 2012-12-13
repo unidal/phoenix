@@ -24,6 +24,8 @@ import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.tx.FileBasedTransactionManager;
 import com.dianping.phoenix.agent.core.tx.LogFormatter;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
+import com.dianping.phoenix.agent.util.url.DefaultUrlContentFetcher;
+import com.dianping.phoenix.agent.util.url.UrlContentFetcher;
 import com.dianping.phoenix.configure.ConfigManager;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
@@ -31,6 +33,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
+		all.add(C(UrlContentFetcher.class, DefaultUrlContentFetcher.class).req(ConfigManager.class));
 		all.add(C(SemaphoreWrapper.class, "kernel", SemaphoreWrapper.class));
 		all.add(C(LogFormatter.class));
 		all.add(C(DeployWorkflow.class).is(PER_LOOKUP));
@@ -50,7 +53,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
 				.req(ConfigManager.class));
 		all.add(C(TaskProcessorFactory.class));
-		all.add(C(AgentStatusReporter.class).req(ConfigManager.class));
+		all.add(C(AgentStatusReporter.class).req(ConfigManager.class).req(ScriptExecutor.class));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 
 		// Please keep it as last

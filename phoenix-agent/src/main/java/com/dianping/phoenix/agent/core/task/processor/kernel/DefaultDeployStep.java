@@ -179,7 +179,6 @@ public class DefaultDeployStep implements DeployStep {
 			exitCode = DeployStep.CODE_OK;
 			break;
 
-		// TODO
 		case TIMEOUT:
 		case AGENT_LOCAL_EXCEPTION:
 		case QA_LOCAL_EXCEPTION:

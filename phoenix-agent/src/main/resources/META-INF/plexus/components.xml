@@ -1,6 +1,15 @@
 <plexus>
 	<components>
 		<component>
+			<role>com.dianping.phoenix.agent.util.url.UrlContentFetcher</role>
+			<implementation>com.dianping.phoenix.agent.util.url.DefaultUrlContentFetcher</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</role>
 			<role-hint>kernel</role-hint>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</implementation>
@@ -105,6 +114,9 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
 				</requirement>
 			</requirements>
 		</component>
