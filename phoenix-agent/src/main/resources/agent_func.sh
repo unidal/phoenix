@@ -135,3 +135,4 @@ function commit {
 	# turn on traffic
 	./op_${env}.sh -o put_container_online -b $container_install_path -c $container_type
 }
+
