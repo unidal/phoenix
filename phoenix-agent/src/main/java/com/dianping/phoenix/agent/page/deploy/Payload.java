@@ -95,22 +95,21 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 
 	@Override
 	public void validate(ActionContext<?> ctx) {
-		// TODO check other argrments from console
 		switch (m_action) {
 		case DEPLOY:
 			checkCommonArguments(ctx);
 			if (StringUtils.isEmpty(StringUtils.trimAll(m_domain))) {
 				ctx.addError(new ErrorObject("domain.missing,"));
 			}
-			
+
 			if (StringUtils.isEmpty(StringUtils.trimAll(m_version))) {
 				ctx.addError(new ErrorObject("version.missing"));
 			}
-			
+
 			if (StringUtils.isEmpty(StringUtils.trimAll(m_kernelGitUrl))) {
 				ctx.addError(new ErrorObject("kernelGitUrl.missing"));
 			}
-			
+
 			break;
 
 		case DETACH:
@@ -124,6 +123,9 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 		case CANCEL:
 		case GETLOG:
 			checkCommonArguments(ctx);
+			if (m_offset < 0) {
+				ctx.addError(new ErrorObject("offset.invalid"));
+			}
 			break;
 
 		}
