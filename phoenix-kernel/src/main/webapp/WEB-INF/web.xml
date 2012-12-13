@@ -19,6 +19,18 @@
 		<servlet-name>mvc-servlet</servlet-name>
 		<url-pattern>/inspect/*</url-pattern>
 	</servlet-mapping>
+	<filter>
+		<filter-name>mvc-filter</filter-name>
+		<filter-class>org.unidal.web.MVCFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>+1</param-value>
+	  	</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>mvc-filter</filter-name>
+		<url-pattern>/inspect/*</url-pattern>
+	</filter-mapping>
 	<jsp-config>
 		<taglib>
 			<taglib-uri>http://www.unidal.org/web/core</taglib-uri>

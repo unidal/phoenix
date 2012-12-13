@@ -28,15 +28,15 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	@FieldMeta("host")
 	private List<String> m_hosts;
+	
+	@FieldMeta("deploy")
+	private boolean m_deploy;
+	
+	@FieldMeta("watch")
+	private boolean m_watch;
 
 	@ObjectMeta("plan")
 	private DeployPlan m_plan;
-
-	@FieldMeta("deploy")
-	private boolean m_deploy;
-
-	@FieldMeta("watch")
-	private boolean m_watch;
 
 	@Override
 	public Action getAction() {
@@ -64,6 +64,10 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		return m_plan;
 	}
 
+	public String getProject() {
+		return m_project;
+	}
+
 	public boolean isDeploy() {
 		return m_deploy;
 	}
@@ -72,17 +76,21 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		return m_watch;
 	}
 
-	public String getProject() {
-		return m_project;
-	}
-
 	public void setAction(String action) {
 		m_action = Action.getByName(action, Action.HOME);
+	}
+
+	public void setDeploy(boolean deploy) {
+		m_deploy = deploy;
 	}
 
 	@Override
 	public void setPage(String page) {
 		m_page = ConsolePage.getByName(page, ConsolePage.HOME);
+	}
+
+	public void setWatch(boolean watch) {
+		m_watch = watch;
 	}
 
 	@Override

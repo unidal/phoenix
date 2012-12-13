@@ -61,10 +61,12 @@ public class ConfigManager implements Initializable {
 		check();
 
 		String pattern = m_config.getConsole().getDeployUrlPattern();
+		String kernelGitUrl = m_config.getGit().getOriginUrl();
 		String testServiceUrlPrefix = m_config.getConsole().getTestServiceUrlPrefix();
 		long testServiceTimeout = m_config.getConsole().getTestServiceTimeout();
 
-		return String.format(pattern, host, deployId, name, version, testServiceUrlPrefix, testServiceTimeout);
+		return String.format(pattern, host, deployId, name, version, kernelGitUrl, testServiceUrlPrefix,
+		      testServiceTimeout);
 	}
 
 	public String getGitOriginUrl() {

@@ -116,6 +116,9 @@
 			<implementation>com.dianping.phoenix.deploy.DefaultDeployManager</implementation>
 			<requirements>
 				<requirement>
+					<role>com.dianping.phoenix.service.ProjectManager</role>
+				</requirement>
+				<requirement>
 					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
 				</requirement>
 			</requirements>

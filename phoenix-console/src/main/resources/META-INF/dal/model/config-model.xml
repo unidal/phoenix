@@ -17,7 +17,7 @@
   </entity>
   <entity name="console" class-name="ConsoleConfig">
   	<element name="deploy-retry-interval" value-type="int" default-value="30000" primitive="true"/>
-    <element name="deploy-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=deploy&amp;deployId=%s&amp;domain=%s&amp;version=%s&amp;qaServiceUrlPrefix=%s&amp;qaServiceTimeout=%s" />
+    <element name="deploy-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=deploy&amp;deployId=%s&amp;domain=%s&amp;version=%s&amp;kernelGitUrl=%s&amp;qaServiceUrlPrefix=%s&amp;qaServiceTimeout=%s" />
     <element name="deploy-status-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=status&amp;deployId=%s" />
     <element name="deploy-log-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=log&amp;deployId=%s" />
     <element name="deploy-connect-timeout" value-type="int" default-value="1000" primitive="true"/>
