@@ -21,7 +21,6 @@ public class MockTaskProcessorA1 extends AbstractSerialTaskProcessor<Task> {
 
 	@Override
 	public Class<Task> handle() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

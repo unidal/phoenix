@@ -10,6 +10,8 @@
 		<kernel-doc-base-pattern><![CDATA[/data/webapps/phoenix-kernel/%s]]></kernel-doc-base-pattern>
 		<domain-doc-base-keyword-pattern><![CDATA[/%s/current]]></domain-doc-base-keyword-pattern>
 		<test-service-poll-interval>1000</test-service-poll-interval>
+		<url-connect-timeout>1000</url-connect-timeout>
+		<url-read-timeout>5000</url-read-timeout>
 	</agent>
 	<console>
 		<deploy-retry-interval>30000</deploy-retry-interval>
