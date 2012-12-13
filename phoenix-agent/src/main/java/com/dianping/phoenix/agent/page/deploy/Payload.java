@@ -35,6 +35,9 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	@FieldMeta("qaServiceTimeout")
 	private int m_qaServiceTimeout;
 
+	@FieldMeta("kernelGitUrl")
+	private String m_kernelGitUrl;
+
 	@Override
 	public Action getAction() {
 		return m_action == null ? Action.DEFAULT : m_action;
@@ -73,6 +76,10 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 		return m_qaServiceTimeout;
 	}
 
+	public String getKernelGitUrl() {
+		return m_kernelGitUrl;
+	}
+
 	public void setAction(String action) {
 		m_action = Action.getByName(action, Action.DEFAULT);
 	}
@@ -88,15 +95,22 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 
 	@Override
 	public void validate(ActionContext<?> ctx) {
+		// TODO check other argrments from console
 		switch (m_action) {
 		case DEPLOY:
 			checkCommonArguments(ctx);
 			if (StringUtils.isEmpty(StringUtils.trimAll(m_domain))) {
-				ctx.addError(new ErrorObject("domain.invalid,"));
+				ctx.addError(new ErrorObject("domain.missing,"));
 			}
+			
 			if (StringUtils.isEmpty(StringUtils.trimAll(m_version))) {
-				ctx.addError(new ErrorObject("version.invalid"));
+				ctx.addError(new ErrorObject("version.missing"));
 			}
+			
+			if (StringUtils.isEmpty(StringUtils.trimAll(m_kernelGitUrl))) {
+				ctx.addError(new ErrorObject("kernelGitUrl.missing"));
+			}
+			
 			break;
 
 		case DETACH:

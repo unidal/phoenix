@@ -11,10 +11,12 @@ public class DeployTask extends AbstractTask {
 	private String kernelVersion;
 	private String qaServiceUrlPrefix;
 	private int qaServiceTimeout;
+	private String kernelGitUrl;
 
-	public DeployTask(String domain, String kernelVersion, String qaServiceUrlPrefix, int qaServiceTimtout) {
+	public DeployTask(String domain, String kernelVersion, String kernelGitUrl, String qaServiceUrlPrefix, int qaServiceTimtout) {
 		this.domain = domain;
 		this.kernelVersion = kernelVersion;
+		this.kernelGitUrl = kernelGitUrl;
 		this.qaServiceUrlPrefix = qaServiceUrlPrefix;
 		this.qaServiceTimeout = qaServiceTimtout;
 	}
@@ -92,6 +94,10 @@ public class DeployTask extends AbstractTask {
 		} else if (!kernelVersion.equals(other.kernelVersion))
 			return false;
 		return true;
+	}
+
+	public String getKernelGitUrl() {
+		return kernelGitUrl;
 	}
 
 }

@@ -24,7 +24,7 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
@@ -43,8 +43,8 @@
 			<implementation>com.dianping.phoenix.agent.core.shell.DefaultScriptExecutor</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.Config</implementation>
+			<role>com.dianping.phoenix.configure.ConfigManager</role>
+			<implementation>com.dianping.phoenix.configure.ConfigManager</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.Agent</role>
@@ -91,7 +91,7 @@
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -104,7 +104,7 @@
 			<implementation>com.dianping.phoenix.agent.core.AgentStatusReporter</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -165,7 +165,7 @@
 			<implementation>com.dianping.phoenix.agent.core.AgentStatusReporter</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
@@ -173,8 +173,13 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.Config</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.Config</implementation>
+			<role>com.dianping.phoenix.configure.ConfigManager</role>
+			<implementation>com.dianping.phoenix.configure.ConfigManager</implementation>
+			<requirements>
+				<requirement>
+					<role>java.lang.String</role>
+				</requirement>
+			</requirements>
 		</component>
 	</components>
 </plexus>

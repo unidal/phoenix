@@ -16,6 +16,7 @@ import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DomainHealthCheckInfo;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService.CheckResult;
+import com.dianping.phoenix.configure.ConfigManager;
 
 public class DefaultDeployStep implements DeployStep {
 
@@ -24,7 +25,7 @@ public class DefaultDeployStep implements DeployStep {
 	@Inject
 	private ScriptExecutor scriptExecutor;
 	@Inject
-	private Config config;
+	private ConfigManager config;
 	@Inject
 	private QaService qaService;
 
@@ -43,12 +44,13 @@ public class DefaultDeployStep implements DeployStep {
 		String kernelDocBase = String.format(config.getKernelDocBasePattern(), task.getDomain(),
 				task.getKernelVersion());
 		
+		String kernelGitUrl = task.getKernelGitUrl();
 		String kernelGitHost = null;
 		try {
-			kernelGitHost = new URI(config.getKernelGitUrl()).getHost();
+			kernelGitHost = new URI(kernelGitUrl).getHost();
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("error parsing host from kernel git url %s",
-					config.getKernelGitUrl()), e);
+					kernelGitUrl), e);
 		}
 
 		sb.append(getScriptPath());
@@ -59,7 +61,7 @@ public class DefaultDeployStep implements DeployStep {
 		sb.append(String.format(" -v \"%s\" ", task.getKernelVersion()));
 		sb.append(String.format(" -k \"%s\" ", kernelDocBase));
 		sb.append(String.format(" -e \"%s\" ", config.getEnv()));
-		sb.append(String.format(" -g \"%s\" ", config.getKernelGitUrl()));
+		sb.append(String.format(" -g \"%s\" ", kernelGitUrl));
 		sb.append(String.format(" -h \"%s\" ", kernelGitHost));
 		sb.append(String.format(" -f \"%s\" ", shellFunc));
 

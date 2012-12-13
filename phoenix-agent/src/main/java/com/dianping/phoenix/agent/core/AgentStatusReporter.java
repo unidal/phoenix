@@ -13,7 +13,6 @@ import org.w3c.dom.NodeList;
 
 import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
-import com.dianping.phoenix.agent.core.task.processor.kernel.Config;
 import com.dianping.phoenix.agent.response.entity.Container;
 import com.dianping.phoenix.agent.response.entity.Domain;
 import com.dianping.phoenix.agent.response.entity.Kernel;
@@ -22,11 +21,12 @@ import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.entity.War;
 import com.dianping.phoenix.agent.util.Artifact;
 import com.dianping.phoenix.agent.util.ArtifactResolver;
+import com.dianping.phoenix.configure.ConfigManager;
 
 public class AgentStatusReporter {
 
 	@Inject
-	private Config config;
+	private ConfigManager config;
 	@Inject
 	ScriptExecutor scriptExector;
 

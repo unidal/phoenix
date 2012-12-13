@@ -39,15 +39,15 @@ public class DefaultDeployStepTest extends ComponentTestCase {
 		TestUtil.replaceFieldByReflection(steps, "qaService", qaService);
 
 		// invalid qa service url, won't call
-		DeployTask task = new DeployTask("domain", "kernelVersion", null, 1);
+		DeployTask task = new DeployTask("domain", "kernelVersion", "", null, 1);
 		steps.prepare(task, mock(OutputStream.class));
 		steps.checkContainerStatus();
 
-		task = new DeployTask("domain", "kernelVersion", "", 1);
+		task = new DeployTask("domain", "kernelVersion", "", "", 1);
 		steps.prepare(task, mock(OutputStream.class));
 		steps.checkContainerStatus();
 
-		task = new DeployTask("domain", "kernelVersion", "  \n\r\t ", 1);
+		task = new DeployTask("domain", "kernelVersion", "", "  \n\r\t ", 1);
 		steps.prepare(task, mock(OutputStream.class));
 		steps.checkContainerStatus();
 
@@ -65,7 +65,7 @@ public class DefaultDeployStepTest extends ComponentTestCase {
 		TestUtil.replaceFieldByReflection(steps, "qaService", qaService);
 
 		// valid qa service url, will call
-		task = new DeployTask("domain", "kernelVersion", "url", 1);
+		task = new DeployTask("domain", "kernelVersion", "", "url", 1);
 		steps.prepare(task, mock(OutputStream.class));
 		steps.checkContainerStatus();
 
@@ -89,7 +89,7 @@ public class DefaultDeployStepTest extends ComponentTestCase {
 				});
 		TestUtil.replaceFieldByReflection(steps, "qaService", qaService);
 
-		DeployTask task = new DeployTask("domain", "kernelVersion", "url", 1);
+		DeployTask task = new DeployTask("domain", "kernelVersion", "", "url", 1);
 		steps.prepare(task, mock(OutputStream.class));
 
 		CheckResult[] stepErrorResults = new CheckResult[] { CheckResult.AGENT_LOCAL_EXCEPTION, //
@@ -132,7 +132,7 @@ public class DefaultDeployStepTest extends ComponentTestCase {
 				});
 		TestUtil.replaceFieldByReflection(steps, "qaService", qaService);
 
-		DeployTask task = new DeployTask("domain", "kernelVersion", "url", 1);
+		DeployTask task = new DeployTask("domain", "kernelVersion", "", "url", 1);
 		steps.prepare(task, mock(OutputStream.class));
 		int exitCode = steps.checkContainerStatus();
 		Assert.assertTrue(qaServiceCalled.get());
