@@ -17,6 +17,8 @@
     <element name="kernel-doc-base-pattern" value-type="String" />
     <element name="domain-doc-base-keyword-pattern" value-type="String" />
     <element name="test-service-poll-interval" value-type="int" />
+    <element name="url-connect-timeout" value-type="int" />
+    <element name="url-read-timeout" value-type="int" />
   </entity>
   <entity name="console">
     <element name="deploy-retry-interval" value-type="int" />

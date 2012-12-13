@@ -31,13 +31,11 @@ public class ShellCmdTaskProcessor implements TaskProcessor<ShellCmdTask> {
 
 	@Override
 	public List<Transaction> currentTransactions() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean cancel(TransactionId txId) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -48,7 +46,6 @@ public class ShellCmdTaskProcessor implements TaskProcessor<ShellCmdTask> {
 
 	@Override
 	public boolean attachEventTracker(TransactionId txId, EventTracker eventTracker) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

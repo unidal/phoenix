@@ -17,7 +17,7 @@ while getopts ":o:b:c:" option;do
 	esac
 done
 
-ensure_not_empty container_install_path="$container_install_path" container_type="$container_type"
+ensure_not_empty container_install_path="$container_install_path" container_type="$container_type" op="$op"
 
 ############################## functions for dev ############################## 
 function kill_jboss {
@@ -38,6 +38,26 @@ function start_jboss {
 	log "starting jboss"
 	$container_install_path/bin/run.sh >/dev/null 2>&1 &
 	log "jboss started"
+}
+
+function container_status {
+	# remove last /
+	last_alphabet_idx=$((${#container_install_path}-1))
+	if [ ${container_install_path:$last_alphabet_idx} == "/" ];then
+		container_install_path=${container_install_path:0:$last_alphabet_idx}
+	fi
+
+	container_up=1
+	case $container_type in
+			tomcat)		pid=`jps -lvm | awk -v tocheck=$container_install_path '$2=="org.apache.catalina.startup.Bootstrap" && index($0, tocheck)>0{pid=$1;print pid;}'`;;
+			jboss)		pid=`jps -lvm | awk -v tocheck=$container_install_path '$2=="org.jboss.Main" && index($0, tocheck)>0{pid=$1;print pid;}'`;;
+	esac
+
+	if [ x$pid != x ];then
+		container_up=0
+	fi
+
+	exit $container_up
 }
 
 ############################## interface with agent.sh ############################## 

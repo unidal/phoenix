@@ -10,19 +10,16 @@ public class MockTaskProcessorB extends AbstractSerialTaskProcessor<Task> {
 
 	@Override
 	public boolean cancel(TransactionId txId) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public Class<Task> handle() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected Status doTransaction(Transaction tx) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

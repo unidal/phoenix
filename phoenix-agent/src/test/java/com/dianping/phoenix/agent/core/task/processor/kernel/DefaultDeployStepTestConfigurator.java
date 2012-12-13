@@ -7,6 +7,7 @@ import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.MockQaService;
+import com.dianping.phoenix.configure.ConfigManager;
 
 public class DefaultDeployStepTestConfigurator extends AbstractResourceConfigurator {
 
@@ -14,9 +15,9 @@ public class DefaultDeployStepTestConfigurator extends AbstractResourceConfigura
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
-		all.add(C(Config.class));
+		all.add(C(ConfigManager.class));
 		all.add(C(MockQaService.class));
-		all.add(C(DefaultDeployStep.class).req(Config.class) //
+		all.add(C(DefaultDeployStep.class).req(ConfigManager.class) //
 				.req(MockQaService.class).is(PER_LOOKUP));
 		
 		return all;

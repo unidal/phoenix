@@ -6,6 +6,7 @@ import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcesso
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
+import com.dianping.phoenix.configure.ConfigManager;
 
 /**
  * Remove &lt;Loader$gt; from server.xml
@@ -15,7 +16,7 @@ import com.dianping.phoenix.agent.core.tx.TransactionId;
 public class DetachTaskProcessor extends AbstractSerialTaskProcessor<DetachTask> {
 
 	@Inject
-	Config config;
+	ConfigManager config;
 	
 	public DetachTaskProcessor() {
 	}

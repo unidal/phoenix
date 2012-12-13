@@ -1,7 +1,6 @@
 package com.dianping.phoenix.agent.core.task.processor.kernel.qa;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -48,7 +47,7 @@ public class DefaultQaServiceTest {
 
 		// exception when get url content
 		// if use any(), thenThrow() will override thenReturn()
-		when(mockUrlContentFetcher.fetchUrlContent(argThat(submitMatcher), anyInt())).thenThrow(
+		when(mockUrlContentFetcher.fetchUrlContent(argThat(submitMatcher))).thenThrow(
 				new IOException("fake exception"));
 		CheckResult checkResult = qaService.isDomainHealthy(mock(DomainHealthCheckInfo.class), 1000, 1000);
 		Assert.assertEquals(CheckResult.SUBMIT_FAILED, checkResult);
@@ -58,18 +57,18 @@ public class DefaultQaServiceTest {
 		Assert.assertEquals(CheckResult.SUBMIT_FAILED, checkResult);
 
 		// qa return invalid json
-		when(mockUrlContentFetcher.fetchUrlContent(any(String.class), any(Integer.class))).thenReturn("invalid json");
+		when(mockUrlContentFetcher.fetchUrlContent(any(String.class))).thenReturn("invalid json");
 		checkResult = qaService.isDomainHealthy(mock(DomainHealthCheckInfo.class), 1000, 1000);
 		Assert.assertEquals(CheckResult.SUBMIT_FAILED, checkResult);
 
 		// qa return valid submit failed json
-		when(mockUrlContentFetcher.fetchUrlContent(any(String.class), any(Integer.class))).thenReturn(
+		when(mockUrlContentFetcher.fetchUrlContent(any(String.class))).thenReturn(
 				"{\"status\" : \"error\"}");
 		checkResult = qaService.isDomainHealthy(mock(DomainHealthCheckInfo.class), 1000, 1000);
 		Assert.assertEquals(CheckResult.SUBMIT_FAILED, checkResult);
 
 		// qa return valid submit success json
-		when(mockUrlContentFetcher.fetchUrlContent(any(String.class), any(Integer.class))).thenReturn(
+		when(mockUrlContentFetcher.fetchUrlContent(any(String.class))).thenReturn(
 				"{\"status\" : \"ok\"}");
 		checkResult = qaService.isDomainHealthy(mock(DomainHealthCheckInfo.class), 1000, 1000);
 		Assert.assertEquals(CheckResult.TIMEOUT, checkResult);
@@ -82,9 +81,9 @@ public class DefaultQaServiceTest {
 		UrlContentFetcher mockUrlContentFetcher = mock(UrlContentFetcher.class);
 		TestUtil.replaceFieldByReflection(qaService, "urlContentFetcher", mockUrlContentFetcher);
 
-		when(mockUrlContentFetcher.fetchUrlContent(argThat(submitMatcher), anyInt())).thenReturn(
+		when(mockUrlContentFetcher.fetchUrlContent(argThat(submitMatcher))).thenReturn(
 				"{\"status\" : \"ok\"}");
-		when(mockUrlContentFetcher.fetchUrlContent(argThat(queryMatcher), anyInt())).thenReturn(
+		when(mockUrlContentFetcher.fetchUrlContent(argThat(queryMatcher))).thenReturn(
 				"{\"status\" : \"success\"}");
 
 		DomainHealthCheckInfo domainCheckInfo = new DomainHealthCheckInfo("", "", "", 8080, "");
@@ -98,9 +97,9 @@ public class DefaultQaServiceTest {
 		UrlContentFetcher mockUrlContentFetcher = mock(UrlContentFetcher.class);
 		TestUtil.replaceFieldByReflection(qaService, "urlContentFetcher", mockUrlContentFetcher);
 
-		when(mockUrlContentFetcher.fetchUrlContent(argThat(submitMatcher), anyInt())).thenReturn(
+		when(mockUrlContentFetcher.fetchUrlContent(argThat(submitMatcher))).thenReturn(
 				"{\"status\" : \"ok\"}");
-		when(mockUrlContentFetcher.fetchUrlContent(argThat(queryMatcher), anyInt())).thenReturn(
+		when(mockUrlContentFetcher.fetchUrlContent(argThat(queryMatcher))).thenReturn(
 				"{\"status\" : \"pending\"}");
 
 		DomainHealthCheckInfo domainCheckInfo = new DomainHealthCheckInfo("", "", "", 8080, "");
@@ -116,9 +115,9 @@ public class DefaultQaServiceTest {
 
 		final AtomicInteger queried = new AtomicInteger(1);
 
-		when(mockUrlContentFetcher.fetchUrlContent(argThat(submitMatcher), anyInt())).thenReturn(
+		when(mockUrlContentFetcher.fetchUrlContent(argThat(submitMatcher))).thenReturn(
 				"{\"status\" : \"ok\"}");
-		when(mockUrlContentFetcher.fetchUrlContent(argThat(queryMatcher), anyInt())).thenAnswer(new Answer<String>() {
+		when(mockUrlContentFetcher.fetchUrlContent(argThat(queryMatcher))).thenAnswer(new Answer<String>() {
 
 			@Override
 			public String answer(InvocationOnMock invocation) throws Throwable {
@@ -143,9 +142,9 @@ public class DefaultQaServiceTest {
 
 		final AtomicInteger queried = new AtomicInteger(1);
 
-		when(mockUrlContentFetcher.fetchUrlContent(argThat(submitMatcher), anyInt())).thenReturn(
+		when(mockUrlContentFetcher.fetchUrlContent(argThat(submitMatcher))).thenReturn(
 				"{\"status\" : \"ok\"}");
-		when(mockUrlContentFetcher.fetchUrlContent(argThat(queryMatcher), anyInt())).thenAnswer(new Answer<String>() {
+		when(mockUrlContentFetcher.fetchUrlContent(argThat(queryMatcher))).thenAnswer(new Answer<String>() {
 
 			@Override
 			public String answer(InvocationOnMock invocation) throws Throwable {

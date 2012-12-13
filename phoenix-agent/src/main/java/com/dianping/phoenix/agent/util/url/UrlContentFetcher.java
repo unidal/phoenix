@@ -4,6 +4,6 @@ import java.io.IOException;
 
 public interface UrlContentFetcher {
 
-	String fetchUrlContent(String url, int timeout) throws IOException;
+	String fetchUrlContent(String url) throws IOException;
 	
 }
