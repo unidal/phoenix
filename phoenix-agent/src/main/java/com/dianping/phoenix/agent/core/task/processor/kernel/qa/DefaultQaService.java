@@ -76,8 +76,7 @@ public class DefaultQaService implements QaService {
 		logger.info(String.format("calling qa service %s", url));
 		String content = "{}";
 		try {
-			// TODO
-			content = StringUtils.trimAll(urlContentFetcher.fetchUrlContent(url, 2000));
+			content = StringUtils.trimAll(urlContentFetcher.fetchUrlContent(url));
 			logger.info(String.format("got %s", content));
 		} catch (Exception e) {
 			logger.error("error get url content", e);

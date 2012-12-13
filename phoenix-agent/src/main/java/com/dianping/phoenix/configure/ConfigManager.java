@@ -201,4 +201,12 @@ public class ConfigManager implements Initializable {
 		m_configFile = configFile;
 	}
 
+	public int getUrlConnectTimeout() {
+		return m_config.getAgent().getUrlConnectTimeout();
+	}
+
+	public int getUrlReadTimeout() {
+		return m_config.getAgent().getUrlReadTimeout();
+	}
+
 }

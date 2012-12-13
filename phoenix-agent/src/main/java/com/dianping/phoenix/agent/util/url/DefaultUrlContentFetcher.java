@@ -6,14 +6,20 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.apache.commons.io.IOUtils;
+import org.unidal.lookup.annotation.Inject;
+
+import com.dianping.phoenix.configure.ConfigManager;
 
 public class DefaultUrlContentFetcher implements UrlContentFetcher {
+	
+	@Inject
+	ConfigManager config;
 
 	@Override
-	public String fetchUrlContent(String url, int timeout) throws IOException {
+	public String fetchUrlContent(String url) throws IOException {
 		URLConnection conn = new URL(url).openConnection();
-		conn.setConnectTimeout(timeout);
-		conn.setReadTimeout(timeout);
+		conn.setConnectTimeout(config.getUrlConnectTimeout());
+		conn.setReadTimeout(config.getUrlReadTimeout());
 		InputStream in = conn.getInputStream();
 		return IOUtils.toString(in);
 	}
