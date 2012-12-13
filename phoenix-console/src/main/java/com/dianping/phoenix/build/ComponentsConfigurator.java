@@ -81,7 +81,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		}
 
 		all.add(C(DeployManager.class, DefaultDeployManager.class) //
-		      .req(DeployListener.class));
+		      .req(ProjectManager.class, DeployListener.class));
 		all.add(C(DeployListener.class, DefaultDeployListener.class) //
 		      .req(DeploymentDao.class, DeploymentDetailsDao.class, ProjectManager.class));
 		all.add(C(AgentListener.class, DefaultAgentListener.class) //
