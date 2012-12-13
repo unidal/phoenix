@@ -62,11 +62,10 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 	}
 
 	@Override
-	public synchronized void submit(int deployId, List<String> hosts) throws Exception {
-		DeployModel model = m_deployListener.getModel(deployId);
+	public synchronized void submit(DeployModel model, List<String> hosts) throws Exception {
 		ControllerTask task = new ControllerTask(m_agentListener, model, hosts);
 
-		m_deployListener.onDeployStart(deployId);
+		m_deployListener.onDeployStart(model.getId());
 		Threads.forGroup("Phoenix").start(task);
 	}
 
@@ -275,6 +274,11 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		public int getDeployId() {
 			return m_model.getId();
 		}
+
+		@Override
+      public DeployModel getDeployModel() {
+	      return m_model;
+      }
 
 		@Override
 		public String getDomain() {

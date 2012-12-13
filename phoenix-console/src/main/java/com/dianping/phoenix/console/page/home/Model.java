@@ -20,6 +20,8 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	private DeployPolicy[] m_policies;
 
+	private boolean m_rolling;
+
 	public Model(Context ctx) {
 		super(ctx);
 	}
@@ -34,8 +36,8 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 	}
 
 	public DeployPolicy[] getPolicies() {
-   	return m_policies;
-   }
+		return m_policies;
+	}
 
 	public Project getProject() {
 		return m_project;
@@ -47,6 +49,10 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	public List<Version> getVersions() {
 		return m_versions;
+	}
+
+	public boolean isRolling() {
+		return m_rolling;
 	}
 
 	public void setDeployPlans(List<String> deployPlans) {
@@ -63,6 +69,10 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	public void setProjects(List<Project> projects) {
 		m_projects = projects;
+	}
+
+	public void setRolling(boolean rolling) {
+		m_rolling = rolling;
 	}
 
 	public void setVersions(List<Version> versions) {

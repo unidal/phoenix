@@ -7,23 +7,31 @@ import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.deploy.event.DeployListener;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
+import com.dianping.phoenix.service.ProjectManager;
 
 public class DefaultDeployManager extends ContainerHolder implements DeployManager {
 	@Inject
-	private DeployListener m_listener;
+	private ProjectManager m_projectManager;
 
-	@Override
-	public int deploy(String name, List<String> hosts, DeployPlan plan) throws Exception {
-		DeployExecutor executor = lookup(DeployExecutor.class, plan.getPolicy());
-		DeployModel model = m_listener.onCreate(name, hosts, plan);
-		int deployId = model.getId();
+	@Inject
+	private DeployListener m_deployListener;
 
-		executor.submit(deployId, hosts);
-		return deployId;
+	private void check(String domain) {
+		Integer deployId = m_projectManager.findActiveDeployId(domain);
+
+		if (deployId != null) {
+			throw new RuntimeException(String.format("Project(%s) is being rolling out!", domain));
+		}
 	}
 
 	@Override
-	public DeployModel getModel(int deployId) {
-		return m_listener.getModel(deployId);
+	public int deploy(String domain, List<String> hosts, DeployPlan plan) throws Exception {
+		check(domain);
+
+		DeployExecutor executor = lookup(DeployExecutor.class, plan.getPolicy());
+		DeployModel model = m_deployListener.onCreate(domain, hosts, plan);
+
+		executor.submit(model, hosts);
+		return model.getId();
 	}
 }

@@ -13,6 +13,7 @@ import org.unidal.lookup.ComponentTestCase;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.agent.Context;
 import com.dianping.phoenix.deploy.agent.State;
+import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
 public class DeployStateTest extends ComponentTestCase {
 	private ConfigManager m_configManager;
@@ -192,6 +193,8 @@ public class DeployStateTest extends ComponentTestCase {
 
 		private boolean m_failed;
 
+		private DeployModel m_model = new DeployModel().setId(123);
+
 		private StringBuilder m_log = new StringBuilder(2048);
 
 		public BaseContext(ConfigManager configManager) {
@@ -205,7 +208,12 @@ public class DeployStateTest extends ComponentTestCase {
 
 		@Override
 		public int getDeployId() {
-			return 123;
+			return m_model.getId();
+		}
+
+		@Override
+		public DeployModel getDeployModel() {
+			return m_model;
 		}
 
 		@Override

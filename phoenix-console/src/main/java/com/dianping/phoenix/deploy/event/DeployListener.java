@@ -6,9 +6,7 @@ import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
 public interface DeployListener {
-	public DeployModel getModel(int deployId);
-
-	public DeployModel onCreate(String name, List<String> hosts, DeployPlan plan) throws Exception;
+	public DeployModel onCreate(String domain, List<String> hosts, DeployPlan plan) throws Exception;
 
 	public void onDeployEnd(int deployId) throws Exception;
 

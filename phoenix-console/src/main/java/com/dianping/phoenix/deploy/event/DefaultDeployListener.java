@@ -1,9 +1,7 @@
 package com.dianping.phoenix.deploy.event;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.unidal.lookup.annotation.Inject;
 
@@ -17,6 +15,7 @@ import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.entity.SegmentModel;
+import com.dianping.phoenix.service.ProjectManager;
 
 public class DefaultDeployListener implements DeployListener {
 	@Inject
@@ -25,12 +24,13 @@ public class DefaultDeployListener implements DeployListener {
 	@Inject
 	private DeploymentDetailsDao m_deploymentDetailsDao;
 
-	private Map<Integer, DeployModel> m_models = new HashMap<Integer, DeployModel>();
+	@Inject
+	private ProjectManager m_projectManager;
 
-	private Deployment createDeployment(String name, DeployPlan plan) {
+	private Deployment createDeployment(String domain, DeployPlan plan) {
 		Deployment d = m_deploymentDao.createLocal();
 
-		d.setDomain(name);
+		d.setDomain(domain);
 		d.setStrategy(plan.getPolicy());
 		d.setErrorPolicy(plan.isAbortOnError() ? "abortOnError" : "fall-through");
 		d.setBeginDate(new Date());
@@ -55,14 +55,9 @@ public class DefaultDeployListener implements DeployListener {
 	}
 
 	@Override
-	public DeployModel getModel(int deployId) {
-		return m_models.get(deployId);
-	}
-
-	@Override
-	public DeployModel onCreate(String name, List<String> hosts, DeployPlan plan) throws Exception {
+	public DeployModel onCreate(String domain, List<String> hosts, DeployPlan plan) throws Exception {
 		DeployModel model = new DeployModel();
-		Deployment d = createDeployment(name, plan);
+		Deployment d = createDeployment(domain, plan);
 
 		m_deploymentDao.insert(d);
 
@@ -82,11 +77,12 @@ public class DefaultDeployListener implements DeployListener {
 		model.addHost(new HostModel().setIp("summary").setId(details.getId()));
 
 		model.setId(deployId);
-		model.setDomain(name);
+		model.setDomain(domain);
 		model.setVersion(plan.getVersion());
 		model.setAbortOnError(plan.isAbortOnError());
 		model.setPlan(plan);
-		m_models.put(deployId, model);
+
+		m_projectManager.storeModel(model);
 		return model;
 	}
 
@@ -123,7 +119,7 @@ public class DefaultDeployListener implements DeployListener {
 
 	@Override
 	public void onHostCancel(int deployId, String host) throws Exception {
-		DeployModel deployModel = m_models.get(deployId);
+		DeployModel deployModel = m_projectManager.findModel(deployId);
 		HostModel hostModel = deployModel.findHost(host);
 
 		hostModel.addSegment(new SegmentModel().setCurrentTicks(100).setTotalTicks(100).setStatus("cancelled"));
@@ -135,12 +131,11 @@ public class DefaultDeployListener implements DeployListener {
 		details.setEndDate(new Date());
 		details.setRawLog(hostModel.getLog());
 		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
-
 	}
 
 	@Override
 	public void onHostEnd(int deployId, String host) throws Exception {
-		DeployModel deployModel = m_models.get(deployId);
+		DeployModel deployModel = m_projectManager.findModel(deployId);
 		HostModel hostModel = deployModel.findHost("summary");
 		String status = hostModel.getStatus();
 

@@ -128,6 +128,9 @@
 				<br />
 				<div class="row-fluid">
 					<button type="submit" name="deploy" class="btn btn-primary">Deploy</button>
+					<c:if test="${model.rolling}">
+					   &nbsp;&nbsp;<button type="submit" name="watch" class="btn btn-primary">Watch</button>
+					</c:if>
 				</div>
 			</div>
 		</div>
