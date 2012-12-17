@@ -216,18 +216,25 @@ public class DeployWorkflow {
 			} catch (Exception e) {
 				logger.error(String.format("error doing step %s", nextStep), e);
 			}
-			writeLogChunkTerminator(ctx, nextStep);
 
+			String stepResultMsg = "";
+			Step stepToGo = null;
 			if (exitCode != DeployStep.CODE_OK) {
-				logger.info("failed");
+				stepResultMsg = "STEP FAIL";
 				if (nextStep.nextIdWhenFail != null) {
-					nextStep.moveTo(steps, get(nextStep.nextIdWhenFail), logOut, ctx);
+					stepToGo = get(nextStep.nextIdWhenFail);
 				}
 			} else {
-				logger.info("successful");
+				stepResultMsg = "STEP SUCCESS";
 				if (nextStep.nextIdWhenSuccess != null) {
-					nextStep.moveTo(steps, get(nextStep.nextIdWhenSuccess), logOut, ctx);
+					stepToGo = get(nextStep.nextIdWhenSuccess);
 				}
+			}
+			
+			logger.info(stepResultMsg);
+			writeLogChunkTerminator(ctx, nextStep);
+			if(stepToGo != null) {
+				nextStep.moveTo(steps, stepToGo, logOut, ctx);
 			}
 		}
 

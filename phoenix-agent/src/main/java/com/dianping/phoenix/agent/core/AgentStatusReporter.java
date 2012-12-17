@@ -3,7 +3,6 @@ package com.dianping.phoenix.agent.core;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,7 +15,6 @@ import org.w3c.dom.NodeList;
 
 import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
-import com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStep;
 import com.dianping.phoenix.agent.response.entity.Container;
 import com.dianping.phoenix.agent.response.entity.Domain;
 import com.dianping.phoenix.agent.response.entity.Kernel;
@@ -87,13 +85,13 @@ public class AgentStatusReporter {
 	private String getStatus() {
 		String status = "unknown";
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		URL scriptUrl = DefaultDeployStep.class.getClassLoader().getResource("agent_status.sh");
-		if (scriptUrl == null) {
-			logger.warn("agent_status.sh not found");
+		File scriptFile = config.getAgentStatusScriptFile();
+		if (!scriptFile.isFile()) {
+			logger.warn("agent status script file not found");
 		} else {
 			try {
 				StringBuilder sb = new StringBuilder();
-				sb.append(scriptUrl.getPath());
+				sb.append(scriptFile.getAbsolutePath());
 				sb.append(String.format(" -e \"%s\" ", config.getEnv()));
 				sb.append(String.format(" -b \"%s\" ", config.getContainerInstallPath()));
 				sb.append(String.format(" -c \"%s\" ", config.getContainerType()));

@@ -40,7 +40,7 @@ function start_jboss {
 	log "jboss started"
 }
 
-function container_status {
+function container_status_inner {
 	# remove last /
 	last_alphabet_idx=$((${#container_install_path}-1))
 	if [ ${container_install_path:$last_alphabet_idx} == "/" ];then
@@ -83,6 +83,10 @@ function start_container {
 function put_container_online {
 	log "dpsf online"
 	log "f5nodeonline"
+}
+
+function container_status {
+	container_status_inner
 }
 
 $op

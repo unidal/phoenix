@@ -2,7 +2,10 @@ package com.dianping.phoenix.configure;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.util.Iterator;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
@@ -16,25 +19,25 @@ import com.dianping.phoenix.configure.entity.GitConfig;
 import com.dianping.phoenix.configure.transform.DefaultSaxParser;
 
 public class ConfigManager implements Initializable {
-	
+
 	private final static Logger logger = Logger.getLogger(ConfigManager.class);
-	
+
 	private final static String TOMCAT_LOADER_CLASS = "com.dianping.phoenix.bootstrap.Tomcat6WebappLoader";
 	private final static String JBOSS_LOADER_CLASS = "com.dianping.phoenix.bootstrap.Jboss4WebappLoader";
-	
+
 	public enum ContainerType {
 		TOMCAT, JBOSS
 	}
-	
+
 	@Inject
 	private String m_configFile = "/data/appdatas/phoenix/config.xml";
 
 	private Config m_config;
-	
+
 	private ContainerType containerType;
-	
+
 	private File serverXml;
-	
+
 	private String loaderClass;
 
 	private void check() {
@@ -48,14 +51,14 @@ public class ConfigManager implements Initializable {
 	 */
 	public String getContainerInstallPath() {
 		check();
-		
+
 		String containerInstallPath = m_config.getAgent().getContainerInstallPath().trim();
-		
+
 		// replace ~ to user home directory
-		if(containerInstallPath.startsWith("~")) {
+		if (containerInstallPath.startsWith("~")) {
 			containerInstallPath = System.getProperty("user.home") + containerInstallPath.substring(1);
 		}
-		
+
 		return containerInstallPath;
 	}
 
@@ -65,7 +68,7 @@ public class ConfigManager implements Initializable {
 	 */
 	public String getKernelDocBasePattern() {
 		check();
-		
+
 		return m_config.getAgent().getKernelDocBasePattern();
 	}
 
@@ -75,25 +78,25 @@ public class ConfigManager implements Initializable {
 	 */
 	public String getDomainDocBaseFeaturePattern() {
 		check();
-		
+
 		return m_config.getAgent().getDomainDocBaseKeywordPattern();
 	}
 
 	public ContainerType getContainerType() {
 		check();
-		
+
 		return containerType;
 	}
 
 	public String getLoaderClass() {
 		check();
-		
+
 		return loaderClass;
 	}
 
 	public File getServerXml() {
 		check();
-		
+
 		return serverXml;
 	}
 
@@ -102,8 +105,8 @@ public class ConfigManager implements Initializable {
 	 */
 	public int getQaServiceQueryInterval() {
 		check();
-		
-		return m_config.getAgent().getTestServicePollInterval(); 
+
+		return m_config.getAgent().getTestServicePollInterval();
 	}
 
 	/**
@@ -111,7 +114,7 @@ public class ConfigManager implements Initializable {
 	 */
 	public int getContainerPort() {
 		check();
-		
+
 		return m_config.getAgent().getContainerPort();
 	}
 
@@ -120,10 +123,9 @@ public class ConfigManager implements Initializable {
 	 */
 	public String getEnv() {
 		check();
-		
+
 		return m_config.getEnv();
 	}
-
 
 	@Override
 	public void initialize() throws InitializationException {
@@ -155,7 +157,7 @@ public class ConfigManager implements Initializable {
 		} catch (Exception e) {
 			throw new InitializationException(String.format("Unable to load configuration file(%s)!", m_configFile), e);
 		}
-		
+
 		// initialize containerType
 		String containerInstallPath = getContainerInstallPath();
 		File startupSh = new File(containerInstallPath + "/bin/startup.sh");
@@ -168,7 +170,7 @@ public class ConfigManager implements Initializable {
 			throw new InitializationException(String.format(
 					"containerInstallPath %s does not have a valid tomcat or jboss installation", containerInstallPath));
 		}
-		
+
 		// initialize loaderClass and serverXml
 		if (containerType == ContainerType.TOMCAT) {
 			loaderClass = TOMCAT_LOADER_CLASS;
@@ -177,13 +179,24 @@ public class ConfigManager implements Initializable {
 			loaderClass = JBOSS_LOADER_CLASS;
 			serverXml = new File(containerInstallPath + "/server/default/deploy/jboss-web.deployer/server.xml");
 		}
-		
+
 		logAllField(this);
 		logAllField(m_config.getAgent());
 		logAllField(m_config.getGit());
-		
+
+		makeShellScriptExecutable();
+
 	}
-	
+
+	private void makeShellScriptExecutable() {
+		File scriptDir = getAgentScriptFile().getParentFile();
+		@SuppressWarnings("unchecked")
+		Iterator<File> scriptIter = FileUtils.iterateFiles(scriptDir, new String[] { "sh" }, true);
+		while (scriptIter != null && scriptIter.hasNext()) {
+			scriptIter.next().setExecutable(true, false);
+		}
+	}
+
 	private void logAllField(Object obj) {
 		Field[] fields = obj.getClass().getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {
@@ -207,6 +220,24 @@ public class ConfigManager implements Initializable {
 
 	public int getUrlReadTimeout() {
 		return m_config.getAgent().getUrlReadTimeout();
+	}
+
+	public File getAgentScriptFile() {
+		File scriptFile = getScriptFile("agent.sh");
+		return scriptFile;
+	}
+
+	public File getAgentStatusScriptFile() {
+		File scriptFile = getScriptFile("agent_status.sh");
+		return scriptFile;
+	}
+
+	private File getScriptFile(String scriptFileName) {
+		URL scriptUrl = this.getClass().getClassLoader().getResource("script/" + scriptFileName);
+		if (scriptUrl == null) {
+			throw new RuntimeException(scriptFileName + " not found");
+		}
+		return new File(scriptUrl.getPath());
 	}
 
 }

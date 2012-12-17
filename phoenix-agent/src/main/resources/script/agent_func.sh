@@ -3,21 +3,25 @@ function add_ssh_private_key {
 	local host_cnt=`grep -c $kernel_git_host $ssh_config 2>/dev/null || true`
 	local write=0
 	if [ x$host_cnt == x ];then	#config file not exist
+		log ".ssh/config not found"
 		write=1
 	else
 		if [ $host_cnt -eq 0 ];then	#no config entry for kernel git host
+			log "no phoenix private key found in .ssh/config"
 			write=1
 		fi
 	fi
 	if [ $write -eq 1  ];then
+		log "try to add phoenix private key to .ssh/config"
 		mkdir -p ~/.ssh
-		cp git/.ssh/id_rsa ~/.ssh/id_rsa.phoenix
+		cp -r git/.ssh/id_rsa ~/.ssh/id_rsa.phoenix
 		chmod 600 ~/.ssh/id_rsa.phoenix
 		cat <<-END >> $ssh_config
 			
 			Host $kernel_git_host
 			IdentityFile ~/.ssh/id_rsa.phoenix
 		END
+		log "phoenix private key added to .ssh/config"
 	fi
 }
 
@@ -25,11 +29,13 @@ function init {
 	# set up a git repo for server.xml to enable rollback/commit
 	server_xml_dir=`dirname $server_xml`
 	if [ ! -e $server_xml_dir/.git ];then
+		log "no .git directory found in server.xml directory $server_xml_dir, make it a git repo"
 		cd $server_xml_dir
 		git init
 		git add server.xml
 		git commit -m "init commit"
 		cd - > /dev/null
+		log "server.xml directory now a git repo"
 	fi
 }
 
@@ -56,7 +62,9 @@ function get_kernel_war {
 }
 
 function stop_all {
+	log "stopping container and make it offline"
 	./op_${env}.sh -o $func -b $container_install_path -c $container_type
+	log "container stopped and offlined"
 }
 
 function upgrade_kernel {
@@ -86,7 +94,9 @@ function upgrade_kernel {
 }
 
 function start_container {
+	log "starting container"
 	./op_${env}.sh -o $func -b $container_install_path -c $container_type
+	log "container started"
 }
 
 # Rollback a git directory
@@ -102,7 +112,9 @@ function rollback {
 	log "rolling back kernel"
 	git_rollback $domain_kernel_base
 	log "kernel version $kernel_version rolled back"
+	log "put container online"
 	./op_${env}.sh -o put_container_online -b $container_install_path -c $container_type
+	log "container onlined"
 }
 
 # Commit a git directory
@@ -133,6 +145,8 @@ function commit {
 	log "committed"
 
 	# turn on traffic
+	log "put container online"
 	./op_${env}.sh -o put_container_online -b $container_install_path -c $container_type
+	log "container onlined"
 }
 
