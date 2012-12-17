@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.unidal.lookup.annotation.Inject;
@@ -53,7 +52,7 @@ public class DefaultDeployStep implements DeployStep {
 					kernelGitUrl), e);
 		}
 
-		sb.append(getScriptPath());
+		sb.append(config.getAgentScriptFile().getAbsolutePath());
 		sb.append(String.format(" -b \"%s\" ", config.getContainerInstallPath()));
 		sb.append(String.format(" -x \"%s\" ", config.getServerXml()));
 		sb.append(String.format(" -c \"%s\" ", config.getContainerType().toString()));
@@ -80,14 +79,6 @@ public class DefaultDeployStep implements DeployStep {
 		String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain());
 		ServerXmlUtil.attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(),
 				kernelDocBase);
-	}
-
-	private String getScriptPath() {
-		URL scriptUrl = this.getClass().getClassLoader().getResource("agent.sh");
-		if (scriptUrl == null) {
-			throw new RuntimeException("agent.sh not found");
-		}
-		return scriptUrl.getPath();
 	}
 
 	@Override
