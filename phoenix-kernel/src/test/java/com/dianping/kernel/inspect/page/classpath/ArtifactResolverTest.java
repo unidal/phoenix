@@ -27,6 +27,6 @@ public class ArtifactResolverTest extends ComponentTestCase {
 
 		Assert.assertEquals("org.unidal.framework", artifact.getGroupId());
 		Assert.assertEquals("foundation-service", artifact.getArtifactId());
-		Assert.assertEquals("2.0.0", artifact.getVersion());
+		Assert.assertEquals("2.0.1-SNAPSHOT", artifact.getVersion());
 	}
 }

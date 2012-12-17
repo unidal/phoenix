@@ -26,7 +26,14 @@ public enum State {
 				return;
 			}
 
-			Response response = DefaultJsonParser.parse(json);
+			Response response;
+
+			try {
+				response = DefaultJsonParser.parse(json);
+			} catch (Exception e) {
+				ctx.println("Invalid JSON result:\r\n%s", json);
+				return;
+			}
 
 			if ("ok".equals(response.getStatus())) {
 				ctx.println("ACCEPTED");
