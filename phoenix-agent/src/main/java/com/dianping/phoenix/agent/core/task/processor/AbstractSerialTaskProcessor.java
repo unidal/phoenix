@@ -98,30 +98,30 @@ public abstract class AbstractSerialTaskProcessor<T> extends ContainerHolder imp
 	private synchronized void startTransaction(Transaction tx) throws IOException {
 		getLogger().info(String.format("start processing ", tx));
 		currentTx = tx;
-		
+
 		initEventTrackerChain(tx.getEventTracker());
-		
+
 		tx.setStatus(Status.PROCESSING);
 		eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), "", tx.getStatus()));
-		
+
 		txMgr.saveTransaction(tx);
 	}
 
 	private synchronized void endTransaction(Transaction tx, String eventMsg) {
 		eventTrackerChain.onEvent(new LifecycleEvent(tx.getTxId(), eventMsg, tx.getStatus()));
-		
-		if (currentTx != null && currentTx.getTxId().equals(tx.getTxId())) {
+
+		if (currentTx != null && currentTx.getTxId() != null && currentTx.getTxId().equals(tx.getTxId())) {
 			currentTx = null;
 		}
-		
+
 		semaphoreWrapper.getSemaphore().release();
-		
+
 		try {
 			txMgr.saveTransaction(tx);
 		} catch (Exception e) {
 			getLogger().error(String.format("error save transaction %s", tx), e);
 		}
-		
+
 		getLogger().info(String.format("end processing %s", tx));
 	}
 

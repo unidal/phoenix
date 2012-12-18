@@ -38,6 +38,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(LogFormatter.class));
 		all.add(C(DeployWorkflow.class).is(PER_LOOKUP));
 		all.add(C(QaService.class, MockQaService.class));
+		// TODO replace MockQaService with this
+//		all.add(C(QaService.class, DefaultQaService.class).req(UrlContentFetcher.class));
 		all.add(C(DeployStep.class, DefaultDeployStep.class) //
 				.req(ConfigManager.class).req(ScriptExecutor.class) //
 				.req(QaService.class).is(PER_LOOKUP));
