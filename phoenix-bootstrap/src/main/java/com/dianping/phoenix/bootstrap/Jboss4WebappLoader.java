@@ -117,7 +117,7 @@ public class Jboss4WebappLoader extends AbstractCatalinaWebappLoader {
 
 	@Override
 	public StandardContext getStandardContext() {
-		return new Jboss4StandardContext((StandardContext) getContainer());
+		return m_standardContext;
 	}
 
 	public void setContainer(Container container) {
