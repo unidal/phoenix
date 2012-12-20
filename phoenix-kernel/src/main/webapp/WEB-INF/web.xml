@@ -15,10 +15,6 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	<servlet-mapping>
-		<servlet-name>mvc-servlet</servlet-name>
-		<url-pattern>/inspect/*</url-pattern>
-	</servlet-mapping>
 	<filter>
 		<filter-name>mvc-filter</filter-name>
 		<filter-class>org.unidal.web.MVCFilter</filter-class>
@@ -27,9 +23,23 @@
 		    <param-value>+1</param-value>
 	  	</init-param>
 	</filter>
+	<filter>
+		<filter-name>inspect-filter</filter-name>
+		<filter-class>com.dianping.kernel.servlet.InspectFilter</filter-class>
+	 	<init-param>
+		    <param-name>_INDEX_</param-name>
+		    <param-value>+2</param-value>
+	  	</init-param>
+	</filter>
 	<filter-mapping>
 		<filter-name>mvc-filter</filter-name>
 		<url-pattern>/inspect/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>inspect-filter</filter-name>
+		<url-pattern>/jsp/inspect/*</url-pattern>
+		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
 	<jsp-config>
 		<taglib>

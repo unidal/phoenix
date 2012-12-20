@@ -66,7 +66,12 @@ public class DefaultProjectManager implements ProjectManager, Initializable {
 			DeployPlan plan = new DeployPlan();
 
 			for (DeploymentDetails details : detailsList) {
-				model.addHost(new HostModel(details.getIpAddress()).setId(details.getId()));
+				String rawLog = details.getRawLog();
+				DeployModel deploy = com.dianping.phoenix.deploy.model.transform.DefaultSaxParser.parse(rawLog);
+
+				for (HostModel host : deploy.getHosts().values()) {
+					model.addHost(host);
+				}
 			}
 
 			model.setId(deployId);
