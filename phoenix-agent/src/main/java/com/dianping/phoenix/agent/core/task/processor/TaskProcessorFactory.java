@@ -37,9 +37,6 @@ public class TaskProcessorFactory extends ContainerHolder implements Initializab
 				break;
 			}
 		}
-		if(processor == null) {
-			throw new RuntimeException(String.format("Processor for %s not found", clazz));
-		}
 		return processor;
 	}
 

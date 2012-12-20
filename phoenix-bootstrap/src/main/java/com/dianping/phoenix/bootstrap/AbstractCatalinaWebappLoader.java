@@ -3,6 +3,7 @@ package com.dianping.phoenix.bootstrap;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	private WebappProvider m_appProvider;
 
 	private WebappProvider m_kernelProvider;
-	
+
 	private ClassLoader m_webappClassloader;
 
 	private String m_kernelDocBase;
@@ -53,7 +54,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		super(classloader);
 	}
 
-	protected WebappClassLoader adjustWebappClassloader(WebappClassLoader classloader) {
+	protected WebappClassLoader adjustWebappClassloader(
+			WebappClassLoader classloader) {
 		try {
 			clearLoadedJars(classloader);
 
@@ -65,11 +67,14 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			}
 
 			if (m_debug) {
-				getLog().info(String.format("Webapp classpath: %s.", Arrays.asList(classloader.getURLs())));
+				getLog().info(
+						String.format("Webapp classpath: %s.",
+								Arrays.asList(classloader.getURLs())));
 			}
 
 			Container container = getContainer();
-			ServletContext ctx = ((StandardContext) container).getServletContext();
+			ServletContext ctx = ((StandardContext) container)
+					.getServletContext();
 
 			// pass followings to application
 			ctx.setAttribute(PHOENIX_WEBAPP_LOADER, this);
@@ -77,11 +82,13 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			ctx.setAttribute(PHOENIX_WEBAPP_PROVIDER_APP, m_appProvider);
 			return classloader;
 		} catch (Exception e) {
-			throw new RuntimeException("Error when adjusting webapp classloader!", e);
+			throw new RuntimeException(
+					"Error when adjusting webapp classloader!", e);
 		}
 	}
 
-	protected abstract void clearLoadedJars(WebappClassLoader classloader) throws Exception;
+	protected abstract void clearLoadedJars(WebappClassLoader classloader)
+			throws Exception;
 
 	protected ClassLoader createBootstrapClassloader() {
 		try {
@@ -102,7 +109,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			ClassLoader classloader = getClass().getClassLoader();
 
 			if (classloader instanceof URLClassLoader) {
-				Object ucp = getFieldValue(classloader, URLClassLoader.class, "ucp");
+				Object ucp = getFieldValue(classloader, URLClassLoader.class,
+						"ucp");
 				List<URL> pathes = getFieldValue(ucp, "path");
 				int len = pathes.size();
 
@@ -121,12 +129,16 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 
 			return new URLClassLoader(urls.toArray(new URL[0]), classloader);
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to create bootstrap classloader!", e);
+			throw new RuntimeException(
+					"Unable to create bootstrap classloader!", e);
 		}
 	}
 
+	public abstract void finish();
+
 	@SuppressWarnings("unchecked")
-	public <T> T getFieldValue(Object instance, Class<?> clazz, String fieldName) throws Exception {
+	public <T> T getFieldValue(Object instance, Class<?> clazz, String fieldName)
+			throws Exception {
 		Field field = clazz.getDeclaredField(fieldName);
 
 		if (!field.isAccessible()) {
@@ -137,7 +149,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T getFieldValue(Object instance, String fieldName) throws Exception {
+	public <T> T getFieldValue(Object instance, String fieldName)
+			throws Exception {
 		return (T) getFieldValue(instance, instance.getClass(), fieldName);
 	}
 
@@ -147,15 +160,12 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 
 	public abstract Log getLog();
 
-	public abstract StandardContext getStandardContext();
-
-	public abstract void finish();
-
 	public ServletContext getServletContext() {
 		Container container = super.getContainer();
 
 		if (container instanceof Context) {
-			ServletContext servletContext = ((Context) container).getServletContext();
+			ServletContext servletContext = ((Context) container)
+					.getServletContext();
 
 			return servletContext;
 		} else {
@@ -163,13 +173,15 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		}
 	}
 
+	public abstract StandardContext getStandardContext();
+
 	public File getWarRoot() {
 		return m_appProvider.getWarRoot();
 	}
 
 	/**
-	 * The webapp class loader should be used to load all classes for the runtime
-	 * request.
+	 * The webapp class loader should be used to load all classes for the
+	 * runtime request.
 	 * 
 	 * @return webapp class loader
 	 */
@@ -177,7 +189,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		if (m_webappClassloader != null) {
 			return (WebappClassLoader) m_webappClassloader;
 		} else {
-			throw new IllegalStateException("WebappClassLoader is not ready at this time!");
+			throw new IllegalStateException(
+					"WebappClassLoader is not ready at this time!");
 		}
 	}
 
@@ -185,22 +198,48 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		return m_webXml;
 	}
 
+	public Object invokeMethod(Class<?> clazz, Object instance,
+			String methodName, Class<?>[] parameterTypes, Object[] parameters)
+			throws Exception {
+		Method method = clazz.getMethod(methodName, parameterTypes);
+		if (!method.isAccessible()) {
+			method.setAccessible(true);
+		}
+		return method.invoke(instance, parameters);
+	}
+
+	public Object invokeMethod(Object instance, String methodName,
+			Object[] parameters) throws Exception {
+
+		Class<?> clazz = instance.getClass();
+		Class<?>[] parameterTypes = new Class<?>[parameters.length];
+		for (int i = 0; i < parameterTypes.length; i++) {
+			parameterTypes[i] = parameters[i].getClass();
+		}
+
+		return invokeMethod(clazz, instance, methodName, parameterTypes,
+				parameters);
+	}
+
 	protected <T> T loadListener(Class<T> listenerClass, ClassLoader classloader) {
-		ServiceLoader<T> serviceLoader = ServiceLoader.load(listenerClass, classloader);
+		ServiceLoader<T> serviceLoader = ServiceLoader.load(listenerClass,
+				classloader);
 
 		for (T e : serviceLoader) {
 			return e;
 		}
 
-		throw new UnsupportedOperationException("No implementation class found in phoenix-kernel war for "
-		      + listenerClass);
+		throw new UnsupportedOperationException(
+				"No implementation class found in phoenix-kernel war for "
+						+ listenerClass);
 	}
 
 	protected void prepareWebappProviders(StandardContext ctx) {
 		try {
 			if (m_kernelProvider == null) {
 				if (m_kernelDocBase == null) {
-					throw new RuntimeException("No kernelDocBase property was set in the context!");
+					throw new RuntimeException(
+							"No kernelDocBase property was set in the context!");
 				}
 
 				m_kernelProvider = new StandardWebappProvider(m_kernelDocBase);
@@ -212,7 +251,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 				m_appProvider = new StandardWebappProvider(appDocBase);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Error when preparing webapp provider!", e);
+			throw new RuntimeException("Error when preparing webapp provider!",
+					e);
 		}
 	}
 
@@ -229,7 +269,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		m_debug = "true".equals(debug);
 	}
 
-	public void setFieldValue(Object instance, Class<?> clazz, String fieldName, Object value) throws Exception {
+	public void setFieldValue(Object instance, Class<?> clazz,
+			String fieldName, Object value) throws Exception {
 		Field field = clazz.getDeclaredField(fieldName);
 
 		if (!field.isAccessible()) {
@@ -239,7 +280,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		field.set(instance, value);
 	}
 
-	public void setFieldValue(Object instance, String fieldName, Object value) throws Exception {
+	public void setFieldValue(Object instance, String fieldName, Object value)
+			throws Exception {
 		setFieldValue(instance, instance.getClass(), fieldName, value);
 	}
 
@@ -278,8 +320,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		m_webappClassloader = adjustWebappClassloader((WebappClassLoader) getClassLoader());
 	}
 
-	protected static class Delegate<T extends AbstractCatalinaWebappLoader, S extends LifecycleHandler<T>> implements
-	      LifecycleListener {
+	protected static class Delegate<T extends AbstractCatalinaWebappLoader, S extends LifecycleHandler<T>>
+			implements LifecycleListener {
 		private T m_loader;
 
 		private LifecycleHandler<T> m_listener;
@@ -310,8 +352,10 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 					// ignore it
 				}
 			} catch (Throwable e) {
-				m_loader.getLog().error(String.format("Error when dispatching " + //
-				      "lifecycle event(%s) to listener(%s)!", type, m_listener.getClass().getName()), e);
+				m_loader.getLog().error(
+						String.format("Error when dispatching " + //
+								"lifecycle event(%s) to listener(%s)!", type,
+								m_listener.getClass().getName()), e);
 			}
 		}
 	}
