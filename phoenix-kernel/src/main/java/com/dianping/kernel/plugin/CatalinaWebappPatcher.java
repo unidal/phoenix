@@ -14,7 +14,8 @@ import org.apache.catalina.core.ContainerBase;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
-import org.apache.catalina.startup.ContextConfig;
+import org.apache.catalina.startup.DigesterFactory;
+import org.apache.catalina.startup.WebRuleSet;
 import org.apache.catalina.util.LifecycleSupport;
 import org.apache.naming.resources.FileDirContext;
 import org.apache.naming.resources.ProxyDirContext;
@@ -40,7 +41,9 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		File webXml = m_loader.getWebXml();
 		InputSource source = new InputSource(new FileInputStream(webXml));
 		StandardContext ctx = m_proxyContext;
-		Digester digester = ContextConfig.createWebXmlDigester(ctx.getXmlNamespaceAware(), ctx.getXmlValidation());
+		Digester digester = DigesterFactory.newDigester(
+				ctx.getXmlNamespaceAware(), ctx.getXmlValidation(),
+				new WebRuleSet());
 
 		ctx.setReplaceWelcomeFiles(true);
 		digester.setClassLoader(m_loader.getWebappClassLoader());
@@ -51,12 +54,11 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		try {
 			digester.parse(source);
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Error when parsing %s!", webXml), e);
+			throw new RuntimeException(String.format("Error when parsing %s!",
+					webXml), e);
 		} finally {
 			digester.reset();
 			source.getByteStream().close();
-			Object webRuleSet = m_loader.getFieldValue(ContextConfig.class, "webRuleSet");
-			m_loader.invokeMethod(webRuleSet, "recycle", new Object[0]);
 		}
 	}
 
@@ -71,31 +73,41 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		if (container instanceof StandardContext) {
 			m_context = (StandardContext) container;
 			m_proxyContext = loader.getStandardContext();
-			LifecycleSupport lifecycle = m_loader.getFieldValue(m_context, ContainerBase.class, "lifecycle");
+			LifecycleSupport lifecycle = m_loader.getFieldValue(m_context,
+					ContainerBase.class, "lifecycle");
 			m_loader.setFieldValue(lifecycle, "lifecycle", m_proxyContext);
 		}
 	}
 
 	public void mergeWebResources() throws Exception {
-		ProxyDirContext proxyDirContext = (ProxyDirContext) m_context.getResources();
+		ProxyDirContext proxyDirContext = (ProxyDirContext) m_context
+				.getResources();
 		DirContext dirContext = proxyDirContext.getDirContext();
-		FileDirContext kernelFileDirContext = new FileDirContext(dirContext.getEnvironment());
-		kernelFileDirContext.setDocBase(m_loader.getKernelWarRoot().getAbsolutePath());
-		CompositeDirContext kernelProxyDirContext = new CompositeDirContext(dirContext, kernelFileDirContext);
+		FileDirContext kernelFileDirContext = new FileDirContext(
+				dirContext.getEnvironment());
+		kernelFileDirContext.setDocBase(m_loader.getKernelWarRoot()
+				.getAbsolutePath());
+		CompositeDirContext kernelProxyDirContext = new CompositeDirContext(
+				dirContext, kernelFileDirContext);
 
-		m_loader.setFieldValue(proxyDirContext, "dirContext", kernelProxyDirContext);
+		m_loader.setFieldValue(proxyDirContext, "dirContext",
+				kernelProxyDirContext);
 	}
 
 	protected void sortFilter() {
 		FilterMap[] filterMaps = m_context.findFilterMaps();
 		List<FilterSortElement> filterMapList = new ArrayList<FilterSortElement>();
-		m_loader.getLog().info("Re-match combinations before the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		m_loader.getLog()
+				.info("Re-match combinations before the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		for (FilterMap fm : filterMaps) {
 			FilterSortElement fse = new FilterSortElement(fm);
 			filterMapList.add(fse);
-			m_loader.getLog().info("filterName::" + fse.getName() + "   rule::" + fse.getRule());
+			m_loader.getLog().info(
+					"filterName::" + fse.getName() + "   rule::"
+							+ fse.getRule());
 		}
-		m_loader.getLog().info("Re-match combinations before the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		m_loader.getLog()
+				.info("Re-match combinations before the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		SortTool sortTool = new SortTool();
 		// Sort FilterMap
 		List<SortElement> elementList = sortTool.sort(filterMapList);
@@ -105,57 +117,71 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 				m_context.removeFilterMap(fse.getFilterMap());
 				m_context.removeFilterDef(fse.getFilterDef());
 				m_loader.getLog().warn(
-				      "----No match is found for the filterName::" + fse.getName() + "   rule::" + fse.getRule());
+						"----No match is found for the filterName::"
+								+ fse.getName() + "   rule::" + fse.getRule());
 			}
 		}
 
 		filterMaps = m_context.findFilterMaps();
-		m_loader.getLog().info("Re-match combinations after the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-		
+		m_loader.getLog()
+				.info("Re-match combinations after the filters::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
 		// Set sorted result back
 		for (int i = 0; i < filterMaps.length; i++) {
 			FilterSortElement fse = (FilterSortElement) elementList.get(i);
 			filterMaps[i] = fse.getFilterMap();
-			m_loader.getLog().info("filterName::" + fse.getName() + "   rule::" + fse.getRule());
+			m_loader.getLog().info(
+					"filterName::" + fse.getName() + "   rule::"
+							+ fse.getRule());
 		}
-		
-		m_loader.getLog().info("Re-match combinations after the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+
+		m_loader.getLog()
+				.info("Re-match combinations after the filters::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	}
-	
+
 	/**
 	 * Check filter for kernel
 	 */
-	private void filterWebFilter(){
+	private void filterWebFilter() {
 		List<FilterMap> fmList = new ArrayList<FilterMap>();
 		FilterMap[] filterMaps = m_context.findFilterMaps();
-		StandardContext kernelContext = (StandardContext)m_context.getServletContext().getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL);
+		StandardContext kernelContext = (StandardContext) m_context
+				.getServletContext().getAttribute(
+						Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL);
 		for (FilterMap fm : filterMaps) {
 			FilterDef fd = kernelContext.findFilterDef(fm.getFilterName());
-			if(fd != null){
+			if (fd != null) {
 				try {
-					m_loader.getWebappClassLoader().loadClass(fd.getFilterClass());
+					m_loader.getWebappClassLoader().loadClass(
+							fd.getFilterClass());
 				} catch (ClassNotFoundException e) {
 					fmList.add(fm);
 				}
 			}
 		}
-		for(FilterMap filterMap : fmList){
-			m_context.removeFilterDef(m_context.findFilterDef(filterMap.getFilterName()));
+		for (FilterMap filterMap : fmList) {
+			m_context.removeFilterDef(m_context.findFilterDef(filterMap
+					.getFilterName()));
 			m_context.removeFilterMap(filterMap);
-			m_loader.getLog().warn("filterName::" + filterMap.getFilterName() + " is filtered for this App" );
+			m_loader.getLog().warn(
+					"filterName::" + filterMap.getFilterName()
+							+ " is filtered for this App");
 		}
 	}
 
 	protected void sortListener() {
 		String[] listeners = m_context.findApplicationListeners();
 		List<ListenerSortElement> listenerList = new ArrayList<ListenerSortElement>();
-		m_loader.getLog().info("Re-match combinations before the listeners::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		m_loader.getLog()
+				.info("Re-match combinations before the listeners::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		for (String listener : listeners) {
 			String rule = m_context.findParameter(listener);
-			m_loader.getLog().info("listener::" + listener + "   rule::" + rule);
+			m_loader.getLog()
+					.info("listener::" + listener + "   rule::" + rule);
 			listenerList.add(new ListenerSortElement(listener, rule));
 		}
-		m_loader.getLog().info("Re-match combinations before the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		m_loader.getLog()
+				.info("Re-match combinations before the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
 		SortTool sortTool = new SortTool();
 		// Sort FilterMap
@@ -174,31 +200,37 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		// Remove discard Listener
 		for (String dlisten : discardListenerList) {
 			m_loader.getLog().warn(
-			      "----No match is found for the listener::" + dlisten + " and rule::" + m_context.findParameter(dlisten));
+					"----No match is found for the listener::" + dlisten
+							+ " and rule::" + m_context.findParameter(dlisten));
 			m_context.removeApplicationListener(dlisten);
 		}
 
 		listeners = m_context.findApplicationListeners();
-		m_loader.getLog().info("Re-match combinations after the listeners::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		m_loader.getLog()
+				.info("Re-match combinations after the listeners::::start>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		for (int i = 0; i < elementList.size(); i++) {
 			String listener = elementList.get(i).getClassName();
 			String rule = m_context.findParameter(listener);
-			m_loader.getLog().info("listener::" + listener + "   rule::" + rule);
+			m_loader.getLog()
+					.info("listener::" + listener + "   rule::" + rule);
 			listeners[i] = listener;
 		}
-		
-		m_loader.getLog().info("Re-match combinations after the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+
+		m_loader.getLog()
+				.info("Re-match combinations after the listeners::::end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	}
-	
-	public void filterWebListener(){
-		//Check listener for kernel
+
+	public void filterWebListener() {
+		// Check listener for kernel
 		List<String> lisList = new ArrayList<String>();
-		StandardContext kernelContext = (StandardContext)m_context.getServletContext().getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL);
+		StandardContext kernelContext = (StandardContext) m_context
+				.getServletContext().getAttribute(
+						Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL);
 		String[] listeners = m_context.findApplicationListeners();
 		String[] kernelListeners = kernelContext.findApplicationListeners();
 		for (String listener : listeners) {
-			for(String kernelListener : kernelListeners){
-				if(listener.equals(kernelListener)){
+			for (String kernelListener : kernelListeners) {
+				if (listener.equals(kernelListener)) {
 					try {
 						m_loader.getWebappClassLoader().loadClass(listener);
 					} catch (ClassNotFoundException e) {
@@ -207,31 +239,37 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 				}
 			}
 		}
-		for(String lis : lisList){
+		for (String lis : lisList) {
 			m_context.removeApplicationListener(lis);
-			m_loader.getLog().warn("listenerName::" + lis + " is filtered for this App" );
+			m_loader.getLog().warn(
+					"listenerName::" + lis + " is filtered for this App");
 		}
 	}
-	
-	public void filterWebServlet(){
-		//Check listener for kernel
+
+	public void filterWebServlet() {
+		// Check listener for kernel
 		List<String> servList = new ArrayList<String>();
-		StandardContext kernelContext = (StandardContext)m_context.getServletContext().getAttribute(Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL);
+		StandardContext kernelContext = (StandardContext) m_context
+				.getServletContext().getAttribute(
+						Constants.PHOENIX_WEBAPP_DESCRIPTOR_KERNEL);
 		String[] patterns = m_context.findServletMappings();
 		for (String pattern : patterns) {
 			String name = kernelContext.findServletMapping(pattern);
-			if(name != null){
-				Wrapper wrapper = (Wrapper)m_context.findChild(name);
+			if (name != null) {
+				Wrapper wrapper = (Wrapper) m_context.findChild(name);
 				try {
-					m_loader.getWebappClassLoader().loadClass(wrapper.getServletClass());
+					m_loader.getWebappClassLoader().loadClass(
+							wrapper.getServletClass());
 				} catch (ClassNotFoundException e) {
 					servList.add(pattern);
 				}
 			}
 		}
-		for(String serv : servList){
+		for (String serv : servList) {
 			m_context.removeServletMapping(serv);
-			m_loader.getLog().warn("servletName::" + m_context.findServletMapping(serv) + " is filtered for this App" );
+			m_loader.getLog().warn(
+					"servletName::" + m_context.findServletMapping(serv)
+							+ " is filtered for this App");
 		}
 	}
 
@@ -239,7 +277,7 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		sortListener();
 		sortFilter();
 	}
-	
+
 	public void filterWebXmlElements() {
 		filterWebFilter();
 		filterWebListener();
@@ -267,7 +305,8 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 
 		public FilterSortElement(FilterMap filterMap) {
 			this.filterMap = filterMap;
-			this.filterDef = m_context.findFilterDef(this.filterMap.getFilterName());
+			this.filterDef = m_context.findFilterDef(this.filterMap
+					.getFilterName());
 		}
 
 		@Override
