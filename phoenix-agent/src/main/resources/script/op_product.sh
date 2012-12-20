@@ -4,7 +4,7 @@ set -e
 set -u
 
 cd `dirname $0`
-source util.sh
+source ./util.sh
 
 log "PID is $$"
 log "CMD is $0 $@"

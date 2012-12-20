@@ -3,8 +3,8 @@ set -u
 #trap "echo 'INT signal received'" INT
 #trap "echo 'TERM signal received'" TERM
 cd `dirname $0`
-source util.sh
-source agent_func.sh
+source ./util.sh
+source ./agent_func.sh
 
 log "PID is $$"
 log "CMD is $0 $@"

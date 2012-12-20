@@ -46,7 +46,7 @@ public class DefaultQaService implements QaService {
 
 		while (System.currentTimeMillis() < endBefore) {
 			String queryArgument = String.format(queryArgumentPattern, token);
-			String queryUrl = String.format(domainInfo.getQaServiceUrlPrefix() + queryArgument);
+			String queryUrl = domainInfo.getQaServiceUrlPrefix() + queryArgument;
 			String queryResultJson = readUrlToJsonString(queryUrl);
 			Map queryResultMap = safeJsonToMap(queryResultJson);
 			// FAIL, PENDING, RUNNING, SUCCESS
@@ -56,6 +56,7 @@ public class DefaultQaService implements QaService {
 			} else if ("FAIL".equalsIgnoreCase(taskStatus)) {
 				return CheckResult.FAIL;
 			} else {
+				logger.info(String.format("qa service result is %s", taskStatus));
 				ThreadUtil.sleepQuiet(queryInterval);
 			}
 		}

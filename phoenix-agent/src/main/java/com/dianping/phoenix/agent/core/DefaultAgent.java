@@ -44,34 +44,41 @@ public class DefaultAgent implements Agent {
 		final TransactionId txId = tx.getTxId();
 
 		if (!txMgr.startTransaction(txId)) {
-			String msg = "transaction with same id exists!";	
-			logger.warn(String.format(msg, txId));
-			logger.info("reject " + tx);
+			logger.warn(String.format("transaction with same id exists, reject it %s", txId));
 			submitResult.setAccepted(false);
 			submitResult.setReason(REASON.DUPLICATE_TXID);
 		} else {
-
-			EventTrackerChain eventTrackerChain = new EventTrackerChain();
-			eventTrackerChain.add(new AbstractEventTracker() {
-
-				@Override
-				protected void onLifecycleEvent(LifecycleEvent event) {
-					if (event.getStatus().isCompleted()) {
-						Log4jAppender.endTeeLog();
-						txId2Processor.remove(txId);
-						txMgr.endTransaction(txId);
-					}
-				}
-
-			});
-			eventTrackerChain.add(tx.getEventTracker());
-
 			TaskProcessor<Task> taskProcessor = taskProcessorFactory.findTaskProcessor(tx.getTask());
-			txId2Processor.put(txId, taskProcessor);
-			tx.setEventTracker(eventTrackerChain);
-			submitResult = taskProcessor.submit(tx);
+			if (taskProcessor != null) {
+				addCleanupEventTracker(tx, txId);
+				txId2Processor.put(txId, taskProcessor);
+				submitResult = taskProcessor.submit(tx);
+			} else {
+				logger.error(String.format("no task processor found for %s", tx.getTask()));
+			}
 		}
+		
 		return submitResult;
+	}
+
+	private void addCleanupEventTracker(Transaction tx, final TransactionId txId) {
+		EventTrackerChain eventTrackerChain = new EventTrackerChain();
+		
+		eventTrackerChain.add(new AbstractEventTracker() {
+
+			@Override
+			protected void onLifecycleEvent(LifecycleEvent event) {
+				if (event.getStatus().isCompleted()) {
+					Log4jAppender.endTeeLog();
+					txId2Processor.remove(txId);
+					txMgr.endTransaction(txId);
+				}
+			}
+
+		});
+		eventTrackerChain.add(tx.getEventTracker());
+		
+		tx.setEventTracker(eventTrackerChain);
 	}
 
 	@Override

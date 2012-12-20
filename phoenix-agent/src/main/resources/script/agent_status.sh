@@ -3,7 +3,7 @@ set -e
 set -u
 
 cd `dirname $0`
-source util.sh
+source ./util.sh
 
 while getopts "b:c:e:" option;do
 	case $option in
