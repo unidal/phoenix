@@ -21,13 +21,24 @@ public class InspectFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 	      ServletException {
-		String requestUri = ((HttpServletRequest) request).getRequestURI();
+		HttpServletRequest req = (HttpServletRequest) request;
+		String contextPath = req.getContextPath();
+		String requestUri = req.getRequestURI();
+		boolean matched = false;
 
-		if (requestUri.startsWith("/jsp/inspect/")) {
-			RequestDispatcher dispatcher = m_config.getServletContext().getRequestDispatcher("jsp");
+		if (contextPath == null || contextPath.equals("/")) {
+			matched = requestUri.startsWith("/jsp/inspect/");
+		} else {
+			matched = requestUri.substring(contextPath.length()).startsWith("/jsp/inspect/");
+		}
+
+		if (matched) {
+			RequestDispatcher dispatcher = m_config.getServletContext().getNamedDispatcher("jsp");
 
 			if (dispatcher != null) {
 				dispatcher.forward(request, response);
+			} else {
+				chain.doFilter(request, response);
 			}
 		}
 	}
