@@ -6,4 +6,9 @@ fi
 if [ -e WEB-INF/lib ];then
 	mv WEB-INF/lib ./
 fi
-java -classpath classes:"lib/*" com.dianping.phoenix.agent.StandaloneServer 3473 /phoenix `pwd`
+
+command -v java >/dev/null 2>&1 || { echo >&2 "java is not found, put java on PATH"; exit 1; }
+
+echo "Starting phoenix-agent"
+nohup java -classpath classes:"lib/*" com.dianping.phoenix.agent.StandaloneServer 3473 /phoenix `pwd` >/dev/null 2>&1 &
+echo "Started"
