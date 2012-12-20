@@ -11,8 +11,11 @@ if [ -e WEB-INF/lib ];then
 	mv WEB-INF/lib ./
 fi
 
-command -v java >/dev/null 2>&1 || { echo >&2 "java is not found, put java on PATH"; exit 1; }
+java=/usr/local/jdk/bin/java
+if [ ! -x $java ];then
+	java=java
+fi
 
 echo "Starting phoenix-agent"
-nohup java -classpath classes:"lib/*" com.dianping.phoenix.agent.StandaloneServer 3473 /phoenix `pwd` >/dev/null 2>&1 &
+nohup $java -classpath classes:"lib/*" com.dianping.phoenix.agent.StandaloneServer 3473 /phoenix `pwd` >/dev/null 2>&1 &
 echo "Started"
