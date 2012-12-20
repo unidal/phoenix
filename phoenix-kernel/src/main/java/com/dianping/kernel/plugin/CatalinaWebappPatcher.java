@@ -2,6 +2,7 @@ package com.dianping.kernel.plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,8 @@ public class CatalinaWebappPatcher implements WebappPatcher {
 		} finally {
 			digester.reset();
 			source.getByteStream().close();
+			Object webRuleSet = m_loader.getFieldValue(ContextConfig.class, "webRuleSet");
+			m_loader.invokeMethod(webRuleSet, "recycle", new Object[0]);
 		}
 	}
 
