@@ -32,7 +32,7 @@ public class DefaultDeployListener implements DeployListener {
 
 		d.setDomain(domain);
 		d.setStrategy(plan.getPolicy());
-		d.setErrorPolicy(plan.isAbortOnError() ? "abortOnError" : "fall-through");
+		d.setErrorPolicy(plan.isAbortOnError() ? "abortOnError" : "fallThrough");
 		d.setBeginDate(new Date());
 		d.setStatus(1); // 1 - created
 		d.setDeployedBy("phoenix"); // TODO use real user name
@@ -67,14 +67,14 @@ public class DefaultDeployListener implements DeployListener {
 			DeploymentDetails details = createDeploymentDetails(d.getId(), host, plan, "TBD"); // TODO
 
 			m_deploymentDetailsDao.insert(details);
-			model.addHost(new HostModel().setIp(host).setId(details.getId()));
+			model.addHost(new HostModel(host).setId(details.getId()));
 		}
 
 		// for "summary" host
 		DeploymentDetails details = createDeploymentDetails(d.getId(), "summary", plan, "TBD"); // TODO
 
 		m_deploymentDetailsDao.insert(details);
-		model.addHost(new HostModel().setIp("summary").setId(details.getId()));
+		model.addHost(new HostModel("summary").setId(details.getId()));
 
 		model.setId(deployId);
 		model.setDomain(domain);

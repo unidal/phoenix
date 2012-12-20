@@ -41,44 +41,53 @@ public class Handler implements PageHandler<Context> {
 
 		switch (action) {
 		case VIEW:
-			try {
-				showView(model, payload);
-			} catch (Exception e) {
-				ctx.addError("deploy.query", e);
-			}
-
-			m_jspViewer.view(ctx, model);
+			showView(ctx, model, payload);
 			break;
 		case STATUS:
-			try {
-				showStatus(model, payload);
-			} catch (Exception e) {
-				e.printStackTrace();
-				ctx.addError("deploy.status", e);
-			}
-
-			m_jspViewer.view(ctx, model);
+			showStatus(ctx, model, payload);
 			break;
+		}
+
+		m_jspViewer.view(ctx, model);
+	}
+
+	private void showStatus(Context ctx, Model model, Payload payload) {
+		int id = payload.getId();
+		DeployModel deployModel = m_projectManager.findModel(id);
+
+		if (deployModel == null) {
+			ctx.addError("deploy.notFound", null);
+			return;
+		}
+
+		try {
+			Map<String, Integer> progressMap = payload.getProgressMap();
+			StatusModelVisitor visitor = new StatusModelVisitor(progressMap);
+
+			deployModel.accept(visitor);
+			model.setDeploy(visitor.getModel());
+		} catch (Exception e) {
+			ctx.addError("deploy.error", e);
 		}
 	}
 
-	private void showStatus(Model model, Payload payload) {
+	private void showView(Context ctx, Model model, Payload payload) {
 		int id = payload.getId();
 		DeployModel deployModel = m_projectManager.findModel(id);
-		Map<String, Integer> progressMap = payload.getProgressMap();
-		StatusModelVisitor visitor = new StatusModelVisitor(progressMap);
 
-		deployModel.accept(visitor);
-		model.setDeploy(visitor.getModel());
-	}
+		if (deployModel == null) {
+			ctx.addError("deploy.notFound", null);
+			return;
+		}
 
-	private void showView(Model model, Payload payload) throws Exception {
-		int id = payload.getId();
-		DeployModel deployModel = m_projectManager.findModel(id);
-		ViewModelVisitor visitor = new ViewModelVisitor();
+		try {
+			ViewModelVisitor visitor = new ViewModelVisitor();
 
-		deployModel.accept(visitor);
+			deployModel.accept(visitor);
 
-		model.setDeploy(visitor.getModel());
+			model.setDeploy(visitor.getModel());
+		} catch (Exception e) {
+			ctx.addError("deploy.error", e);
+		}
 	}
 }

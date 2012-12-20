@@ -5,7 +5,7 @@
 		<description>Sample Application</description>
 		<hosts>
 			<host ip="127.0.0.1" status="up">
-				<war name="sample-app" version="0.1-SNAPSHOT">
+				<war name="user-web" version="0.1-SNAPSHOT">
 					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
 					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
 					<dependency groupId="org.apache.struts" artifactId="struts2-core" version="2.2.0" />
@@ -18,8 +18,8 @@
 					<dependency groupId="org.springframework" artifactId="spring-web" version="2.5.6" />
 				</war>
 			</host>
-			<host ip="192.168.66.130" status="up">
-				<war name="sample-app" version="0.1-SNAPSHOT">
+			<host ip="192.168.9.51" status="up">
+				<war name="user-web" version="0.1-SNAPSHOT">
 					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
 					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
 					<dependency groupId="org.apache.struts" artifactId="struts2-core" version="2.2.0" />
@@ -33,7 +33,7 @@
 				</war>
 			</host>
 			<host ip="192.168.66.131" status="up">
-				<war name="sample-app" version="0.1-SNAPSHOT">
+				<war name="user-web" version="0.1-SNAPSHOT">
 					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
 					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
 					<dependency groupId="org.apache.struts" artifactId="struts2-core" version="2.2.0" />
@@ -47,7 +47,7 @@
 				</war>
 			</host>
 			<host ip="192.168.66.132" status="up">
-				<war name="sample-app" version="0.1-SNAPSHOT">
+				<war name="user-web" version="0.1-SNAPSHOT">
 					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
 					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
 					<dependency groupId="org.apache.struts" artifactId="struts2-core" version="2.2.0" />
@@ -61,7 +61,7 @@
 				</war>
 			</host>
 			<host ip="192.168.66.133" status="up">
-				<war name="sample-app" version="0.1-SNAPSHOT">
+				<war name="user-web" version="0.1-SNAPSHOT">
 					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
 					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
 					<dependency groupId="org.apache.struts" artifactId="struts2-core" version="2.2.0" />
@@ -75,7 +75,7 @@
 				</war>
 			</host>
 			<host ip="192.168.66.134" status="up">
-				<war name="sample-app" version="0.1-SNAPSHOT">
+				<war name="user-web" version="0.1-SNAPSHOT">
 					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
 					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
 					<dependency groupId="org.apache.struts" artifactId="struts2-core" version="2.2.0" />
@@ -89,7 +89,7 @@
 				</war>
 			</host>
 			<host ip="192.168.66.148" status="up">
-				<war name="sample-app" version="0.1-SNAPSHOT">
+				<war name="user-web" version="0.1-SNAPSHOT">
 					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
 					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
 					<dependency groupId="org.apache.struts" artifactId="struts2-core" version="2.2.0" />
