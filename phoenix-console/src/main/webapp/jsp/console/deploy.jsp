@@ -15,8 +15,7 @@
 		<div class="span4">
 			<div class="page-header">
                 <input type="hidden" id="deploy_id" value="${deploy.id}">
-				<strong style="font-size: medium;">${deploy.domain}</strong>：
-				[<font color="blue">${deploy.version}</font>, 方式：1->1->1->1, 错误：终断后续发布], 结果：[<strong><span id="deploy_status">${deploy.status}</span></strong>]
+				Rollout Kernel(${deploy.version}) to ${deploy.domain}, <span id="deploy_status">${deploy.status}</span>
 			</div>
 			<div class="row-fluid">
 				<div class="span12 thumbnail" style="height: 440px; overflow: auto;">
@@ -68,7 +67,7 @@
 		<div class="span8">
 			<div class="row-fluid">
 				<div class="page-header">
-					<h4>Deployment Details</h4>
+					<h4>部署方式：1->1->1->1, 错误处理：终断后续发布</h4>
 				</div>
 				<c:forEach var="entry" items="${deploy.hosts}" varStatus="status">
 					<c:set var="host" value="${entry.value}"/>

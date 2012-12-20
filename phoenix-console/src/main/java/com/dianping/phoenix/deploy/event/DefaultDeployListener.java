@@ -108,7 +108,7 @@ public class DefaultDeployListener implements DeployListener {
 		}
 
 		HostModel summaryHost = m_projectManager.findModel(deployId).findHost("summary");
-		String rawLog = buildLog(summaryHost);
+		String rawLog = new DeployModel().addHost(summaryHost).toString();
 
 		s.setEndDate(new Date());
 		s.setStatus(status);
