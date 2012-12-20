@@ -72,7 +72,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(VersionManager.class, DefaultVersionManager.class) //
 		      .req(StatusReporter.class, WarService.class, GitService.class, VersionDao.class));
-		all.add(C(ProjectManager.class, DefaultProjectManager.class));
+		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
+		      .req(DeploymentDao.class, DeploymentDetailsDao.class));
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
