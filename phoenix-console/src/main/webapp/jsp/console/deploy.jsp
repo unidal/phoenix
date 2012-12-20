@@ -1,12 +1,14 @@
 <%@ page contentType="text/html; charset=utf-8"%>
 <%@ taglib prefix="a" uri="http://www.dianping.com/phoenix/console"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 <jsp:useBean id="ctx" type="com.dianping.phoenix.console.page.deploy.Context" scope="request" />
 <jsp:useBean id="payload" type="com.dianping.phoenix.console.page.deploy.Payload" scope="request" />
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.deploy.Model" scope="request" />
 
 <a:layout>
+	<w:error code="*"><h2>Error occured: \${code} for deploy(${payload.id})</h2></w:error>
 	
 	<c:set var="deploy" value="${model.deploy}"/>
 	<div class="row-fluid">

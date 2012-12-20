@@ -125,6 +125,10 @@
 			<implementation>com.dianping.phoenix.agent.core.tx.FileBasedTransactionManager</implementation>
 		</component>
 		<component>
+			<role>org.unidal.initialization.ModuleManager</role>
+			<implementation>org.unidal.initialization.DefaultModuleManager</implementation>
+		</component>
+		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>

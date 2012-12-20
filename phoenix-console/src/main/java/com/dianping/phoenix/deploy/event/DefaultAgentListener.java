@@ -15,11 +15,11 @@ import com.dianping.phoenix.deploy.model.entity.SegmentModel;
 
 public class DefaultAgentListener implements AgentListener {
 	@Inject
-	private DeploymentDetailsDao m_detailsDao;
+	private DeploymentDetailsDao m_deploymentDetailsDao;
 
 	@Override
 	public void onEnd(Context ctx, String status) throws Exception {
-		DeploymentDetails details = m_detailsDao.createLocal();
+		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
 
 		if ("successful".equals(status)) {
 			details.setStatus(3); // 3 - successful
@@ -32,7 +32,7 @@ public class DefaultAgentListener implements AgentListener {
 		details.setKeyId(ctx.getId());
 		details.setEndDate(new Date());
 		details.setRawLog(ctx.getRawLog());
-		m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
+		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
 	}
 
 	@Override
@@ -52,11 +52,11 @@ public class DefaultAgentListener implements AgentListener {
 
 	@Override
 	public void onStart(Context ctx) throws Exception {
-		DeploymentDetails details = m_detailsDao.createLocal();
+		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
 
 		details.setKeyId(ctx.getId());
 		details.setStatus(2); // 2 - deploying
 		details.setBeginDate(new Date());
-		m_detailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
+		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
 	}
 }
