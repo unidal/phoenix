@@ -90,21 +90,46 @@ public class DefaultDeployListener implements DeployListener {
 	public void onDeployEnd(int deployId) throws Exception {
 		Deployment d = m_deploymentDao.createLocal();
 		List<DeploymentDetails> list = m_deploymentDetailsDao.findAllByDeployId(deployId,
-		      DeploymentDetailsEntity.READSET_STATUS);
+		      DeploymentDetailsEntity.READSET_FULL);
 		int status = 3; // 3 - completed with all successful, 4 - completed with partial failures
+		DeploymentDetails s = null;
 
 		for (DeploymentDetails details : list) {
-			if (details.getStatus() != 3) {
+			if ("summary".equals(details.getIpAddress())) {
+				s = details;
+			} else if (details.getStatus() != 3) {
 				status = 4;
 				break;
 			}
 		}
 
+		if (s == null) {
+			throw new RuntimeException(String.format("Internal error: no summary record found for deploy(%s)!", deployId));
+		}
+
+		HostModel summaryHost = m_projectManager.findModel(deployId).findHost("summary");
+		String rawLog = new DeployModel().addHost(summaryHost).toString();
+
+		s.setEndDate(new Date());
+		s.setStatus(status);
+		s.setRawLog(rawLog);
+
 		d.setKeyId(deployId);
 		d.setStatus(status);
 		d.setEndDate(new Date());
 
+		m_deploymentDetailsDao.updateByPK(s, DeploymentDetailsEntity.UPDATESET_STATUS);
 		m_deploymentDao.updateByPK(d, DeploymentEntity.UPDATESET_STATUS);
+	}
+
+	private String buildLog(HostModel host) {
+		StringBuilder sb = new StringBuilder(2048);
+
+		for (SegmentModel segment : host.getSegments()) {
+			sb.append(segment.getText()).append("\r\n");
+		}
+
+		return sb.toString();
 	}
 
 	@Override
@@ -129,7 +154,7 @@ public class DefaultDeployListener implements DeployListener {
 		details.setStatus(9); // 9 - cancelled
 		details.setKeyId(hostModel.getId());
 		details.setEndDate(new Date());
-		details.setRawLog(hostModel.getLog());
+		details.setRawLog(buildLog(hostModel));
 		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
 	}
 
@@ -146,13 +171,16 @@ public class DefaultDeployListener implements DeployListener {
 			details.setStatus(3); // 3 - successful
 		} else if ("failed".equals(status)) {
 			details.setStatus(5); // 5 - failed
+		} else if ("doing".equals(status)) {
+			details.setStatus(2); // 2 - deploying
 		} else {
-			throw new RuntimeException(String.format("Internal error: unknown status(%s)!", status));
+			throw new RuntimeException(String.format("Internal error: unknown status(%s) of host(%s) of deploy(%s)!",
+			      status, host, deployId));
 		}
 
 		details.setKeyId(hostModel.getId());
 		details.setEndDate(new Date());
-		details.setRawLog(hostModel.getLog());
+		details.setRawLog(buildLog(hostModel));
 		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
 	}
 }

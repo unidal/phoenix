@@ -52,6 +52,10 @@ class ViewModelVisitor extends BaseVisitor {
 		// put it to head
 		m_model.addHost(summary);
 
+		for (SegmentModel segment : summary.getSegments()) {
+			segment.setEncodedText(escape(segment.getText()));
+		}
+
 		for (HostModel host : other.getHosts().values()) {
 			if (!host.getIp().equals("summary")) {
 				visitHost(host);
@@ -69,7 +73,13 @@ class ViewModelVisitor extends BaseVisitor {
 		if (set.contains("doing")) {
 			status = "doing";
 		} else if (set.contains("failed")) {
-			status = "failed";
+			if (set.contains("successful")) {
+				status = "warning";
+			} else {
+				status = "failed";
+			}
+		} else if (set.contains("cancelled")) {
+			status = "cancelled";
 		} else if (set.contains("successful")) {
 			status = "successful";
 		} else {
