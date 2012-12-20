@@ -5,7 +5,7 @@
 
 3. copy phoenix-bootstrap.jar to container's lib directory
 
-4. add domain <Context> to container's server.xml, make sure docBase ends with /current
+4. add domain <Context> to container's server.xml, make sure docBase ends with /current, remove server/default/deploy/jboss-web.deployer/ROOT.war/ if the path is "/" and the container is jboss
 	<Context docBase="/data/webapps/sample-app/current" path="/s">
 
 5. unzip phoenix-agent-0.1-SNAPSHOT.war to a directory X
