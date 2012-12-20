@@ -1,3 +1,7 @@
+
+set -e
+set -u
+
 cd `dirname $0`
 
 if [ -e WEB-INF/classes ];then
