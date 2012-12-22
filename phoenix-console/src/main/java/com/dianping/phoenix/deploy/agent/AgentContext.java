@@ -30,11 +30,11 @@ public interface AgentContext {
 
 	public String openUrl(String url) throws IOException;
 
-	public AgentContext print(String string, Object... args);
+	public AgentContext print(String pattern, Object... args);
 
 	public AgentContext println();
 
-	public AgentContext println(String string, Object... args);
+	public AgentContext println(String pattern, Object... args);
 
 	public void setRetriedCount(int retriedCount);
 

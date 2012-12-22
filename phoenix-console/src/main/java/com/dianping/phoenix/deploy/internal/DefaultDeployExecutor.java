@@ -111,6 +111,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 					ctx.updateStatus(AgentStatus.CANCELLED, message);
 					m_deployListener.onHostCancel(m_model.getId(), host);
+
+					log("Rolling out to host(%s) ... CANCELLED.", host);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -123,19 +125,19 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public String getName() {
-			return getClass().getSimpleName();
+			return String.format("%s-%s", getClass().getSimpleName(), m_model.getDomain());
 		}
 
-		public ControllerTask log(String message) {
+		private ControllerTask log(String pattern, Object... args) {
 			HostModel host = m_model.findHost(DeployConstant.SUMMARY);
 			String text;
 
 			if (m_configManager.isShowLogTimestamp()) {
 				String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
-				text = "[" + timestamp + "] " + message;
+				text = "[" + timestamp + "] " + String.format(pattern, args);
 			} else {
-				text = message;
+				text = String.format(pattern, args);
 			}
 
 			host.addSegment(new SegmentModel().setText(text));
@@ -157,12 +159,18 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					boolean done = pair.getKey().await(10, TimeUnit.MILLISECONDS);
 
 					if (done) {
-						for (String host : pair.getValue()) {
+						for (String ip : pair.getValue()) {
+							HostModel host = m_model.findHost(ip);
+							String status = host.getStatus();
+
 							try {
-								m_deployListener.onHostEnd(m_model.getId(), host);
+								m_deployListener.onHostEnd(m_model.getId(), ip);
+
+								log("Rolling out to host(%s) ... %s", ip, status.toUpperCase());
 							} catch (Exception e) {
-								m_logger.warn(String.format("Error when processing onHostEnd(%s) of deploy(%s)!", host,
-								      m_model.getId()), e);
+								m_logger.warn(
+								      String.format("Error when processing onHostEnd(%s) of deploy(%s)!", ip, m_model.getId()),
+								      e);
 							}
 						}
 
@@ -222,6 +230,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				Threads.forGroup("Phoenix").start(new RolloutTask(this, m_listener, m_model, host, latch));
 				hosts.add(host);
 				count++;
+
+				log("Rolling out to host(%s) ...", host);
 			}
 
 			for (int i = count; i < maxCount; i++) {
@@ -247,9 +257,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private AgentStatus m_status;
 
-		private int m_id;
-
-		private String m_host;
+		private HostModel m_host;
 
 		private int m_retriedCount;
 
@@ -259,11 +267,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			m_controller = controller;
 			m_listener = listener;
 			m_model = model;
-			m_host = host;
-
-			HostModel m = model.findHost(host);
-
-			m_id = m.getId();
+			m_host = model.findHost(host);
 		}
 
 		@Override
@@ -288,19 +292,17 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public String getHost() {
-			return m_host;
+			return m_host.getIp();
 		}
 
 		@Override
 		public int getId() {
-			return m_id;
+			return m_host.getId();
 		}
 
 		@Override
 		public String getRawLog() {
-			HostModel host = m_model.findHost(m_host);
-
-			return new DeployModel().addHost(host).toString();
+			return new DeployModel().addHost(m_host).toString();
 		}
 
 		@Override
@@ -311,6 +313,11 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		@Override
 		public AgentState getState() {
 			return m_state;
+		}
+
+		@Override
+		public AgentStatus getStatus() {
+			return m_status;
 		}
 
 		@Override
@@ -355,6 +362,12 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public AgentContext print(String pattern, Object... args) {
+			if (m_log.length() == 0 && m_controller.getConfigManager().isShowLogTimestamp()) {
+				String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+				m_log.append("[").append(timestamp).append("] ");
+			}
+
 			String message = String.format(pattern, args);
 
 			m_log.append(message);
@@ -363,18 +376,29 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public AgentContext println() {
-			m_controller.log(m_log.toString());
-			m_log.setLength(0);
+			if (m_log.length() > 0) {
+				m_host.addSegment(new SegmentModel().setText(m_log.toString()));
+				m_log.setLength(0);
+			}
+
 			return this;
 		}
 
 		@Override
 		public AgentContext println(String pattern, Object... args) {
-			String message = String.format(pattern, args);
+			println();
 
-			m_log.append(message);
-			m_controller.log(m_log.toString());
-			m_log.setLength(0);
+			if (m_controller.getConfigManager().isShowLogTimestamp()) {
+				String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+				String message = String.format(pattern, args);
+
+				m_host.addSegment(new SegmentModel().setText("[" + timestamp + "] " + message));
+			} else {
+				String message = String.format(pattern, args);
+
+				m_host.addSegment(new SegmentModel().setText(message));
+			}
+
 			return this;
 		}
 
@@ -406,18 +430,20 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public void updateStatus(AgentStatus status, String message) {
+			String text;
+
+			if (m_controller.getConfigManager().isShowLogTimestamp()) {
+				String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+				text = "[" + timestamp + "] " + message;
+			} else {
+				text = message;
+			}
+
 			m_status = status;
-
-			HostModel host = m_model.findHost(m_host);
-
-			host.setStatus(status.getName());
-			host.addSegment(new SegmentModel().setStatus(status.getName()) //
-			      .setCurrentTicks(100).setTotalTicks(100).setStep(status.getTitle()).setText(message));
-		}
-
-		@Override
-		public AgentStatus getStatus() {
-			return m_status;
+			m_host.setStatus(status.getName());
+			m_host.addSegment(new SegmentModel().setStatus(status.getName()) //
+			      .setCurrentTicks(100).setTotalTicks(100).setStep(status.getTitle()).setText(text));
 		}
 	}
 
@@ -434,7 +460,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public String getName() {
-			return getClass().getSimpleName();
+			return String.format("%s-%s-%s", getClass().getSimpleName(), m_ctx.getDomain(), m_ctx.getHost());
 		}
 
 		@Override

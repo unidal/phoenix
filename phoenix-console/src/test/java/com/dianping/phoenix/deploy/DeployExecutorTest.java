@@ -143,6 +143,8 @@ public class DeployExecutorTest extends ComponentTestCase {
 			segment.setStatus(progress.getStatus());
 			segment.setStep(progress.getStep());
 			segment.setText(log);
+			
+			host.setStatus("success");
 			host.addSegment(segment);
 		}
 
