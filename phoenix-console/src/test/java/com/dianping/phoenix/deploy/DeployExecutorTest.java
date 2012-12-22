@@ -17,10 +17,10 @@ import org.unidal.tuple.Triple;
 import org.unidal.webres.helper.Files;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.deploy.agent.Context;
-import com.dianping.phoenix.deploy.agent.Progress;
-import com.dianping.phoenix.deploy.event.AgentListener;
-import com.dianping.phoenix.deploy.event.DeployListener;
+import com.dianping.phoenix.deploy.agent.AgentContext;
+import com.dianping.phoenix.deploy.agent.AgentListener;
+import com.dianping.phoenix.deploy.agent.AgentProgress;
+import com.dianping.phoenix.deploy.agent.AgentStatus;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.entity.SegmentModel;
@@ -125,12 +125,12 @@ public class DeployExecutorTest extends ComponentTestCase {
 
 	public static class MockAgentListener implements AgentListener {
 		@Override
-		public void onEnd(Context ctx, String status) throws Exception {
-			log("onEnd(%s,%s,%s)", ctx.getDeployId(), ctx.getHost(), status);
+		public void onEnd(AgentContext ctx, AgentStatus status) throws Exception {
+			log("onEnd(%s,%s,%s)", ctx.getDeployId(), ctx.getHost(), status.getName());
 		}
 
 		@Override
-		public void onProgress(Context ctx, Progress progress, String log) throws Exception {
+		public void onProgress(AgentContext ctx, AgentProgress progress, String log) throws Exception {
 			log("onProgress(%s,%s)", ctx.getHost(), progress);
 
 			DeployModel model = ctx.getDeployModel();
@@ -147,7 +147,7 @@ public class DeployExecutorTest extends ComponentTestCase {
 		}
 
 		@Override
-		public void onStart(Context ctx) throws Exception {
+		public void onStart(AgentContext ctx) throws Exception {
 			log("onStart(%s,%s)", ctx.getDeployId(), ctx.getHost());
 		}
 	}

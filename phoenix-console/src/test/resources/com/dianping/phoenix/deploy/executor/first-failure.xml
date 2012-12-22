@@ -14,6 +14,7 @@ Switched to a new branch 'dummy'
 [11-27 16:34:34] [INFO] traffic turned off
 </segment>
       <segment current-ticks="31" total-ticks="100" status="failed"></segment>
+      <segment step="FAILED" current-ticks="100" total-ticks="100" status="failed"></segment>
       <segment step="FAILED" current-ticks="100" total-ticks="100" status="failed">[ERROR] Failed to deploy phoenix kernel(1.0.1) to host(host-a).</segment>
    </host>
    <host ip="host-b" status="cancelled" progress="0">

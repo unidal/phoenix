@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
-public interface Context {
+public interface AgentContext {
 	public ConfigManager getConfigManager();
 
 	public int getDeployId();
@@ -22,25 +22,23 @@ public interface Context {
 
 	public int getRetriedCount();
 
-	public State getState();
+	public AgentStatus getStatus();
+
+	public AgentState getState();
 
 	public String getVersion();
 
-	public boolean isFailed();
-
 	public String openUrl(String url) throws IOException;
 
-	public Context print(String string, Object... args);
+	public AgentContext print(String string, Object... args);
 
-	public Context println();
+	public AgentContext println();
 
-	public Context println(String string, Object... args);
-
-	public void setFailed(boolean failed);
+	public AgentContext println(String string, Object... args);
 
 	public void setRetriedCount(int retriedCount);
 
-	public void setState(State state);
+	public void setState(AgentState state);
 
-	public void updateStatus(String status, String message);
+	public void updateStatus(AgentStatus status, String message);
 }

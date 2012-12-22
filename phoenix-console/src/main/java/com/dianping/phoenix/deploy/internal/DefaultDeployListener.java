@@ -1,4 +1,4 @@
-package com.dianping.phoenix.deploy.event;
+package com.dianping.phoenix.deploy.internal;
 
 import java.util.Date;
 import java.util.List;
@@ -11,7 +11,10 @@ import com.dianping.phoenix.console.dal.deploy.DeploymentDetails;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsEntity;
 import com.dianping.phoenix.console.dal.deploy.DeploymentEntity;
+import com.dianping.phoenix.deploy.DeployConstant;
+import com.dianping.phoenix.deploy.DeployListener;
 import com.dianping.phoenix.deploy.DeployPlan;
+import com.dianping.phoenix.deploy.agent.AgentStatus;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.entity.SegmentModel;
@@ -71,10 +74,10 @@ public class DefaultDeployListener implements DeployListener {
 		}
 
 		// for "summary" host
-		DeploymentDetails details = createDeploymentDetails(d.getId(), "summary", plan, "TBD"); // TODO
+		DeploymentDetails details = createDeploymentDetails(d.getId(), DeployConstant.SUMMARY, plan, "TBD"); // TODO
 
 		m_deploymentDetailsDao.insert(details);
-		model.addHost(new HostModel("summary").setId(details.getId()));
+		model.addHost(new HostModel(DeployConstant.SUMMARY).setId(details.getId()));
 
 		model.setId(deployId);
 		model.setDomain(domain);
@@ -102,7 +105,7 @@ public class DefaultDeployListener implements DeployListener {
 		}
 
 		for (DeploymentDetails details : list) {
-			if ("summary".equals(details.getIpAddress())) {
+			if (DeployConstant.SUMMARY.equals(details.getIpAddress())) {
 				s = details;
 				break;
 			}
@@ -112,7 +115,7 @@ public class DefaultDeployListener implements DeployListener {
 			throw new RuntimeException(String.format("Internal error: no summary record found for deploy(%s)!", deployId));
 		}
 
-		HostModel summaryHost = m_projectManager.findModel(deployId).findHost("summary");
+		HostModel summaryHost = m_projectManager.findModel(deployId).findHost(DeployConstant.SUMMARY);
 		String rawLog = new DeployModel().addHost(summaryHost).toString();
 
 		s.setEndDate(new Date());
@@ -142,7 +145,8 @@ public class DefaultDeployListener implements DeployListener {
 		DeployModel deployModel = m_projectManager.findModel(deployId);
 		HostModel hostModel = deployModel.findHost(host);
 
-		hostModel.addSegment(new SegmentModel().setCurrentTicks(100).setTotalTicks(100).setStatus("CANCELLED"));
+		hostModel.addSegment(new SegmentModel().setCurrentTicks(100).setTotalTicks(100) //
+		      .setStatus(AgentStatus.CANCELLED.getName()).setStep(AgentStatus.CANCELLED.getTitle()));
 
 		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
 		String rawLog = new DeployModel().addHost(hostModel).toString();
@@ -157,19 +161,15 @@ public class DefaultDeployListener implements DeployListener {
 	@Override
 	public void onHostEnd(int deployId, String host) throws Exception {
 		DeployModel deployModel = m_projectManager.findModel(deployId);
-		HostModel hostModel = deployModel.findHost("summary");
-		String status = hostModel.getStatus();
+		HostModel hostModel = deployModel.findHost(DeployConstant.SUMMARY);
+		AgentStatus status = AgentStatus.getByName(hostModel.getStatus(), null);
 
 		// flush the summary log
 		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
 		String rawLog = new DeployModel().addHost(hostModel).toString();
 
-		if ("successful".equals(status)) {
-			details.setStatus(3); // 3 - successful
-		} else if ("failed".equals(status)) {
-			details.setStatus(5); // 5 - failed
-		} else if ("doing".equals(status)) {
-			details.setStatus(2); // 2 - deploying
+		if (status == AgentStatus.SUCCESS || status == AgentStatus.FAILED || status == AgentStatus.DEPLOYING) {
+			details.setStatus(status.getId());
 		} else {
 			throw new RuntimeException(String.format("Internal error: unknown status(%s) of host(%s) of deploy(%s)!",
 			      status, host, deployId));

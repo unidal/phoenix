@@ -3,10 +3,10 @@ package com.dianping.phoenix.deploy.agent;
 import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.transform.DefaultJsonParser;
 
-public enum State {
+public enum AgentState {
 	CREATED(0, 1, 2, 9) {
 		@Override
-		protected void doActivity(Context ctx) throws Exception {
+		protected void doActivity(AgentContext ctx) throws Exception {
 			int id = ctx.getDeployId();
 			String domain = ctx.getDomain();
 			String version = ctx.getVersion();
@@ -51,7 +51,7 @@ public enum State {
 		private static final int MAX_RETRY_COUNT = 2;
 
 		@Override
-		protected void doActivity(Context ctx) throws Exception {
+		protected void doActivity(AgentContext ctx) throws Exception {
 			int retriedCount = ctx.getRetriedCount();
 
 			if (retriedCount >= MAX_RETRY_COUNT) {
@@ -98,7 +98,7 @@ public enum State {
 
 	SUBMITTED(2, 4, 9) {
 		@Override
-		protected void doActivity(Context ctx) throws Exception {
+		protected void doActivity(AgentContext ctx) throws Exception {
 			String host = ctx.getHost();
 			int id = ctx.getDeployId();
 
@@ -116,7 +116,7 @@ public enum State {
 				return;
 			}
 
-			if (ctx.isFailed()) {
+			if (ctx.getStatus() == AgentStatus.FAILED) {
 				moveTo(ctx, FAILED);
 			} else {
 				moveTo(ctx, SUCCESSFUL);
@@ -126,7 +126,7 @@ public enum State {
 
 	SUCCESSFUL(4) {
 		@Override
-		protected void doActivity(Context ctx) throws Exception {
+		protected void doActivity(AgentContext ctx) throws Exception {
 			String version = ctx.getVersion();
 			String host = ctx.getHost();
 
@@ -136,16 +136,16 @@ public enum State {
 
 	FAILED(9) {
 		@Override
-		protected void doActivity(Context ctx) throws Exception {
+		protected void doActivity(AgentContext ctx) throws Exception {
 		}
 
 		@Override
-		protected void doProlog(Context ctx) throws Exception {
+		protected void doProlog(AgentContext ctx) throws Exception {
 			String version = ctx.getVersion();
 			String host = ctx.getHost();
 			String message = String.format("[ERROR] Failed to deploy phoenix kernel(%s) to host(%s).", version, host);
 
-			ctx.updateStatus("failed", message);
+			ctx.updateStatus(AgentStatus.FAILED, message);
 			ctx.println(message);
 		}
 	};
@@ -154,25 +154,25 @@ public enum State {
 
 	private int[] m_nextIds;
 
-	private State(int id, int... nextIds) {
+	private AgentState(int id, int... nextIds) {
 		m_id = id;
 		m_nextIds = nextIds;
 	}
 
-	public static void execute(Context ctx) throws Exception {
-		State initial = CREATED;
+	public static void execute(AgentContext ctx) throws Exception {
+		AgentState initial = CREATED;
 
 		ctx.setState(initial);
 		initial.doActivity(ctx);
 	}
 
-	protected abstract void doActivity(Context ctx) throws Exception;
+	protected abstract void doActivity(AgentContext ctx) throws Exception;
 
-	protected void doProlog(Context ctx) throws Exception {
+	protected void doProlog(AgentContext ctx) throws Exception {
 		// do nothing by default
 	}
 
-	protected void doEpilog(Context ctx) throws Exception {
+	protected void doEpilog(AgentContext ctx) throws Exception {
 		// do nothing by default
 	}
 
@@ -180,7 +180,7 @@ public enum State {
 		return m_id;
 	}
 
-	void moveTo(Context ctx, State nextState) throws Exception {
+	void moveTo(AgentContext ctx, AgentState nextState) throws Exception {
 		boolean found = false;
 		int nextId = nextState.getId();
 

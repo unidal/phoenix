@@ -1,4 +1,4 @@
-package com.dianping.phoenix.deploy;
+package com.dianping.phoenix.deploy.internal;
 
 import java.util.List;
 
@@ -6,7 +6,10 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.console.dal.deploy.Deployment;
-import com.dianping.phoenix.deploy.event.DeployListener;
+import com.dianping.phoenix.deploy.DeployExecutor;
+import com.dianping.phoenix.deploy.DeployListener;
+import com.dianping.phoenix.deploy.DeployManager;
+import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.service.ProjectManager;
 

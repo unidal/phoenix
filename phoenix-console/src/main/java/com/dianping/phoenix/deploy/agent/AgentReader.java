@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-public class SegmentReader {
+public class AgentReader {
 	private static final String SEPARATOR = "--9ed2b78c112fbd17a8511812c554da62941629a8--";
 
 	private static final String TERMINATOR = "--255220d51dc7fb4aacddadedfe252a346da267d4--";
@@ -16,7 +16,7 @@ public class SegmentReader {
 
 	private StringBuilder m_sb = new StringBuilder(4096);
 
-	public SegmentReader(Reader reader) {
+	public AgentReader(Reader reader) {
 		m_reader = reader;
 	}
 
@@ -24,7 +24,7 @@ public class SegmentReader {
 		return !m_last;
 	}
 
-	public String next(Progress progress) throws IOException {
+	public String next(AgentProgress progress) throws IOException {
 		char[] data = new char[2048];
 		String segment = null;
 
