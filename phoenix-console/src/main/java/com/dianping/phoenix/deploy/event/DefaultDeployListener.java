@@ -95,10 +95,15 @@ public class DefaultDeployListener implements DeployListener {
 		DeploymentDetails s = null;
 
 		for (DeploymentDetails details : list) {
+			if (details.getStatus() != 3) {
+				status = 4;
+				break;
+			}
+		}
+
+		for (DeploymentDetails details : list) {
 			if ("summary".equals(details.getIpAddress())) {
 				s = details;
-			} else if (details.getStatus() != 3) {
-				status = 4;
 				break;
 			}
 		}
@@ -122,16 +127,6 @@ public class DefaultDeployListener implements DeployListener {
 		m_deploymentDao.updateByPK(d, DeploymentEntity.UPDATESET_STATUS);
 	}
 
-	private String buildLog(HostModel host) {
-		StringBuilder sb = new StringBuilder(2048);
-
-		for (SegmentModel segment : host.getSegments()) {
-			sb.append(segment.getText()).append("\r\n");
-		}
-
-		return sb.toString();
-	}
-
 	@Override
 	public void onDeployStart(int deployId) throws Exception {
 		Deployment d = m_deploymentDao.createLocal();
@@ -147,14 +142,15 @@ public class DefaultDeployListener implements DeployListener {
 		DeployModel deployModel = m_projectManager.findModel(deployId);
 		HostModel hostModel = deployModel.findHost(host);
 
-		hostModel.addSegment(new SegmentModel().setCurrentTicks(100).setTotalTicks(100).setStatus("cancelled"));
+		hostModel.addSegment(new SegmentModel().setCurrentTicks(100).setTotalTicks(100).setStatus("CANCELLED"));
 
 		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
+		String rawLog = new DeployModel().addHost(hostModel).toString();
 
 		details.setStatus(9); // 9 - cancelled
 		details.setKeyId(hostModel.getId());
 		details.setEndDate(new Date());
-		details.setRawLog(buildLog(hostModel));
+		details.setRawLog(rawLog);
 		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
 	}
 
@@ -166,6 +162,7 @@ public class DefaultDeployListener implements DeployListener {
 
 		// flush the summary log
 		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
+		String rawLog = new DeployModel().addHost(hostModel).toString();
 
 		if ("successful".equals(status)) {
 			details.setStatus(3); // 3 - successful
@@ -180,7 +177,7 @@ public class DefaultDeployListener implements DeployListener {
 
 		details.setKeyId(hostModel.getId());
 		details.setEndDate(new Date());
-		details.setRawLog(buildLog(hostModel));
+		details.setRawLog(rawLog);
 		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
 	}
 }

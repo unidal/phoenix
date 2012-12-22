@@ -25,6 +25,7 @@ public class DefaultAgentListener implements AgentListener {
 			details.setStatus(3); // 3 - successful
 		} else if ("failed".equals(status)) {
 			details.setStatus(5); // 5 - failed
+			ctx.setFailed(true);
 		} else {
 			throw new RuntimeException(String.format("Internal error: unknown status(%s)!", status));
 		}

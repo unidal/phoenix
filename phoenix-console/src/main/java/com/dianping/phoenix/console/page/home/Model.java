@@ -5,6 +5,7 @@ import java.util.List;
 import org.unidal.web.mvc.ViewModel;
 
 import com.dianping.phoenix.console.ConsolePage;
+import com.dianping.phoenix.console.dal.deploy.Deployment;
 import com.dianping.phoenix.console.dal.deploy.Version;
 import com.dianping.phoenix.deploy.DeployPolicy;
 import com.dianping.phoenix.project.entity.Project;
@@ -20,10 +21,14 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	private DeployPolicy[] m_policies;
 
-	private boolean m_rolling;
+	private Deployment m_activeDeployment;
 
 	public Model(Context ctx) {
 		super(ctx);
+	}
+
+	public Deployment getActiveDeployment() {
+		return m_activeDeployment;
 	}
 
 	@Override
@@ -51,8 +56,8 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 		return m_versions;
 	}
 
-	public boolean isRolling() {
-		return m_rolling;
+	public void setActiveDeployment(Deployment activeDeployment) {
+		m_activeDeployment = activeDeployment;
 	}
 
 	public void setDeployPlans(List<String> deployPlans) {
@@ -69,10 +74,6 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	public void setProjects(List<Project> projects) {
 		m_projects = projects;
-	}
-
-	public void setRolling(boolean rolling) {
-		m_rolling = rolling;
 	}
 
 	public void setVersions(List<Version> versions) {

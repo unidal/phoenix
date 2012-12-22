@@ -137,6 +137,10 @@ public enum State {
 	FAILED(9) {
 		@Override
 		protected void doActivity(Context ctx) throws Exception {
+		}
+
+		@Override
+		protected void doProlog(Context ctx) throws Exception {
 			String version = ctx.getVersion();
 			String host = ctx.getHost();
 			String message = String.format("[ERROR] Failed to deploy phoenix kernel(%s) to host(%s).", version, host);
@@ -164,13 +168,21 @@ public enum State {
 
 	protected abstract void doActivity(Context ctx) throws Exception;
 
+	protected void doProlog(Context ctx) throws Exception {
+		// do nothing by default
+	}
+
+	protected void doEpilog(Context ctx) throws Exception {
+		// do nothing by default
+	}
+
 	public int getId() {
 		return m_id;
 	}
 
 	void moveTo(Context ctx, State nextState) throws Exception {
-		int nextId = nextState.getId();
 		boolean found = false;
+		int nextId = nextState.getId();
 
 		for (int id : m_nextIds) {
 			if (id == nextId) {
@@ -181,10 +193,11 @@ public enum State {
 
 		if (!found) {
 			throw new IllegalStateException(String.format("Can't move deploy state from %s to %s!", this, nextState));
-		} else {
-			ctx.setState(nextState);
 		}
 
+		doEpilog(ctx);
+		nextState.doProlog(ctx);
+		ctx.setState(nextState);
 		nextState.doActivity(ctx);
 	}
 }

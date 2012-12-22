@@ -93,8 +93,6 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				String host = m_hosts.get(m_hostIndex++);
 
 				try {
-					m_deployListener.onHostCancel(m_model.getId(), host);
-
 					String message;
 
 					if (m_configManager.isShowLogTimestamp()) {
@@ -108,6 +106,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					RolloutContext ctx = new RolloutContext(this, m_agentListener, m_model, host);
 
 					ctx.updateStatus("cancelled", message);
+					m_deployListener.onHostCancel(m_model.getId(), host);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -165,7 +164,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 						if (shouldStop()) {
 							cancelResetTasks();
-							pair = null;
+							break;
 						} else {
 							int batchSize = m_policy.getBatchSize();
 
@@ -176,12 +175,10 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			} catch (InterruptedException e) {
 				// ignore it
 			} finally {
-				if (pair == null) {
-					try {
-						m_deployListener.onDeployEnd(m_model.getId());
-					} catch (Exception e) {
-						m_logger.warn(String.format("Error when processing onEnd of deploy(%s)!", m_model.getId()), e);
-					}
+				try {
+					m_deployListener.onDeployEnd(m_model.getId());
+				} catch (Exception e) {
+					m_logger.warn(String.format("Error when processing onEnd of deploy(%s)!", m_model.getId()), e);
 				}
 			}
 		}
@@ -276,9 +273,9 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-      public DeployModel getDeployModel() {
-	      return m_model;
-      }
+		public DeployModel getDeployModel() {
+			return m_model;
+		}
 
 		@Override
 		public String getDomain() {
@@ -298,6 +295,13 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		@Override
 		public String getRawLog() {
 			HostModel host = m_model.findHost(m_host);
+
+			if (m_failed) {
+				SegmentModel segment = new SegmentModel();
+
+				segment.setStatus("failed").setCurrentTicks(100).setTotalTicks(100).setStep("FAILED");
+				host.addSegment(segment);
+			}
 
 			return new DeployModel().addHost(host).toString();
 		}
@@ -408,7 +412,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					break;
 				}
 			} catch (Exception e) {
-				e.printStackTrace(); // TODO
+				e.printStackTrace();
 			}
 		}
 
@@ -418,7 +422,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 			host.setStatus(status);
 			host.addSegment(new SegmentModel().setStatus(status) //
-			      .setCurrentTicks(100).setTotalTicks(100).setStep(status).setText(message));
+			      .setCurrentTicks(100).setTotalTicks(100).setStep(status.toUpperCase()).setText(message));
 		}
 	}
 

@@ -9,6 +9,14 @@
 
 <a:layout>
 
+	<w:errors>
+	   <pre class="error">
+	      <h3>Error occured:</h3>
+	      <w:error code="project.hosts">Please check at least one of the hosts below.</w:error>
+	      <w:error code="*"><strong>\${code}</strong>: \${exception.message}</w:error>
+	   </pre>
+	</w:errors>
+	
 	<c:set var="project" value="${model.project}"/>
 	<div class="container-fluid">
 		<div class="row-fluid">
@@ -128,8 +136,8 @@
 				<br />
 				<div class="row-fluid">
 					<button type="submit" name="deploy" value="Deploy" class="btn btn-primary">Deploy</button>
-					<c:if test="${model.rolling}">
-					   &nbsp;&nbsp;<button type="submit" name="watch" value="Watch" class="btn btn-primary">Watch</button>
+					<c:if test="${not empty model.activeDeployment}">
+					   &nbsp;&nbsp;<a href="${model.moduleUri}/deploy?id=${model.activeDeployment.id}">Watch</a>
 					</c:if>
 				</div>
 			</div>
