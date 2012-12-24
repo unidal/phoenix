@@ -11,8 +11,9 @@ import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.deploy.agent.Context;
-import com.dianping.phoenix.deploy.agent.State;
+import com.dianping.phoenix.deploy.agent.AgentContext;
+import com.dianping.phoenix.deploy.agent.AgentState;
+import com.dianping.phoenix.deploy.agent.AgentStatus;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
 public class DeployStateTest extends ComponentTestCase {
@@ -41,12 +42,16 @@ public class DeployStateTest extends ComponentTestCase {
 			}
 		};
 
-		State.execute(ctx);
-		Assert.assertEquals(State.FAILED, ctx.getState());
+		AgentState.execute(ctx);
+		Assert.assertEquals(AgentState.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		String expected = "setState: CREATED\n"
+		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
 		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... error\n"
-		      + "deploy id is already existed.\n" + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
+		      + "deploy id is already existed.\n"
+		      + "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
+		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"//
+		      + "setState: FAILED\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -65,14 +70,18 @@ public class DeployStateTest extends ComponentTestCase {
 			}
 		};
 
-		State.execute(ctx);
-		Assert.assertEquals(State.FAILED, ctx.getState());
+		AgentState.execute(ctx);
+		Assert.assertEquals(AgentState.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		String expected = "setState: CREATED\n"
+		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
 		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+		      + "setState: SUBMITTED\n" //
 		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
 		      + "java.lang.RuntimeException: Unexpected exception threw.\n"
-		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
+		      + "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
+		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n" //
+		      + "setState: FAILED\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -89,14 +98,20 @@ public class DeployStateTest extends ComponentTestCase {
 			}
 		};
 
-		State.execute(ctx);
-		Assert.assertEquals(State.FAILED, ctx.getState());
+		AgentState.execute(ctx);
+		Assert.assertEquals(AgentState.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		String expected = "setState: CREATED\n"
+		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
 		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
+		      + "setState: UNREACHABLE\n" //
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
+		      + "setState: UNREACHABLE\n" //
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
-		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
+		      + "setState: UNREACHABLE\n" //
+		      + "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
+		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n" //
+		      + "setState: FAILED\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -113,14 +128,20 @@ public class DeployStateTest extends ComponentTestCase {
 			}
 		};
 
-		State.execute(ctx);
-		Assert.assertEquals(State.FAILED, ctx.getState());
+		AgentState.execute(ctx);
+		Assert.assertEquals(AgentState.FAILED, ctx.getState());
 
-		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		String expected = "setState: CREATED\n"
+		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
 		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
+		      + "setState: UNREACHABLE\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
+		      + "setState: UNREACHABLE\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
-		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n";
+		      + "setState: UNREACHABLE\n"
+		      + "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
+		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n" //
+		      + "setState: FAILED\n" + "";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -139,13 +160,16 @@ public class DeployStateTest extends ComponentTestCase {
 			}
 		};
 
-		State.execute(ctx);
-		Assert.assertEquals(State.SUCCESSFUL, ctx.getState());
+		AgentState.execute(ctx);
+		Assert.assertEquals(AgentState.SUCCESSFUL, ctx.getState());
 
-		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		String expected = "setState: CREATED\n"
+		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
 		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+		      + "setState: SUBMITTED\n" //
 		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
 		      + "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\n"
+		      + "setState: SUCCESSFUL\n" //
 		      + "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
@@ -171,31 +195,36 @@ public class DeployStateTest extends ComponentTestCase {
 			}
 		};
 
-		State.execute(ctx);
-		Assert.assertEquals(State.SUCCESSFUL, ctx.getState());
+		AgentState.execute(ctx);
+		Assert.assertEquals(AgentState.SUCCESSFUL, ctx.getState());
 
-		String expected = "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+		String expected = "setState: CREATED\n"
+		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
 		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
+		      + "setState: UNREACHABLE\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
+		      + "setState: UNREACHABLE\n"
 		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+		      + "setState: SUBMITTED\n" //
 		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
 		      + "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\n"
+		      + "setState: SUCCESSFUL\n" //
 		      + "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
-	static abstract class BaseContext implements Context {
+	static abstract class BaseContext implements AgentContext {
 		private ConfigManager m_configManager;
 
-		private State m_state;
+		private AgentState m_state;
 
 		private int m_retriedCount;
-
-		private boolean m_failed;
 
 		private DeployModel m_model = new DeployModel().setId(123);
 
 		private StringBuilder m_log = new StringBuilder(2048);
+
+		private AgentStatus m_status;
 
 		public BaseContext(ConfigManager configManager) {
 			m_configManager = configManager;
@@ -246,8 +275,13 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public State getState() {
+		public AgentState getState() {
 			return m_state;
+		}
+
+		@Override
+		public AgentStatus getStatus() {
+			return m_status;
 		}
 
 		@Override
@@ -259,17 +293,12 @@ public class DeployStateTest extends ComponentTestCase {
 			return url.contains("?op=deploy&");
 		}
 
-		@Override
-		public boolean isFailed() {
-			return m_failed;
-		}
-
 		protected boolean isLog(String url) {
 			return url.contains("?op=log&");
 		}
 
 		@Override
-		public Context print(String pattern, Object... args) {
+		public AgentContext print(String pattern, Object... args) {
 			String message = String.format(pattern, args);
 
 			m_log.append(message);
@@ -277,22 +306,17 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public Context println() {
+		public AgentContext println() {
 			m_log.append("\r\n");
 			return this;
 		}
 
 		@Override
-		public Context println(String pattern, Object... args) {
+		public AgentContext println(String pattern, Object... args) {
 			String message = String.format(pattern, args);
 
 			m_log.append(message).append("\r\n");
 			return this;
-		}
-
-		@Override
-		public void setFailed(boolean failed) {
-			m_failed = failed;
 		}
 
 		@Override
@@ -301,12 +325,15 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public void setState(State state) {
+		public void setState(AgentState state) {
 			m_state = state;
+			m_log.append(String.format("setState: %s\r\n", state));
 		}
 
 		@Override
-		public void updateStatus(String status, String message) {
+		public void updateStatus(AgentStatus status, String message) {
+			m_status = status;
+			m_log.append(String.format("updateStatus: %s, %s\r\n", status.getName(), message));
 		}
 	}
 }

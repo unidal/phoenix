@@ -23,6 +23,7 @@
 						<thead>
 							<tr>
 								<th width="105">Machine</th>
+								<th></th>
 								<th>Progress</th>
 							</tr>
 						</thead>
@@ -30,7 +31,10 @@
 							<c:forEach var="entry" items="${deploy.hosts}" varStatus="status">
 								<c:set var="host" value="${entry.value}"/>
 								<tr class="host_status" id="${host.ip}" data-offset="${host.offset}">
-									<td>${host.ip}<i class="log-arrow icon-chevron-left<c:if test="${status.index > 0}"> hide</c:if>"></i></td>
+									<td>${host.ip}</td>
+									<td>
+                                        <i class="log-arrow icon-chevron-left<c:if test="${status.index > 0}"> hide</c:if>"></i>
+									</td>
 									<td>
                                         <div class="progress ${
                                         	host.status eq 'successful' ? 'progress-success' 

@@ -1,11 +1,11 @@
 <plexus>
 	<components>
 		<component>
-			<role>com.dianping.phoenix.deploy.event.DeployListener</role>
+			<role>com.dianping.phoenix.deploy.DeployListener</role>
 			<implementation>com.dianping.phoenix.deploy.DeployExecutorTest$MockDeployListener</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.deploy.event.AgentListener</role>
+			<role>com.dianping.phoenix.deploy.agent.AgentListener</role>
 			<implementation>com.dianping.phoenix.deploy.DeployExecutorTest$MockAgentListener</implementation>
 		</component>
 		<component>

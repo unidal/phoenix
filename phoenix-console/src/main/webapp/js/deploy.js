@@ -54,7 +54,7 @@ function fetch_deploy_status() {
 }
 
 function is_deploy_finished() {
-    return $("#deploy_status").text() != "doing";
+    return $("#deploy_status").text() != "deploying";
 }
 
 function update_host_status(host, data) {

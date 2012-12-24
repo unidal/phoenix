@@ -3,6 +3,7 @@ package com.dianping.phoenix.console.page.deploy;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.dianping.phoenix.deploy.DeployConstant;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.entity.SegmentModel;
@@ -45,7 +46,7 @@ class ViewModelVisitor extends BaseVisitor {
 		m_model = new DeployModel();
 		m_model.mergeAttributes(other);
 
-		HostModel summary = other.findHost("summary");
+		HostModel summary = other.findHost(DeployConstant.SUMMARY);
 		int progress = 0;
 		Set<String> set = new HashSet<String>();
 
@@ -57,7 +58,7 @@ class ViewModelVisitor extends BaseVisitor {
 		}
 
 		for (HostModel host : other.getHosts().values()) {
-			if (!host.getIp().equals("summary")) {
+			if (!host.getIp().equals(DeployConstant.SUMMARY)) {
 				visitHost(host);
 
 				HostModel h = m_model.findHost(host.getIp());
@@ -70,8 +71,8 @@ class ViewModelVisitor extends BaseVisitor {
 		int size = other.getHosts().size();
 		String status = null;
 
-		if (set.contains("doing")) {
-			status = "doing";
+		if (set.contains("deploying")) {
+			status = "deploying";
 		} else if (set.contains("failed")) {
 			if (set.contains("successful")) {
 				status = "warning";
@@ -119,7 +120,7 @@ class ViewModelVisitor extends BaseVisitor {
 		}
 
 		if (host.getStatus() == null) {
-			host.setStatus("doing");
+			host.setStatus("deploying");
 		}
 
 		host.setProgress(progress);

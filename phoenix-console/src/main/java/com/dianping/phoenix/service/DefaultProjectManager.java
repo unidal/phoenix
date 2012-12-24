@@ -36,18 +36,16 @@ public class DefaultProjectManager implements ProjectManager, Initializable {
 	private Map<String, DeployModel> m_models = new HashMap<String, DeployModel>();
 
 	@Override
-	public Integer findActiveDeployId(String name) {
-		DeployModel model = m_models.get(name);
+	public Deployment findActiveDeploy(String name) {
+		try {
+			Deployment deploy = m_deploymentDao.findActiveByDomain(name, DeploymentEntity.READSET_FULL);
 
-		if (model != null && isActive(model.getStatus())) {
-			return model.getId();
-		} else {
+			return deploy;
+		} catch (DalNotFoundException e) {
 			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Error when finding active deployment by name(%s)!", name));
 		}
-	}
-
-	private boolean isActive(String status) {
-		return "doing".equals(status) || "pending".equals(status);
 	}
 
 	@Override

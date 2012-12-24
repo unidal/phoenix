@@ -1,6 +1,6 @@
 package com.dianping.phoenix.deploy.agent;
 
-public class Progress {
+public class AgentProgress {
 	private int m_current;
 
 	private int m_total;

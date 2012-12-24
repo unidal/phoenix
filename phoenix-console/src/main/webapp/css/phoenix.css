@@ -100,11 +100,16 @@ tr.selected {
 	margin-bottom : 8px;
 	padding-bottom : 0px;
 }
+
 .error-panel ul {
 	margin-left : 14px;	
 }
 
-
+.error {
+	color: red;
+	margin-left : 20px;	
+	margin-right : 20px;	
+}
 
 
 
