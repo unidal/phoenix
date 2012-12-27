@@ -112,6 +112,16 @@ public class DeployExecutorTest extends ComponentTestCase {
 		      new Triple<String, String, String>("host-c", "ok.json", "successful.log"), //
 		      new Triple<String, String, String>("host-d", "ok.json", "successful.log"));
 	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testSecondFailure() throws Exception {
+		checkDeploy("second-failure", //
+				new Triple<String, String, String>("host-a", "ok.json", "successful.log"), //
+				new Triple<String, String, String>("host-b", "ok.json", "failed.log"), //
+				new Triple<String, String, String>("host-c", "ok.json", "successful.log"), //
+				new Triple<String, String, String>("host-d", "ok.json", "successful.log"));
+	}
 
 	@Test
 	@SuppressWarnings("unchecked")

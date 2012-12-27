@@ -42,5 +42,3 @@ CREATE TABLE `deployment_details` (
   `last_modified_date` datetime NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='业务部署详细表';
-
-

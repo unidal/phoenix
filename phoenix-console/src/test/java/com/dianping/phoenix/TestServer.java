@@ -44,6 +44,5 @@ public class TestServer extends JettyServer {
 	public void startWebapp() throws Exception {
 		// open the page in the default browser
 		display("/phoenix/console");
-		waitForAnyKey();
 	}
 }
