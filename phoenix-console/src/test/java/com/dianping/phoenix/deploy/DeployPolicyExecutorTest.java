@@ -8,8 +8,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.phoenix.deploy.agent.Progress;
-import com.dianping.phoenix.deploy.agent.SegmentReader;
+import com.dianping.phoenix.deploy.agent.AgentProgress;
+import com.dianping.phoenix.deploy.agent.AgentReader;
 
 public class DeployPolicyExecutorTest extends ComponentTestCase {
 	@Test
@@ -25,8 +25,8 @@ public class DeployPolicyExecutorTest extends ComponentTestCase {
 	@Test
 	public void testProtocol() throws Exception {
 		InputStream in = getClass().getResourceAsStream("protocol.txt");
-		SegmentReader reader = new SegmentReader(new InputStreamReader(in, "utf-8"));
-		Progress progress = new Progress();
+		AgentReader reader = new AgentReader(new InputStreamReader(in, "utf-8"));
+		AgentProgress progress = new AgentProgress();
 		StringBuilder sb = new StringBuilder(4096);
 
 		while (reader.hasNext()) {

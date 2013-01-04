@@ -15,6 +15,7 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
+import com.dianping.phoenix.console.dal.deploy.Deployment;
 import com.dianping.phoenix.console.dal.deploy.Version;
 import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.DeployPlan;
@@ -60,16 +61,16 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 						return;
 					} catch (Exception e) {
 						m_logger.warn(
-						      String.format("Error when submitting deploy to hosts(%s) for project(%s)!", hosts, name), e);
+						      String.format("Error when submitting deploy to hosts(%s) for project(%s)! Error: %s.", hosts, name, e));
 
 						ctx.addError("project.deploy", e);
 					}
 				} else if (payload.isWatch()) {
 					try {
-						Integer id = m_projectManager.findActiveDeployId(name);
+						Deployment deploy = m_projectManager.findActiveDeploy(name);
 
-						if (id != null) {
-							redirect(ctx, deployUri + "?id=" + id);
+						if (deploy != null) {
+							redirect(ctx, deployUri + "?id=" + deploy.getId());
 						}
 						return;
 					} catch (Exception e) {
@@ -112,12 +113,12 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 			try {
 				Project project = m_projectManager.findProjectBy(name);
 				List<Version> versions = m_versionManager.getFinishedVersions();
-				Integer activeDeployId = m_projectManager.findActiveDeployId(name);
+				Deployment activeDeployment = m_projectManager.findActiveDeploy(name);
 
 				model.setProject(project);
 				model.setVersions(versions);
 				model.setPolicies(DeployPolicy.values());
-				model.setRolling(activeDeployId != null);
+				model.setActiveDeployment(activeDeployment);
 			} catch (Exception e) {
 				m_logger.warn(String.format("Error when finding project(%s)!", name), e);
 				ctx.addError("project.view", e);

@@ -1,4 +1,4 @@
-package com.dianping.phoenix.deploy.event;
+package com.dianping.phoenix.deploy.internal;
 
 import java.util.Date;
 
@@ -7,8 +7,10 @@ import org.unidal.lookup.annotation.Inject;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetails;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsEntity;
-import com.dianping.phoenix.deploy.agent.Context;
-import com.dianping.phoenix.deploy.agent.Progress;
+import com.dianping.phoenix.deploy.agent.AgentContext;
+import com.dianping.phoenix.deploy.agent.AgentListener;
+import com.dianping.phoenix.deploy.agent.AgentProgress;
+import com.dianping.phoenix.deploy.agent.AgentStatus;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.entity.SegmentModel;
@@ -18,15 +20,13 @@ public class DefaultAgentListener implements AgentListener {
 	private DeploymentDetailsDao m_deploymentDetailsDao;
 
 	@Override
-	public void onEnd(Context ctx, String status) throws Exception {
+	public void onEnd(AgentContext ctx, AgentStatus status) throws Exception {
 		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
 
-		if ("successful".equals(status)) {
-			details.setStatus(3); // 3 - successful
-		} else if ("failed".equals(status)) {
-			details.setStatus(5); // 5 - failed
+		if (status == AgentStatus.SUCCESS || status == AgentStatus.FAILED) {
+			details.setStatus(status.getId());
 		} else {
-			throw new RuntimeException(String.format("Internal error: unknown status(%s)!", status));
+			throw new RuntimeException(String.format("AgentListener onEnd: invalid status(%s)!", status));
 		}
 
 		details.setKeyId(ctx.getId());
@@ -36,7 +36,7 @@ public class DefaultAgentListener implements AgentListener {
 	}
 
 	@Override
-	public void onProgress(Context ctx, Progress progress, String log) throws Exception {
+	public void onProgress(AgentContext ctx, AgentProgress progress, String log) throws Exception {
 		DeployModel model = ctx.getDeployModel();
 		String ip = ctx.getHost();
 		HostModel host = model.findHost(ip);
@@ -47,11 +47,12 @@ public class DefaultAgentListener implements AgentListener {
 		segment.setStatus(progress.getStatus());
 		segment.setStep(progress.getStep());
 		segment.setText(log);
+
 		host.addSegment(segment);
 	}
 
 	@Override
-	public void onStart(Context ctx) throws Exception {
+	public void onStart(AgentContext ctx) throws Exception {
 		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
 
 		details.setKeyId(ctx.getId());

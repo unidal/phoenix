@@ -1,4 +1,4 @@
-package com.dianping.phoenix.deploy;
+package com.dianping.phoenix.deploy.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,12 +22,16 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.tuple.Pair;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.deploy.agent.Context;
-import com.dianping.phoenix.deploy.agent.Progress;
-import com.dianping.phoenix.deploy.agent.SegmentReader;
-import com.dianping.phoenix.deploy.agent.State;
-import com.dianping.phoenix.deploy.event.AgentListener;
-import com.dianping.phoenix.deploy.event.DeployListener;
+import com.dianping.phoenix.deploy.DeployConstant;
+import com.dianping.phoenix.deploy.DeployExecutor;
+import com.dianping.phoenix.deploy.DeployListener;
+import com.dianping.phoenix.deploy.DeployPolicy;
+import com.dianping.phoenix.deploy.agent.AgentContext;
+import com.dianping.phoenix.deploy.agent.AgentListener;
+import com.dianping.phoenix.deploy.agent.AgentProgress;
+import com.dianping.phoenix.deploy.agent.AgentReader;
+import com.dianping.phoenix.deploy.agent.AgentState;
+import com.dianping.phoenix.deploy.agent.AgentStatus;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.entity.SegmentModel;
@@ -93,8 +97,6 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				String host = m_hosts.get(m_hostIndex++);
 
 				try {
-					m_deployListener.onHostCancel(m_model.getId(), host);
-
 					String message;
 
 					if (m_configManager.isShowLogTimestamp()) {
@@ -107,7 +109,10 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 					RolloutContext ctx = new RolloutContext(this, m_agentListener, m_model, host);
 
-					ctx.updateStatus("cancelled", message);
+					ctx.updateStatus(AgentStatus.CANCELLED, message);
+					m_deployListener.onHostCancel(m_model.getId(), host);
+
+					log("Rolling out to host(%s) ... CANCELLED.", host);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -120,19 +125,19 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public String getName() {
-			return getClass().getSimpleName();
+			return String.format("%s-%s", getClass().getSimpleName(), m_model.getDomain());
 		}
 
-		public ControllerTask log(String message) {
-			HostModel host = m_model.findHost("summary");
+		private ControllerTask log(String pattern, Object... args) {
+			HostModel host = m_model.findHost(DeployConstant.SUMMARY);
 			String text;
 
 			if (m_configManager.isShowLogTimestamp()) {
 				String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
-				text = "[" + timestamp + "] " + message;
+				text = "[" + timestamp + "] " + String.format(pattern, args);
 			} else {
-				text = message;
+				text = String.format(pattern, args);
 			}
 
 			host.addSegment(new SegmentModel().setText(text));
@@ -154,18 +159,24 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					boolean done = pair.getKey().await(10, TimeUnit.MILLISECONDS);
 
 					if (done) {
-						for (String host : pair.getValue()) {
+						for (String ip : pair.getValue()) {
+							HostModel host = m_model.findHost(ip);
+							String status = host.getStatus();
+
 							try {
-								m_deployListener.onHostEnd(m_model.getId(), host);
+								m_deployListener.onHostEnd(m_model.getId(), ip);
+
+								log("Rolling out to host(%s) ... %s", ip, status.toUpperCase());
 							} catch (Exception e) {
-								m_logger.warn(String.format("Error when processing onHostEnd(%s) of deploy(%s)!", host,
-								      m_model.getId()), e);
+								m_logger.warn(
+								      String.format("Error when processing onHostEnd(%s) of deploy(%s)!", ip, m_model.getId()),
+								      e);
 							}
 						}
 
 						if (shouldStop()) {
 							cancelResetTasks();
-							pair = null;
+							break;
 						} else {
 							int batchSize = m_policy.getBatchSize();
 
@@ -176,12 +187,10 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			} catch (InterruptedException e) {
 				// ignore it
 			} finally {
-				if (pair == null) {
-					try {
-						m_deployListener.onDeployEnd(m_model.getId());
-					} catch (Exception e) {
-						m_logger.warn(String.format("Error when processing onEnd of deploy(%s)!", m_model.getId()), e);
-					}
+				try {
+					m_deployListener.onDeployEnd(m_model.getId());
+				} catch (Exception e) {
+					m_logger.warn(String.format("Error when processing onEnd of deploy(%s)!", m_model.getId()), e);
 				}
 			}
 		}
@@ -194,7 +203,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					for (SegmentModel segment : host.getSegments()) {
 						String status = segment.getStatus();
 
-						if (status != null && "failed".equals(status)) {
+						if (status != null && AgentStatus.FAILED.getName().equals(status)) {
 							return true;
 						}
 					}
@@ -221,6 +230,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				Threads.forGroup("Phoenix").start(new RolloutTask(this, m_listener, m_model, host, latch));
 				hosts.add(host);
 				count++;
+
+				log("Rolling out to host(%s) ...", host);
 			}
 
 			for (int i = count; i < maxCount; i++) {
@@ -235,22 +246,20 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 	}
 
-	static class RolloutContext implements Context {
+	static class RolloutContext implements AgentContext {
 		private ControllerTask m_controller;
 
 		private AgentListener m_listener;
 
 		private DeployModel m_model;
 
-		private State m_state;
+		private AgentState m_state;
 
-		private int m_id;
+		private AgentStatus m_status;
 
-		private String m_host;
+		private HostModel m_host;
 
 		private int m_retriedCount;
-
-		private boolean m_failed;
 
 		private StringBuilder m_log = new StringBuilder(256);
 
@@ -258,11 +267,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			m_controller = controller;
 			m_listener = listener;
 			m_model = model;
-			m_host = host;
-
-			HostModel m = model.findHost(host);
-
-			m_id = m.getId();
+			m_host = model.findHost(host);
 		}
 
 		@Override
@@ -276,9 +281,9 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-      public DeployModel getDeployModel() {
-	      return m_model;
-      }
+		public DeployModel getDeployModel() {
+			return m_model;
+		}
 
 		@Override
 		public String getDomain() {
@@ -287,19 +292,17 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public String getHost() {
-			return m_host;
+			return m_host.getIp();
 		}
 
 		@Override
 		public int getId() {
-			return m_id;
+			return m_host.getId();
 		}
 
 		@Override
 		public String getRawLog() {
-			HostModel host = m_model.findHost(m_host);
-
-			return new DeployModel().addHost(host).toString();
+			return new DeployModel().addHost(m_host).toString();
 		}
 
 		@Override
@@ -308,8 +311,13 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-		public State getState() {
+		public AgentState getState() {
 			return m_state;
+		}
+
+		@Override
+		public AgentStatus getStatus() {
+			return m_status;
 		}
 
 		@Override
@@ -318,33 +326,29 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-		public boolean isFailed() {
-			return m_failed;
-		}
-
-		@Override
 		public String openUrl(String url) throws IOException {
 			ConfigManager configManager = m_controller.getConfigManager();
+			int timeout = configManager.getDeployConnectTimeout();
 
 			if (url.contains("?op=deploy&")) {
-				InputStream in = Urls.forIO().connectTimeout(configManager.getDeployConnectTimeout()).openStream(url);
+				InputStream in = Urls.forIO().connectTimeout(timeout).openStream(url);
 				String content = Files.forIO().readFrom(in, "utf-8");
 
 				return content;
 			} else if (url.contains("?op=log&")) {
-				InputStream in = Urls.forIO().connectTimeout(configManager.getDeployConnectTimeout()).openStream(url);
-				SegmentReader sr = new SegmentReader(new InputStreamReader(in, "utf-8"));
-				Progress progress = new Progress();
+				InputStream in = Urls.forIO().connectTimeout(timeout).openStream(url);
+				AgentReader sr = new AgentReader(new InputStreamReader(in, "utf-8"));
+				AgentProgress progress = new AgentProgress();
 
 				while (sr.hasNext()) {
 					String segment = sr.next(progress);
 
-					if ("failed".equals(progress.getStatus())) {
-						setFailed(true);
-					}
-
 					try {
 						m_listener.onProgress(this, progress, segment);
+
+						if ("failed".equals(progress.getStatus())) {
+							updateStatus(AgentStatus.FAILED, segment);
+						}
 					} catch (Exception e) {
 						e.printStackTrace(); // TODO
 					}
@@ -357,7 +361,13 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-		public Context print(String pattern, Object... args) {
+		public AgentContext print(String pattern, Object... args) {
+			if (m_log.length() == 0 && m_controller.getConfigManager().isShowLogTimestamp()) {
+				String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+				m_log.append("[").append(timestamp).append("] ");
+			}
+
 			String message = String.format(pattern, args);
 
 			m_log.append(message);
@@ -365,25 +375,31 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-		public Context println() {
-			m_controller.log(m_log.toString());
-			m_log.setLength(0);
+		public AgentContext println() {
+			if (m_log.length() > 0) {
+				m_host.addSegment(new SegmentModel().setText(m_log.toString()));
+				m_log.setLength(0);
+			}
+
 			return this;
 		}
 
 		@Override
-		public Context println(String pattern, Object... args) {
-			String message = String.format(pattern, args);
+		public AgentContext println(String pattern, Object... args) {
+			println();
 
-			m_log.append(message);
-			m_controller.log(m_log.toString());
-			m_log.setLength(0);
+			if (m_controller.getConfigManager().isShowLogTimestamp()) {
+				String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+				String message = String.format(pattern, args);
+
+				m_host.addSegment(new SegmentModel().setText("[" + timestamp + "] " + message));
+			} else {
+				String message = String.format(pattern, args);
+
+				m_host.addSegment(new SegmentModel().setText(message));
+			}
+
 			return this;
-		}
-
-		@Override
-		public void setFailed(boolean failed) {
-			m_failed = failed;
 		}
 
 		@Override
@@ -392,7 +408,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-		public void setState(State state) {
+		public void setState(AgentState state) {
 			m_state = state;
 
 			try {
@@ -401,24 +417,33 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					m_listener.onStart(this);
 					break;
 				case SUCCESSFUL:
-					m_listener.onEnd(this, "successful");
+					m_listener.onEnd(this, AgentStatus.SUCCESS);
 					break;
 				case FAILED:
-					m_listener.onEnd(this, "failed");
+					m_listener.onEnd(this, AgentStatus.FAILED);
 					break;
 				}
 			} catch (Exception e) {
-				e.printStackTrace(); // TODO
+				e.printStackTrace();
 			}
 		}
 
 		@Override
-		public void updateStatus(String status, String message) {
-			HostModel host = m_model.findHost(m_host);
+		public void updateStatus(AgentStatus status, String message) {
+			String text;
 
-			host.setStatus(status);
-			host.addSegment(new SegmentModel().setStatus(status) //
-			      .setCurrentTicks(100).setTotalTicks(100).setStep(status).setText(message));
+			if (m_controller.getConfigManager().isShowLogTimestamp()) {
+				String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+				text = "[" + timestamp + "] " + message;
+			} else {
+				text = message;
+			}
+
+			m_status = status;
+			m_host.setStatus(status.getName());
+			m_host.addSegment(new SegmentModel().setStatus(status.getName()) //
+			      .setCurrentTicks(100).setTotalTicks(100).setStep(status.getTitle()).setText(text));
 		}
 	}
 
@@ -435,13 +460,13 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public String getName() {
-			return getClass().getSimpleName();
+			return String.format("%s-%s-%s", getClass().getSimpleName(), m_ctx.getDomain(), m_ctx.getHost());
 		}
 
 		@Override
 		public void run() {
 			try {
-				State.execute(m_ctx);
+				AgentState.execute(m_ctx);
 			} catch (Throwable e) {
 				m_ctx.print("Deployment aborted due to: %s.\r\n", e);
 

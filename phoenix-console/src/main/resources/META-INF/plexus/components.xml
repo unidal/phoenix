@@ -65,7 +65,7 @@
 		<component>
 			<role>com.dianping.phoenix.deploy.DeployExecutor</role>
 			<role-hint>one-by-one</role-hint>
-			<implementation>com.dianping.phoenix.deploy.DefaultDeployExecutor</implementation>
+			<implementation>com.dianping.phoenix.deploy.internal.DefaultDeployExecutor</implementation>
 			<configuration>
 				<policy>ONE_BY_ONE</policy>
 			</configuration>
@@ -74,17 +74,17 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
+					<role>com.dianping.phoenix.deploy.DeployListener</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.AgentListener</role>
+					<role>com.dianping.phoenix.deploy.agent.AgentListener</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.deploy.DeployExecutor</role>
 			<role-hint>two-by-two</role-hint>
-			<implementation>com.dianping.phoenix.deploy.DefaultDeployExecutor</implementation>
+			<implementation>com.dianping.phoenix.deploy.internal.DefaultDeployExecutor</implementation>
 			<configuration>
 				<policy>TWO_BY_TWO</policy>
 			</configuration>
@@ -93,17 +93,17 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
+					<role>com.dianping.phoenix.deploy.DeployListener</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.AgentListener</role>
+					<role>com.dianping.phoenix.deploy.agent.AgentListener</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.deploy.DeployExecutor</role>
 			<role-hint>three-by-three</role-hint>
-			<implementation>com.dianping.phoenix.deploy.DefaultDeployExecutor</implementation>
+			<implementation>com.dianping.phoenix.deploy.internal.DefaultDeployExecutor</implementation>
 			<configuration>
 				<policy>THREE_BY_THREE</policy>
 			</configuration>
@@ -112,28 +112,28 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
+					<role>com.dianping.phoenix.deploy.DeployListener</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.AgentListener</role>
+					<role>com.dianping.phoenix.deploy.agent.AgentListener</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.deploy.DeployManager</role>
-			<implementation>com.dianping.phoenix.deploy.DefaultDeployManager</implementation>
+			<implementation>com.dianping.phoenix.deploy.internal.DefaultDeployManager</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.service.ProjectManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deploy.event.DeployListener</role>
+					<role>com.dianping.phoenix.deploy.DeployListener</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.deploy.event.DeployListener</role>
-			<implementation>com.dianping.phoenix.deploy.event.DefaultDeployListener</implementation>
+			<role>com.dianping.phoenix.deploy.DeployListener</role>
+			<implementation>com.dianping.phoenix.deploy.internal.DefaultDeployListener</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDao</role>
@@ -147,8 +147,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.deploy.event.AgentListener</role>
-			<implementation>com.dianping.phoenix.deploy.event.DefaultAgentListener</implementation>
+			<role>com.dianping.phoenix.deploy.agent.AgentListener</role>
+			<implementation>com.dianping.phoenix.deploy.internal.DefaultAgentListener</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>

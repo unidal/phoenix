@@ -17,9 +17,9 @@ public class ConfigManagerTest {
 		Assert.assertEquals("ssh://git@10.1.4.81:58422/kernel.git", manager.getGitOriginUrl());
 		Assert.assertEquals("target/gitrepo", manager.getGitWorkingDir());
 
-		Assert.assertEquals(
-		      "http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=1&domain=user-web&version=0.1-SNAPSHOT"
-		            + "&qaServiceUrlPrefix=http://192.168.26.23:8080/qa/service/task&qaServiceTimeout=300000",
+		Assert.assertEquals("http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=1&domain=user-web"
+		      + "&version=0.1-SNAPSHOT&kernelGitUrl=ssh://git@10.1.4.81:58422/kernel.git"
+		      + "&qaServiceUrlPrefix=http://192.168.26.23:8080/qa/service/task&qaServiceTimeout=300000",
 		      manager.getDeployUrl("localhost", 1, "user-web", "0.1-SNAPSHOT"));
 		Assert.assertEquals("http://localhost:3473/phoenix/agent/deploy?" + //
 		      "op=status&deployId=1", manager.getDeployStatusUrl("localhost", 1));

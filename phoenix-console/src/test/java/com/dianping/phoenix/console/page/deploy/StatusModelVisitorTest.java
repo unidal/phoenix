@@ -32,7 +32,7 @@ public class StatusModelVisitorTest {
 		HostModel summary = model.findHost("summary");
 
 		Assert.assertEquals(50, summary.getProgress());
-		Assert.assertEquals("doing", summary.getStatus());
+		Assert.assertEquals("deploying", summary.getStatus());
 
 		HostModel host1 = model.findHost("192.168.66.131");
 		Assert.assertEquals(12, host1.getProgress());
