@@ -14,3 +14,5 @@
 6. chmod +x X/startup.sh
 
 7. X/startup.sh
+
+8. to verify, visit http://agent_ip:3473/phoenix/agent/deploy
