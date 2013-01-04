@@ -14,14 +14,18 @@ import com.dianping.service.spi.ServiceConfigurator;
 import com.dianping.service.spi.ServiceManager;
 import com.dianping.service.spi.ServiceProvider;
 import com.dianping.service.spi.annotation.Component;
+import com.dianping.service.spi.annotation.Configuration;
 import com.dianping.service.spi.annotation.Property;
 import com.dianping.service.spi.lifecycle.ServiceContext;
 
 public class DefaultServiceConfigurator extends ContainerHolder implements ServiceConfigurator {
 	@Override
 	public void configure(ServiceContext<?> ctx) throws Exception {
-		injectDependencies(ctx.getServiceProvider());
-		injectProperties(ctx.getServiceProvider(), ctx.getServiceBinding().getProperties());
+		ServiceProvider<?> serviceProvider = ctx.getServiceProvider();
+
+		injectDependencies(serviceProvider);
+		injectProperties(serviceProvider, ctx.getServiceBinding().getProperties());
+		injectConfiguration(serviceProvider, ctx.getServiceBinding().getConfiguration());
 	}
 
 	private <T extends Annotation> List<Pair<Field, T>> getAnnotatedFields(ServiceProvider<?> serviceProvider,
@@ -39,6 +43,40 @@ public class DefaultServiceConfigurator extends ContainerHolder implements Servi
 		}
 
 		return list;
+	}
+
+	private void injectConfiguration(ServiceProvider<?> serviceProvider, String content) {
+		List<Pair<Field, Configuration>> list = getAnnotatedFields(serviceProvider, Configuration.class);
+		int size = list.size();
+
+		if (size > 1) {
+			throw new RuntimeException(String.format("Only one field of %s could be annotated with %s!",
+			      serviceProvider.getClass(), Configuration.class.getName()));
+		} else if (size == 1) {
+			for (Pair<Field, Configuration> entry : list) {
+				Field field = entry.getKey();
+				Configuration configure = entry.getValue();
+
+				if (content == null && configure.required()) {
+					throw new RuntimeException(String.format("Configuration of %s is not configured while it's required!",
+					      serviceProvider.getClass()));
+				}
+
+				if (content != null) {
+					if (!field.isAccessible()) {
+						field.setAccessible(true);
+					}
+
+					try {
+						field.set(serviceProvider, content);
+					} catch (Exception e) {
+						throw new RuntimeException(String.format(
+						      "Error when injecting configuration field(%s) of % with %s!", field.getName(),
+						      serviceProvider.getClass(), content), e);
+					}
+				}
+			}
+		}
 	}
 
 	private void injectDependencies(ServiceProvider<?> serviceProvider) throws Exception {
@@ -73,7 +111,7 @@ public class DefaultServiceConfigurator extends ContainerHolder implements Servi
 			Property property = entry.getValue();
 			String name = property.name();
 
-			if (name.equals(Property.NOT_SPECIFIED)) {
+			if (name.length() == 0) {
 				String fieldName = field.getName();
 
 				if (fieldName.startsWith("m_")) {
@@ -86,12 +124,11 @@ public class DefaultServiceConfigurator extends ContainerHolder implements Servi
 			String value = properties.get(name);
 
 			if (value == null) {
-				if (!property.defaultValue().equals(Property.NOT_SPECIFIED)) {
+				if (property.defaultValue() != Property.NOT_SPECIFIED) {
 					value = property.defaultValue();
 				} else if (property.required()) {
-					throw new IllegalStateException(String.format(
-					      "No value configured for property(%s) of %s while it's required!", name,
-					      serviceProvider.getClass()));
+					throw new RuntimeException(String.format("Property(%s) of %s is not configured while it's required!",
+					      name, serviceProvider.getClass()));
 				}
 			}
 

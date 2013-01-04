@@ -2,24 +2,40 @@ package com.dianping.service.spi.internal;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.unidal.tuple.Pair;
 
 import com.dianping.service.spi.ServiceBinding;
 
 public class DefaultServiceBinding implements ServiceBinding {
-	private Map<String, String> m_propreties;
+	private String m_alias;
 
 	private String m_configuration;
 
-	public DefaultServiceBinding(String configuration) {
-		this(new LinkedHashMap<String, String>(), configuration);
-	}
+	private Map<String, String> m_propreties;
 
-	public DefaultServiceBinding(Map<String, String> properties, String configuration) {
+	private List<Pair<Class<?>, String>> m_components;
+
+	public DefaultServiceBinding(String alias, Map<String, String> properties, String configuration,
+	      List<Pair<Class<?>, String>> components) {
+		m_alias = alias;
 		m_propreties = properties;
 		m_configuration = configuration;
+		m_components = components;
+	}
+
+	public DefaultServiceBinding(String alias, String configuration) {
+		this(alias, new LinkedHashMap<String, String>(), configuration, new ArrayList<Pair<Class<?>, String>>());
+	}
+
+	@Override
+	public String getAlias() {
+		return m_alias;
 	}
 
 	@Override
@@ -52,6 +68,11 @@ public class DefaultServiceBinding implements ServiceBinding {
 				return defaultValue;
 			}
 		}
+	}
+
+	@Override
+	public List<Pair<Class<?>, String>> getComponents() {
+		return m_components;
 	}
 
 	@Override
@@ -144,5 +165,4 @@ public class DefaultServiceBinding implements ServiceBinding {
 			return value;
 		}
 	}
-
 }

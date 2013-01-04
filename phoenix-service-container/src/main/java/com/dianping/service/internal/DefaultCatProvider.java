@@ -52,8 +52,8 @@ public class DefaultCatProvider implements ServiceProvider<Cat> {
 		String configuration = binding.getConfiguration();
 
 		if (configuration != null) {
-			File configFile = File.createTempFile("cat-", ".tmp");
 			ClientConfig config = makeClientConfig();
+			File configFile = File.createTempFile("cat-", ".tmp");
 
 			Files.forIO().writeTo(configFile, config.toString());
 			Cat.initialize(configFile);

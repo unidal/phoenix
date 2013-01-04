@@ -2,7 +2,7 @@
 	<components>
 		<component>
 			<role>com.dianping.service.ServiceContainer</role>
-			<implementation>com.dianping.service.DefaultServiceContainer</implementation>
+			<implementation>com.dianping.service.ServiceContainer</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.service.spi.ServiceManager</role>
@@ -57,6 +57,32 @@
 			<role>com.dianping.service.spi.ServiceProvider</role>
 			<role-hint>com.dianping.cat.Cat</role-hint>
 			<implementation>com.dianping.service.internal.DefaultCatProvider</implementation>
+		</component>
+		<component>
+			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
+			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
+			<configuration>
+				<modules>
+					<module default="true">com.dianping.service.editor.EditorModule</module>
+				</modules>
+			</configuration>
+		</component>
+		<component>
+			<role>com.dianping.service.editor.EditorModule</role>
+			<implementation>com.dianping.service.editor.EditorModule</implementation>
+		</component>
+		<component>
+			<role>com.dianping.service.editor.page.home.Handler</role>
+			<implementation>com.dianping.service.editor.page.home.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.service.editor.page.home.JspViewer</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.service.editor.page.home.JspViewer</role>
+			<implementation>com.dianping.service.editor.page.home.JspViewer</implementation>
 		</component>
 	</components>
 </plexus>
