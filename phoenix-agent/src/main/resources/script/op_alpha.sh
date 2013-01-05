@@ -21,7 +21,7 @@ ensure_not_empty container_install_path="$container_install_path" container_type
 
 ############################## functions for dev ############################## 
 function kill_jboss {
-	jps -lvm | awk '$2=="org.jboss.Main"{cmd=sprintf("kill -9 %s", $1);system(cmd)}'
+	service web stop
 }
 
 function kill_tomcat {
@@ -36,7 +36,7 @@ function start_tomcat {
 
 function start_jboss {
 	log "starting jboss"
-	$container_install_path/bin/run.sh >/dev/null 2>&1 &
+	service web start
 	log "jboss started"
 }
 
