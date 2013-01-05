@@ -14,6 +14,7 @@
     <element name="kernel-doc-base-pattern" value-type="String" default-value="/data/webapps/phoenix-kernel/%s"/>
     <element name="domain-doc-base-keyword-pattern" value-type="String" default-value="/%1$s/current/%1$s.war"/>
     <element name="test-service-poll-interval" value-type="int" default-value="2000" primitive="true"/>
+    <element name="jboss-server-name" value-type="String" default-value="default" />
   </entity>
   <entity name="console" class-name="ConsoleConfig">
   	<element name="deploy-retry-interval" value-type="int" default-value="30000" primitive="true"/>
