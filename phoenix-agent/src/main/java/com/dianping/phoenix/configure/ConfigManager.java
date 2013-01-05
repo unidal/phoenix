@@ -177,7 +177,8 @@ public class ConfigManager implements Initializable {
 			serverXml = new File(containerInstallPath + "/conf/server.xml");
 		} else {
 			loaderClass = JBOSS_LOADER_CLASS;
-			serverXml = new File(containerInstallPath + "/server/default/deploy/jboss-web.deployer/server.xml");
+			serverXml = new File(String.format("%s/server/%s/deploy/jboss-web.deployer/server.xml",
+					containerInstallPath, m_config.getAgent().getJbossServerName()));
 		}
 
 		logAllField(this);
