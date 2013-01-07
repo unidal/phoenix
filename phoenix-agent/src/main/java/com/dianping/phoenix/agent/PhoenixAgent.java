@@ -6,9 +6,9 @@ import org.apache.log4j.Logger;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.webapp.WebAppContext;
 
-public class StandaloneServer {
+public class PhoenixAgent {
 
-	private final static Logger logger = Logger.getLogger(StandaloneServer.class);
+	private final static Logger logger = Logger.getLogger(PhoenixAgent.class);
 
 	public static void main(String[] args) throws Exception {
 

@@ -110,9 +110,11 @@ function git_rollback {
 }
 
 function rollback {
+	stop_all
 	log "rolling back kernel"
 	git_rollback $domain_kernel_base
 	log "kernel version $kernel_version rolled back"
+	start_container
 	log "put container online"
 	./op_${env}.sh -o put_container_online -b $container_install_path -c $container_type
 	log "container onlined"
