@@ -12,6 +12,7 @@
 		<test-service-poll-interval>1000</test-service-poll-interval>
 		<url-connect-timeout>1000</url-connect-timeout>
 		<url-read-timeout>5000</url-read-timeout>
+		<jboss-server-name>default</jboss-server-name>
 	</agent>
 	<console>
 		<deploy-retry-interval>30000</deploy-retry-interval>

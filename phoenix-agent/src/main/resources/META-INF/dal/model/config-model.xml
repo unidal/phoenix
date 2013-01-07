@@ -9,11 +9,12 @@
     <element name="local-dir" value-type="String" default-value="target/git" />
   </entity>
   <entity name="agent" class-name="AgentConfig">
-    <element name="container-install-path" value-type="String" default-value="~/Downloads/apache-tomcat-6.0.35"/>
+    <element name="container-install-path" value-type="String" default-value="/usr/local/jboss"/>
     <element name="container-port" value-type="int" default-value="8080" primitive="true"/>
     <element name="kernel-doc-base-pattern" value-type="String" default-value="/data/webapps/phoenix-kernel/%s"/>
-    <element name="domain-doc-base-keyword-pattern" value-type="String" default-value="/%s/current"/>
-    <element name="test-service-poll-interval" value-type="int" default-value="1000" primitive="true"/>
+    <element name="domain-doc-base-keyword-pattern" value-type="String" default-value="/%1$s/current/%1$s.war"/>
+    <element name="test-service-poll-interval" value-type="int" default-value="2000" primitive="true"/>
+    <element name="jboss-server-name" value-type="String" default-value="default" />
   </entity>
   <entity name="console" class-name="ConsoleConfig">
   	<element name="deploy-retry-interval" value-type="int" default-value="30000" primitive="true"/>
