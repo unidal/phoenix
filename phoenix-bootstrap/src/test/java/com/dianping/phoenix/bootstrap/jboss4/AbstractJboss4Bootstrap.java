@@ -100,6 +100,7 @@ public abstract class AbstractJboss4Bootstrap {
 		Embedded container = new Embedded();
 
 		container.setCatalinaHome(getCatalinaHome());
+		container.setCatalinaBase(getCatalinaHome());
 		container.setRealm(new MemoryRealm());
 
 		// create host
@@ -117,7 +118,8 @@ public abstract class AbstractJboss4Bootstrap {
 			loader.setWebXml(new File(kernelDocBase, webXml));
 		}
 
-		Context context = container.createContext("/" + getContextPath(), appDocBase);
+		String contextPath = getContextPath();
+		Context context = container.createContext(contextPath == null ? "" : contextPath, appDocBase);
 		context.setLoader(loader);
 
 		// avoid write SESSIONS.ser to src/test/resources/

@@ -3,6 +3,7 @@
 	<entity name="deployment" root="true" class-name="DeploymentModel">
 	</entity>
 	<entity name="service" class-name="ServiceModel">
+		<attribute name="type" value-type="Class" />
 		<attribute name="alias" value-type="String" default-value="default" />
 	</entity>
 	<entity name="property" class-name="PropertyModel">

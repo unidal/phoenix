@@ -11,6 +11,10 @@ import java.lang.annotation.Target;
 public @interface Property {
 	public String name() default "";
 
+	public String title() default "";
+
+	public String description() default "";
+
 	public String defaultValue() default NOT_SPECIFIED;
 
 	public boolean required() default true;

@@ -34,6 +34,10 @@ public class DefaultServiceRegistry extends ContainerHolder implements ServiceRe
 		return components;
 	}
 
+	public DeploymentModel getDeployment() {
+		return m_model;
+	}
+
 	private Map<String, String> getProperties(ServiceModel service) {
 		Map<String, String> properties = new LinkedHashMap<String, String>();
 
@@ -115,8 +119,6 @@ public class DefaultServiceRegistry extends ContainerHolder implements ServiceRe
 
 	@Override
 	public void setServiceBinding(Class<MockService> serviceType, String alias, ServiceBinding binding) {
-		String type = serviceType.getName();
-
 		if (alias == null) {
 			alias = "default";
 		}
@@ -124,7 +126,7 @@ public class DefaultServiceRegistry extends ContainerHolder implements ServiceRe
 		ServiceModel service = null;
 
 		for (ServiceModel activeService : m_model.getActiveServices()) {
-			if (type.equals(activeService.getType()) && alias.equals(activeService.getAlias())) {
+			if (serviceType.equals(activeService.getType()) && alias.equals(activeService.getAlias())) {
 				service = activeService;
 				break;
 			}
@@ -133,7 +135,7 @@ public class DefaultServiceRegistry extends ContainerHolder implements ServiceRe
 		if (service == null) {
 			service = new ServiceModel();
 			service.setAlias(alias);
-			service.setType(type);
+			service.setType(serviceType);
 			m_model.addService(service);
 		} else {
 			service.getProperties().clear();

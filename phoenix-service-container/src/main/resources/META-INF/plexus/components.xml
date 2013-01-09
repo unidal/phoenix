@@ -59,6 +59,15 @@
 			<implementation>com.dianping.service.internal.DefaultCatProvider</implementation>
 		</component>
 		<component>
+			<role>com.dianping.service.editor.model.ModelBuilder</role>
+			<implementation>com.dianping.service.editor.model.ModelBuilder</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.service.spi.ServiceRegistry</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
@@ -78,11 +87,23 @@
 				<requirement>
 					<role>com.dianping.service.editor.page.home.JspViewer</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.service.editor.model.ModelBuilder</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.service.editor.page.home.JspViewer</role>
 			<implementation>com.dianping.service.editor.page.home.JspViewer</implementation>
+		</component>
+		<component>
+			<role>com.dianping.service.editor.model.ModelBuilder</role>
+			<implementation>com.dianping.service.editor.model.ModelBuilder</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.service.spi.ServiceRegistry</role>
+				</requirement>
+			</requirements>
 		</component>
 	</components>
 </plexus>

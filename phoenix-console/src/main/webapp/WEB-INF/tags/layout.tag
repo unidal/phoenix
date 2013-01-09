@@ -3,6 +3,7 @@
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 
 <res:bean id="res"/>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,14 +11,14 @@
 	<title>Phoenix - ${model.page.description}</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="">
+	<meta name="description" content="Phoenix Console">
 	<link rel="shortcut icon" href="${model.webapp}/img/favicon.png">
 	<res:cssSlot id="head-css"/>
 	<res:jsSlot id="head-js"/>
 	<res:useJs value="${res.js.local['jquery-1.8.1.min.js']}" target="head-js"/>
 	<res:useJs value="${res.js.local['core.js']}" target="head-js"/>
 	<res:useCss value='${res.css.local.bootstrap_css}' target="head-css"/>
-	<res:useCss value="${res.js.local['bootstrap-responsive.css']}" target="head-css"/>
+	<res:useCss value="${res.css.local['bootstrap-responsive.css']}" target="head-css"/>
 	<res:useCss value='${res.css.local.phoenix_css}' target="head-css"/>
 	<script type="text/javascript">var contextpath = "${model.webapp}";</script>
 </head>

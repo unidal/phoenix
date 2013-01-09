@@ -1,6 +1,7 @@
 package com.dianping.service.editor.model;
 
 import java.util.List;
+import java.util.Map;
 
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
@@ -26,15 +27,26 @@ public class ModelBuilder extends ContainerHolder implements IVisitor {
 		for (ServiceProvider<?> provider : providers) {
 			List<ServiceBinding> bindings = m_registry.getServiceBindings(provider.getServiceType());
 
-			for (ServiceBinding binding : bindings) {
+			if (bindings.isEmpty()) {
 				ServiceModel service = new ServiceModel();
-
-				service.setAlias(binding.getAlias());
-				service.setConfiguration(binding.getConfiguration());
-				service.setType(provider.getServiceType().toString());
-
+				
+				service.setType(provider.getServiceType());
 				deployment.addService(service);
-				visitService(service);
+			} else {
+				for (ServiceBinding binding : bindings) {
+					ServiceModel service = new ServiceModel();
+					List<PropertyModel> properties = service.getProperties();
+
+					service.setAlias(binding.getAlias());
+					service.setConfiguration(binding.getConfiguration());
+					service.setType(provider.getServiceType());
+
+					for (Map.Entry<String, String> e : binding.getProperties().entrySet()) {
+						properties.add(new PropertyModel().setName(e.getKey()).setValue(e.getValue()));
+					}
+
+					deployment.addService(service);
+				}
 			}
 		}
 	}

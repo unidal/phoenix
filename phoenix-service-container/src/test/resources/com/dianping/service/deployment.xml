@@ -17,7 +17,7 @@
 			</properties>
 		</service>
 
-		<service type="com.dianping.service.configuration.Configuration">
+<!-- 		<service type="com.dianping.service.configuration.Configuration">
 			<properties>
 				<property name="source">...</property>
 				<property name="enabled">true</property>
@@ -39,6 +39,6 @@
 				<requirement type="org.codehaus.plexus.logging.Logger" alias="default" />
 				<requirement type="com.dianping.cat.Cat" />
 			</requirements>
-		</service>
+		</service> -->
 	</active-services>
 </deployment>
