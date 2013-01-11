@@ -4,6 +4,14 @@ set -u
 
 cd `dirname $0`
 
+agent_class="com.dianping.phoenix.agent.PhoenixAgent"
+port=3473
+
+if [ $# -gt 1 ];then
+	agent_class=$1
+	port=$2
+fi
+
 if [ -e WEB-INF/classes ];then
 	mv WEB-INF/classes ./
 fi
@@ -17,5 +25,5 @@ if [ ! -x $java ];then
 fi
 
 echo "Starting phoenix-agent"
-nohup $java -classpath classes:"lib/*" com.dianping.phoenix.agent.StandaloneServer 3473 /phoenix `pwd` >/dev/null 2>&1 &
+nohup $java -classpath classes:"lib/*" $agent_class $port /phoenix `pwd` >/dev/null 2>&1 &
 echo "Started"
