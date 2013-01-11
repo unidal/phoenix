@@ -8,6 +8,7 @@ import org.unidal.lookup.configuration.Component;
 
 import com.dianping.cat.Cat;
 import com.dianping.service.ServiceContainer;
+import com.dianping.service.editor.model.ServiceAccessor;
 import com.dianping.service.editor.model.ModelBuilder;
 import com.dianping.service.internal.DefaultCatProvider;
 import com.dianping.service.logging.Log4jLoggerProvider;
@@ -64,6 +65,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(ModelBuilder.class) //
 		      .req(ServiceRegistry.class));
+		all.add(C(ServiceAccessor.class));
 		all.addAll(new WebComponentConfigurator().defineComponents());
 
 		return all;

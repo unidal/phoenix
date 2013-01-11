@@ -11,7 +11,8 @@ public enum AgentState {
 			String domain = ctx.getDomain();
 			String version = ctx.getVersion();
 			String host = ctx.getHost();
-			String url = ctx.getConfigManager().getDeployUrl(host, id, domain, version);
+			boolean skipTest = ctx.isSkipTest();
+			String url = ctx.getConfigManager().getDeployUrl(host, id, domain, version, skipTest);
 			String json = null;
 
 			ctx.println(String.format("[INFO] Deploy URL: %s", url));
@@ -67,7 +68,8 @@ public enum AgentState {
 				int id = ctx.getDeployId();
 				String domain = ctx.getDomain();
 				String version = ctx.getVersion();
-				String url = ctx.getConfigManager().getDeployUrl(host, id, domain, version);
+				boolean skipTest = ctx.isSkipTest();
+				String url = ctx.getConfigManager().getDeployUrl(host, id, domain, version, skipTest);
 				String json = null;
 
 				ctx.print("[WARN] Retry to deploy phoenix kernel(%s) to host(%s) for deploy(%s) of domain(%s)  ... ",

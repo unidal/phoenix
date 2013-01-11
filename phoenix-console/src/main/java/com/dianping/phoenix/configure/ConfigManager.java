@@ -57,16 +57,23 @@ public class ConfigManager implements Initializable {
 		return String.format(pattern, host, deployId);
 	}
 
-	public String getDeployUrl(String host, int deployId, String name, String version) {
+	public String getDeployUrl(String host, int deployId, String name, String version, boolean skipTest) {
 		check();
 
-		String pattern = m_config.getConsole().getDeployUrlPattern();
-		String kernelGitUrl = m_config.getGit().getOriginUrl();
-		String testServiceUrlPrefix = m_config.getConsole().getTestServiceUrlPrefix();
-		long testServiceTimeout = m_config.getConsole().getTestServiceTimeout();
+		if (skipTest) {
+			String pattern = m_config.getConsole().getDeployUrlSkipTestPattern();
+			String kernelGitUrl = m_config.getGit().getOriginUrl();
 
-		return String.format(pattern, host, deployId, name, version, kernelGitUrl, testServiceUrlPrefix,
-		      testServiceTimeout);
+			return String.format(pattern, host, deployId, name, version, kernelGitUrl);
+		} else {
+			String pattern = m_config.getConsole().getDeployUrlPattern();
+			String kernelGitUrl = m_config.getGit().getOriginUrl();
+			String testServiceUrlPrefix = m_config.getConsole().getTestServiceUrlPrefix();
+			long testServiceTimeout = m_config.getConsole().getTestServiceTimeout();
+
+			return String.format(pattern, host, deployId, name, version, kernelGitUrl, testServiceUrlPrefix,
+			      testServiceTimeout);
+		}
 	}
 
 	public String getGitOriginUrl() {

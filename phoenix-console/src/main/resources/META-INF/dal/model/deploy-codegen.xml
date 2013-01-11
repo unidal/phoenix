@@ -5,6 +5,7 @@
     <attribute name="domain" value-type="String" />
     <attribute name="version" value-type="String" />
     <attribute name="abortOnError" value-type="boolean" />
+    <attribute name="skipTest" value-type="boolean" />
     <attribute name="status" value-type="String" />
     <entity-ref name="host" type="list" names="hosts" />
   </entity>

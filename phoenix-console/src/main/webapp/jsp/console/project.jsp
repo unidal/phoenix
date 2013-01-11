@@ -131,8 +131,28 @@
 								</tr>
 							</tbody>
 						</table>
+						<table class="table table-condensed lion nohover" style="margin:0 0 0;border-bottom:1px solid #DDD;">
+						 	<thead>
+							    <tr>
+									<th colspan="3">
+										<label class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">冒烟测试服务</strong></label>
+									</th>
+							    </tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="180">
+										<input type="radio" id="plan.skipTest-1" name="plan.skipTest" value="false" ${payload.plan.skipTest==false?'checked':''}><label for="plan.skipTest-1">打开</label>
+									</td>
+									<td>
+										<input type="radio" id="plan.skipTest-2" name="plan.skipTest" value="true" ${payload.plan.skipTest==true?'checked':''}><label for="plan.skipTest-2">关闭</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
+
 				<br />
 				<div class="row-fluid">
 					<button type="submit" name="deploy" value="Deploy" class="btn btn-primary">Deploy</button>

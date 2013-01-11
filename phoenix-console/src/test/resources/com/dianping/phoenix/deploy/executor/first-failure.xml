@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<deploy id="100" domain="demo-app" version="1.0.1" abortOnError="true">
+<deploy id="100" domain="demo-app" version="1.0.1" abortOnError="true" skipTest="false">
    <host ip="host-a" status="failed" progress="0">
       <segment current-ticks="0" total-ticks="0">[INFO] Deploy URL: file:/Users/qmwu/project/phoenix/phoenix-console/target/test-classes/com/dianping/phoenix/deploy/executor/ok.json?op=deploy&amp;</segment>
       <segment current-ticks="0" total-ticks="0">[INFO] Deploying phoenix kernel(1.0.1) to host(host-a) for deploy(100) of domain(demo-app)  ... </segment>

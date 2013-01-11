@@ -28,6 +28,8 @@ public interface AgentContext {
 
 	public String getVersion();
 
+	public boolean isSkipTest();
+	
 	public String openUrl(String url) throws IOException;
 
 	public AgentContext print(String pattern, Object... args);

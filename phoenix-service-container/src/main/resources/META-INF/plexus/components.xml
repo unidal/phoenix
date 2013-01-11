@@ -68,6 +68,10 @@
 			</requirements>
 		</component>
 		<component>
+			<role>com.dianping.service.editor.model.ModelAccessor</role>
+			<implementation>com.dianping.service.editor.model.ModelAccessor</implementation>
+		</component>
+		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
@@ -90,6 +94,9 @@
 				<requirement>
 					<role>com.dianping.service.editor.model.ModelBuilder</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.service.editor.model.ModelAccessor</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -104,6 +111,10 @@
 					<role>com.dianping.service.spi.ServiceRegistry</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.service.editor.model.ModelAccessor</role>
+			<implementation>com.dianping.service.editor.model.ModelAccessor</implementation>
 		</component>
 	</components>
 </plexus>

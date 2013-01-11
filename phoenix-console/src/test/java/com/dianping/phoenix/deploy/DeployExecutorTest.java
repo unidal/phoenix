@@ -176,7 +176,7 @@ public class DeployExecutorTest extends ComponentTestCase {
 		}
 
 		@Override
-		public String getDeployUrl(String host, int deployId, String name, String version) {
+		public String getDeployUrl(String host, int deployId, String name, String version, boolean skipTest) {
 			return DEPLOY_URLS.get(host);
 		}
 
@@ -212,6 +212,7 @@ public class DeployExecutorTest extends ComponentTestCase {
 			model.setDomain(name);
 			model.setVersion(plan.getVersion());
 			model.setAbortOnError(plan.isAbortOnError());
+			model.setSkipTest(plan.isSkipTest());
 			model.setPlan(plan);
 			m_models.put(deployId, model);
 			return model;

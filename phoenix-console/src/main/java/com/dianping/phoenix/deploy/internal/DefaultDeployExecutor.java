@@ -326,6 +326,11 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
+      public boolean isSkipTest() {
+	      return m_model.isSkipTest();
+      }
+
+		@Override
 		public String openUrl(String url) throws IOException {
 			ConfigManager configManager = m_controller.getConfigManager();
 			int timeout = configManager.getDeployConnectTimeout();
