@@ -6,7 +6,8 @@
     <member name="war-type" field="war_type" value-type="int" length="10" nullable="false" />
     <member name="war-version" field="war_version" value-type="String" length="32" nullable="false" />
     <member name="strategy" field="strategy" value-type="String" length="32" nullable="false" />
-    <member name="error-policy" field="error_policy" value-type="String" length="32" nullable="false" />
+    <member name="error-policy" field="error_policy" value-type="int" length="10" nullable="false" />
+    <member name="skip-test" field="skip_test" value-type="int" length="10" nullable="false" />
     <member name="status" field="status" value-type="int" length="10" nullable="false" />
     <member name="deployed-by" field="deployed_by" value-type="String" length="64" nullable="false" />
     <member name="begin-date" field="begin_date" value-type="Date" />

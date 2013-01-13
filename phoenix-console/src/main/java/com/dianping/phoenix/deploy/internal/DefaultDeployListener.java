@@ -35,8 +35,8 @@ public class DefaultDeployListener implements DeployListener {
 
 		d.setDomain(domain);
 		d.setStrategy(plan.getPolicy());
-		d.setErrorPolicy(plan.isAbortOnError() ? "abortOnError" : "fallThrough");
-		//TODO d.setSkipTest()
+		d.setErrorPolicy(plan.isAbortOnError() ? 1 : 2);
+		d.setSkipTest(plan.isSkipTest() ? 1: 2);
 		d.setBeginDate(new Date());
 		d.setStatus(1); // 1 - created
 		d.setDeployedBy("phoenix"); // TODO use real user name
@@ -82,9 +82,6 @@ public class DefaultDeployListener implements DeployListener {
 
 		model.setId(deployId);
 		model.setDomain(domain);
-		model.setVersion(plan.getVersion());
-		model.setAbortOnError(plan.isAbortOnError());
-		model.setSkipTest(plan.isSkipTest());
 		model.setPlan(plan);
 
 		m_projectManager.storeModel(model);

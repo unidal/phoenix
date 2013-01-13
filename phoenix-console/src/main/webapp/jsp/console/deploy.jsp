@@ -8,14 +8,14 @@
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.deploy.Model" scope="request" />
 
 <a:layout>
-	<w:error code="*"><h2>Error occured: \${code} for deploy(${payload.id})</h2></w:error>
+	<w:error code="*"><h2>Error occurred: \${code} for deploy(${payload.id})</h2></w:error>
 	
 	<c:set var="deploy" value="${model.deploy}"/>
 	<div class="row-fluid">
 		<div class="span4">
 			<div class="page-header">
                 <input type="hidden" id="deploy_id" value="${deploy.id}">
-				Rollout Kernel(${deploy.version}) to ${deploy.domain}, <span id="deploy_status">${deploy.status}</span>
+				Rollout Kernel(${deploy.plan.version}) to ${deploy.domain}, <span id="deploy_status">${deploy.status}</span>
 			</div>
 			<div class="row-fluid">
 				<div class="span12 thumbnail" style="height: 440px; overflow: auto;">
@@ -71,7 +71,9 @@
 		<div class="span8">
 			<div class="row-fluid">
 				<div class="page-header">
-					<h4>部署方式：1->1->1->1, 错误处理：终断后续发布</h4>
+					<strong style="color:#08C;">部署方式</strong>：${w:showResult(model.policies, deploy.plan.policy, 'id', 'description')}&nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong style="color:#08C;">错误处理</strong>：${w:translate(deploy.plan.abortOnError, 'true|false', '中断后续发布|继续后续发布', '')}&nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong style="color:#08C;">冒烟测试服务</strong>：${w:translate(deploy.plan.skipTest, 'false|true', '打开|关闭', '')}
 				</div>
 				<c:forEach var="entry" items="${deploy.hosts}" varStatus="status">
 					<c:set var="host" value="${entry.value}"/>

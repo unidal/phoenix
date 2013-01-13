@@ -1,11 +1,11 @@
 package com.dianping.phoenix.deploy;
 
 public enum DeployPolicy {
-	ONE_BY_ONE("one-by-one", 1, "1 -> 1 -> 1 -> 1 ( 每次一台 )"),
+	ONE_BY_ONE("one-by-one", 1, "1 -> 1 -> 1 -> 1 (每次一台)"),
 
-	TWO_BY_TWO("two-by-two", 2, "1 -> 2 -> 2 -> 2 ( 每次两台 )"),
+	TWO_BY_TWO("two-by-two", 2, "1 -> 2 -> 2 -> 2 (每次两台)"),
 
-	THREE_BY_THREE("three-by-three", 3, "1 -> 3 -> 3 -> 3 ( 每次三台 )");
+	THREE_BY_THREE("three-by-three", 3, "1 -> 3 -> 3 -> 3 (每次三台)");
 
 	private String m_id;
 
