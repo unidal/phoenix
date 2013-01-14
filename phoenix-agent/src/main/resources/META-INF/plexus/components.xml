@@ -25,7 +25,12 @@
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.qa.MockQaService</implementation>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.qa.DefaultQaService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.util.url.UrlContentFetcher</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep</role>
