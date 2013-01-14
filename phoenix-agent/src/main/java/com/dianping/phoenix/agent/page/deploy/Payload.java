@@ -2,6 +2,7 @@ package com.dianping.phoenix.agent.page.deploy;
 
 import com.dianping.phoenix.agent.AgentPage;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.unidal.lookup.util.StringUtils;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
@@ -141,4 +142,10 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	private boolean validDeployId(long deployId) {
 		return deployId > 0;
 	}
+
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);
+	}
+	
 }
