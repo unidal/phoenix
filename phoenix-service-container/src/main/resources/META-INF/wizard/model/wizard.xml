@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wizard package="com.dianping.service">
+   <model package="com.dianping.service.deployment" name="deployment">
+      <sample-model>src/test/resources/com/dianping/service/deployment.xml</sample-model>
+   </model>
+</wizard>

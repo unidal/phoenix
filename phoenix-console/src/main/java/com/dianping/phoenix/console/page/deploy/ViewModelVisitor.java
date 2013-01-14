@@ -90,6 +90,7 @@ class ViewModelVisitor extends BaseVisitor {
 		summary.setProgress(progress / (size > 1 ? size - 1 : 1));
 		summary.setStatus(status);
 		m_model.setStatus(status);
+		m_model.setPlan(other.getPlan());
 	}
 
 	@Override

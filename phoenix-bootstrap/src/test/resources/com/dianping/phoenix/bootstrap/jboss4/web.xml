@@ -30,7 +30,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>mvc-servlet</servlet-name>
-		<url-pattern>/console/*</url-pattern>
+		<url-pattern>/inspect/*</url-pattern>
 	</servlet-mapping>
 	
 	<!-- Filter -->

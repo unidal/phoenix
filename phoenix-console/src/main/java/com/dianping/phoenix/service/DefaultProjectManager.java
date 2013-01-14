@@ -74,13 +74,12 @@ public class DefaultProjectManager implements ProjectManager, Initializable {
 
 			model.setId(deployId);
 			model.setDomain(d.getDomain());
-			model.setVersion(d.getWarVersion());
-			model.setAbortOnError("abortOnError".equals(d.getErrorPolicy()));
 			model.setPlan(plan);
 
-			plan.setAbortOnError(model.isAbortOnError());
-			plan.setPolicy(d.getErrorPolicy());
+			plan.setAbortOnError(d.getErrorPolicy() == 1);
+			plan.setPolicy(d.getStrategy());
 			plan.setVersion(d.getWarVersion());
+			plan.setSkipTest(d.getSkipTest() == 1);
 
 			storeModel(model);
 			return model;

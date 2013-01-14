@@ -112,6 +112,16 @@ public class DeployExecutorTest extends ComponentTestCase {
 		      new Triple<String, String, String>("host-c", "ok.json", "successful.log"), //
 		      new Triple<String, String, String>("host-d", "ok.json", "successful.log"));
 	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testSecondFailure() throws Exception {
+		checkDeploy("second-failure", //
+				new Triple<String, String, String>("host-a", "ok.json", "successful.log"), //
+				new Triple<String, String, String>("host-b", "ok.json", "failed.log"), //
+				new Triple<String, String, String>("host-c", "ok.json", "successful.log"), //
+				new Triple<String, String, String>("host-d", "ok.json", "successful.log"));
+	}
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -166,7 +176,7 @@ public class DeployExecutorTest extends ComponentTestCase {
 		}
 
 		@Override
-		public String getDeployUrl(String host, int deployId, String name, String version) {
+		public String getDeployUrl(String host, int deployId, String name, String version, boolean skipTest) {
 			return DEPLOY_URLS.get(host);
 		}
 
@@ -200,8 +210,6 @@ public class DeployExecutorTest extends ComponentTestCase {
 
 			model.setId(deployId);
 			model.setDomain(name);
-			model.setVersion(plan.getVersion());
-			model.setAbortOnError(plan.isAbortOnError());
 			model.setPlan(plan);
 			m_models.put(deployId, model);
 			return model;

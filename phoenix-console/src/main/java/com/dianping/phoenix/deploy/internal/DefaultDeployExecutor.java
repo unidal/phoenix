@@ -196,7 +196,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		private boolean shouldStop() {
-			boolean abortOnError = m_model.isAbortOnError();
+			boolean abortOnError = m_model.getPlan().isAbortOnError();
 
 			if (abortOnError) {
 				for (HostModel host : m_model.getHosts().values()) {
@@ -322,8 +322,13 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public String getVersion() {
-			return m_model.getVersion();
+			return m_model.getPlan().getVersion();
 		}
+
+		@Override
+      public boolean isSkipTest() {
+	      return m_model.getPlan().isSkipTest();
+      }
 
 		@Override
 		public String openUrl(String url) throws IOException {

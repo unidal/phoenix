@@ -17,8 +17,9 @@ CREATE TABLE `deployment` (
   `domain` varchar(32) NOT NULL COMMENT '业务项目名称，如: shop-web',
   `war_type` int(1) NOT NULL COMMENT '类型，0 - kernel, 1 - application',
   `war_version` varchar(32) NOT NULL COMMENT '版本，如: 0.1',
-  `strategy` varchar(32) NOT NULL COMMENT '部署策略',
-  `error_policy` varchar(32) NOT NULL COMMENT '出错处理策略',
+  `strategy` varchar(32) NOT NULL COMMENT '部署策略, 可选值: one-by-one, two-by-two, three-by-three',
+  `error_policy` int(1) NOT NULL COMMENT '出错处理策略, 可选值: 1 - abort on error, 2 - fall through',
+  `skip_test` int(1) NOT NULL COMMENT '是否跳过测试, 可选值: 1 - test enforced, 2 - test skipped',
   `status` int(1) NOT NULL COMMENT '部署状态，可选值: 1 - pending, 2 - deploying, 3 - completed with all successful, 4 - completed with partial failures, 5 - failed, 8 - aborted, 9 - cancelled',
   `deployed_by` varchar(64) NOT NULL COMMENT '部署者',
   `begin_date` datetime NULL COMMENT '部署开始时间',
@@ -42,5 +43,3 @@ CREATE TABLE `deployment_details` (
   `last_modified_date` datetime NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='业务部署详细表';
-
-

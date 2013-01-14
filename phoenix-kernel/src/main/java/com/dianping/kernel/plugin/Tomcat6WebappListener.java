@@ -18,7 +18,7 @@ public class Tomcat6WebappListener implements Listener {
 		m_patcher = new CatalinaWebappPatcher();
 		
 		try{
-			m_patcher.init(loader);;
+			m_patcher.init(loader);
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Error when patching %s initCatalinaWebappPatcher!", loader.getWarRoot()), e);
 		}

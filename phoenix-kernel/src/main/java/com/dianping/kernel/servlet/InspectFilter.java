@@ -27,7 +27,7 @@ public class InspectFilter implements Filter {
 		boolean matched = false;
 
 		if (contextPath == null || contextPath.equals("/")) {
-			matched = requestUri.startsWith("/jsp/inspect/");
+			matched = requestUri.startsWith("/jsp/inspect/") || requestUri.startsWith("//jsp/inspect/");
 		} else {
 			matched = requestUri.substring(contextPath.length()).startsWith("/jsp/inspect/");
 		}
@@ -40,6 +40,8 @@ public class InspectFilter implements Filter {
 			} else {
 				chain.doFilter(request, response);
 			}
+		} else {
+			chain.doFilter(request, response);
 		}
 	}
 

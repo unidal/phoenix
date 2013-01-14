@@ -10,8 +10,8 @@
 <a:layout>
 
 	<w:errors>
+       <h3>Error occurred:</h3>
 	   <pre class="error">
-	      <h3>Error occured:</h3>
 	      <w:error code="project.hosts">Please check at least one of the hosts below.</w:error>
 	      <w:error code="*"><strong>\${code}</strong>: \${exception.message}</w:error>
 	   </pre>
@@ -41,7 +41,7 @@
 		<div class="row-fluid">
 			<div class="span3">
 				<div class="row-fluid">
-					<div class="span12 thumbnail" style="height:280px;overflow-y: auto;">
+					<div class="span12 thumbnail" style="height:300px;overflow-y: auto;">
 						<table class="table table-striped table-condensed lion">
 							<thead>
 								<tr>
@@ -123,16 +123,36 @@
 							<tbody>
 								<tr>
 									<td width="180">
-										<input type="radio" id="plan.abortOnError-1" name="plan.abortOnError" value="true" ${payload.plan.abortOnError==true?'checked':''}><label for="plan.abortOnError-1">终断后续发布</label>
+										<input type="radio" id="${ctx.nextHtmlId}" name="plan.abortOnError" value="true" ${payload.plan.abortOnError==true?'checked':''}><label for="${ctx.currentHtmlId}">中断后续发布</label>
 									</td>
 									<td>
-										<input type="radio" id="plan.abortOnError-2" name="plan.abortOnError" value="false" ${payload.plan.abortOnError==false?'checked':''}><label for="plan.abortOnError-2">继续后续发布</label>
+										<input type="radio" id="${ctx.nextHtmlId}" name="plan.abortOnError" value="false" ${payload.plan.abortOnError==false?'checked':''}><label for="${ctx.currentHtmlId}">继续后续发布</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="table table-condensed lion nohover" style="margin:0 0 0;border-bottom:1px solid #DDD;">
+						 	<thead>
+							    <tr>
+									<th colspan="3">
+										<label class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">冒烟测试服务</strong></label>
+									</th>
+							    </tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="180">
+										<input type="radio" id="${ctx.nextHtmlId}" name="plan.skipTest" value="false" ${payload.plan.skipTest==false?'checked':''}><label for="${ctx.currentHtmlId}">打开</label>
+									</td>
+									<td>
+										<input type="radio" id="${ctx.nextHtmlId}" name="plan.skipTest" value="true" ${payload.plan.skipTest==true?'checked':''}><label for="${ctx.currentHtmlId}">关闭</label>
 									</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
+
 				<br />
 				<div class="row-fluid">
 					<button type="submit" name="deploy" value="Deploy" class="btn btn-primary">Deploy</button>
@@ -151,7 +171,7 @@
 			</div>
 		</div>
 		<div class="row-fluid">
-			<div class="span12 thumbnail" style="height:225px;overflow-y: auto;">
+			<div class="span12 thumbnail" style="height:165px; overflow-y:auto;">
 				<table class="table table-striped table-condensed">
 					<thead>
 						<tr>

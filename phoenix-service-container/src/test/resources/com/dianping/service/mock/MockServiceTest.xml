@@ -1,0 +1,9 @@
+<plexus>
+	<components>
+		<component>
+			<role>com.dianping.service.spi.ServiceProvider</role>
+			<role-hint>com.dianping.service.mock.MockService</role-hint>
+			<implementation>com.dianping.service.mock.MockServiceProvider</implementation>
+		</component>
+	</components>
+</plexus>

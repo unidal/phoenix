@@ -12,6 +12,7 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
+import com.dianping.phoenix.deploy.DeployPolicy;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.service.ProjectManager;
 
@@ -86,6 +87,7 @@ public class Handler implements PageHandler<Context> {
 			deployModel.accept(visitor);
 
 			model.setDeploy(visitor.getModel());
+			model.setPolicies(DeployPolicy.values());
 		} catch (Exception e) {
 			ctx.addError("deploy.error", e);
 		}

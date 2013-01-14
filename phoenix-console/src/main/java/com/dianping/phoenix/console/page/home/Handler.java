@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
@@ -57,7 +56,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 
 					try {
 						int id = m_deployManager.deploy(name, hosts, plan);
-						redirect(ctx, deployUri + "?id=" + id);
+						ctx.redirect(deployUri + "?id=" + id);
 						return;
 					} catch (Exception e) {
 						m_logger.warn(
@@ -70,7 +69,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 						Deployment deploy = m_projectManager.findActiveDeploy(name);
 
 						if (deploy != null) {
-							redirect(ctx, deployUri + "?id=" + deploy.getId());
+							ctx.redirect(deployUri + "?id=" + deploy.getId());
 						}
 						return;
 					} catch (Exception e) {
@@ -130,14 +129,6 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 		}
 
 		m_jspViewer.view(ctx, model);
-	}
-
-	private void redirect(Context ctx, String url) {
-		HttpServletResponse response = ctx.getHttpServletResponse();
-
-		response.setHeader("location", url);
-		response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-		ctx.stopProcess();
 	}
 
 	@Override

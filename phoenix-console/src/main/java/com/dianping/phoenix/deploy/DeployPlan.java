@@ -6,6 +6,8 @@ public class DeployPlan {
 	private String m_policy;
 
 	private boolean m_abortOnError = true;
+	
+	private boolean m_skipTest;
 
 	public String getPolicy() {
 		return m_policy;
@@ -19,6 +21,10 @@ public class DeployPlan {
 		return m_abortOnError;
 	}
 
+	public boolean isSkipTest() {
+   	return m_skipTest;
+   }
+
 	public void setAbortOnError(boolean abortOnError) {
 		m_abortOnError = abortOnError;
 	}
@@ -26,6 +32,10 @@ public class DeployPlan {
 	public void setPolicy(String policy) {
 		m_policy = policy;
 	}
+
+	public void setSkipTest(boolean testService) {
+   	m_skipTest = testService;
+   }
 
 	public void setVersion(String version) {
 		m_version = version;
