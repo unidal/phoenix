@@ -24,6 +24,6 @@ if [ ! -x $java ];then
 	java=java
 fi
 
-echo "Starting phoenix-agent"
+echo "Starting phoenix-agent $agent_class $port `pwd`"
 nohup $java -classpath classes:"lib/*" $agent_class $port /phoenix `pwd` >/dev/null 2>&1 &
 echo "Started"
