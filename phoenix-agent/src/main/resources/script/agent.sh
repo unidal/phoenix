@@ -9,7 +9,7 @@ source ./agent_func.sh
 log "PID is $$"
 log "CMD is $0 $@"
 
-KERNEL_WAR_TMP=/data/appdatas/phoenix_kernel_war_tmp/
+KERNEL_WAR_TMP=/data/webapps/phoenix/phoenix_kernel_war_tmp/
 while getopts "h:g:e:k:b:x:c:d:v:f:" option;do
 	case $option in
 			h)      kernel_git_host=$OPTARG;;

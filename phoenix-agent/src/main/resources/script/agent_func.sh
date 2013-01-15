@@ -21,7 +21,9 @@ function add_ssh_private_key {
 			Host $kernel_git_host
 			IdentityFile ~/.ssh/id_rsa.phoenix
 		END
+		chmod 600 $ssh_config
 		cat git/.ssh/known_hosts >> ~/.ssh/known_hosts
+		chmod 600 ~/.ssh/known_hosts
 		log "phoenix private key added to .ssh/config"
 	fi
 }
@@ -64,7 +66,7 @@ function get_kernel_war {
 
 function stop_all {
 	log "stopping container and make it offline"
-	./op_${env}.sh -o $func -b $container_install_path -c $container_type
+	./op_${env}.sh -o stop_all -b $container_install_path -c $container_type
 	log "container stopped and offlined"
 }
 
@@ -96,7 +98,7 @@ function upgrade_kernel {
 
 function start_container {
 	log "starting container"
-	./op_${env}.sh -o $func -b $container_install_path -c $container_type
+	./op_${env}.sh -o start_container -b $container_install_path -c $container_type
 	log "container started"
 }
 
@@ -111,9 +113,17 @@ function git_rollback {
 
 function rollback {
 	stop_all
+	
+	# rollback kernel
 	log "rolling back kernel"
 	git_rollback $domain_kernel_base
 	log "kernel version $kernel_version rolled back"
+
+	# rollback server.xml
+	log "rolling back server.xml"
+	git_rollback `dirname $server_xml` 
+	log "server.xml rolled back"
+
 	start_container
 	log "put container online"
 	./op_${env}.sh -o put_container_online -b $container_install_path -c $container_type

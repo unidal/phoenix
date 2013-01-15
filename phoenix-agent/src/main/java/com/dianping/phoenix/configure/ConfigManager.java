@@ -30,7 +30,7 @@ public class ConfigManager implements Initializable {
 	}
 
 	@Inject
-	private String m_configFile = "/data/appdatas/phoenix/config.xml";
+	private String m_configFile = "/data/webapps/phoenix/phoenix-config/config.xml";
 
 	private Config m_config;
 
