@@ -59,8 +59,8 @@
 			<implementation>com.dianping.service.internal.DefaultCatProvider</implementation>
 		</component>
 		<component>
-			<role>com.dianping.service.editor.model.ModelBuilder</role>
-			<implementation>com.dianping.service.editor.model.ModelBuilder</implementation>
+			<role>com.dianping.service.editor.model.DeploymentBuilder</role>
+			<implementation>com.dianping.service.editor.model.DeploymentBuilder</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.service.spi.ServiceRegistry</role>
@@ -68,8 +68,16 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.service.editor.model.ModelAccessor</role>
-			<implementation>com.dianping.service.editor.model.ModelAccessor</implementation>
+			<role>com.dianping.service.editor.model.ServiceAccessor</role>
+			<implementation>com.dianping.service.editor.model.ServiceAccessor</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.service.spi.ServiceRegistry</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.service.editor.model.DeploymentBuilder</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
@@ -92,10 +100,7 @@
 					<role>com.dianping.service.editor.page.home.JspViewer</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.service.editor.model.ModelBuilder</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.service.editor.model.ModelAccessor</role>
+					<role>com.dianping.service.editor.model.ServiceAccessor</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -104,17 +109,25 @@
 			<implementation>com.dianping.service.editor.page.home.JspViewer</implementation>
 		</component>
 		<component>
-			<role>com.dianping.service.editor.model.ModelBuilder</role>
-			<implementation>com.dianping.service.editor.model.ModelBuilder</implementation>
+			<role>com.dianping.service.editor.model.ServiceAccessor</role>
+			<implementation>com.dianping.service.editor.model.ServiceAccessor</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.service.spi.ServiceRegistry</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.service.editor.model.DeploymentBuilder</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.service.editor.model.DeploymentBuilder</role>
+			<implementation>com.dianping.service.editor.model.DeploymentBuilder</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.service.spi.ServiceRegistry</role>
 				</requirement>
 			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.service.editor.model.ModelAccessor</role>
-			<implementation>com.dianping.service.editor.model.ModelAccessor</implementation>
 		</component>
 	</components>
 </plexus>

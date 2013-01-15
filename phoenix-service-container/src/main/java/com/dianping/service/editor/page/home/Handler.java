@@ -15,15 +15,11 @@ import com.dianping.service.deployment.entity.DeploymentModel;
 import com.dianping.service.deployment.entity.PropertyModel;
 import com.dianping.service.deployment.entity.ServiceModel;
 import com.dianping.service.editor.EditorPage;
-import com.dianping.service.editor.model.ModelBuilder;
 import com.dianping.service.editor.model.ServiceAccessor;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
 	private JspViewer m_jspViewer;
-
-	@Inject
-	private ModelBuilder m_builder;
 
 	@Inject
 	private ServiceAccessor m_accessor;
@@ -44,15 +40,19 @@ public class Handler implements PageHandler<Context> {
 	public void handleInbound(Context ctx) throws ServletException, IOException {
 		Payload payload = ctx.getPayload();
 
-		switch (payload.getAction()) {
-		case EDIT:
-			if (m_accessor.updateProperties(payload.getServiceType(), payload.getAlias(), payload.getProperties())) {
-				ctx.redirect(EditorPage.HOME, "serviceType=" + payload.getServiceType());
-				return;
-			}
+		if (!ctx.hasErrors()) {
+			switch (payload.getAction()) {
+			case EDIT:
+				try {
+					m_accessor.updateProperties(payload.getServiceType(), payload.getAlias(), payload.getProperties());
+					ctx.redirect(EditorPage.HOME, "serviceType=" + payload.getServiceType() + "&alias=" + payload.getAlias());
+					return;
+				} catch (Exception e) {
+					ctx.addError("editor.updateProperties", e);
+				}
 
-			// TODO error handling
-			break;
+				break;
+			}
 		}
 	}
 
@@ -61,11 +61,10 @@ public class Handler implements PageHandler<Context> {
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
 		Payload payload = ctx.getPayload();
-		DeploymentModel deployment = new DeploymentModel();
+		DeploymentModel deployment = m_accessor.buildDeployment();
 
 		model.setAction(Action.VIEW);
 		model.setPage(EditorPage.HOME);
-		deployment.accept(m_builder);
 
 		switch (payload.getAction()) {
 		case EDIT:
@@ -82,6 +81,7 @@ public class Handler implements PageHandler<Context> {
 
 			break;
 		case VIEW:
+			break;
 		}
 
 		model.setDeployment(deployment);

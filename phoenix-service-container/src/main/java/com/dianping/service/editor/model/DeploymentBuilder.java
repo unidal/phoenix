@@ -15,7 +15,7 @@ import com.dianping.service.spi.ServiceBinding;
 import com.dianping.service.spi.ServiceProvider;
 import com.dianping.service.spi.ServiceRegistry;
 
-public class ModelBuilder extends ContainerHolder implements IVisitor {
+public class DeploymentBuilder extends ContainerHolder implements IVisitor {
 	@Inject
 	private ServiceRegistry m_registry;
 

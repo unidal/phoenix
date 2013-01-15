@@ -15,7 +15,6 @@ import com.dianping.service.deployment.entity.PropertyModel;
 import com.dianping.service.deployment.entity.RequirementModel;
 import com.dianping.service.deployment.entity.ServiceModel;
 import com.dianping.service.deployment.transform.DefaultSaxParser;
-import com.dianping.service.mock.MockService;
 import com.dianping.service.spi.ServiceBinding;
 import com.dianping.service.spi.ServiceProvider;
 import com.dianping.service.spi.ServiceRegistry;
@@ -50,20 +49,18 @@ public class DefaultServiceRegistry extends ContainerHolder implements ServiceRe
 
 	@Override
 	public ServiceBinding getServiceBinding(Class<?> serviceType, String alias) {
-		String type = serviceType.getName();
-
 		if (alias == null) {
 			alias = "default";
 		}
 
 		for (ServiceModel activeService : m_model.getActiveServices()) {
-			if (type.equals(activeService.getType()) && alias.equals(activeService.getAlias())) {
+			if (serviceType.equals(activeService.getType()) && alias.equals(activeService.getAlias())) {
 				return new DefaultServiceBinding(alias, getProperties(activeService), activeService.getConfiguration(),
 				      getComponents(activeService));
 			}
 		}
 
-		throw new IllegalStateException(String.format("No active service(%s) found for alias(%s)!", type, alias));
+		throw new IllegalStateException(String.format("No active service(%s) found for alias(%s)!", serviceType.getName(), alias));
 	}
 
 	@Override
@@ -103,6 +100,21 @@ public class DefaultServiceRegistry extends ContainerHolder implements ServiceRe
 	}
 
 	@Override
+	public boolean hasServiceBinding(Class<?> serviceType, String alias) {
+		if (alias == null) {
+			alias = "default";
+		}
+
+		for (ServiceModel activeService : m_model.getActiveServices()) {
+			if (serviceType.equals(activeService.getType()) && alias.equals(activeService.getAlias())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
 	public void initialize() throws InitializationException {
 		String resource = "/com/dianping/service/deployment.xml";
 
@@ -118,7 +130,7 @@ public class DefaultServiceRegistry extends ContainerHolder implements ServiceRe
 	}
 
 	@Override
-	public void setServiceBinding(Class<MockService> serviceType, String alias, ServiceBinding binding) {
+	public void setServiceBinding(Class<?> serviceType, String alias, ServiceBinding binding) {
 		if (alias == null) {
 			alias = "default";
 		}
