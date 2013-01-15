@@ -7,6 +7,7 @@ import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.service.ServiceContainer;
 import com.dianping.service.ServiceNotAvailableException;
+import com.dianping.service.deployment.entity.InstanceModel;
 import com.dianping.service.spi.ServiceBinding;
 import com.dianping.service.spi.ServiceRegistry;
 import com.dianping.service.spi.internal.DefaultServiceBinding;
@@ -16,7 +17,7 @@ public class MockServiceTest extends ComponentTestCase {
 	public void testMockWithLateBinding() throws Exception {
 		ServiceContainer container = lookup(ServiceContainer.class);
 		ServiceRegistry registry = lookup(ServiceRegistry.class);
-		ServiceBinding binding = new DefaultServiceBinding("default", "configuration here");
+		ServiceBinding binding = new DefaultServiceBinding(new InstanceModel("default").setConfiguration("configuration here"));
 
 		binding.getProperties().put("p1", "first property");
 		binding.getProperties().put("p2", "12345");

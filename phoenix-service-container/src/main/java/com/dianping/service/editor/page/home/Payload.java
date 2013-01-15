@@ -18,8 +18,8 @@ public class Payload implements ActionPayload<EditorPage, Action> {
 	@FieldMeta("serviceType")
 	private String m_serviceType;
 
-	@FieldMeta("alias")
-	private String m_alias;
+	@FieldMeta("id")
+	private String m_id;
 
 	@ObjectMeta("properties")
 	private Map<String, String> m_properties;
@@ -29,8 +29,8 @@ public class Payload implements ActionPayload<EditorPage, Action> {
 		return m_action;
 	}
 
-	public String getAlias() {
-		return m_alias;
+	public String getId() {
+		return m_id;
 	}
 
 	@Override

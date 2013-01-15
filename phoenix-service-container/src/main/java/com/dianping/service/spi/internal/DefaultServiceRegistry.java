@@ -1,18 +1,16 @@
 package com.dianping.service.spi.internal;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.lookup.ContainerHolder;
-import org.unidal.tuple.Pair;
 
 import com.dianping.service.deployment.entity.DeploymentModel;
+import com.dianping.service.deployment.entity.InstanceModel;
 import com.dianping.service.deployment.entity.PropertyModel;
-import com.dianping.service.deployment.entity.RequirementModel;
 import com.dianping.service.deployment.entity.ServiceModel;
 import com.dianping.service.deployment.transform.DefaultSaxParser;
 import com.dianping.service.spi.ServiceBinding;
@@ -21,46 +19,34 @@ import com.dianping.service.spi.ServiceRegistry;
 import com.dianping.service.spi.lifecycle.ServiceLifecycle;
 
 public class DefaultServiceRegistry extends ContainerHolder implements ServiceRegistry, Initializable {
+	private static final String DEFAULT_ID = "default";
+
 	private DeploymentModel m_model;
-
-	private List<Pair<Class<?>, String>> getComponents(ServiceModel service) {
-		List<Pair<Class<?>, String>> components = new ArrayList<Pair<Class<?>, String>>();
-
-		for (RequirementModel requirement : service.getRequirements()) {
-			components.add(new Pair<Class<?>, String>(requirement.getType(), requirement.getAlias()));
-		}
-
-		return components;
-	}
 
 	public DeploymentModel getDeployment() {
 		return m_model;
 	}
 
-	private Map<String, String> getProperties(ServiceModel service) {
-		Map<String, String> properties = new LinkedHashMap<String, String>();
-
-		for (PropertyModel property : service.getProperties()) {
-			properties.put(property.getName(), property.getValue());
-		}
-
-		return properties;
-	}
-
 	@Override
-	public ServiceBinding getServiceBinding(Class<?> serviceType, String alias) {
-		if (alias == null) {
-			alias = "default";
+	public ServiceBinding getServiceBinding(Class<?> serviceType, String id) {
+		if (id == null) {
+			id = DEFAULT_ID;
 		}
 
 		for (ServiceModel activeService : m_model.getActiveServices()) {
-			if (serviceType.equals(activeService.getType()) && alias.equals(activeService.getAlias())) {
-				return new DefaultServiceBinding(alias, getProperties(activeService), activeService.getConfiguration(),
-				      getComponents(activeService));
+			if (serviceType.equals(activeService.getType())) {
+				for (InstanceModel instance : activeService.getInstances()) {
+					if (id.equals(instance.getId())) {
+						DefaultServiceBinding binding = new DefaultServiceBinding(instance);
+
+						return binding;
+					}
+				}
 			}
 		}
 
-		throw new IllegalStateException(String.format("No active service(%s) found for alias(%s)!", serviceType.getName(), alias));
+		throw new IllegalStateException(String.format("No active service(%s) found for alias(%s)!",
+		      serviceType.getName(), id));
 	}
 
 	@Override
@@ -69,10 +55,13 @@ public class DefaultServiceRegistry extends ContainerHolder implements ServiceRe
 
 		for (ServiceModel activeService : m_model.getActiveServices()) {
 			if (serviceType.equals(activeService.getType())) {
-				DefaultServiceBinding binding = new DefaultServiceBinding(activeService.getAlias(),
-				      getProperties(activeService), activeService.getConfiguration(), getComponents(activeService));
+				for (InstanceModel instance : activeService.getInstances()) {
+					DefaultServiceBinding binding = new DefaultServiceBinding(instance);
 
-				bindings.add(binding);
+					bindings.add(binding);
+				}
+
+				break;
 			}
 		}
 
@@ -100,14 +89,18 @@ public class DefaultServiceRegistry extends ContainerHolder implements ServiceRe
 	}
 
 	@Override
-	public boolean hasServiceBinding(Class<?> serviceType, String alias) {
-		if (alias == null) {
-			alias = "default";
+	public boolean hasServiceBinding(Class<?> serviceType, String id) {
+		if (id == null) {
+			id = DEFAULT_ID;
 		}
 
 		for (ServiceModel activeService : m_model.getActiveServices()) {
-			if (serviceType.equals(activeService.getType()) && alias.equals(activeService.getAlias())) {
-				return true;
+			if (serviceType.equals(activeService.getType())) {
+				for (InstanceModel instance : activeService.getInstances()) {
+					if (id.equals(instance.getId())) {
+						return true;
+					}
+				}
 			}
 		}
 
@@ -130,37 +123,25 @@ public class DefaultServiceRegistry extends ContainerHolder implements ServiceRe
 	}
 
 	@Override
-	public void setServiceBinding(Class<?> serviceType, String alias, ServiceBinding binding) {
-		if (alias == null) {
-			alias = "default";
+	public void setServiceBinding(Class<?> serviceType, String id, ServiceBinding binding) {
+		if (id == null) {
+			id = DEFAULT_ID;
 		}
 
-		ServiceModel service = null;
+		ServiceModel service = m_model.findOrCreateService(serviceType);
+		InstanceModel instance = service.findOrCreateInstance(id);
 
-		for (ServiceModel activeService : m_model.getActiveServices()) {
-			if (serviceType.equals(activeService.getType()) && alias.equals(activeService.getAlias())) {
-				service = activeService;
-				break;
-			}
-		}
-
-		if (service == null) {
-			service = new ServiceModel();
-			service.setAlias(alias);
-			service.setType(serviceType);
-			m_model.addService(service);
-		} else {
-			service.getProperties().clear();
-		}
-
-		service.setConfiguration(binding.getConfiguration());
+		instance.getProperties().clear();
+		instance.setConfiguration(binding.getConfiguration());
 
 		for (Map.Entry<String, String> e : binding.getProperties().entrySet()) {
 			PropertyModel property = new PropertyModel();
 
 			property.setName(e.getKey()).setValue(e.getValue());
-			service.addProperty(property);
+			instance.addProperty(property);
 		}
+
+		// TODO add requirements
 	}
 
 	@Override

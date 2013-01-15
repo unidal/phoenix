@@ -7,7 +7,7 @@ import java.util.Map;
 import org.unidal.tuple.Pair;
 
 public interface ServiceBinding {
-	public String getAlias();
+	public String getId();
 
 	public boolean getBooleanProperty(String key, boolean defaultValue);
 
@@ -16,7 +16,7 @@ public interface ServiceBinding {
 	public List<Pair<Class<?>, String>> getComponents();
 
 	public String getConfiguration();
-
+	
 	public Date getDateProperty(String key, Date defaultValue);
 
 	public double getDoubleProperty(String key, double defaultValue);
