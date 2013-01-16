@@ -17,7 +17,7 @@ while getopts "g:v:" option;do
 	esac
 done
 
-tmp_update_script=`mktemp /tmp/phoenix-agent-self-update.sh.XXXXXX`
+tmp_update_script=`mktemp /tmp/phoenix-agent-self-upgrade.sh.XXXXXX`
 cat util.sh >> $tmp_update_script
 cat agent_func2.sh >> $tmp_update_script
 cat update_agent.sh >> $tmp_update_script
