@@ -13,9 +13,11 @@ if [ $# -gt 1 ];then
 fi
 
 if [ -e WEB-INF/classes ];then
+	rm -rf classes
 	mv WEB-INF/classes ./
 fi
 if [ -e WEB-INF/lib ];then
+	rm -rf lib
 	mv WEB-INF/lib ./
 fi
 
