@@ -7,6 +7,13 @@ public class AgentUpgradeTask extends AbstractTask {
 	private String agentVersion;
 	private String agentGitUrl;
 
+	/**
+	 * for serialization
+	 */
+	@SuppressWarnings("unused")
+	private AgentUpgradeTask() {
+	}
+
 	public AgentUpgradeTask(String agentVersion, String agentGitUrl) {
 		this.agentVersion = agentVersion;
 		this.agentGitUrl = agentGitUrl;
