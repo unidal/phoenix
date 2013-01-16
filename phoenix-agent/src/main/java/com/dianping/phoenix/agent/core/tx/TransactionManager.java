@@ -1,5 +1,6 @@
 package com.dianping.phoenix.agent.core.tx;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -27,5 +28,11 @@ public interface TransactionManager {
 	 * @param txId
 	 */
 	void endTransaction(TransactionId txId);
+	
+	/**
+	 * ONLY for agent upgrade use!
+	 * @return
+	 */
+	File getUnderlyingFile(TransactionId txId);
 	
 }
