@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
+import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -25,14 +26,12 @@ import com.dianping.phoenix.agent.util.Artifact;
 import com.dianping.phoenix.agent.util.ArtifactResolver;
 import com.dianping.phoenix.configure.ConfigManager;
 
-public class AgentStatusReporter {
+public class AgentStatusReporter extends ContainerHolder {
 	
 	private final static Logger logger = Logger.getLogger(AgentStatusReporter.class);
 
 	@Inject
 	private ConfigManager config;
-	@Inject
-	ScriptExecutor scriptExector;
 
 	public AgentStatusReporter() {
 	}
@@ -95,7 +94,8 @@ public class AgentStatusReporter {
 				sb.append(String.format(" -e \"%s\" ", config.getEnv()));
 				sb.append(String.format(" -b \"%s\" ", config.getContainerInstallPath()));
 				sb.append(String.format(" -c \"%s\" ", config.getContainerType()));
-				int exitCode = scriptExector.exec(sb.toString(), out, out);
+				ScriptExecutor scriptExecutor = lookup(ScriptExecutor.class);
+				int exitCode = scriptExecutor.exec(sb.toString(), out, out);
 				status = exitCode == 0 ? "up" : "down";
 				logger.info(out.toString());
 			} catch (Exception e) {

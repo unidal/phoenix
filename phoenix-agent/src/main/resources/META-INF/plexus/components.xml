@@ -41,9 +41,6 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
-				</requirement>
-				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
 				</requirement>
 			</requirements>
@@ -55,6 +52,7 @@
 		<component>
 			<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
 			<implementation>com.dianping.phoenix.agent.core.shell.DefaultScriptExecutor</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -120,9 +118,6 @@
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
-				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -187,9 +182,6 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
 				</requirement>
 			</requirements>
 		</component>
