@@ -5,6 +5,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.dianping.phoenix.agent.CharacterReplaceFilterTest;
+import com.dianping.phoenix.agent.PhoenixAgentDryRun;
+import com.dianping.phoenix.agent.PhoenixAgentDryRunTest;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessorTest;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStepTest;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflowTest;
@@ -24,7 +26,8 @@ import com.dianping.phoenix.agent.core.tx.LogFormatterTest;
 	DefaultQaServiceTest.class,
 	DefaultDeployStepTest.class,
 	Log4jAppenderTest.class,
-	LogFormatterTest.class
+	LogFormatterTest.class,
+	PhoenixAgentDryRunTest.class
 })
 public class AllTests {
 
