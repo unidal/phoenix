@@ -4,6 +4,11 @@ set -u
 
 cd `dirname $0`
 
+function kill_by_javaclass {
+	local javaclass=$1
+	jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -9 %s", $1);system(cmd)}'
+}
+
 agent_class="com.dianping.phoenix.agent.PhoenixAgent"
 port=3473
 
@@ -11,6 +16,8 @@ if [ $# -gt 1 ];then
 	agent_class=$1
 	port=$2
 fi
+
+kill_by_javaclass $agent_class
 
 if [ -e WEB-INF/classes ];then
 	rm -rf classes
