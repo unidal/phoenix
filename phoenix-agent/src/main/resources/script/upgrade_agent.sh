@@ -33,7 +33,9 @@ chmod +x $agent_war_tmp/startup.sh
 $agent_war_tmp/startup.sh $AGENT_DRY_RUN_CLASS $DRY_RUN_PORT || { new_agent_ok=false; }
 if [ $new_agent_ok == true ];then
 	log "new agent is valid, replace current agent"
-	exec 1>>$tx_log_file 2>&1
+	if [ -f $tx_log_file ];then
+		exec 1>>$tx_log_file 2>&1
+	fi
 	kill_by_javaclass $AGENT_CLASS
 	upgrade_local_git_repo $agent_war_tmp $agent_dir
 	chmod +x $agent_dir/startup.sh
