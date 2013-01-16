@@ -68,7 +68,9 @@ public class PhoenixAgentDryRun {
 		server.start();
 
 		Thread.sleep(sleepBeforeCheck);
-		System.exit(serverStatusOk(port, contextPath, connectTimeout, readTimeout) ? 0 : ERROR_EXIT_VALUE);
+		boolean newAgentOk = serverStatusOk(port, contextPath, connectTimeout, readTimeout);
+		logger.info("new agent is ok");
+		System.exit(newAgentOk ? 0 : ERROR_EXIT_VALUE);
 
 	}
 
