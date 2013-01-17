@@ -2,12 +2,19 @@ package com.dianping.phoenix.agent.core;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.unidal.helper.Files.IO;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.w3c.dom.Document;
@@ -27,7 +34,7 @@ import com.dianping.phoenix.agent.util.ArtifactResolver;
 import com.dianping.phoenix.configure.ConfigManager;
 
 public class AgentStatusReporter extends ContainerHolder {
-	
+
 	private final static Logger logger = Logger.getLogger(AgentStatusReporter.class);
 
 	@Inject
@@ -78,7 +85,31 @@ public class AgentStatusReporter extends ContainerHolder {
 		res.setContainer(container);
 		res.setIp(NetworkInterfaceManager.INSTANCE.getLocalHostAddress());
 
+		res.setVersion(findAgentVersion());
+
 		return res;
+	}
+
+	private String findAgentVersion() {
+		String version = "N/A";
+		InputStream in = null;
+		try {
+			File classesDir = new File(this.getClass().getClassLoader().getResource("").getPath());
+			File pomProperties = new File(classesDir.getParentFile(),
+					"META-INF/maven/com.dianping.platform/phoenix-agent/pom.properties");
+			// won't exist in eclipse environment
+			if (pomProperties.exists()) {
+				Properties props = new Properties();
+				in = new FileInputStream(pomProperties);
+				props.load(in);
+				version = props.getProperty("version");
+			}
+		} catch (Exception e) {
+			logger.error("error get agent version from pom.properties", e);
+		} finally {
+			IOUtils.closeQuietly(in);
+		}
+		return version;
 	}
 
 	private String getStatus() {
