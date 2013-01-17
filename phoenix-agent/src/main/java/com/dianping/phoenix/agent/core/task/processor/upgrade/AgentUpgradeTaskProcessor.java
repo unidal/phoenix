@@ -9,7 +9,6 @@ import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessor;
-import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
