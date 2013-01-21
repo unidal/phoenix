@@ -9,10 +9,19 @@ AGENT_CLASS="com.dianping.phoenix.agent.PhoenixAgent"
 AGENT_DRY_RUN_CLASS="com.dianping.phoenix.agent.PhoenixAgentDryRun"
 DRY_RUN_PORT=3474
 
-function exit_hook {
-	echo "exit hook"
+function ensure_agent_started {
+	log "checking whether agent process alive"
+	agent_process_num=`jps -lvm | awk -v javaclass=$AGENT_CLASS '$2==javaclass{print $0}' | wc -l`
+	if [ $agent_process_num -eq 0 ];then
+		log_error "no agent process found, try to git reset agent dir and start it"
+		cd $agent_dir
+		git reset --hard
+		chmod +x $agent_dir/startup.sh
+		$agent_dir/startup.sh
+		cd - > /dev/null
+	fi
 }
-trap exit_hook EXIT
+trap ensure_agent_started EXIT
 
 while getopts "g:v:t:a:l:" option;do
 	case $option in
