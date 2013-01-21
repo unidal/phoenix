@@ -58,6 +58,7 @@ public class PhoenixAgentDryRun {
 				.getAbsoluteFile().getAbsolutePath()));
 
 		Server server = new Server(port);
+		PhoenixAgent.addIntSinalHandler(server);
 		WebAppContext context = new WebAppContext();
 
 		context.setContextPath(contextPath);
