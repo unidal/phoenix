@@ -22,12 +22,11 @@ public class PhoenixAgent {
 		File warRoot = new File(args[2]);
 
 		logger.info(String.format("starting jetty@%d, contextPath %s, warRoot %s", port, contextPath,
-				warRoot.getAbsoluteFile()));
+				warRoot.getAbsoluteFile().getAbsolutePath()));
 
 		Server server = new Server(port);
 		WebAppContext context = new WebAppContext();
 
-		System.out.println(warRoot.getAbsolutePath());
 		context.setContextPath(contextPath);
 		context.setDescriptor(new File(warRoot, "WEB-INF/web.xml").getPath());
 		context.setResourceBase(warRoot.getPath());

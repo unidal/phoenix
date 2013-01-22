@@ -79,6 +79,9 @@ public class Handler implements PageHandler<Context> {
 		int qaServiceTimtout = payload.getQaServiceTimeout();
 		long deployId = payload.getDeployId();
 		int offset = payload.getOffset();
+		
+		logger.info(String.format("dispatching request %s", payload));
+		
 		TransactionId txId = new TransactionId(deployId);
 		Task task;
 		SubmitResult submitResult;
