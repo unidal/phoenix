@@ -1,5 +1,7 @@
 package com.dianping.phoenix.service;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,10 +101,19 @@ public class DefaultProjectManager implements ProjectManager, Initializable {
 
 	@Override
 	public void initialize() throws InitializationException {
-		// TODO test purpose
-		InputStream in = getClass().getResourceAsStream("/com/dianping/phoenix/deploy/project.xml");
+		File file = new File("/data/appdatas/pheonix/project.xml");
+		InputStream in = null;
 
 		try {
+			if (file.exists()) {
+				in = new FileInputStream(file);
+			}
+
+			if (in == null) {
+				// TODO test purpose
+				in = getClass().getResourceAsStream("/com/dianping/phoenix/deploy/project.xml");
+			}
+
 			m_root = DefaultSaxParser.parse(in);
 		} catch (Exception e) {
 			throw new RuntimeException(
