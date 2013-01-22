@@ -8,8 +8,8 @@ import org.unidal.lookup.configuration.Component;
 
 import com.dianping.cat.Cat;
 import com.dianping.service.ServiceContainer;
+import com.dianping.service.editor.model.DeploymentBuilder;
 import com.dianping.service.editor.model.ServiceAccessor;
-import com.dianping.service.editor.model.ModelBuilder;
 import com.dianping.service.internal.DefaultCatProvider;
 import com.dianping.service.logging.Log4jLoggerProvider;
 import com.dianping.service.logging.PlexusLoggerProvider;
@@ -63,9 +63,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	private List<Component> defineWebComponents() {
 		List<Component> all = new ArrayList<Component>();
 
-		all.add(C(ModelBuilder.class) //
+		all.add(C(DeploymentBuilder.class) //
 		      .req(ServiceRegistry.class));
-		all.add(C(ServiceAccessor.class));
+		all.add(C(ServiceAccessor.class) //
+		      .req(ServiceRegistry.class, DeploymentBuilder.class));
 		all.addAll(new WebComponentConfigurator().defineComponents());
 
 		return all;

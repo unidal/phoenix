@@ -11,7 +11,9 @@ import org.apache.log4j.xml.DOMConfigurator;
 import com.dianping.service.spi.ServiceBinding;
 import com.dianping.service.spi.ServiceProvider;
 import com.dianping.service.spi.annotation.Property;
+import com.dianping.service.spi.annotation.Service;
 
+@Service
 public class Log4jLoggerProvider implements ServiceProvider<Logger> {
 	@Property
 	private String m_config;

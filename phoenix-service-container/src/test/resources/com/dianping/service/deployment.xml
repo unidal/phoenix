@@ -1,44 +1,37 @@
 <deployment>
 	<active-services>
 		<service type="org.codehaus.plexus.logging.Logger">
-			<properties>
-				<property name="threshold">warn</property>
-			</properties>
+			<instance>
+				<properties>
+					<property name="threshold">warn</property>
+				</properties>
+			</instance>
 		</service>
 		<service type="org.apache.log4j.Logger">
-			<properties>
-				<property name="config">com/dianping/service/logging/log4j.xml</property>
-				<property name="threshold">warn</property>
-			</properties>
+			<instance id="default">
+				<properties>
+					<property name="config">com/dianping/service/logging/log4j.xml</property>
+					<property name="threshold">warn</property>
+				</properties>
+			</instance>
+			<instance id="error">
+				<properties>
+					<property name="config">com/dianping/service/logging/log4j.xml</property>
+					<property name="threshold">error</property>
+				</properties>
+			</instance>
 		</service>
 		<service type="com.dianping.cat.Cat">
-			<properties>
-				<property name="servers">127.0.0.1,192.168.7.70</property>
-			</properties>
+			<instance>
+				<properties>
+					<property name="servers">127.0.0.1,192.168.7.70</property>
+				</properties>
+				<configuration><![CDATA[...]]></configuration>
+				<requirements>
+					<requirement type="org.codehaus.plexus.logging.Logger" id="default" />
+					<requirement type="com.dianping.cat.Cat" />
+				</requirements>
+			</instance>
 		</service>
-
-<!-- 		<service type="com.dianping.service.configuration.Configuration">
-			<properties>
-				<property name="source">...</property>
-				<property name="enabled">true</property>
-			</properties>
-		</service>
-		<service type="com.dianping.dpsf.Pigeon" alias="default">
-			<configuration><![CDATA[
-				<services>
-				   <service name="userService:badgeService_1.0.0" method="*">
-				   	   <hosts>localhost:21111</hosts>
-				   </service>
-				   <service name="userService:friendService_1.0.0" method="findUserFollowCount">
-				   	   <hosts>localhost:21112</hosts>
-				   </service>
-				   <service name="*" method="*" auto-discovery="true"/>
-				</services>
-			]]></configuration>
-			<requirements>
-				<requirement type="org.codehaus.plexus.logging.Logger" alias="default" />
-				<requirement type="com.dianping.cat.Cat" />
-			</requirements>
-		</service> -->
 	</active-services>
 </deployment>

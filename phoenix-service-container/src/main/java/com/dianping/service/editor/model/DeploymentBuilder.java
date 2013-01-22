@@ -8,6 +8,7 @@ import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.service.deployment.IVisitor;
 import com.dianping.service.deployment.entity.DeploymentModel;
+import com.dianping.service.deployment.entity.InstanceModel;
 import com.dianping.service.deployment.entity.PropertyModel;
 import com.dianping.service.deployment.entity.RequirementModel;
 import com.dianping.service.deployment.entity.ServiceModel;
@@ -15,7 +16,7 @@ import com.dianping.service.spi.ServiceBinding;
 import com.dianping.service.spi.ServiceProvider;
 import com.dianping.service.spi.ServiceRegistry;
 
-public class ModelBuilder extends ContainerHolder implements IVisitor {
+public class DeploymentBuilder extends ContainerHolder implements IVisitor {
 	@Inject
 	private ServiceRegistry m_registry;
 
@@ -33,23 +34,29 @@ public class ModelBuilder extends ContainerHolder implements IVisitor {
 				service.setType(provider.getServiceType());
 				deployment.addService(service);
 			} else {
-				for (ServiceBinding binding : bindings) {
-					ServiceModel service = new ServiceModel();
-					List<PropertyModel> properties = service.getProperties();
+				ServiceModel service = new ServiceModel();
 
-					service.setAlias(binding.getAlias());
-					service.setConfiguration(binding.getConfiguration());
-					service.setType(provider.getServiceType());
+				service.setType(provider.getServiceType());
+
+				for (ServiceBinding binding : bindings) {
+					InstanceModel instance = new InstanceModel(binding.getId());
+					List<PropertyModel> properties = instance.getProperties();
 
 					for (Map.Entry<String, String> e : binding.getProperties().entrySet()) {
 						properties.add(new PropertyModel().setName(e.getKey()).setValue(e.getValue()));
 					}
-
-					deployment.addService(service);
+					
+					service.addInstance(instance);
 				}
+				
+				deployment.addService(service);
 			}
 		}
 	}
+
+	@Override
+   public void visitInstance(InstanceModel instance) {
+   }
 
 	@Override
 	public void visitProperty(PropertyModel property) {
