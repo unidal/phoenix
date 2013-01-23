@@ -20,10 +20,9 @@ function add_ssh_private_key {
 			
 			Host $kernel_git_host
 			IdentityFile ~/.ssh/id_rsa.phoenix
+			StrictHostKeyChecking no
 		END
 		chmod 600 $ssh_config
-		cat git/.ssh/known_hosts >> ~/.ssh/known_hosts
-		chmod 600 ~/.ssh/known_hosts
 		log "phoenix private key added to .ssh/config"
 	fi
 }
