@@ -101,23 +101,25 @@ public class DefaultProjectManager implements ProjectManager, Initializable {
 
 	@Override
 	public void initialize() throws InitializationException {
-		File file = new File("/data/appdatas/pheonix/project.xml");
+		File file = new File("/data/appdatas/phoenix/project.xml");
 		InputStream in = null;
 
 		try {
 			if (file.exists()) {
 				in = new FileInputStream(file);
+				System.out.println("read project.xml from /data/appdatas/phoenix/project.xml");
 			}
 
 			if (in == null) {
 				// TODO test purpose
 				in = getClass().getResourceAsStream("/com/dianping/phoenix/deploy/project.xml");
+				System.out.println("read project.xml from classpath");
 			}
 
 			m_root = DefaultSaxParser.parse(in);
 		} catch (Exception e) {
 			throw new RuntimeException(
-			      "Unable to load deploy model from resource(com/dianping/phoenix/deploy/project.xml)!", e);
+			      "Unable to load deploy model from resource(project.xml)!", e);
 		}
 	}
 
