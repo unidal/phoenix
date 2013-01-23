@@ -1,6 +1,5 @@
 package com.dianping.phoenix.deploy.agent;
 
-
 public interface AgentListener {
 	public void onProgress(AgentContext ctx, AgentProgress progress, String log) throws Exception;
 

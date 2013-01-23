@@ -2,7 +2,6 @@ package com.dianping.service.spi.internal;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,32 +9,31 @@ import java.util.Map;
 
 import org.unidal.tuple.Pair;
 
+import com.dianping.service.deployment.entity.InstanceModel;
+import com.dianping.service.deployment.entity.PropertyModel;
 import com.dianping.service.spi.ServiceBinding;
 
 public class DefaultServiceBinding implements ServiceBinding {
-	private String m_alias;
-
-	private String m_configuration;
+	private InstanceModel m_instance;
 
 	private Map<String, String> m_propreties;
 
-	private List<Pair<Class<?>, String>> m_components;
+	public DefaultServiceBinding(InstanceModel instance) {
+		m_instance = instance;
+		m_propreties = new LinkedHashMap<String, String>();
 
-	public DefaultServiceBinding(String alias, Map<String, String> properties, String configuration,
-	      List<Pair<Class<?>, String>> components) {
-		m_alias = alias;
-		m_propreties = properties;
-		m_configuration = configuration;
-		m_components = components;
+		for (PropertyModel property : m_instance.getProperties()) {
+			m_propreties.put(property.getName(), property.getValue());
+		}
 	}
 
-	public DefaultServiceBinding(String alias, String configuration) {
-		this(alias, new LinkedHashMap<String, String>(), configuration, new ArrayList<Pair<Class<?>, String>>());
+	public InstanceModel getModel() {
+		return m_instance;
 	}
 
 	@Override
-	public String getAlias() {
-		return m_alias;
+	public String getId() {
+		return m_instance.getId();
 	}
 
 	@Override
@@ -72,12 +70,13 @@ public class DefaultServiceBinding implements ServiceBinding {
 
 	@Override
 	public List<Pair<Class<?>, String>> getComponents() {
-		return m_components;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public String getConfiguration() {
-		return m_configuration;
+		return m_instance.getConfiguration();
 	}
 
 	@Override
@@ -165,4 +164,5 @@ public class DefaultServiceBinding implements ServiceBinding {
 			return value;
 		}
 	}
+
 }
