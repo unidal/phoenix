@@ -232,6 +232,11 @@ public class ConfigManager implements Initializable {
 		File scriptFile = getScriptFile("agent_status.sh");
 		return scriptFile;
 	}
+	
+	public File getAgentSelfUpgradeScriptFile() {
+		File scriptFile = getScriptFile("self_upgrade.sh");
+		return scriptFile;
+	}
 
 	private File getScriptFile(String scriptFileName) {
 		URL scriptUrl = this.getClass().getClassLoader().getResource("script/" + scriptFileName);

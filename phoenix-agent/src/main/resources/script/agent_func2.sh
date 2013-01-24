@@ -90,5 +90,5 @@ function git_commit {
 function kill_by_javaclass {
 	local javaclass=$1	
 
-	jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -9 %s", $1);system(cmd)}'
+	jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
 }

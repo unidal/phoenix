@@ -165,4 +165,9 @@ public class FileBasedTransactionManager implements TransactionManager {
 		}
 	}
 
+	@Override
+	public File getUnderlyingFile(TransactionId txId) {
+		return txId2LogFile(txId);
+	}
+
 }

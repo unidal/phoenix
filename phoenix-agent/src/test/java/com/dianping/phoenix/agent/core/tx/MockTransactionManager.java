@@ -2,6 +2,7 @@ package com.dianping.phoenix.agent.core.tx;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -76,6 +77,11 @@ public class MockTransactionManager implements TransactionManager {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public File getUnderlyingFile(TransactionId txId) {
+		throw new RuntimeException("Should not call this method");
 	}
 
 }

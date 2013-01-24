@@ -7,7 +7,8 @@ public enum Action implements org.unidal.web.mvc.Action {
 	CANCEL("cancel"),
 	GETLOG("log"),
 	STATUS("status"),
-	DETACH("detach");
+	DETACH("detach"),
+	UPGRADE_AGENT("upgradeAgent");
 	
 	private String m_name;
 

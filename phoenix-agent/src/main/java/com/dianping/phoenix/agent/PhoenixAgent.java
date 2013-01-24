@@ -6,6 +6,9 @@ import org.apache.log4j.Logger;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.webapp.WebAppContext;
 
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
+
 public class PhoenixAgent {
 
 	private final static Logger logger = Logger.getLogger(PhoenixAgent.class);
@@ -25,6 +28,7 @@ public class PhoenixAgent {
 				warRoot.getAbsoluteFile().getAbsolutePath()));
 
 		Server server = new Server(port);
+		addIntSinalHandler(server);
 		WebAppContext context = new WebAppContext();
 
 		context.setContextPath(contextPath);
@@ -34,6 +38,22 @@ public class PhoenixAgent {
 		server.setHandler(context);
 		server.start();
 
+	}
+
+	public static void addIntSinalHandler(final Server server) {
+		// not officially supported API 
+		Signal.handle(new Signal("TERM"), new SignalHandler() {
+			
+			@Override
+			public void handle(Signal signal) {
+				logger.info(String.format("%s signal received, try to stop jetty server", signal));
+				try {
+					server.stop();
+				} catch (Exception e) {
+					logger.error("error stop jetty server", e);
+				}
+			}
+		});
 	}
 
 }

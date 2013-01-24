@@ -6,7 +6,7 @@
 			<configuration>
 				<dateFormat>MM-dd HH:mm:ss.SSS</dateFormat>
 				<showClass>true</showClass>
-				<logFilePattern>/data/applogs/phoenix/cat_{0,date,yyyyMMdd}.log</logFilePattern>
+				<logFilePattern>/data/applogs/phoenix/cat_phoenix.log.{0,date,yyyy-MM-dd}</logFilePattern>
 			</configuration>
 		</component>
 	</components>

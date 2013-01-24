@@ -41,9 +41,6 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
-				</requirement>
-				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
 				</requirement>
 			</requirements>
@@ -55,6 +52,7 @@
 		<component>
 			<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
 			<implementation>com.dianping.phoenix.agent.core.shell.DefaultScriptExecutor</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -110,6 +108,23 @@
 			</requirements>
 		</component>
 		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessor</role>
+			<role-hint>agent_upgrade</role-hint>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeTaskProcessor</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper</role>
+					<role-hint>kernel</role-hint>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</implementation>
 		</component>
@@ -119,9 +134,6 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -187,9 +199,6 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
 				</requirement>
 			</requirements>
 		</component>

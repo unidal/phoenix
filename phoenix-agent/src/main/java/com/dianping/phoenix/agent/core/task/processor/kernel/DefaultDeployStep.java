@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
+import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.util.StringUtils;
 
@@ -17,11 +18,10 @@ import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService.CheckResult;
 import com.dianping.phoenix.configure.ConfigManager;
 
-public class DefaultDeployStep implements DeployStep {
+public class DefaultDeployStep extends ContainerHolder implements DeployStep {
 
 	private final static Logger logger = Logger.getLogger(DefaultDeployStep.class);
 
-	@Inject
 	private ScriptExecutor scriptExecutor;
 	@Inject
 	private ConfigManager config;
@@ -85,6 +85,7 @@ public class DefaultDeployStep implements DeployStep {
 	public void prepare(DeployTask task, OutputStream logOut) {
 		this.task = task;
 		this.logOut = logOut;
+		this.scriptExecutor = lookup(ScriptExecutor.class);
 	}
 
 	@Override
