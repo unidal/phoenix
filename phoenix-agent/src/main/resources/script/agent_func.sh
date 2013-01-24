@@ -51,6 +51,7 @@ function get_kernel_war {
 	cd $KERNEL_WAR_TMP
 	if [ -e $KERNEL_WAR_TMP/.git ];then
 		log "found existing kernel, fetching kernel war"
+		git reset --hard
 		git fetch --tags $kernel_git_url master
 		git checkout $kernel_version
 	else
