@@ -1,3 +1,34 @@
+function add_ssh_private_key {
+	local git_host=$1
+
+	ssh_config=~/.ssh/config
+	local host_cnt=`grep -c $git_host $ssh_config 2>/dev/null || true`
+	local write=0
+	if [ x$host_cnt == x ];then	#config file not exist
+		log ".ssh/config not found"
+		write=1
+	else
+		if [ $host_cnt -eq 0 ];then	#no config entry for kernel git host
+			log "no phoenix private key found in .ssh/config"
+			write=1
+		fi
+	fi
+	if [ $write -eq 1  ];then
+		log "try to add phoenix private key to .ssh/config"
+		mkdir -p ~/.ssh
+		cp -r git/.ssh/id_rsa ~/.ssh/id_rsa.phoenix
+		chmod 600 ~/.ssh/id_rsa.phoenix
+		cat <<-END >> $ssh_config
+			
+			Host $git_host
+			IdentityFile ~/.ssh/id_rsa.phoenix
+			StrictHostKeyChecking no
+		END
+		chmod 600 $ssh_config
+		log "phoenix private key added to .ssh/config"
+	fi
+}
+
 function create_git_repo {
 	local git_dir=$1
 	if [ ! -e $git_dir/.git ];then
@@ -25,6 +56,7 @@ function sync_git_repo {
 	cd $dest_dir
 	if [ -e $dest_dir/.git ];then
 		log "found existing repo, fetching update"
+		git reset --hard
 		git fetch --tags $git_url master
 		git checkout $tag
 	else
