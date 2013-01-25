@@ -28,7 +28,7 @@ public class PhoenixAgent {
 				warRoot.getAbsoluteFile().getAbsolutePath()));
 
 		Server server = new Server(port);
-		addIntSinalHandler(server);
+		addTerminateSingalHandler(server);
 		WebAppContext context = new WebAppContext();
 
 		context.setContextPath(contextPath);
@@ -40,7 +40,7 @@ public class PhoenixAgent {
 
 	}
 
-	public static void addIntSinalHandler(final Server server) {
+	public static void addTerminateSingalHandler(final Server server) {
 		// not officially supported API 
 		Signal.handle(new Signal("TERM"), new SignalHandler() {
 			
