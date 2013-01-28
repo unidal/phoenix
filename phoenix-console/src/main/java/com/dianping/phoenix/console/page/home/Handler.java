@@ -14,21 +14,22 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
-import com.dianping.phoenix.console.dal.deploy.Deployment;
 import com.dianping.phoenix.console.dal.deploy.Deliverable;
+import com.dianping.phoenix.console.dal.deploy.Deployment;
+import com.dianping.phoenix.deliverable.DeliverableManager;
+import com.dianping.phoenix.deliverable.DeliverableStatus;
 import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.DeployPolicy;
 import com.dianping.phoenix.project.entity.Project;
 import com.dianping.phoenix.service.ProjectManager;
-import com.dianping.phoenix.version.VersionManager;
 
 public class Handler implements PageHandler<Context>, LogEnabled {
 	@Inject
 	private ProjectManager m_projectManager;
 
 	@Inject
-	private VersionManager m_versionManager;
+	private DeliverableManager m_deliverableManager;
 
 	@Inject
 	private DeployManager m_deployManager;
@@ -66,7 +67,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 					}
 				} else if (payload.isWatch()) {
 					DeployPlan plan = payload.getPlan();
-					
+
 					try {
 						Deployment deploy = m_projectManager.findActiveDeploy(plan.getWarType(), name);
 
@@ -115,7 +116,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 			try {
 				String warType = plan.getWarType();
 				Project project = m_projectManager.findProjectBy(name);
-				List<Deliverable> versions = m_versionManager.getFinishedVersions(warType);
+				List<Deliverable> versions = m_deliverableManager.getAllDeliverables(warType, DeliverableStatus.ACTIVE);
 				Deployment activeDeployment = m_projectManager.findActiveDeploy(warType, name);
 
 				model.setProject(project);

@@ -35,8 +35,6 @@ import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.StatusReporter;
 import com.dianping.phoenix.service.WarService;
-import com.dianping.phoenix.version.DefaultVersionManager;
-import com.dianping.phoenix.version.VersionManager;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public static void main(String[] args) {
@@ -77,8 +75,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(DeliverableManager.class, DefaultDeliverableManager.class) //
 		      .req(WarService.class, GitService.class, DeliverableDao.class, LogService.class));
 
-		all.add(C(VersionManager.class, DefaultVersionManager.class) //
-		      .req(StatusReporter.class, WarService.class, GitService.class, DeliverableDao.class));
 		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
 		      .req(DeploymentDao.class, DeploymentDetailsDao.class));
 

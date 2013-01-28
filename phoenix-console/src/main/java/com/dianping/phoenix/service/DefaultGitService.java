@@ -16,7 +16,6 @@ import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.version.VersionContext;
 
 public class DefaultGitService implements GitService {
 	@Inject
@@ -32,7 +31,7 @@ public class DefaultGitService implements GitService {
 	private static final String REFS_TAGS = "refs/tags/";
 
 	@Override
-	public void clearWorkingDir(VersionContext context) throws Exception {
+	public void clearWorkingDir(GitContext context) throws Exception {
 		String version = context.getVersion();
 		if (m_git == null) {
 			throw new IllegalStateException(
@@ -58,7 +57,7 @@ public class DefaultGitService implements GitService {
 	}
 
 	@Override
-	public ObjectId commit(VersionContext context) throws Exception {
+	public ObjectId commit(GitContext context) throws Exception {
 
 		String tag = context.getVersion();
 		String description = context.getDescription();
@@ -110,7 +109,7 @@ public class DefaultGitService implements GitService {
 	}
 
 	@Override
-	public void pull(VersionContext context) throws Exception {
+	public void pull(GitContext context) throws Exception {
 
 		String version = context.getVersion();
 
@@ -131,7 +130,7 @@ public class DefaultGitService implements GitService {
 	}
 
 	@Override
-	public void push(VersionContext context) throws Exception {
+	public void push(GitContext context) throws Exception {
 
 		String version = context.getVersion();
 
@@ -165,7 +164,7 @@ public class DefaultGitService implements GitService {
 	}
 
 	@Override
-	public void removeTag(VersionContext context) throws Exception {
+	public void removeTag(GitContext context) throws Exception {
 
 		String tag = context.getVersion();
 
@@ -188,7 +187,7 @@ public class DefaultGitService implements GitService {
 	}
 
 	@Override
-	public synchronized void setup(VersionContext context) throws Exception {
+	public synchronized void setup(GitContext context) throws Exception {
 
 		String version = context.getVersion();
 

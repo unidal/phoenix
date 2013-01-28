@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jgit.lib.BatchingProgressMonitor;
 
-import com.dianping.phoenix.version.VersionContext;
 
 public class GitProgressMonitor extends BatchingProgressMonitor {
 
@@ -12,9 +11,9 @@ public class GitProgressMonitor extends BatchingProgressMonitor {
 
 	private String m_logType = DefaultStatusReporter.VERSION_LOG;
 
-	private VersionContext m_context;
+	private GitContext m_context;
 
-	public GitProgressMonitor(String logType, VersionContext context,
+	public GitProgressMonitor(String logType, GitContext context,
 			StatusReporter reporter) {
 		m_logType = logType;
 		m_context = context;

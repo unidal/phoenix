@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.phoenix.version.VersionContext;
 
 public class GitServiceTest extends ComponentTestCase {
 
@@ -24,7 +23,7 @@ public class GitServiceTest extends ComponentTestCase {
 		File gitDir = git.getWorkingDir();
 		String tag = "mock-1.0" + System.currentTimeMillis();
 
-		VersionContext context = new VersionContext("phoenix-kernel", 0, tag, "test", "test",
+		GitContext context = new GitContext("phoenix-kernel", 0, tag, "test", "test",
 				"test");
 
 		git.setup(context);

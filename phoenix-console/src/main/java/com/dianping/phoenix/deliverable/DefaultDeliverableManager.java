@@ -11,9 +11,9 @@ import org.unidal.lookup.annotation.Inject;
 import com.dianping.phoenix.console.dal.deploy.Deliverable;
 import com.dianping.phoenix.console.dal.deploy.DeliverableDao;
 import com.dianping.phoenix.console.dal.deploy.DeliverableEntity;
+import com.dianping.phoenix.service.GitContext;
 import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.WarService;
-import com.dianping.phoenix.version.VersionContext;
 
 public class DefaultDeliverableManager implements DeliverableManager {
 	@Inject
@@ -73,7 +73,7 @@ public class DefaultDeliverableManager implements DeliverableManager {
 	public boolean removeDeliverable(int id) throws Exception {
 		try {
 			Deliverable d = m_dao.findByPK(id, DeliverableEntity.READSET_FULL);
-			VersionContext ctx = new VersionContext(d);
+			GitContext ctx = new GitContext(d);
 
 			m_gitService.setup(ctx);
 			m_gitService.removeTag(ctx);
@@ -101,9 +101,9 @@ public class DefaultDeliverableManager implements DeliverableManager {
 
 		@Override
 		public void run() {
-			VersionContext ctx = new VersionContext(m_d);
-			String type = ctx.getType();
-			String version = ctx.getVersion();
+			GitContext ctx = new GitContext(m_d);
+			String type = m_d.getWarType();
+			String version = m_d.getWarVersion();
 			String key = type + ":" + version;
 
 			try {

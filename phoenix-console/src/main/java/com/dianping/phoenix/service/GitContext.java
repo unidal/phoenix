@@ -1,8 +1,8 @@
-package com.dianping.phoenix.version;
+package com.dianping.phoenix.service;
 
 import com.dianping.phoenix.console.dal.deploy.Deliverable;
 
-public class VersionContext {
+public class GitContext {
 	private String m_type;
 
 	private int m_versionId;
@@ -15,7 +15,7 @@ public class VersionContext {
 
 	private String m_createdBy;
 
-	public VersionContext(Deliverable d) {
+	public GitContext(Deliverable d) {
 		m_versionId = d.getId();
 		m_type = d.getWarType();
 		m_version = d.getWarVersion();
@@ -24,7 +24,7 @@ public class VersionContext {
 		m_createdBy = d.getCreatedBy();
 	}
 
-	public VersionContext(String type, int versionId, String version, String desception, String releaseNotes,
+	public GitContext(String type, int versionId, String version, String desception, String releaseNotes,
 	      String createdBy) {
 		m_versionId = versionId;
 		m_version = version;

@@ -52,24 +52,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.version.VersionManager</role>
-			<implementation>com.dianping.phoenix.version.DefaultVersionManager</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.service.StatusReporter</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.service.WarService</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.service.GitService</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.console.dal.deploy.DeliverableDao</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
 			<role>com.dianping.phoenix.service.ProjectManager</role>
 			<implementation>com.dianping.phoenix.service.DefaultProjectManager</implementation>
 			<requirements>
@@ -295,7 +277,7 @@
 					<role>com.dianping.phoenix.service.ProjectManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.version.VersionManager</role>
+					<role>com.dianping.phoenix.deliverable.DeliverableManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.deploy.DeployManager</role>
