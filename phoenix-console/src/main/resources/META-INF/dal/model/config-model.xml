@@ -2,7 +2,7 @@
 <model model-package="com.dianping.phoenix.configure" enable-sax-parser="true">
   <entity name="config" root="true">
     <attribute name="env" value-type="String" default-value="dev" />
-    <element name="war-url-pattern" value-type="String" default-value="http://192.168.8.45:8080/artifactory/dianping-snapshots/com/dianping/platform/phoenix-kernel/%s/phoenix-kernel-%1$s.war"/>
+    <element name="war-url-pattern" value-type="String" default-value="http://192.168.8.45:8080/artifactory/dianping-snapshots/com/dianping/platform/%s/%s/%1$s-%2$s.war"/>
   </entity>
   <entity name="git" class-name="GitConfig">
     <element name="origin-url" value-type="String" default-value="ssh://git@10.1.4.81:58422/phoenix-kernel.git" />

@@ -88,10 +88,10 @@ public class ConfigManager implements Initializable {
 		return m_config.getGit().getLocalDir();
 	}
 
-	public String getWarUrl(String version) {
+	public String getWarUrl(String type, String version) {
 		check();
 
-		return String.format(m_config.getWarUrlPattern(), version);
+		return String.format(m_config.getWarUrlPattern(), type, version);
 	}
 
 	@Override

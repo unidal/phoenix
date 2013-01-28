@@ -7,7 +7,7 @@ import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.project.entity.Project;
 
 public interface ProjectManager {
-	public Deployment findActiveDeploy(String name);
+	public Deployment findActiveDeploy(String type, String name);
 
 	public DeployModel findModel(int deployId);
 

@@ -1,5 +1,5 @@
 <config env="dev">
-	<war-url-pattern>http://192.168.8.45:8080/artifactory/dianping-snapshots/com/dianping/platform/phoenix-kernel/%s/phoenix-kernel-%1$s.war</war-url-pattern>
+	<war-url-pattern>http://192.168.8.45:8080/artifactory/dianping-snapshots/com/dianping/platform/%s/%s/%1$s-%2$s.war</war-url-pattern>
 	<git>
 		<origin-url>ssh://git@10.1.4.81:58422/kernel.git</origin-url>
 		<local-dir>target/gitrepo</local-dir>

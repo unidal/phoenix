@@ -15,7 +15,7 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Deployment;
-import com.dianping.phoenix.console.dal.deploy.Version;
+import com.dianping.phoenix.console.dal.deploy.Deliverable;
 import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.DeployPolicy;
@@ -59,14 +59,16 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 						ctx.redirect(deployUri + "?id=" + id);
 						return;
 					} catch (Exception e) {
-						m_logger.warn(
-						      String.format("Error when submitting deploy to hosts(%s) for project(%s)! Error: %s.", hosts, name, e));
+						m_logger.warn(String.format("Error when submitting deploy to hosts(%s) for project(%s)! Error: %s.",
+						      hosts, name, e));
 
 						ctx.addError("project.deploy", e);
 					}
 				} else if (payload.isWatch()) {
+					DeployPlan plan = payload.getPlan();
+					
 					try {
-						Deployment deploy = m_projectManager.findActiveDeploy(name);
+						Deployment deploy = m_projectManager.findActiveDeploy(plan.getWarType(), name);
 
 						if (deploy != null) {
 							ctx.redirect(deployUri + "?id=" + deploy.getId());
@@ -108,14 +110,16 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 			break;
 		case PROJECT:
 			String name = payload.getProject();
+			DeployPlan plan = payload.getPlan();
 
 			try {
+				String warType = plan.getWarType();
 				Project project = m_projectManager.findProjectBy(name);
-				List<Version> versions = m_versionManager.getFinishedVersions();
-				Deployment activeDeployment = m_projectManager.findActiveDeploy(name);
+				List<Deliverable> versions = m_versionManager.getFinishedVersions(warType);
+				Deployment activeDeployment = m_projectManager.findActiveDeploy(warType, name);
 
 				model.setProject(project);
-				model.setVersions(versions);
+				model.setDeliverables(versions);
 				model.setPolicies(DeployPolicy.values());
 				model.setActiveDeployment(activeDeployment);
 			} catch (Exception e) {

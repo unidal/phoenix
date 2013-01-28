@@ -1,4 +1,4 @@
-<deploy id="123" domain="sample-app" version="0.1-SNAPSHOT" abortOnError="true" status="failed">
+<deploy id="123" domain="sample-app" version="0.1-SNAPSHOT" abortOnError="true" status="failed" skipTest="false">
 	<host ip="192.168.66.133" status="failed">
 <segment step="stop container" current-ticks="11" total-ticks="91"><![CDATA[
 [11-27 16:33:44] [INFO] PID is 8728

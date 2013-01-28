@@ -5,7 +5,6 @@ import org.unidal.helper.Threads.Task;
 import com.dianping.phoenix.service.DefaultStatusReporter;
 
 public class VersionExecutor implements Task {
-
 	private boolean m_active;
 
 	private VersionContext m_context;
@@ -27,11 +26,9 @@ public class VersionExecutor implements Task {
 	public void run() {
 		if (m_active) {
 			try {
-
 				m_manager.submitVersion(m_context);
-				m_manager.updateVersionSuccessed(m_context.getVersionId());
+				m_manager.updateVersionStatus(m_context.getVersionId(), VersionStatus.ACTIVE);
 			} catch (VersionException e) {
-				e.printStackTrace();
 				try {
 					m_manager.removeVersion(m_context.getVersionId());
 				} catch (Exception e1) {
@@ -41,14 +38,8 @@ public class VersionExecutor implements Task {
 				e.printStackTrace();
 			}
 
-			m_manager
-					.getReporter()
-					.categoryLog(
-							DefaultStatusReporter.VERSION_LOG,
-							m_context.getVersion(),
-							String.format(
-									"Create version(%s) >>>>>>>>>>>>>>>DONE<<<<<<<<<<<<<<<<<",
-									m_context.getVersion()));
+			m_manager.getReporter().log(DefaultStatusReporter.VERSION_LOG, m_context.getVersion(),
+			      String.format("Create version(%s) >>>>>>>>>>>>>>>DONE<<<<<<<<<<<<<<<<<", m_context.getVersion()));
 
 			try {
 				Thread.sleep(30 * 1000);
@@ -57,7 +48,6 @@ public class VersionExecutor implements Task {
 			}
 
 			m_manager.clearVersion(m_context.getVersion());
-
 		}
 	}
 
@@ -65,5 +55,4 @@ public class VersionExecutor implements Task {
 	public void shutdown() {
 		m_active = false;
 	}
-
 }

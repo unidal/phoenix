@@ -39,7 +39,7 @@ public class DefaultGitService implements GitService {
 					"Please call setup() to initiailize git first!");
 		}
 
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
 				"Clearing git ... ");
 
 		String[] names = m_workingDir.list();
@@ -53,7 +53,7 @@ public class DefaultGitService implements GitService {
 				Files.forDir().delete(new File(m_workingDir, name), true);
 			}
 		}
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
 				"Cleared git for ... ");
 	}
 
@@ -61,7 +61,7 @@ public class DefaultGitService implements GitService {
 	public ObjectId commit(VersionContext context) throws Exception {
 
 		String tag = context.getVersion();
-		String description = context.getDesception();
+		String description = context.getDescription();
 
 		if (m_git == null) {
 			throw new IllegalStateException(
@@ -69,22 +69,22 @@ public class DefaultGitService implements GitService {
 		}
 
 		// Add
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
 				String.format("Adding to git for tag(%s) ... ", tag));
 		m_git.add().addFilepattern(".").call();
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
 				String.format("Adding to git for tag(%s) ... DONE.", tag));
 
 		// Commit
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
 				String.format("Commiting to git for tag(%s) ... ", tag));
 		RevCommit revCommit = m_git.commit().setAll(true)
 				.setMessage(description).call();
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
 				String.format("Commiting to git for tag(%s) ... DONE.", tag));
 
 		// Tag
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
 				String.format("Taging to git for tag(%s) ... ", tag));
 		try {
 			m_git.tag().setName(tag).setMessage(description).call();
@@ -93,7 +93,7 @@ public class DefaultGitService implements GitService {
 					String.format("Tag(%s) already exists!", tag), e);
 		}
 
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
 				String.format("Taging to git for tag(%s) ... DONE.", tag));
 
 		return revCommit.getId();
@@ -119,14 +119,14 @@ public class DefaultGitService implements GitService {
 					"Please call setup() to initiailize git first!");
 		}
 
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
 				"Pulling from git ... ");
 		m_git.pull()
 				.setProgressMonitor(
 						new GitProgressMonitor(
 								DefaultStatusReporter.VERSION_LOG, context,m_reporter))
 				.call();
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
 				"Pulling from git ... DONE.");
 	}
 
@@ -141,18 +141,18 @@ public class DefaultGitService implements GitService {
 		}
 
 		// Push heads
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
 				"Pushing to git heads ... ");
 		m_git.push()
 				.setProgressMonitor(
 						new GitProgressMonitor(
 								DefaultStatusReporter.VERSION_LOG, context,m_reporter))
 				.setPushAll().call();
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
 				"Pushing to git heads ... DONE.");
 
 		// Push heads
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
 				"Pushing to git tags ... ");
 		m_git.push()
 				.setPushTags()
@@ -160,7 +160,7 @@ public class DefaultGitService implements GitService {
 						new GitProgressMonitor(
 								DefaultStatusReporter.VERSION_LOG, context,m_reporter))
 				.call();
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, version,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
 				"Pushing to git tags ... DONE");
 	}
 
@@ -169,13 +169,13 @@ public class DefaultGitService implements GitService {
 
 		String tag = context.getVersion();
 
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
 				String.format("removing tag(%s) from local git ... ", tag));
 		m_git.tagDelete().setTags(tag).call();
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag, String
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag, String
 				.format("removing tag(%s) from local git ... DONE. ", tag));
 
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag,
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
 				String.format("removing tag(%s) from remote git ... ", tag));
 		m_git.push()
 				.setRefSpecs(new RefSpec(":" + REFS_TAGS + tag))
@@ -183,7 +183,7 @@ public class DefaultGitService implements GitService {
 						new GitProgressMonitor(
 								DefaultStatusReporter.VERSION_LOG, context,m_reporter))
 				.call();
-		m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag, String
+		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag, String
 				.format("removing tag(%s) from remote git ... DONE. ", tag));
 	}
 
@@ -202,7 +202,7 @@ public class DefaultGitService implements GitService {
 
 			if (!gitRepo.exists()) {
 				String gitURL = m_configManager.getGitOriginUrl();
-				m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG,
+				m_reporter.log(DefaultStatusReporter.VERSION_LOG,
 						version,
 						String.format("Cloning repo from %s ... ", gitURL));
 				FileRepositoryBuilder builder = new FileRepositoryBuilder();
@@ -232,7 +232,7 @@ public class DefaultGitService implements GitService {
 					throw e;
 				}
 				m_reporter
-						.categoryLog(DefaultStatusReporter.VERSION_LOG,
+						.log(DefaultStatusReporter.VERSION_LOG,
 								version, String.format(
 										"Cloning repo from %s ... DONE.",
 										gitURL));

@@ -17,6 +17,9 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("op")
 	private Action m_action;
 
+	@FieldMeta("type")
+	private String m_type;
+
 	@FieldMeta("domain")
 	private String m_domain;
 
@@ -28,10 +31,10 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	@FieldMeta("host")
 	private List<String> m_hosts;
-	
+
 	@FieldMeta("deploy")
 	private boolean m_deploy;
-	
+
 	@FieldMeta("watch")
 	private boolean m_watch;
 
@@ -99,21 +102,21 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 			m_action = Action.HOME;
 		}
 
-		if (m_action == Action.PROJECT) {
-			if (m_plan == null) {
-				m_plan = new DeployPlan();
-			}
+		if (m_plan == null) {
+			m_plan = new DeployPlan();
+		}
 
+		if (m_type != null) {
+			m_plan.setWarType(m_type);
+		}
+
+		if (m_action == Action.PROJECT) {
 			if (m_plan.getPolicy() == null) {
 				m_plan.setPolicy(DeployPolicy.ONE_BY_ONE.getId());
 			}
 		} else if (m_action == Action.DEPLOY) {
 			if (m_hosts == null || m_hosts.isEmpty()) {
 				ctx.addError("project.hosts", null);
-			}
-
-			if (m_plan == null) {
-				m_plan = new DeployPlan();
 			}
 
 			if (m_plan.getVersion() == null) {

@@ -211,6 +211,9 @@ public class DeployExecutorTest extends ComponentTestCase {
 			model.setId(deployId);
 			model.setDomain(name);
 			model.setPlan(plan);
+			model.setVersion(plan.getVersion());
+			model.setAbortOnError(true);
+			model.setSkipTest(false);
 			m_models.put(deployId, model);
 			return model;
 		}

@@ -84,7 +84,7 @@ public class GitProgressMonitor extends BatchingProgressMonitor {
 	}
 
 	private void send(StringBuilder s) {
-		m_reporter.categoryLog(m_logType, m_context.getVersion(), s.toString());
+		m_reporter.log(m_logType, m_context.getVersion(), s.toString());
 	}
 
 }

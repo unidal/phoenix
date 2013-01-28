@@ -13,7 +13,8 @@ public class ConfigManagerTest {
 		manager.initialize();
 
 		Assert.assertEquals("http://192.168.8.45:8080/artifactory/dianping-snapshots/" + //
-		      "com/dianping/platform/phoenix-kernel/1.0/phoenix-kernel-1.0.war", manager.getWarUrl("1.0"));
+		      "com/dianping/platform/phoenix-kernel/1.0/phoenix-kernel-1.0.war",
+		      manager.getWarUrl("phoenix-kernel", "1.0"));
 		Assert.assertEquals("ssh://git@10.1.4.81:58422/kernel.git", manager.getGitOriginUrl());
 		Assert.assertEquals("target/gitrepo", manager.getGitWorkingDir());
 

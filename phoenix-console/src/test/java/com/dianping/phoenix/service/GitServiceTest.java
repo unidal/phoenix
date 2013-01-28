@@ -24,7 +24,7 @@ public class GitServiceTest extends ComponentTestCase {
 		File gitDir = git.getWorkingDir();
 		String tag = "mock-1.0" + System.currentTimeMillis();
 
-		VersionContext context = new VersionContext(0, tag, "test", "test",
+		VersionContext context = new VersionContext("phoenix-kernel", 0, tag, "test", "test",
 				"test");
 
 		git.setup(context);

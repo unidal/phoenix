@@ -9,9 +9,9 @@
          <properties>useUnicode=true&amp;autoReconnect=true</properties>
       </datasource>
       <group name="deploy" package="com.dianping.phoenix.console.dal.deploy">
-         <table name="version"/>
          <table name="deployment"/>
          <table name="deployment_details"/>
+         <table name="deliverable"/>
       </group>
    </jdbc>
 </wizard>

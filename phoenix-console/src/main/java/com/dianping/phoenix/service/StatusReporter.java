@@ -9,7 +9,7 @@ public interface StatusReporter {
 
 	public void log(String message, Throwable e);
 	
-	public void categoryLog(String category,String subCategory,String message);
+	public void log(String category,String subCategory,String message);
 	
 	public void categoryLog(String category,String subCategory,String message, Throwable e);
 	

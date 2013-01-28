@@ -15,9 +15,6 @@
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.service.StatusReporter</role>
-				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -29,6 +26,28 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.service.StatusReporter</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.deliverable.LogService</role>
+			<implementation>com.dianping.phoenix.deliverable.LogService</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.deliverable.DeliverableManager</role>
+			<implementation>com.dianping.phoenix.deliverable.DefaultDeliverableManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.service.WarService</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.GitService</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.dal.deploy.DeliverableDao</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deliverable.LogService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -46,7 +65,7 @@
 					<role>com.dianping.phoenix.service.GitService</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.console.dal.deploy.VersionDao</role>
+					<role>com.dianping.phoenix.console.dal.deploy.DeliverableDao</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -188,6 +207,16 @@
 		</component>
 		<component>
 			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>deliverable</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<logical-table-name>deliverable</logical-table-name>
+				<physical-table-name>deliverable</physical-table-name>
+				<data-source-name>phoenix</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
 			<role-hint>deployment</role-hint>
 			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
 			<configuration>
@@ -207,14 +236,13 @@
 			</configuration>
 		</component>
 		<component>
-			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
-			<role-hint>version</role-hint>
-			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
-			<configuration>
-				<logical-table-name>version</logical-table-name>
-				<physical-table-name>version</physical-table-name>
-				<data-source-name>phoenix</data-source-name>
-			</configuration>
+			<role>com.dianping.phoenix.console.dal.deploy.DeliverableDao</role>
+			<implementation>com.dianping.phoenix.console.dal.deploy.DeliverableDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.console.dal.deploy.DeploymentDao</role>
@@ -228,15 +256,6 @@
 		<component>
 			<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
 			<implementation>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.dal.jdbc.QueryEngine</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.console.dal.deploy.VersionDao</role>
-			<implementation>com.dianping.phoenix.console.dal.deploy.VersionDao</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.dal.jdbc.QueryEngine</role>
@@ -291,22 +310,6 @@
 			<implementation>com.dianping.phoenix.console.page.home.JspViewer</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.console.page.version.Handler</role>
-			<implementation>com.dianping.phoenix.console.page.version.Handler</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.version.VersionManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.console.page.version.JspViewer</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.console.page.version.JspViewer</role>
-			<implementation>com.dianping.phoenix.console.page.version.JspViewer</implementation>
-		</component>
-		<component>
 			<role>com.dianping.phoenix.console.page.deploy.Handler</role>
 			<implementation>com.dianping.phoenix.console.page.deploy.Handler</implementation>
 			<requirements>
@@ -321,6 +324,29 @@
 		<component>
 			<role>com.dianping.phoenix.console.page.deploy.JspViewer</role>
 			<implementation>com.dianping.phoenix.console.page.deploy.JspViewer</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.page.version.Handler</role>
+			<implementation>com.dianping.phoenix.console.page.version.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.deliverable.DeliverableManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deliverable.LogService</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.console.page.version.JspViewer</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.deliverable.LogService</role>
+			<implementation>com.dianping.phoenix.deliverable.LogService</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.page.version.JspViewer</role>
+			<implementation>com.dianping.phoenix.console.page.version.JspViewer</implementation>
 		</component>
 	</components>
 </plexus>

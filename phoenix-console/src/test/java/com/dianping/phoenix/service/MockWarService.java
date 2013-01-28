@@ -6,19 +6,21 @@ import java.io.IOException;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.version.VersionContext;
 
 public class MockWarService implements WarService {
 	@Inject
 	private ConfigManager m_configManager;
 
 	@Override
-	public void downloadAndExtractTo(VersionContext context, File target)
-			throws IOException {
+	public void downloadAndExtractTo(String type, String version, File target) throws IOException {
 		File workingDir = new File(m_configManager.getGitWorkingDir());
-		File newFile = new File(workingDir, String.valueOf(System
-				.currentTimeMillis()));
+		File newFile = new File(workingDir, String.valueOf(System.currentTimeMillis()));
 
 		newFile.createNewFile();
 	}
+
+	@Override
+   public String getWarUrl(String type, String version) {
+	   throw new UnsupportedOperationException();
+   }
 }

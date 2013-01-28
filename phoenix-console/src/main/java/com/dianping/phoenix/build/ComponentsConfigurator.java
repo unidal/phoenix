@@ -12,9 +12,12 @@ import org.unidal.lookup.configuration.Component;
 
 import com.dianping.phoenix.PhoenixConsoleModule;
 import com.dianping.phoenix.configure.ConfigManager;
+import com.dianping.phoenix.console.dal.deploy.DeliverableDao;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDao;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
-import com.dianping.phoenix.console.dal.deploy.VersionDao;
+import com.dianping.phoenix.deliverable.DefaultDeliverableManager;
+import com.dianping.phoenix.deliverable.DeliverableManager;
+import com.dianping.phoenix.deliverable.LogService;
 import com.dianping.phoenix.deploy.DeployExecutor;
 import com.dianping.phoenix.deploy.DeployListener;
 import com.dianping.phoenix.deploy.DeployManager;
@@ -66,12 +69,16 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(StatusReporter.class, DefaultStatusReporter.class));
 
 		all.add(C(WarService.class, DefaultWarService.class) //
-		      .req(ConfigManager.class, StatusReporter.class));
+		      .req(ConfigManager.class));
 		all.add(C(GitService.class, DefaultGitService.class) //
 		      .req(ConfigManager.class, StatusReporter.class));
 
+		all.add(C(LogService.class));
+		all.add(C(DeliverableManager.class, DefaultDeliverableManager.class) //
+		      .req(WarService.class, GitService.class, DeliverableDao.class, LogService.class));
+
 		all.add(C(VersionManager.class, DefaultVersionManager.class) //
-		      .req(StatusReporter.class, WarService.class, GitService.class, VersionDao.class));
+		      .req(StatusReporter.class, WarService.class, GitService.class, DeliverableDao.class));
 		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
 		      .req(DeploymentDao.class, DeploymentDetailsDao.class));
 
