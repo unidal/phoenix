@@ -1,4 +1,4 @@
-package com.dianping.phoenix.deliverable;
+package com.dianping.phoenix.service;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class LogService {
 	}
 
 	public synchronized void log(String key, String pattern, Object... args) {
-		String text = String.format(pattern, args);
+		String text = args.length == 0 ? pattern : String.format(pattern, args);
 		String message = m_format.format(new Object[] { new Date(), text });
 
 		List<String> list = m_map.get(key);

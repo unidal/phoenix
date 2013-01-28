@@ -4,7 +4,7 @@ CREATE TABLE `deliverable` (
   `war_version` varchar(32) NOT NULL COMMENT '版本号',
   `description` varchar(200) NOT NULL COMMENT '版本描述',
   `release_notes` varchar(200) NOT NULL COMMENT 'Release notes',
-  `status` int(1) NOT NULL COMMENT '状态，可选值: 1 - creating, 2 - active, 3 - removed',
+  `status` int(1) NOT NULL COMMENT '状态，可选值: 1 - creating, 2 - active, 3 - removed, 4 - aborted',
   `created_by` varchar(64) NOT NULL COMMENT '创建者',
   `terminated_by` varchar(64) NULL COMMENT '终止者',
   `creation_date` datetime NOT NULL COMMENT '创建时间',

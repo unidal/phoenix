@@ -35,7 +35,7 @@ public class DefaultDeployManager extends ContainerHolder implements DeployManag
 		DeployExecutor executor = lookup(DeployExecutor.class, plan.getPolicy());
 		DeployModel model = m_deployListener.onCreate(domain, hosts, plan);
 
-		executor.submit(model, hosts);
+		executor.submit(model, hosts, plan.getWarType());
 		return model.getId();
 	}
 }

@@ -3,16 +3,20 @@ package com.dianping.phoenix.deliverable;
 import java.io.File;
 import java.util.List;
 
+import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Transaction;
 import com.dianping.phoenix.console.dal.deploy.Deliverable;
 import com.dianping.phoenix.console.dal.deploy.DeliverableDao;
 import com.dianping.phoenix.console.dal.deploy.DeliverableEntity;
 import com.dianping.phoenix.service.GitContext;
 import com.dianping.phoenix.service.GitService;
+import com.dianping.phoenix.service.LogService;
 import com.dianping.phoenix.service.WarService;
 
 public class DefaultDeliverableManager implements DeliverableManager {
@@ -41,6 +45,8 @@ public class DefaultDeliverableManager implements DeliverableManager {
 		Deliverable d = createLocal(type, version, description, "N/A", "phoenix");
 
 		m_dao.insert(d);
+		d.setKeyId(d.getId());
+
 		Threads.forGroup("Phoenix").start(new CreateTask(d));
 		return true;
 	}
@@ -105,6 +111,7 @@ public class DefaultDeliverableManager implements DeliverableManager {
 			String type = m_d.getWarType();
 			String version = m_d.getWarVersion();
 			String key = type + ":" + version;
+			Transaction t = Cat.newTransaction(type, version);
 
 			try {
 				m_gitService.setup(ctx);
@@ -112,7 +119,7 @@ public class DefaultDeliverableManager implements DeliverableManager {
 				File gitDir = m_gitService.getWorkingDir();
 
 				m_gitService.pull(ctx);
-				m_gitService.clearWorkingDir(ctx);
+				m_gitService.clear(ctx);
 
 				m_logService.log(key, "Downloading war(%s:%s) ... ", type, version);
 				m_warService.downloadAndExtractTo(type, version, gitDir);
@@ -121,12 +128,23 @@ public class DefaultDeliverableManager implements DeliverableManager {
 				m_gitService.commit(ctx);
 				m_gitService.push(ctx);
 
-				m_d.setKeyId(m_d.getId());
 				m_d.setStatus(DeliverableStatus.ACTIVE.getId());
 				m_dao.updateByPK(m_d, DeliverableEntity.UPDATESET_FULL);
 			} catch (Exception e) {
-				m_logService.log(key, "Error when creating deliverable(%s:%s)! Message: %s.", type, version, e);
-				// TODO
+				m_logService.log(key, "Error when creating the deliverable(%s:%s)! Message: %s.", type, version, e);
+				t.setStatus(e);
+				Cat.logError(e);
+
+				try {
+					m_d.setStatus(DeliverableStatus.ABORTED.getId());
+					m_dao.updateByPK(m_d, DeliverableEntity.UPDATESET_FULL);
+				} catch (DalException ex) {
+					m_logService.log(key, "Error when removing the deliverable(%s:%s)! Message: %s.", type, version, ex);
+
+					Cat.logError(ex);
+				}
+			} finally {
+				t.complete();
 			}
 		}
 

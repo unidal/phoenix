@@ -5,7 +5,9 @@ public enum DeliverableStatus {
 
 	ACTIVE(2, "active"),
 
-	REMOVED(3, "removed");
+	REMOVED(3, "removed"),
+	
+	ABORTED(4, "aborted");
 
 	private int m_id;
 

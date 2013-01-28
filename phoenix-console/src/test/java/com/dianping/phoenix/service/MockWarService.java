@@ -13,14 +13,14 @@ public class MockWarService implements WarService {
 
 	@Override
 	public void downloadAndExtractTo(String type, String version, File target) throws IOException {
-		File workingDir = new File(m_configManager.getGitWorkingDir());
+		File workingDir = new File(m_configManager.getGitWorkingDir("phoenix-kernel"));
 		File newFile = new File(workingDir, String.valueOf(System.currentTimeMillis()));
 
 		newFile.createNewFile();
 	}
 
 	@Override
-   public String getWarUrl(String type, String version) {
-	   throw new UnsupportedOperationException();
-   }
+	public String getWarUrl(String type, String version) {
+		throw new UnsupportedOperationException();
+	}
 }

@@ -17,7 +17,6 @@ import com.dianping.phoenix.console.dal.deploy.DeploymentDao;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
 import com.dianping.phoenix.deliverable.DefaultDeliverableManager;
 import com.dianping.phoenix.deliverable.DeliverableManager;
-import com.dianping.phoenix.deliverable.LogService;
 import com.dianping.phoenix.deploy.DeployExecutor;
 import com.dianping.phoenix.deploy.DeployListener;
 import com.dianping.phoenix.deploy.DeployManager;
@@ -29,11 +28,10 @@ import com.dianping.phoenix.deploy.internal.DefaultDeployListener;
 import com.dianping.phoenix.deploy.internal.DefaultDeployManager;
 import com.dianping.phoenix.service.DefaultGitService;
 import com.dianping.phoenix.service.DefaultProjectManager;
-import com.dianping.phoenix.service.DefaultStatusReporter;
 import com.dianping.phoenix.service.DefaultWarService;
 import com.dianping.phoenix.service.GitService;
+import com.dianping.phoenix.service.LogService;
 import com.dianping.phoenix.service.ProjectManager;
-import com.dianping.phoenix.service.StatusReporter;
 import com.dianping.phoenix.service.WarService;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
@@ -64,12 +62,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	}
 
 	private void defineServiceComponents(List<Component> all) {
-		all.add(C(StatusReporter.class, DefaultStatusReporter.class));
-
 		all.add(C(WarService.class, DefaultWarService.class) //
 		      .req(ConfigManager.class));
 		all.add(C(GitService.class, DefaultGitService.class) //
-		      .req(ConfigManager.class, StatusReporter.class));
+		      .req(ConfigManager.class, LogService.class));
 
 		all.add(C(LogService.class));
 		all.add(C(DeliverableManager.class, DefaultDeliverableManager.class) //

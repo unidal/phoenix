@@ -57,35 +57,35 @@ public class ConfigManager implements Initializable {
 		return String.format(pattern, host, deployId);
 	}
 
-	public String getDeployUrl(String host, int deployId, String name, String version, boolean skipTest) {
+	public String getDeployUrl(String type, String host, int deployId, String name, String version, boolean skipTest) {
 		check();
+
+		String gitUrl = String.format(m_config.getGit().getOriginUrl(), type);
 
 		if (skipTest) {
 			String pattern = m_config.getConsole().getDeployUrlSkipTestPattern();
-			String kernelGitUrl = m_config.getGit().getOriginUrl();
 
-			return String.format(pattern, host, deployId, name, version, kernelGitUrl);
+			return String.format(pattern, host, deployId, name, version, type, gitUrl);
 		} else {
 			String pattern = m_config.getConsole().getDeployUrlPattern();
-			String kernelGitUrl = m_config.getGit().getOriginUrl();
 			String testServiceUrlPrefix = m_config.getConsole().getTestServiceUrlPrefix();
 			long testServiceTimeout = m_config.getConsole().getTestServiceTimeout();
 
-			return String.format(pattern, host, deployId, name, version, kernelGitUrl, testServiceUrlPrefix,
+			return String.format(pattern, host, deployId, name, version, type, gitUrl, testServiceUrlPrefix,
 			      testServiceTimeout);
 		}
 	}
 
-	public String getGitOriginUrl() {
+	public String getGitOriginUrl(String type) {
 		check();
 
-		return m_config.getGit().getOriginUrl();
+		return String.format(m_config.getGit().getOriginUrl(), type);
 	}
 
-	public String getGitWorkingDir() {
+	public String getGitWorkingDir(String type) {
 		check();
 
-		return m_config.getGit().getLocalDir();
+		return String.format(m_config.getGit().getLocalDir(), type);
 	}
 
 	public String getWarUrl(String type, String version) {

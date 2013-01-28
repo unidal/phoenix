@@ -5,10 +5,6 @@
 			<implementation>com.dianping.phoenix.configure.ConfigManager</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.service.StatusReporter</role>
-			<implementation>com.dianping.phoenix.service.DefaultStatusReporter</implementation>
-		</component>
-		<component>
 			<role>com.dianping.phoenix.service.WarService</role>
 			<implementation>com.dianping.phoenix.service.DefaultWarService</implementation>
 			<requirements>
@@ -25,13 +21,13 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.service.StatusReporter</role>
+					<role>com.dianping.phoenix.service.LogService</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.deliverable.LogService</role>
-			<implementation>com.dianping.phoenix.deliverable.LogService</implementation>
+			<role>com.dianping.phoenix.service.LogService</role>
+			<implementation>com.dianping.phoenix.service.LogService</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.deliverable.DeliverableManager</role>
@@ -47,7 +43,7 @@
 					<role>com.dianping.phoenix.console.dal.deploy.DeliverableDao</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deliverable.LogService</role>
+					<role>com.dianping.phoenix.service.LogService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -315,7 +311,7 @@
 					<role>com.dianping.phoenix.deliverable.DeliverableManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.deliverable.LogService</role>
+					<role>com.dianping.phoenix.service.LogService</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.version.JspViewer</role>
@@ -323,8 +319,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.deliverable.LogService</role>
-			<implementation>com.dianping.phoenix.deliverable.LogService</implementation>
+			<role>com.dianping.phoenix.service.LogService</role>
+			<implementation>com.dianping.phoenix.service.LogService</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.console.page.version.JspViewer</role>

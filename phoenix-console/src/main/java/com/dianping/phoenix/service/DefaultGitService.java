@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -18,30 +17,28 @@ import org.unidal.lookup.annotation.Inject;
 import com.dianping.phoenix.configure.ConfigManager;
 
 public class DefaultGitService implements GitService {
+	private static final String REFS_TAGS = "refs/tags/";
+
 	@Inject
 	private ConfigManager m_configManager;
 
 	@Inject
-	private StatusReporter m_reporter;
+	private LogService m_log;
 
 	private File m_workingDir = new File("target/gitrepo");
 
 	private Git m_git;
 
-	private static final String REFS_TAGS = "refs/tags/";
-
 	@Override
-	public void clearWorkingDir(GitContext context) throws Exception {
-		String version = context.getVersion();
+	public void clear(GitContext ctx) throws Exception {
 		if (m_git == null) {
-			throw new IllegalStateException(
-					"Please call setup() to initiailize git first!");
+			throw new IllegalStateException("Please call setup() to initiailize git first!");
 		}
 
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
-				"Clearing git ... ");
-
+		String key = ctx.getType() + ":" + ctx.getVersion();
 		String[] names = m_workingDir.list();
+
+		m_log.log(key, "Cleaning up git repository ...");
 
 		if (names != null) {
 			for (String name : names) {
@@ -52,50 +49,43 @@ public class DefaultGitService implements GitService {
 				Files.forDir().delete(new File(m_workingDir, name), true);
 			}
 		}
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
-				"Cleared git for ... ");
+
+		m_log.log(key, "Cleaning up git repository ... DONE");
 	}
 
 	@Override
-	public ObjectId commit(GitContext context) throws Exception {
-
-		String tag = context.getVersion();
-		String description = context.getDescription();
-
+	public String commit(GitContext ctx) throws Exception {
 		if (m_git == null) {
-			throw new IllegalStateException(
-					"Please call setup() to initiailize git first!");
+			throw new IllegalStateException("Please call setup() to initiailize git first!");
 		}
 
-		// Add
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
-				String.format("Adding to git for tag(%s) ... ", tag));
+		String key = ctx.getType() + ":" + ctx.getVersion();
+		String tag = ctx.getVersion();
+		String description = ctx.getDescription();
+
+		// git add .
+		m_log.log(key, "Adding all files to git ...");
 		m_git.add().addFilepattern(".").call();
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
-				String.format("Adding to git for tag(%s) ... DONE.", tag));
+		m_log.log(key, "Adding all files to git ... DONE");
 
-		// Commit
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
-				String.format("Commiting to git for tag(%s) ... ", tag));
-		RevCommit revCommit = m_git.commit().setAll(true)
-				.setMessage(description).call();
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
-				String.format("Commiting to git for tag(%s) ... DONE.", tag));
+		// git commit -am <description>
+		m_log.log(key, "Committing to git ...", tag);
+		RevCommit commit = m_git.commit().setAll(true).setMessage(description).call();
+		m_log.log(key, "Committing to git ... DONE", tag);
 
-		// Tag
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
-				String.format("Taging to git for tag(%s) ... ", tag));
+		// git tag -m <description> <tag>
 		try {
+			m_log.log(key, "Applying tag(%s) ...", tag);
+
 			m_git.tag().setName(tag).setMessage(description).call();
 		} catch (Exception e) {
-			m_reporter.categoryLog(DefaultStatusReporter.VERSION_LOG, tag,
-					String.format("Tag(%s) already exists!", tag), e);
+			m_log.log(key, "[WARN] " + e.toString());
+			e.printStackTrace();
+		} finally {
+			m_log.log(key, "Applying tag(%s) ... DONE", tag);
 		}
 
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
-				String.format("Taging to git for tag(%s) ... DONE.", tag));
-
-		return revCommit.getId();
+		return commit.getId().getName();
 	}
 
 	@Override
@@ -109,135 +99,108 @@ public class DefaultGitService implements GitService {
 	}
 
 	@Override
-	public void pull(GitContext context) throws Exception {
-
-		String version = context.getVersion();
-
+	public void pull(GitContext ctx) throws Exception {
 		if (m_git == null) {
-			throw new IllegalStateException(
-					"Please call setup() to initiailize git first!");
+			throw new IllegalStateException("Please call setup() to initiailize git first!");
 		}
 
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
-				"Pulling from git ... ");
-		m_git.pull()
-				.setProgressMonitor(
-						new GitProgressMonitor(
-								DefaultStatusReporter.VERSION_LOG, context,m_reporter))
-				.call();
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
-				"Pulling from git ... DONE.");
+		String key = ctx.getType() + ":" + ctx.getVersion();
+
+		m_log.log(key, "Pulling from git ...");
+		m_git.pull().setProgressMonitor(new GitProgressMonitor(m_log, key)).call();
+		m_log.log(key, "Pulling from git ... DONE");
 	}
 
 	@Override
-	public void push(GitContext context) throws Exception {
-
-		String version = context.getVersion();
-
+	public void push(GitContext ctx) throws Exception {
 		if (m_git == null) {
-			throw new IllegalStateException(
-					"Please call setup() to initiailize git first!");
+			throw new IllegalStateException("Please call setup() to initiailize git first!");
 		}
 
-		// Push heads
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
-				"Pushing to git heads ... ");
-		m_git.push()
-				.setProgressMonitor(
-						new GitProgressMonitor(
-								DefaultStatusReporter.VERSION_LOG, context,m_reporter))
-				.setPushAll().call();
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
-				"Pushing to git heads ... DONE.");
+		String key = ctx.getType() + ":" + ctx.getVersion();
 
-		// Push heads
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
-				"Pushing to git tags ... ");
-		m_git.push()
-				.setPushTags()
-				.setProgressMonitor(
-						new GitProgressMonitor(
-								DefaultStatusReporter.VERSION_LOG, context,m_reporter))
-				.call();
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, version,
-				"Pushing to git tags ... DONE");
+		// git push
+		m_log.log(key, "Pushing to git ...");
+		m_git.push().setProgressMonitor(new GitProgressMonitor(m_log, key)).setPushAll().call();
+		m_log.log(key, "Pushing to git ... DONE");
+
+		// TODO why do we need git push twice?
+		// git push --tags
+		m_log.log(key, "Pushing to git with tags ...");
+		m_git.push().setPushTags().setProgressMonitor(new GitProgressMonitor(m_log, key)).call();
+		m_log.log(key, "Pushing to git with tags ... DONE");
 	}
 
 	@Override
-	public void removeTag(GitContext context) throws Exception {
+	public void removeTag(GitContext ctx) throws Exception {
+		if (m_git == null) {
+			throw new IllegalStateException("Please call setup() to initiailize git first!");
+		}
 
-		String tag = context.getVersion();
+		String key = ctx.getType() + ":" + ctx.getVersion();
+		String tag = ctx.getVersion();
 
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
-				String.format("removing tag(%s) from local git ... ", tag));
+		// git tag -d <tag>
+		m_log.log(key, "Removing tag(%s) from local git ...", tag);
 		m_git.tagDelete().setTags(tag).call();
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag, String
-				.format("removing tag(%s) from local git ... DONE. ", tag));
+		m_log.log(key, "Removing tag(%s) from local git ... DONE", tag);
 
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag,
-				String.format("removing tag(%s) from remote git ... ", tag));
-		m_git.push()
-				.setRefSpecs(new RefSpec(":" + REFS_TAGS + tag))
-				.setProgressMonitor(
-						new GitProgressMonitor(
-								DefaultStatusReporter.VERSION_LOG, context,m_reporter))
-				.call();
-		m_reporter.log(DefaultStatusReporter.VERSION_LOG, tag, String
-				.format("removing tag(%s) from remote git ... DONE. ", tag));
+		// git push --tags <ref-specs>
+		m_log.log(key, "Removing tag(%s) from remote git ...", tag);
+		m_git.push().setRefSpecs(new RefSpec(":" + REFS_TAGS + tag))
+		      .setProgressMonitor(new GitProgressMonitor(m_log, key)).call();
+		m_log.log(key, "Removing tag(%s) from remote git ... DONE", tag);
 	}
 
 	@Override
-	public synchronized void setup(GitContext context) throws Exception {
-
-		String version = context.getVersion();
-
+	public synchronized void setup(GitContext ctx) throws Exception {
 		if (m_git == null) {
-			m_workingDir = new File(m_configManager.getGitWorkingDir());
+			String type = ctx.getType();
+			m_workingDir = new File(m_configManager.getGitWorkingDir(type));
 			m_workingDir.mkdirs();
 
 			File gitRepo = new File(m_workingDir, ".git");
-			File phoenixHome = new File(this.getClass().getClassLoader()
-					.getResource("git").toURI());
+			File phoenixHome = new File(this.getClass().getClassLoader().getResource("git").toURI());
 
 			if (!gitRepo.exists()) {
-				String gitURL = m_configManager.getGitOriginUrl();
-				m_reporter.log(DefaultStatusReporter.VERSION_LOG,
-						version,
-						String.format("Cloning repo from %s ... ", gitURL));
+				String key = ctx.getType() + ":" + ctx.getVersion();
+				String gitURL = m_configManager.getGitOriginUrl(type);
 				FileRepositoryBuilder builder = new FileRepositoryBuilder();
+
+				m_log.log(key, "Cloning from git(%s) ...", gitURL);
 				builder.setGitDir(gitRepo).readEnvironment().findGitDir();
 
 				FS fs = builder.getFS();
+
 				if (fs == null) {
 					fs = FS.DETECTED;
 				}
+
 				fs.setUserHome(phoenixHome);
 
 				Repository repository = builder.build();
 
 				m_git = new Git(repository);
+
 				CloneCommand clone = Git.cloneRepository();
-				clone.setProgressMonitor(new GitProgressMonitor(
-						DefaultStatusReporter.VERSION_LOG, context,m_reporter));
+
+				clone.setProgressMonitor(new GitProgressMonitor(m_log, key));
 				clone.setBare(false);
 				clone.setDirectory(m_workingDir);
 				clone.setCloneAllBranches(true);
 				clone.setURI(gitURL);
+
 				try {
 					clone.call();
 				} catch (Exception e) {
 					Files.forDir().delete(new File(m_workingDir, ".git"), true);
-					e.printStackTrace();
+
 					throw e;
 				}
-				m_reporter
-						.log(DefaultStatusReporter.VERSION_LOG,
-								version, String.format(
-										"Cloning repo from %s ... DONE.",
-										gitURL));
+
+				m_log.log(key, "Cloning from git(%s) ... DONE", gitURL);
 			} else {
-				m_git = Git.open(m_workingDir,
-						FS.DETECTED.setUserHome(phoenixHome));
+				m_git = Git.open(m_workingDir, FS.DETECTED.setUserHome(phoenixHome));
 			}
 		}
 	}

@@ -21,7 +21,7 @@ import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Deliverable;
 import com.dianping.phoenix.deliverable.DeliverableManager;
 import com.dianping.phoenix.deliverable.DeliverableStatus;
-import com.dianping.phoenix.deliverable.LogService;
+import com.dianping.phoenix.service.LogService;
 
 public class Handler implements PageHandler<Context>, LogEnabled {
 	@Inject
@@ -43,7 +43,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 		try {
 			m_manager.createDeliverable(type, version, description);
 
-			ctx.redirect(ConsolePage.VERSION, "warType=" + type);
+			ctx.redirect(ConsolePage.VERSION, "type=" + type);
 		} catch (Exception e) {
 			Cat.logError(e);
 			m_logger.error(String.format("Failed to create version(%s) of %s!", version, type), e);
@@ -117,7 +117,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 
 		try {
 			m_manager.removeDeliverable(id);
-			ctx.redirect(ConsolePage.VERSION, "warType=" + warType);
+			ctx.redirect(ConsolePage.VERSION, "type=" + warType);
 		} catch (Exception e) {
 			m_logger.error(String.format("Failed to remove version(%s) of %s!", version, warType), e);
 			ctx.addError(new ErrorObject("version.remove", e));

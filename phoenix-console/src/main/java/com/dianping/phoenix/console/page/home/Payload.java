@@ -114,6 +114,10 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 			if (m_plan.getPolicy() == null) {
 				m_plan.setPolicy(DeployPolicy.ONE_BY_ONE.getId());
 			}
+
+			if ("phoenix-agent".equals(m_type)) {
+				m_plan.setSkipTest(true);
+			}
 		} else if (m_action == Action.DEPLOY) {
 			if (m_hosts == null || m_hosts.isEmpty()) {
 				ctx.addError("project.hosts", null);

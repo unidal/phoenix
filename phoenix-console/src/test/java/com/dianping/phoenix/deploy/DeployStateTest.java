@@ -289,6 +289,11 @@ public class DeployStateTest extends ComponentTestCase {
 			return "1.0";
 		}
 
+		@Override
+		public String getWarType() {
+			return "phoenix-kernel";
+		}
+
 		protected boolean isDeploy(String url) {
 			return url.contains("?op=deploy&");
 		}
@@ -298,9 +303,9 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-      public boolean isSkipTest() {
-	      return false;
-      }
+		public boolean isSkipTest() {
+			return false;
+		}
 
 		@Override
 		public AgentContext print(String pattern, Object... args) {

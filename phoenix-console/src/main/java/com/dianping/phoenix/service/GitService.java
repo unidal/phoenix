@@ -3,14 +3,12 @@ package com.dianping.phoenix.service;
 import java.io.File;
 import java.util.Collection;
 
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 
-
 public interface GitService {
-	void clearWorkingDir(GitContext context) throws Exception;
+	void clear(GitContext context) throws Exception;
 
-	public ObjectId commit(GitContext context) throws Exception;
+	public String commit(GitContext context) throws Exception;
 
 	public File getWorkingDir();
 
