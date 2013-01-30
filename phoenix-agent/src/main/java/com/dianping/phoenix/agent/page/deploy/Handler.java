@@ -26,6 +26,7 @@ import com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeTask;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
+import com.dianping.phoenix.agent.page.deploy.Payload.WarType;
 import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.util.CharacterReplaceFilterWriter;
 import com.dianping.phoenix.agent.util.ThreadUtil;
@@ -75,14 +76,15 @@ public class Handler implements PageHandler<Context> {
 	private void dispatch(Context ctx, Payload payload, Model model) throws Exception {
 		String version = payload.getVersion();
 		String domain = payload.getDomain();
-		String kernelGitUrl = payload.getKernelGitUrl();
+		String gitUrl = payload.getGitUrl();
 		String qaServiceUrlPrefix = payload.getQaServiceUrlPrefix();
 		int qaServiceTimtout = payload.getQaServiceTimeout();
 		long deployId = payload.getDeployId();
 		int offset = payload.getOffset();
-		
+		WarType warType = payload.getWarType();
+
 		logger.info(String.format("dispatching request %s", payload));
-		
+
 		TransactionId txId = new TransactionId(deployId);
 		Task task;
 
@@ -95,8 +97,17 @@ public class Handler implements PageHandler<Context> {
 			break;
 
 		case DEPLOY:
-			task = new DeployTask(domain, version, kernelGitUrl, qaServiceUrlPrefix, qaServiceTimtout);
-			submitTask(task, txId, res, ctx);
+			switch (warType) {
+			case Kernel:
+				task = new DeployTask(domain, version, gitUrl, qaServiceUrlPrefix, qaServiceTimtout);
+				submitTask(task, txId, res, ctx);
+				break;
+
+			case Agent:
+				task = new AgentUpgradeTask(version, gitUrl);
+				submitTask(task, txId, res, ctx);
+				break;
+			}
 			break;
 
 		case STATUS:
@@ -138,11 +149,7 @@ public class Handler implements PageHandler<Context> {
 			task = new DetachTask(domain);
 			submitTask(task, txId, res, ctx);
 			break;
-			
-		case UPGRADE_AGENT:
-			task = new AgentUpgradeTask(payload.getAgentVersion(), payload.getAgentGitUrl());
-			submitTask(task, txId, res, ctx);
-			break;
+
 		}
 
 		model.setResponse(res);

@@ -10,6 +10,26 @@ import org.unidal.web.mvc.ErrorObject;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
 
 public class Payload implements ActionPayload<AgentPage, Action> {
+
+	public enum WarType {
+		Kernel("phoenix-kernel"), Agent("phoenix-agent"), Unknown("unknown");
+		private String m_name;
+
+		private WarType(String name) {
+			m_name = name;
+		}
+
+		public static WarType get(String name) {
+			for (WarType warType : WarType.values()) {
+				if (warType.m_name.equals(name)) {
+					return warType;
+				}
+			}
+			return Unknown;
+		}
+
+	}
+
 	private AgentPage m_page;
 
 	@FieldMeta("op")
@@ -36,14 +56,11 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	@FieldMeta("qaServiceTimeout")
 	private int m_qaServiceTimeout;
 
-	@FieldMeta("kernelGitUrl")
-	private String m_kernelGitUrl;
-	
-	@FieldMeta("agentVersion")
-	private String m_agentVersion;
-	
-	@FieldMeta("agentGitUrl")
-	private String m_agentGitUrl;
+	@FieldMeta("gitUrl")
+	private String m_gitUrl;
+
+	@FieldMeta("warType")
+	private String m_warType;
 
 	@Override
 	public Action getAction() {
@@ -54,13 +71,13 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	public AgentPage getPage() {
 		return m_page;
 	}
-	
-	public String getAgentVersion() {
-		return m_agentVersion;
+
+	public String getGitUrl() {
+		return m_gitUrl;
 	}
 
-	public String getAgentGitUrl() {
-		return m_agentGitUrl;
+	public WarType getWarType() {
+		return WarType.get(m_warType);
 	}
 
 	public String getDomain() {
@@ -91,10 +108,6 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 		return m_qaServiceTimeout;
 	}
 
-	public String getKernelGitUrl() {
-		return m_kernelGitUrl;
-	}
-
 	public void setAction(String action) {
 		m_action = Action.getByName(action, Action.DEFAULT);
 	}
@@ -113,18 +126,30 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 		switch (m_action) {
 		case DEPLOY:
 			checkCommonArguments(ctx);
-			if (StringUtils.isBlank(m_domain)) {
-				ctx.addError(new ErrorObject("domain.missing,"));
+			if (StringUtils.isBlank(m_gitUrl)) {
+				ctx.addError(new ErrorObject("gitUrl.missing"));
 			}
 
 			if (StringUtils.isBlank(m_version)) {
 				ctx.addError(new ErrorObject("version.missing"));
 			}
 
-			if (StringUtils.isBlank(m_kernelGitUrl)) {
-				ctx.addError(new ErrorObject("kernelGitUrl.missing"));
-			}
+			WarType warType = WarType.get(m_warType);
+			switch (warType) {
 
+			case Kernel:
+				if (StringUtils.isBlank(m_domain)) {
+					ctx.addError(new ErrorObject("domain.missing,"));
+				}
+				break;
+
+			case Agent:
+				break;
+
+			default:
+				ctx.addError(new ErrorObject("warType.invalid"));
+				break;
+			}
 			break;
 
 		case DETACH:
@@ -142,17 +167,7 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 				ctx.addError(new ErrorObject("offset.invalid"));
 			}
 			break;
-			
-		case UPGRADE_AGENT:
-			checkCommonArguments(ctx);
-			if(StringUtils.isBlank(m_agentGitUrl)) {
-				ctx.addError(new ErrorObject("agentGitUrl.missing"));
-			}
-			
-			if(StringUtils.isBlank(m_agentVersion)) {
-				ctx.addError(new ErrorObject("agentVersion.missing"));
-			}
-			break;
+
 		}
 
 	}
@@ -171,5 +186,5 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this);
 	}
-	
+
 }
