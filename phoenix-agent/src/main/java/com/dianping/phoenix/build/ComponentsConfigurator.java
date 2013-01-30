@@ -57,7 +57,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		      .req(ConfigManager.class));
 		all.add(C(TaskProcessor.class, "agent_upgrade", AgentUpgradeTaskProcessor.class) //
 			      .req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
-			      .req(ConfigManager.class));
+			      .req(ConfigManager.class).req(LogFormatter.class));
 		all.add(C(TaskProcessorFactory.class));
 		all.add(C(AgentStatusReporter.class).req(ConfigManager.class));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));

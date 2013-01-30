@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Logger;
@@ -11,6 +13,7 @@ import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessor;
+import com.dianping.phoenix.agent.core.tx.LogFormatter;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
@@ -23,6 +26,8 @@ public class AgentUpgradeTaskProcessor extends AbstractSerialTaskProcessor<Agent
 	private ScriptExecutor scriptExecutor;
 	@Inject
 	private ConfigManager config;
+	@Inject
+	private LogFormatter logFormatter;
 	private AtomicReference<TransactionId> currentTxRef = new AtomicReference<TransactionId>();
 
 	@Override
@@ -69,7 +74,14 @@ public class AgentUpgradeTaskProcessor extends AbstractSerialTaskProcessor<Agent
 		sb.append(String.format(" -l \"%s\" ", txMgr.getUnderlyingFile(tx.getTxId()).getAbsolutePath()));
 		sb.append(String.format(" -h \"%s\" ", agentGitHost));
 
+		// TODO
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("Progress", "100/100");
+		headers.put("Step", "FakeStep");
+		logFormatter.writeHeader(logOut, headers);
 		scriptExecutor.exec(sb.toString(), logOut, logOut);
+		logFormatter.writeChunkTerminator(logOut);
+		logFormatter.writeTerminator(logOut);
 	}
 
 }
