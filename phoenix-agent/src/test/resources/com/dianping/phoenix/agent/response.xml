@@ -2,6 +2,7 @@
 	<status>okay</status>
 	<message>internal error</message>
 	<ip>127.0.0.1</ip>
+	<version>1.0-SNAPSHOT</version>
 	<container name="jboss" version="4.2.2" status="up">
 		<install-path>/jboss</install-path>
 	</container>

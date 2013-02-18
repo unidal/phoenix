@@ -2,8 +2,8 @@ package com.dianping.phoenix.agent.page.deploy;
 
 import com.dianping.phoenix.agent.AgentPage;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.unidal.lookup.util.StringUtils;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
 import org.unidal.web.mvc.ErrorObject;
@@ -38,6 +38,12 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 
 	@FieldMeta("kernelGitUrl")
 	private String m_kernelGitUrl;
+	
+	@FieldMeta("agentVersion")
+	private String m_agentVersion;
+	
+	@FieldMeta("agentGitUrl")
+	private String m_agentGitUrl;
 
 	@Override
 	public Action getAction() {
@@ -47,6 +53,14 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 	@Override
 	public AgentPage getPage() {
 		return m_page;
+	}
+	
+	public String getAgentVersion() {
+		return m_agentVersion;
+	}
+
+	public String getAgentGitUrl() {
+		return m_agentGitUrl;
 	}
 
 	public String getDomain() {
@@ -99,15 +113,15 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 		switch (m_action) {
 		case DEPLOY:
 			checkCommonArguments(ctx);
-			if (StringUtils.isEmpty(StringUtils.trimAll(m_domain))) {
+			if (StringUtils.isBlank(m_domain)) {
 				ctx.addError(new ErrorObject("domain.missing,"));
 			}
 
-			if (StringUtils.isEmpty(StringUtils.trimAll(m_version))) {
+			if (StringUtils.isBlank(m_version)) {
 				ctx.addError(new ErrorObject("version.missing"));
 			}
 
-			if (StringUtils.isEmpty(StringUtils.trimAll(m_kernelGitUrl))) {
+			if (StringUtils.isBlank(m_kernelGitUrl)) {
 				ctx.addError(new ErrorObject("kernelGitUrl.missing"));
 			}
 
@@ -115,7 +129,7 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 
 		case DETACH:
 			checkCommonArguments(ctx);
-			if (StringUtils.isEmpty(StringUtils.trimAll(m_domain))) {
+			if (StringUtils.isBlank(m_domain)) {
 				ctx.addError(new ErrorObject("domain.invalid"));
 			}
 			break;
@@ -128,7 +142,17 @@ public class Payload implements ActionPayload<AgentPage, Action> {
 				ctx.addError(new ErrorObject("offset.invalid"));
 			}
 			break;
-
+			
+		case UPGRADE_AGENT:
+			checkCommonArguments(ctx);
+			if(StringUtils.isBlank(m_agentGitUrl)) {
+				ctx.addError(new ErrorObject("agentGitUrl.missing"));
+			}
+			
+			if(StringUtils.isBlank(m_agentVersion)) {
+				ctx.addError(new ErrorObject("agentVersion.missing"));
+			}
+			break;
 		}
 
 	}

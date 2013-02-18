@@ -21,11 +21,11 @@ ensure_not_empty container_install_path="$container_install_path" container_type
 
 ############################## functions for dev ############################## 
 function kill_jboss {
-	jps -lvm | awk '$2=="org.jboss.Main"{cmd=sprintf("kill -9 %s", $1);system(cmd)}'
+	jps -lvm | awk '$2=="org.jboss.Main"{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
 }
 
 function kill_tomcat {
-	jps -lvm | awk '$2=="org.apache.catalina.startup.Bootstrap"{cmd=sprintf("kill -9 %s", $1);system(cmd)}'
+	jps -lvm | awk '$2=="org.apache.catalina.startup.Bootstrap"{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
 }
 
 function start_tomcat {

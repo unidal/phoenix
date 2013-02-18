@@ -23,6 +23,7 @@ import com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DetachTaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DefaultQaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
+import com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeTaskProcessor;
 import com.dianping.phoenix.agent.core.tx.FileBasedTransactionManager;
 import com.dianping.phoenix.agent.core.tx.LogFormatter;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
@@ -42,10 +43,9 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 //		all.add(C(QaService.class, MockQaService.class));
 		all.add(C(QaService.class, DefaultQaService.class).req(UrlContentFetcher.class));
 		all.add(C(DeployStep.class, DefaultDeployStep.class) //
-		      .req(ConfigManager.class).req(ScriptExecutor.class) //
-		      .req(QaService.class).is(PER_LOOKUP));
+		      .req(ConfigManager.class).req(QaService.class).is(PER_LOOKUP));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
-		all.add(C(ScriptExecutor.class, DefaultScriptExecutor.class));
+		all.add(C(ScriptExecutor.class, DefaultScriptExecutor.class).is(PER_LOOKUP));
 		all.add(C(ConfigManager.class));
 		all.add(C(Agent.class, DefaultAgent.class).req(TransactionManager.class) //
 		      .req(TaskProcessorFactory.class));
@@ -55,8 +55,11 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(TaskProcessor.class, "detach", DetachTaskProcessor.class) //
 		      .req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
 		      .req(ConfigManager.class));
+		all.add(C(TaskProcessor.class, "agent_upgrade", AgentUpgradeTaskProcessor.class) //
+			      .req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
+			      .req(ConfigManager.class));
 		all.add(C(TaskProcessorFactory.class));
-		all.add(C(AgentStatusReporter.class).req(ConfigManager.class).req(ScriptExecutor.class));
+		all.add(C(AgentStatusReporter.class).req(ConfigManager.class));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 
 		all.add(C(ModuleManager.class, DefaultModuleManager.class));

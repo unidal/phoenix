@@ -22,6 +22,7 @@ import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.SubmitResult;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DetachTask;
+import com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeTask;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
@@ -84,7 +85,6 @@ public class Handler implements PageHandler<Context> {
 		
 		TransactionId txId = new TransactionId(deployId);
 		Task task;
-		SubmitResult submitResult;
 
 		Response res = new Response();
 
@@ -96,12 +96,7 @@ public class Handler implements PageHandler<Context> {
 
 		case DEPLOY:
 			task = new DeployTask(domain, version, kernelGitUrl, qaServiceUrlPrefix, qaServiceTimtout);
-			submitResult = submitTask(task, txId);
-			if (submitResult.isAccepted()) {
-				res.setStatus("ok");
-			} else {
-				ctx.addError(new ErrorObject(submitResult.getReason().toString().toLowerCase()));
-			}
+			submitTask(task, txId, res, ctx);
 			break;
 
 		case STATUS:
@@ -141,12 +136,12 @@ public class Handler implements PageHandler<Context> {
 
 		case DETACH:
 			task = new DetachTask(domain);
-			submitResult = submitTask(task, txId);
-			if (submitResult.isAccepted()) {
-				res.setStatus("ok");
-			} else {
-				ctx.addError(new ErrorObject(submitResult.getReason().toString().toLowerCase()));
-			}
+			submitTask(task, txId, res, ctx);
+			break;
+			
+		case UPGRADE_AGENT:
+			task = new AgentUpgradeTask(payload.getAgentVersion(), payload.getAgentGitUrl());
+			submitTask(task, txId, res, ctx);
 			break;
 		}
 
@@ -155,9 +150,14 @@ public class Handler implements PageHandler<Context> {
 		jspViewer.view(ctx, model);
 	}
 
-	private SubmitResult submitTask(Task task, TransactionId txId) throws Exception {
+	private void submitTask(Task task, TransactionId txId, Response res, Context ctx) throws Exception {
 		Transaction tx = new Transaction(task, txId, EventTracker.DUMMY_TRACKER);
-		return agent.submit(tx);
+		SubmitResult submitResult = agent.submit(tx);
+		if (submitResult.isAccepted()) {
+			res.setStatus("ok");
+		} else {
+			ctx.addError(new ErrorObject(submitResult.getReason().toString().toLowerCase()));
+		}
 	}
 
 	private void transferLog(TransactionManager txMgr, TransactionId txId, Reader logReader, Writer writer)
