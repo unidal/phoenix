@@ -15,7 +15,7 @@ public class Engine {
 	@Inject
 	LogFormatter logFormatter;
 
-	int start(Step startStep, Context ctx) {
+	public int start(Step startStep, Context ctx) {
 		Step curStep = startStep;
 		int exitCode = 0;
 		OutputStream logOut = ctx.getLogOut();
@@ -23,10 +23,10 @@ public class Engine {
 			if (ctx.isKilled()) {
 				break;
 			}
-			logger.info(String.format("current step %s", curStep));
 			writeLogChunkHeader(curStep.getLogChunkHeader(), logOut);
+			logger.info(String.format("current step %s", curStep));
 			try {
-				exitCode = curStep.doStep();
+				exitCode = curStep.doStep(ctx);
 			} catch (Exception e) {
 				logger.error(String.format("exception when doing step %s", curStep), e);
 				exitCode = Step.CODE_ERROR;
