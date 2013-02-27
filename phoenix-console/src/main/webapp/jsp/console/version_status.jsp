@@ -6,5 +6,5 @@
 {
 	"version":"${model.creatingVersion}", 
 	"index":${model.index},
-	"log":"${model.logcontent}"
+	"log":"${model.log}"
 }

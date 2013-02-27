@@ -6,7 +6,7 @@ import org.unidal.web.mvc.ViewModel;
 
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Deployment;
-import com.dianping.phoenix.console.dal.deploy.Version;
+import com.dianping.phoenix.console.dal.deploy.Deliverable;
 import com.dianping.phoenix.deploy.DeployPolicy;
 import com.dianping.phoenix.project.entity.Project;
 
@@ -15,9 +15,7 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	private Project m_project;
 
-	private List<String> m_deployPlans;
-
-	private List<Version> m_versions;
+	private List<Deliverable> m_deliverables;
 
 	private DeployPolicy[] m_policies;
 
@@ -36,8 +34,8 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 		return Action.HOME;
 	}
 
-	public List<String> getDeployPlans() {
-		return m_deployPlans;
+	public List<Deliverable> getDeliverables() {
+		return m_deliverables;
 	}
 
 	public DeployPolicy[] getPolicies() {
@@ -52,16 +50,12 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 		return m_projects;
 	}
 
-	public List<Version> getVersions() {
-		return m_versions;
-	}
-
 	public void setActiveDeployment(Deployment activeDeployment) {
 		m_activeDeployment = activeDeployment;
 	}
 
-	public void setDeployPlans(List<String> deployPlans) {
-		m_deployPlans = deployPlans;
+	public void setDeliverables(List<Deliverable> deliverables) {
+		m_deliverables = deliverables;
 	}
 
 	public void setPolicies(DeployPolicy[] policies) {
@@ -74,9 +68,5 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	public void setProjects(List<Project> projects) {
 		m_projects = projects;
-	}
-
-	public void setVersions(List<Version> versions) {
-		m_versions = versions;
 	}
 }

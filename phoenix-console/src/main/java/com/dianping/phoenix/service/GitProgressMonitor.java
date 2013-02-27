@@ -4,87 +4,64 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jgit.lib.BatchingProgressMonitor;
 
-import com.dianping.phoenix.version.VersionContext;
 
 public class GitProgressMonitor extends BatchingProgressMonitor {
+	private LogService m_log;
 
-	private StatusReporter m_reporter;
+	private String m_key;
 
-	private String m_logType = DefaultStatusReporter.VERSION_LOG;
+	public GitProgressMonitor(LogService log, String key) {
+		m_key = key;
+		m_log = log;
 
-	private VersionContext m_context;
-
-	public GitProgressMonitor(String logType, VersionContext context,
-			StatusReporter reporter) {
-		m_logType = logType;
-		m_context = context;
-		m_reporter = reporter;
-		setDelayStart(10, TimeUnit.SECONDS);
-	}
-
-	private void format(StringBuilder s, String taskName, int workCurr) {
-		s.append(taskName);
-		s.append(": ");
-		while (s.length() < 25)
-			s.append(' ');
-		s.append(workCurr);
-	}
-
-	private void format(StringBuilder s, String taskName, int cmp,
-			int totalWork, int pcnt) {
-		s.append(taskName);
-		s.append(": ");
-		while (s.length() < 25)
-			s.append(' ');
-
-		String endStr = String.valueOf(totalWork);
-		String curStr = String.valueOf(cmp);
-		while (curStr.length() < endStr.length())
-			curStr = " " + curStr;
-		if (pcnt < 100)
-			s.append(' ');
-		if (pcnt < 10)
-			s.append(' ');
-		s.append(pcnt);
-		s.append("% (");
-		s.append(curStr);
-		s.append("/");
-		s.append(endStr);
-		s.append(")");
+		setDelayStart(2, TimeUnit.SECONDS);
 	}
 
 	@Override
 	protected void onEndTask(String taskName, int workCurr) {
-		StringBuilder s = new StringBuilder();
-		format(s, taskName, workCurr);
-		s.append("\n");
-		send(s);
+		log(taskName, workCurr, -1, -1, true);
 	}
 
 	@Override
 	protected void onEndTask(String taskName, int cmp, int totalWork, int pcnt) {
-		StringBuilder s = new StringBuilder();
-		format(s, taskName, cmp, totalWork, pcnt);
-		s.append("\n");
-		send(s);
+		log(taskName, cmp, totalWork, pcnt, true);
 	}
 
 	@Override
 	protected void onUpdate(String taskName, int workCurr) {
-		StringBuilder s = new StringBuilder();
-		format(s, taskName, workCurr);
-		send(s);
+		log(taskName, workCurr, -1, -1, false);
 	}
 
 	@Override
 	protected void onUpdate(String taskName, int cmp, int totalWork, int pcnt) {
-		StringBuilder s = new StringBuilder();
-		format(s, taskName, cmp, totalWork, pcnt);
-		send(s);
+		log(taskName, cmp, totalWork, pcnt, false);
 	}
 
-	private void send(StringBuilder s) {
-		m_reporter.categoryLog(m_logType, m_context.getVersion(), s.toString());
-	}
+	private void log(String taskName, int cmp, int totalWork, int pcnt, boolean isEnd) {
+		StringBuilder sb = new StringBuilder(256);
 
+		sb.append(taskName);
+		sb.append(": ");
+
+		while (sb.length() < 25) {
+			sb.append(' ');
+		}
+
+		if (pcnt < 10) {
+			sb.append(' ');
+		}
+
+		if (pcnt < 100) {
+			sb.append(' ');
+		}
+
+		sb.append(pcnt);
+		sb.append("% (").append(cmp).append('/').append(totalWork).append(')');
+
+		if (isEnd) {
+			sb.append('\n');
+		}
+
+		m_log.log(m_key, sb.toString());
+	}
 }

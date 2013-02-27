@@ -15,7 +15,7 @@
 		<div class="span4">
 			<div class="page-header">
                 <input type="hidden" id="deploy_id" value="${deploy.id}">
-				Rollout Kernel(${deploy.plan.version}) to ${deploy.domain}, <span id="deploy_status">${deploy.status}</span>
+				Rollout(${deploy.plan.warType}:${deploy.plan.version}) to ${deploy.domain}, <span id="deploy_status">${deploy.status}</span>
 			</div>
 			<div class="row-fluid">
 				<div class="span12 thumbnail" style="height: 440px; overflow: auto;">

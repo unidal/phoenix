@@ -13,6 +13,7 @@
        <h3>Error occurred:</h3>
 	   <pre class="error">
 	      <w:error code="project.hosts">Please check at least one of the hosts below.</w:error>
+	      <w:error code="project.version">You need select one version, or create a new one <a href="${model.moduleUri}/version?type=${payload.plan.warType}">here</a>.</w:error>
 	      <w:error code="*"><strong>\${code}</strong>: \${exception.message}</w:error>
 	   </pre>
 	</w:errors>
@@ -72,26 +73,27 @@
 				</div>
 			</div>
 			<div class="span9">
-				<h3>Kernel policy</h3>
 				<div class="row-fluid">
 					<div class="span12">
 						<table class="table table-bordered table-condensed lion nohover">
-							<tbody>
+							<thead>
 								<tr>
-									<th width="15%">Kernel Version</th>
+									<th width="20%">
+                                       <label class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">版本号 (${payload.plan.warType})</strong></label>
+                                    </th>
 									<td>
 										<select name="plan.version">
-											${w:showOptions(model.versions, payload.plan.version, 'version', 'version')}
+											${w:showOptions(model.deliverables, payload.plan.version, 'warVersion', 'warVersion')}
 										</select>
 									</td>
 								</tr>
-							</tbody>
+							</thead>
 						</table>
 					</div>
 				</div>
 
-				<h3>Deploy policy</h3>
 				<input type="hidden" name="op" value="deploy"/>
+				<input type="hidden" name="type" value="${payload.plan.warType}"/>
 				<div class="row-fluid">
 					<div class="span12 thumbnail">
 						 <table class="table table-condensed lion nohover" style="margin:0 0 0;border-bottom:1px solid #DDD;">

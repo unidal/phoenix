@@ -1,42 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entities do-package="com.dianping.phoenix.console.dal.deploy" gen="true" >
-  <entity name="version" table="version" alias="v">
-    <member name="release-notes" field="release_notes" value-type="String" length="200" nullable="false" />
-    <member name="status" field="status" value-type="int" length="10" nullable="false" />
-    <member name="created-by" field="created_by" value-type="String" length="64" nullable="false" />
+  <entity name="deliverable" table="deliverable" alias="d">
     <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" insert-expr="NOW()" update-expr="NOW()" />
     <var name="start-date" value-type="Date"/>
     <query-defs>
-      <query name="find-by-domain-version" type="SELECT">
-        <param name="domain" />
-        <param name="version" />
+      <query name="find-active-by-type-and-version" type="SELECT">
+        <param name="war-type" />
+        <param name="war-version" />
         <statement><![CDATA[
         SELECT <FIELDS/> 
         FROM <TABLE/> 
-        WHERE <FIELD name='domain'/> = ${domain}
-        	AND <FIELD name='version'/> = ${version}
-        	AND <FIELD name='status'/> = 1
+        WHERE <FIELD name='war-type'/> = ${war-type}
+        	AND <FIELD name='war-version'/> = ${war-version}
+        	AND <FIELD name='status'/> IN (1,2)
         ]]></statement>
       </query>
-      <query name="find-all-active" type="SELECT" multiple="true">
-        <param name="domain" />
-        <param name="start-date" />
+      <query name="find-all-by-type-and-status" type="SELECT" multiple="true">
+        <param name="war-type" />
+        <param name="status" />
         <statement><![CDATA[
         SELECT <FIELDS/> 
         FROM <TABLE/> 
-        WHERE <FIELD name='domain'/> = ${domain}
-        	AND <FIELD name='status'/> = 0
-        	AND <FIELD name='last-modified-date'/> > ${start-date}
+        WHERE <FIELD name='war-type'/> = ${war-type}
+        	AND <FIELD name='status'/> = ${status}
         ]]></statement>
       </query>
-      <query name="find-all-finished" type="SELECT" multiple="true">
-        <param name="domain" />
+      <query name="find-by-type-and-status" type="SELECT">
+        <param name="war-type" />
+        <param name="status" />
         <statement><![CDATA[
         SELECT <FIELDS/> 
         FROM <TABLE/> 
-        WHERE <FIELD name='domain'/> = ${domain}
-        	AND <FIELD name='status'/> = 1
+        WHERE <FIELD name='war-type'/> = ${war-type}
+        	AND <FIELD name='status'/> = ${status}
         ]]></statement>
       </query>
       <query name="delete-by-PK" type="DELETE" enabled="false"/>
@@ -55,12 +52,14 @@
       </updateset>
     </updatesets>
     <query-defs>
-      <query name="find-active-by-domain" type="SELECT">
+      <query name="find-active-by-war-type-and-domain" type="SELECT">
+        <param name="war-type" />
         <param name="domain" />
         <statement><![CDATA[
         SELECT <FIELDS/> 
         FROM <TABLE/> 
-        WHERE <FIELD name='domain'/> = ${domain}
+        WHERE <FIELD name='war-type'/> = ${war-type}
+        	AND <FIELD name='domain'/> = ${domain}
         	AND <FIELD name='status'/> = 2
         ]]></statement>
       </query>
@@ -88,11 +87,11 @@
       <query name="insert" type="INSERT" batch="true"/>
       <query name="delete-by-PK" type="DELETE" enabled="false"/>
       <query name="find-all-by-deploy-id" type="SELECT" multiple="true">
-        <param name="deployment-id" />
+        <param name="deploy-id" />
         <statement><![CDATA[
         SELECT <FIELDS/> 
         FROM <TABLE/> 
-        WHERE <FIELD name='deployment-id'/> = ${deployment-id}
+        WHERE <FIELD name='deploy-id'/> = ${deploy-id}
         ]]></statement>
       </query>
       <query name="delete-by-PK" type="DELETE" enabled="false"/>

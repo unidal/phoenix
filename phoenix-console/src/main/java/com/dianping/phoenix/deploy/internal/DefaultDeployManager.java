@@ -20,8 +20,8 @@ public class DefaultDeployManager extends ContainerHolder implements DeployManag
 	@Inject
 	private DeployListener m_deployListener;
 
-	private void check(String domain) {
-		Deployment deploy = m_projectManager.findActiveDeploy(domain);
+	private void check(String type, String domain) {
+		Deployment deploy = m_projectManager.findActiveDeploy(type, domain);
 
 		if (deploy != null) {
 			throw new RuntimeException(String.format("Project(%s) is being rolling out!", domain));
@@ -30,12 +30,12 @@ public class DefaultDeployManager extends ContainerHolder implements DeployManag
 
 	@Override
 	public int deploy(String domain, List<String> hosts, DeployPlan plan) throws Exception {
-		check(domain);
+		check(plan.getWarType(), domain);
 
 		DeployExecutor executor = lookup(DeployExecutor.class, plan.getPolicy());
 		DeployModel model = m_deployListener.onCreate(domain, hosts, plan);
 
-		executor.submit(model, hosts);
+		executor.submit(model, hosts, plan.getWarType());
 		return model.getId();
 	}
 }

@@ -5,19 +5,23 @@ import java.util.List;
 import org.unidal.web.mvc.ViewModel;
 
 import com.dianping.phoenix.console.ConsolePage;
-import com.dianping.phoenix.console.dal.deploy.Version;
+import com.dianping.phoenix.console.dal.deploy.Deliverable;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
-	private List<Version> m_versions;
-	
+	private List<Deliverable> m_deliverables;
+
 	private String m_creatingVersion;
-	
-	private String m_logcontent;
-	
+
+	private String m_log;
+
 	private int m_index = -1;
 
 	public Model(Context ctx) {
 		super(ctx);
+	}
+
+	public String getCreatingVersion() {
+		return m_creatingVersion;
 	}
 
 	@Override
@@ -25,35 +29,31 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 		return Action.VIEW;
 	}
 
-	public List<Version> getVersions() {
-		return m_versions;
+	public List<Deliverable> getDeliverables() {
+		return m_deliverables;
 	}
 
-	public void setVersions(List<Version> versions) {
-		m_versions = versions;
+	public int getIndex() {
+		return m_index;
 	}
 
-	public String getCreatingVersion() {
-		return m_creatingVersion;
+	public String getLog() {
+		return m_log;
 	}
 
 	public void setCreatingVersion(String creatingVersion) {
 		m_creatingVersion = creatingVersion;
 	}
 
-	public void setLogcontent(String logcontent) {
-		m_logcontent = logcontent;
-	}
-
-	public String getLogcontent() {
-		return m_logcontent;
+	public void setDeliverables(List<Deliverable> deliverables) {
+		m_deliverables = deliverables;
 	}
 
 	public void setIndex(int index) {
 		m_index = index;
 	}
 
-	public int getIndex() {
-		return m_index;
+	public void setLog(String log) {
+		m_log = log;
 	}
 }

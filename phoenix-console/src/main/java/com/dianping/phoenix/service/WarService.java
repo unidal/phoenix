@@ -3,8 +3,8 @@ package com.dianping.phoenix.service;
 import java.io.File;
 import java.io.IOException;
 
-import com.dianping.phoenix.version.VersionContext;
-
 public interface WarService {
-	public void downloadAndExtractTo(VersionContext context, File target) throws IOException;
+	public String getWarUrl(String type, String version);
+
+	public void downloadAndExtractTo(String type, String version, File target) throws IOException;
 }

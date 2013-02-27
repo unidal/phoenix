@@ -84,7 +84,7 @@ public class DeployExecutorTest extends ComponentTestCase {
 
 		DeployModel model = deployListener.onCreate("demo-app", hosts, plan);
 
-		executor.submit(model, hosts);
+		executor.submit(model, hosts, "phoenix-kernel");
 
 		if (!deployListener.getLatch().await(5, m_debug ? TimeUnit.HOURS : TimeUnit.SECONDS)) {
 			Assert.fail("Deploy flow was blocked! " + model);
@@ -112,15 +112,15 @@ public class DeployExecutorTest extends ComponentTestCase {
 		      new Triple<String, String, String>("host-c", "ok.json", "successful.log"), //
 		      new Triple<String, String, String>("host-d", "ok.json", "successful.log"));
 	}
-	
+
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testSecondFailure() throws Exception {
 		checkDeploy("second-failure", //
-				new Triple<String, String, String>("host-a", "ok.json", "successful.log"), //
-				new Triple<String, String, String>("host-b", "ok.json", "failed.log"), //
-				new Triple<String, String, String>("host-c", "ok.json", "successful.log"), //
-				new Triple<String, String, String>("host-d", "ok.json", "successful.log"));
+		      new Triple<String, String, String>("host-a", "ok.json", "successful.log"), //
+		      new Triple<String, String, String>("host-b", "ok.json", "failed.log"), //
+		      new Triple<String, String, String>("host-c", "ok.json", "successful.log"), //
+		      new Triple<String, String, String>("host-d", "ok.json", "successful.log"));
 	}
 
 	@Test
@@ -153,7 +153,7 @@ public class DeployExecutorTest extends ComponentTestCase {
 			segment.setStatus(progress.getStatus());
 			segment.setStep(progress.getStep());
 			segment.setText(log);
-			
+
 			host.setStatus("success");
 			host.addSegment(segment);
 		}
@@ -176,7 +176,7 @@ public class DeployExecutorTest extends ComponentTestCase {
 		}
 
 		@Override
-		public String getDeployUrl(String host, int deployId, String name, String version, boolean skipTest) {
+		public String getDeployUrl(String type, String host, int deployId, String name, String version, boolean skipTest) {
 			return DEPLOY_URLS.get(host);
 		}
 
@@ -211,6 +211,9 @@ public class DeployExecutorTest extends ComponentTestCase {
 			model.setId(deployId);
 			model.setDomain(name);
 			model.setPlan(plan);
+			model.setVersion(plan.getVersion());
+			model.setAbortOnError(true);
+			model.setSkipTest(false);
 			m_models.put(deployId, model);
 			return model;
 		}

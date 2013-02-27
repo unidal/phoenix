@@ -1,8 +1,8 @@
 <config env="dev">
-	<war-url-pattern>http://192.168.8.45:8080/artifactory/dianping-snapshots/com/dianping/platform/phoenix-kernel/%s/phoenix-kernel-%1$s.war</war-url-pattern>
+	<war-url-pattern>http://192.168.8.45:8080/artifactory/dianping-snapshots/com/dianping/platform/%s/%s/%1$s-%2$s.war</war-url-pattern>
 	<git>
-		<origin-url>ssh://git@10.1.4.81:58422/kernel.git</origin-url>
-		<local-dir>target/gitrepo</local-dir>
+		<origin-url>ssh://git@10.1.4.81:58422/%s.git</origin-url>
+		<local-dir>target/gitrepo/%s</local-dir>
 	</git>
 	<agent>
 		<container-install-path><![CDATA[~/Downloads/apache-tomcat-6.0.35]]></container-install-path>
@@ -13,8 +13,8 @@
 	</agent>
 	<console>
 		<deploy-retry-interval>30000</deploy-retry-interval>
-		<deploy-url-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy?op=deploy&deployId=%s&domain=%s&version=%s&kernelGitUrl=%s&qaServiceUrlPrefix=%s&qaServiceTimeout=%s]]></deploy-url-pattern>
-		<deploy-url-skip-test-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy?op=deploy&deployId=%s&domain=%s&version=%s&kernelGitUrl=%s]]></deploy-url-skip-test-pattern>
+		<deploy-url-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy?op=deploy&deployId=%s&domain=%s&version=%s&warType=%s&gitUrl=%s&qaServiceUrlPrefix=%s&qaServiceTimeout=%s]]></deploy-url-pattern>
+		<deploy-url-skip-test-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy?op=deploy&deployId=%s&domain=%s&version=%s&warType=%s&gitUrl=%s]]></deploy-url-skip-test-pattern>
 		<deploy-status-url-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy?op=status&deployId=%s]]></deploy-status-url-pattern>
 		<deploy-log-url-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy?op=log&deployId=%s]]></deploy-log-url-pattern>
 		<deploy-connect-timeout>1000</deploy-connect-timeout>

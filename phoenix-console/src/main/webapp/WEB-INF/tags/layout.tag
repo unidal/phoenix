@@ -35,10 +35,28 @@
 					<img height="39" alt="Phoenix" src="${model.webapp}/img/phoenix21.png">
 				</div>
 				<div class="nav-collapse collapse">
-					<ul class="nav">
-						<li><a href="${model.moduleUri}/home">Home</a></li>
-						<li><a href="${model.moduleUri}/version">Version</a></li>
-						<li><a href="${model.moduleUri}?op=about">About</a></li>
+					<ul class="nav nav-pills">
+                       <li class="dropdown" id="menu1">
+                         <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" href="${model.moduleUri}/home">
+                           Kernel
+                           <b class="caret"></b>
+                         </a>
+                         <ul class="dropdown-menu">
+                           <li><a href="${model.moduleUri}/home">Rollout</a></li>
+                           <li><a href="${model.moduleUri}/version">Version</a></li>
+                         </ul>
+                       </li>
+                       <li class="dropdown" id="menu1">
+                         <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" href="${model.moduleUri}/home?type=phoenix-agent">
+                           Agent
+                           <b class="caret"></b>
+                         </a>
+                         <ul class="dropdown-menu">
+                           <li><a href="${model.moduleUri}/home?type=phoenix-agent">Rollout</a></li>
+                           <li><a href="${model.moduleUri}/version?type=phoenix-agent">Version</a></li>
+                         </ul>
+                       </li>
+					   <li><a href="${model.moduleUri}/home?op=about">About</a></li>
 					</ul>
 				</div>
 				<!--/.nav-collapse -->
