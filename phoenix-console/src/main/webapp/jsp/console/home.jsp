@@ -47,7 +47,7 @@
 						<c:forEach var="project" items="${model.projects}">
 							<tr>
 								<td><img src="${model.webapp}/img/green.gif"></td>
-								<td><a href="?op=project&project=${project.name}">${project.name}</a></td>
+								<td><a href="?op=project&type=${payload.plan.warType}&project=${project.name}">${project.name}</a></td>
 								<td>${project.owner}</td>
 								<td>${w:size(project.hosts)}/0</td>
 								<td>1.2, 1.5, 1.6</td>

@@ -12,6 +12,9 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("op")
 	private Action m_action;
 
+	@FieldMeta("type")
+	private String m_type;
+
 	@FieldMeta("version")
 	private String m_version;
 
@@ -20,7 +23,7 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	@FieldMeta("id")
 	private int m_id;
-	
+
 	@FieldMeta("index")
 	private int m_index;
 
@@ -37,6 +40,10 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		return m_id;
 	}
 
+	public int getIndex() {
+		return m_index;
+	}
+
 	@Override
 	public ConsolePage getPage() {
 		return m_page;
@@ -46,12 +53,12 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		return m_version;
 	}
 
-	public void setAction(String action) {
-		m_action = Action.getByName(action, Action.VIEW);
+	public String getType() {
+		return m_type;
 	}
 
-	public int getIndex() {
-		return m_index;
+	public void setAction(String action) {
+		m_action = Action.getByName(action, Action.VIEW);
 	}
 
 	public void setIndex(int index) {
@@ -68,6 +75,13 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		if (m_action == null) {
 			m_action = Action.VIEW;
 		}
+
+		if (m_type == null || m_type.length() == 0) {
+			m_type = "phoenix-kernel";
+		} else {
+			m_type = m_type.trim();
+		}
+
 		if (m_version != null) {
 			m_version = m_version.trim();
 		}

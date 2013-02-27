@@ -41,7 +41,7 @@ public class DefaultDeployListener implements DeployListener {
 		d.setStatus(1); // 1 - created
 		d.setDeployedBy("phoenix"); // TODO use real user name
 		d.setWarVersion(plan.getVersion());
-		d.setWarType(0); // 0 - kernel, 1 - application
+		d.setWarType(plan.getWarType()); // kernel, agent
 
 		return d;
 	}
@@ -49,7 +49,7 @@ public class DefaultDeployListener implements DeployListener {
 	private DeploymentDetails createDeploymentDetails(int deployId, String host, DeployPlan plan, String appVersion) {
 		DeploymentDetails d = m_deploymentDetailsDao.createLocal();
 
-		d.setDeploymentId(deployId);
+		d.setDeployId(deployId);
 		d.setIpAddress(host);
 		d.setKernelVersion(plan.getVersion());
 		d.setAppVersion(appVersion);

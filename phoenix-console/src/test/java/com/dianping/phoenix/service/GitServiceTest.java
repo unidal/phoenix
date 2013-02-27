@@ -4,16 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.phoenix.version.VersionContext;
-
 public class GitServiceTest extends ComponentTestCase {
-
 	private static final String REFS_TAGS = "refs/tags/";
 
 	@Test
@@ -24,17 +20,16 @@ public class GitServiceTest extends ComponentTestCase {
 		File gitDir = git.getWorkingDir();
 		String tag = "mock-1.0" + System.currentTimeMillis();
 
-		VersionContext context = new VersionContext(0, tag, "test", "test",
-				"test");
+		GitContext context = new GitContext("phoenix-kernel", tag, "test");
 
 		git.setup(context);
 		git.pull(context);
 
-		git.clearWorkingDir(context);
+		git.clear(context);
 
 		downloadAndExtractTo(tag, gitDir);
 
-		ObjectId objId = git.commit(context);
+		String objId = git.commit(context);
 		git.push(context);
 
 		Collection<Ref> refs = git.lsRemote();
@@ -45,7 +40,7 @@ public class GitServiceTest extends ComponentTestCase {
 				if (ref.getName().equals(REFS_TAGS + tag)) {
 					tagExist = true;
 				}
-				if (ref.getObjectId().getName().equals(objId.getName())) {
+				if (ref.getObjectId().getName().equals(objId)) {
 					commitSuccess = true;
 				}
 			}
@@ -64,17 +59,14 @@ public class GitServiceTest extends ComponentTestCase {
 				}
 			}
 		}
-		Assert.assertFalse(tagExist);
 
+		Assert.assertFalse(tagExist);
 	}
 
-	public void downloadAndExtractTo(String version, File target)
-			throws IOException {
+	public void downloadAndExtractTo(String version, File target) throws IOException {
 		File workingDir = new File("target/git");
-		File newFile = new File(workingDir, String.valueOf(System
-				.currentTimeMillis()));
+		File newFile = new File(workingDir, String.valueOf(System.currentTimeMillis()));
 
 		newFile.createNewFile();
 	}
-
 }

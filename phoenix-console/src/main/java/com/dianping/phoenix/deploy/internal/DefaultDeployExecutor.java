@@ -66,8 +66,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 	}
 
 	@Override
-	public synchronized void submit(DeployModel model, List<String> hosts) throws Exception {
-		ControllerTask task = new ControllerTask(m_agentListener, model, hosts);
+	public synchronized void submit(DeployModel model, List<String> hosts, String warType) throws Exception {
+		ControllerTask task = new ControllerTask(m_agentListener, model, hosts, warType);
 
 		m_deployListener.onDeployStart(model.getId());
 		Threads.forGroup("Phoenix").start(task);
@@ -84,10 +84,13 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private AgentListener m_listener;
 
-		public ControllerTask(AgentListener listener, DeployModel model, List<String> hosts) {
+		private String m_warType;
+
+		public ControllerTask(AgentListener listener, DeployModel model, List<String> hosts, String warType) {
 			m_listener = listener;
 			m_model = model;
 			m_hosts = hosts;
+			m_warType = warType;
 		}
 
 		private void cancelResetTasks() {
@@ -107,7 +110,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 						message = String.format("Rollout to host(%s) cancelled due to error happened.", host);
 					}
 
-					RolloutContext ctx = new RolloutContext(this, m_agentListener, m_model, host);
+					RolloutContext ctx = new RolloutContext(this, m_agentListener, m_model, m_warType, host);
 
 					ctx.updateStatus(AgentStatus.CANCELLED, message);
 					m_deployListener.onHostCancel(m_model.getId(), host);
@@ -227,7 +230,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			while (m_hostIndex < len && count < maxCount) {
 				String host = m_hosts.get(m_hostIndex++);
 
-				Threads.forGroup("Phoenix").start(new RolloutTask(this, m_listener, m_model, host, latch));
+				Threads.forGroup("Phoenix").start(new RolloutTask(this, m_listener, m_model, m_warType, host, latch));
 				hosts.add(host);
 				count++;
 
@@ -263,10 +266,14 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private StringBuilder m_log = new StringBuilder(256);
 
-		public RolloutContext(ControllerTask controller, AgentListener listener, DeployModel model, String host) {
+		private String m_warType;
+
+		public RolloutContext(ControllerTask controller, AgentListener listener, DeployModel model, String warType,
+		      String host) {
 			m_controller = controller;
 			m_listener = listener;
 			m_model = model;
+			m_warType = warType;
 			m_host = model.findHost(host);
 		}
 
@@ -326,9 +333,9 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-      public boolean isSkipTest() {
-	      return m_model.getPlan().isSkipTest();
-      }
+		public boolean isSkipTest() {
+			return m_model.getPlan().isSkipTest();
+		}
 
 		@Override
 		public String openUrl(String url) throws IOException {
@@ -450,6 +457,11 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			m_host.addSegment(new SegmentModel().setStatus(status.getName()) //
 			      .setCurrentTicks(100).setTotalTicks(100).setStep(status.getTitle()).setText(text));
 		}
+
+		@Override
+		public String getWarType() {
+			return m_warType;
+		}
 	}
 
 	static class RolloutTask implements Task {
@@ -457,9 +469,9 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private CountDownLatch m_latch;
 
-		public RolloutTask(ControllerTask controller, AgentListener listener, DeployModel model, String host,
-		      CountDownLatch latch) {
-			m_ctx = new RolloutContext(controller, listener, model, host);
+		public RolloutTask(ControllerTask controller, AgentListener listener, DeployModel model, String warType,
+		      String host, CountDownLatch latch) {
+			m_ctx = new RolloutContext(controller, listener, model, warType, host);
 			m_latch = latch;
 		}
 

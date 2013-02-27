@@ -38,9 +38,9 @@ public class DefaultProjectManager implements ProjectManager, Initializable {
 	private Map<String, DeployModel> m_models = new HashMap<String, DeployModel>();
 
 	@Override
-	public Deployment findActiveDeploy(String name) {
+	public Deployment findActiveDeploy(String type, String name) {
 		try {
-			Deployment deploy = m_deploymentDao.findActiveByDomain(name, DeploymentEntity.READSET_FULL);
+			Deployment deploy = m_deploymentDao.findActiveByWarTypeAndDomain(type, name, DeploymentEntity.READSET_FULL);
 
 			return deploy;
 		} catch (DalNotFoundException e) {
