@@ -24,6 +24,7 @@ import com.dianping.phoenix.agent.core.task.processor.kernel.DetachTaskProcessor
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DefaultQaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeTaskProcessor;
+import com.dianping.phoenix.agent.core.task.workflow.Engine;
 import com.dianping.phoenix.agent.core.tx.FileBasedTransactionManager;
 import com.dianping.phoenix.agent.core.tx.LogFormatter;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
@@ -61,6 +62,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(TaskProcessorFactory.class));
 		all.add(C(AgentStatusReporter.class).req(ConfigManager.class));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
+		all.add(C(Engine.class).req(LogFormatter.class));
 
 		all.add(C(ModuleManager.class, DefaultModuleManager.class));
 

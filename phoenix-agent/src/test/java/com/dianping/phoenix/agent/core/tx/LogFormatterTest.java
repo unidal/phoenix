@@ -158,7 +158,9 @@ public class LogFormatterTest {
 
 			case READING_CHUNK:
 				if (LogFormatter.CHUNK_TERMINATOR.trim().equals(line)) {
-					Assert.assertEquals(chunks.get(curChunkIdx++), curChunk.toString());
+					if(chunks != null) {
+						Assert.assertEquals(chunks.get(curChunkIdx++), curChunk.toString());
+					}
 					curChunk = new StringBuilder();
 					
 					state = LogState.WAITING_HEADER;
@@ -173,6 +175,9 @@ public class LogFormatterTest {
 
 			}
 		}
+		
+		Assert.assertEquals(LogState.END, state);
+		Assert.assertEquals(headerList.size(), curHeaderIdx);
 
 	}
 

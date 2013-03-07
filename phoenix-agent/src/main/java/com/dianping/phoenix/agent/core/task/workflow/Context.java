@@ -2,10 +2,17 @@ package com.dianping.phoenix.agent.core.task.workflow;
 
 import java.io.OutputStream;
 
-public interface Context {
+public class Context {
 
-	boolean isKilled();
+	private OutputStream logOut;
+	private boolean killed;
 
-	OutputStream getLogOut();
+	public boolean isKilled() {
+		return killed;
+	}
+
+	public OutputStream getLogOut() {
+		return logOut;
+	}
 
 }

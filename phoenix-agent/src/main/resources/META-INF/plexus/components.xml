@@ -145,6 +145,15 @@
 			<implementation>com.dianping.phoenix.agent.core.tx.FileBasedTransactionManager</implementation>
 		</component>
 		<component>
+			<role>com.dianping.phoenix.agent.core.task.workflow.Engine</role>
+			<implementation>com.dianping.phoenix.agent.core.task.workflow.Engine</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.tx.LogFormatter</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.initialization.ModuleManager</role>
 			<implementation>org.unidal.initialization.DefaultModuleManager</implementation>
 		</component>
