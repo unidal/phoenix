@@ -1,0 +1,35 @@
+<plexus>
+	<components>
+		<component>
+			<role>com.dianping.phoenix.router.MockConfigManager</role>
+			<implementation>com.dianping.phoenix.router.MockConfigManager</implementation>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.router.RuleProvider</role>
+			<implementation>com.dianping.phoenix.router.DefaultRuleProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.router.MockConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.router.RuleManager</role>
+			<implementation>com.dianping.phoenix.router.RuleManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.router.RuleProvider</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.router.RouteService</role>
+			<implementation>com.dianping.phoenix.router.RouteService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.router.RuleManager</role>
+				</requirement>
+			</requirements>
+		</component>
+	</components>
+</plexus>
