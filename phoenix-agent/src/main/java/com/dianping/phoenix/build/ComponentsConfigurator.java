@@ -16,10 +16,7 @@ import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
-import com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStep;
-import com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor;
-import com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DetachTaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DefaultQaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
@@ -42,11 +39,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(UrlContentFetcher.class, DefaultUrlContentFetcher.class).req(ConfigManager.class));
 		all.add(C(SemaphoreWrapper.class, "kernel", SemaphoreWrapper.class));
 		all.add(C(LogFormatter.class));
-		all.add(C(DeployWorkflow.class).is(PER_LOOKUP));
 		// all.add(C(QaService.class, MockQaService.class));
 		all.add(C(QaService.class, DefaultQaService.class).req(UrlContentFetcher.class));
-		all.add(C(DeployStep.class, DefaultDeployStep.class) //
-				.req(ConfigManager.class).req(QaService.class).is(PER_LOOKUP));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 		all.add(C(ScriptExecutor.class, DefaultScriptExecutor.class).is(PER_LOOKUP));
 		all.add(C(ConfigManager.class));

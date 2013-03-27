@@ -19,29 +19,11 @@
 			<implementation>com.dianping.phoenix.agent.core.tx.LogFormatter</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
-		</component>
-		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.qa.DefaultQaService</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.agent.util.url.UrlContentFetcher</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStep</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.configure.ConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -154,8 +136,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.KernelUpgradeStepProvider</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DefaultKernelUpgradeStepProvider</implementation>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeStepProvider</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.DefaultKernelUpgradeStepProvider</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
