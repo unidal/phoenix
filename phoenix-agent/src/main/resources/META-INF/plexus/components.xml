@@ -83,7 +83,7 @@
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
+					<role>com.dianping.phoenix.agent.core.task.workflow.Engine</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.tx.LogFormatter</role>
@@ -150,6 +150,19 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.tx.LogFormatter</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.KernelUpgradeStepProvider</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DefaultKernelUpgradeStepProvider</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
 				</requirement>
 			</requirements>
 		</component>

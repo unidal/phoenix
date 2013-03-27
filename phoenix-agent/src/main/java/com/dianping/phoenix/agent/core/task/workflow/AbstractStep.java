@@ -3,15 +3,13 @@ package com.dianping.phoenix.agent.core.task.workflow;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeStep;
-
 public abstract class AbstractStep implements Step {
 
-	private AgentUpgradeStep nextStepWhenSuccess;
-	private AgentUpgradeStep nextStepWhenFail;
+	private AbstractStep nextStepWhenSuccess;
+	private AbstractStep nextStepWhenFail;
 	private int stepSeq;
 
-	protected AbstractStep(AgentUpgradeStep nextStepWhenSuccess, AgentUpgradeStep nextStepWhenFail, int stepSeq) {
+	protected AbstractStep(AbstractStep nextStepWhenSuccess, AbstractStep nextStepWhenFail, int stepSeq) {
 		this.nextStepWhenSuccess = nextStepWhenSuccess;
 		this.nextStepWhenFail = nextStepWhenFail;
 		this.stepSeq = stepSeq;
