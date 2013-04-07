@@ -1,9 +1,0 @@
-<serialized-rules>
-	<serialized-rule>
-		<type>regex</type>
-		<pattern>^/member</pattern>
-		<pattern>^/myinfo</pattern>
-		<target-url>http://127.0.0.1:9090/_app</target-url>
-	</serialized-rule>
-	<serialized-rule />
-</serialized-rules>
