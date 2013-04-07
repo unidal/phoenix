@@ -2,7 +2,7 @@
 	<components>
 		<component>
 			<role>com.dianping.phoenix.configure.ConfigManager</role>
-			<implementation>com.dianping.phoenix.configure.ConfigManager</implementation>
+			<implementation>com.dianping.phoenix.router.MockConfigManager</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.router.urlfilter.F5UrlFilter</role>
