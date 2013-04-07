@@ -27,10 +27,12 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 
 	@Inject
 	Engine engine;
+	
 	@Inject
 	LogFormatter logFormatter;
+	
 	AtomicReference<Transaction> currentTxRef = new AtomicReference<Transaction>();
-	AtomicReference<Context> currentCtx = new AtomicReference<Context>();
+	AtomicReference<Context> currentCtxRef = new AtomicReference<Context>();
 
 	public DeployTaskProcessor() {
 	}
@@ -45,14 +47,13 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 		eventTrackerChain.onEvent(new MessageEvent(tx.getTxId(), String.format("updating %s to version %s", domain,
 				task.getKernelVersion())));
 		OutputStream stdOut = txMgr.getLogOutputStream(tx.getTxId());
-
 		KernelUpgradeStepProvider stepProvider = lookup(KernelUpgradeStepProvider.class);
 		KernelUpgradeContext ctx = new KernelUpgradeContext();
 		ctx.setLogOut(stdOut);
 		ctx.setLogFormatter(logFormatter);
-		ctx.setStepProvider(stepProvider);
 		ctx.setTask(task);
-		currentCtx.set(ctx);
+		ctx.setStepProvider(stepProvider);
+		currentCtxRef.set(ctx);
 
 		Status exitStatus = Status.SUCCESS;
 		try {
@@ -79,7 +80,7 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 	public boolean cancel(TransactionId txId) {
 		Transaction currentTx = currentTxRef.get();
 		if (currentTx != null && currentTx.getTxId().equals(txId)) {
-			if (engine.kill(currentCtx.get())) {
+			if (engine.kill(currentCtxRef.get())) {
 				currentTx.setStatus(Status.KILLED);
 				return true;
 			}

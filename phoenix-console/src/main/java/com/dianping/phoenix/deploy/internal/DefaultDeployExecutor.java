@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -105,7 +107,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					if (m_configManager.isShowLogTimestamp()) {
 						String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
-						message = String.format("[%s] Rollout to host(%s) cancelled due to error happened.", timestamp, host);
+						message = String.format("[%s] Rollout to host(%s) cancelled due to error happened.", timestamp,
+								host);
 					} else {
 						message = String.format("Rollout to host(%s) cancelled due to error happened.", host);
 					}
@@ -172,8 +175,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 								log("Rolling out to host(%s) ... %s", ip, status.toUpperCase());
 							} catch (Exception e) {
 								m_logger.warn(
-								      String.format("Error when processing onHostEnd(%s) of deploy(%s)!", ip, m_model.getId()),
-								      e);
+										String.format("Error when processing onHostEnd(%s) of deploy(%s)!", ip,
+												m_model.getId()), e);
 							}
 						}
 
@@ -269,7 +272,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		private String m_warType;
 
 		public RolloutContext(ControllerTask controller, AgentListener listener, DeployModel model, String warType,
-		      String host) {
+				String host) {
 			m_controller = controller;
 			m_listener = listener;
 			m_model = model;
@@ -338,7 +341,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-		public String openUrl(String url) throws IOException {
+		public String openUrl(String url, int retryCount) throws IOException {
 			ConfigManager configManager = m_controller.getConfigManager();
 			int timeout = configManager.getDeployConnectTimeout();
 
@@ -348,12 +351,41 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 				return content;
 			} else if (url.contains("?op=log&")) {
-				InputStream in = Urls.forIO().connectTimeout(timeout).openStream(url);
+				InputStream in = null;
+				try {
+					in = Urls.forIO().connectTimeout(timeout).openStream(url);
+				} catch (Exception e) {
+					try {
+						Thread.sleep(timeout);
+					} catch (InterruptedException e1) {
+						// no action
+					}
+					return openUrl(url, retryCount - 1);
+				}
 				AgentReader sr = new AgentReader(new InputStreamReader(in, "utf-8"));
+				sr.setOffset(getOffset(url));
 				AgentProgress progress = new AgentProgress();
 
 				while (sr.hasNext()) {
-					String segment = sr.next(progress);
+					String segment = "";
+					try {
+						segment = sr.next(progress);
+					} catch (Exception e) {
+						if (retryCount > 0) {
+							StringBuilder sb = new StringBuilder();
+							int keyIdx = url.indexOf("offset=");
+							if (keyIdx > 0) {
+								sb.append(url.substring(0, keyIdx));
+								int endIdx = url.indexOf("&", keyIdx);
+								if (endIdx > 0) {
+									sb.append(url.substring(endIdx));
+								}
+							} else {
+								sb.append(url + "&offset=" + sr.getOffset());
+							}
+							return openUrl(sb.toString(), retryCount - 1);
+						}
+					}
 
 					try {
 						m_listener.onProgress(this, progress, segment);
@@ -370,6 +402,13 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			} else {
 				throw new IllegalStateException(String.format("Not implemented yet(%s)!", url));
 			}
+		}
+
+		private int getOffset(String url) {
+			int si = url.indexOf("offset=");
+			int ei = url.indexOf('&', si);
+			si += "offset=".length();
+			return Integer.parseInt(ei > 0 ? url.substring(si, ei) : url.substring(si));
 		}
 
 		@Override
@@ -455,7 +494,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			m_status = status;
 			m_host.setStatus(status.getName());
 			m_host.addSegment(new SegmentModel().setStatus(status.getName()) //
-			      .setCurrentTicks(100).setTotalTicks(100).setStep(status.getTitle()).setText(text));
+					.setCurrentTicks(100).setTotalTicks(100).setStep(status.getTitle()).setText(text));
 		}
 
 		@Override
@@ -470,7 +509,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		private CountDownLatch m_latch;
 
 		public RolloutTask(ControllerTask controller, AgentListener listener, DeployModel model, String warType,
-		      String host, CountDownLatch latch) {
+				String host, CountDownLatch latch) {
 			m_ctx = new RolloutContext(controller, listener, model, warType, host);
 			m_latch = latch;
 		}
@@ -501,4 +540,5 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		public void shutdown() {
 		}
 	}
+
 }

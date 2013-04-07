@@ -12,16 +12,27 @@ public class AgentReader {
 
 	private Reader m_reader;
 
+	private int m_offset;
+
 	private boolean m_last;
 
 	private StringBuilder m_sb = new StringBuilder(4096);
 
 	public AgentReader(Reader reader) {
 		m_reader = reader;
+		m_offset = 0;
 	}
 
 	public boolean hasNext() {
 		return !m_last;
+	}
+
+	public int getOffset() {
+		return m_offset;
+	}
+
+	public void setOffset(int offset) {
+		m_offset = offset;
 	}
 
 	public String next(AgentProgress progress) throws IOException {
@@ -29,9 +40,11 @@ public class AgentReader {
 		String segment = null;
 
 		while (true) {
-			int len = m_reader.read(data);
+			int len = 0;
+			len = m_reader.read(data);
 
 			if (len > 0) {
+				m_offset += len;
 				m_sb.append(data, 0, len);
 			}
 
@@ -92,7 +105,7 @@ public class AgentReader {
 							progress.setStatus(line.substring(pos).trim());
 						} else if (line.startsWith("Step:")) {
 							int pos = "Step:".length();
-							
+
 							progress.setStep(line.substring(pos).trim());
 						}
 					} else {

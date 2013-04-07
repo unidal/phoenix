@@ -17,7 +17,7 @@ public abstract class AbstractStep implements Step {
 
 	@Override
 	public Step getNextStep(int exitCode) {
-		if (exitCode == CODE_ERROR) {
+		if (exitCode != CODE_OK) {
 			return nextStepWhenFail;
 		} else {
 			return nextStepWhenSuccess;

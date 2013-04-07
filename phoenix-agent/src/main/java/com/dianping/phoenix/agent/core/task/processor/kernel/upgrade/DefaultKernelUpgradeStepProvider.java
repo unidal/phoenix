@@ -23,7 +23,7 @@ import com.dianping.phoenix.configure.ConfigManager;
 
 public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements KernelUpgradeStepProvider {
 	private static final Logger logger = Logger.getLogger(DefaultKernelUpgradeStepProvider.class);
-
+	@Inject
 	private ScriptExecutor scriptExecutor;
 	@Inject
 	private ConfigManager config;
@@ -86,7 +86,6 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 	public int prepare(DeployTask task, OutputStream logOut) {
 		this.task = task;
 		this.logOut = logOut;
-		this.scriptExecutor = lookup(ScriptExecutor.class);
 		return Step.CODE_OK;
 	}
 

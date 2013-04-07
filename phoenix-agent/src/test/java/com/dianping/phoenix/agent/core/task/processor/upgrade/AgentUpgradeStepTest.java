@@ -19,7 +19,7 @@ public class AgentUpgradeStepTest extends ComponentTestCase {
 		AgentUpgradeContext ctx = mock(AgentUpgradeContext.class);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		when(ctx.getLogOut()).thenReturn(out);
-		StepProvider stepProvider = mock(StepProvider.class);
+		AgentUpgradeStepProvider stepProvider = mock(AgentUpgradeStepProvider.class);
 		when(ctx.getStepProvider()).thenReturn(stepProvider);
 		
 		engine.start(AgentUpgradeStep.START.getNextStep(Step.CODE_OK), ctx);

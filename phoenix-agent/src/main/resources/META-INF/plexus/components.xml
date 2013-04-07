@@ -102,7 +102,7 @@
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.configure.ConfigManager</role>
+					<role>com.dianping.phoenix.agent.core.task.workflow.Engine</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.tx.LogFormatter</role>
@@ -144,7 +144,23 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
+					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
+				</requirement>
+				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeStepProvider</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.upgrade.DefaultAgentUpgradeStepProvider</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
 				</requirement>
 			</requirements>
 		</component>

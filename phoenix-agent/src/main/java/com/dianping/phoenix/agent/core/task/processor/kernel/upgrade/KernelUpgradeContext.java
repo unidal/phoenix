@@ -4,7 +4,6 @@ import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
 import com.dianping.phoenix.agent.core.task.workflow.Context;
 
 public class KernelUpgradeContext extends Context {
-
 	private KernelUpgradeStepProvider stepProvider;
 	private DeployTask task;
 
