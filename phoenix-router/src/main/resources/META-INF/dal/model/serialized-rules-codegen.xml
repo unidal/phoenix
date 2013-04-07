@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="serialized-rules" root="true">
+    <entity-ref name="serialized-rule" type="list" names="serialized-rules" />
+  </entity>
+  <entity name="serialized-rule">
+    <element name="type" value-type="String" />
+    <element name="pattern" value-type="String" type="list" names="patterns" />
+    <element name="target-url" value-type="String" />
+  </entity>
+</model>
+

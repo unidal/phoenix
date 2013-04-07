@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <file path="serialized-rules-codegen.xml" />
+  <file path="serialized-rules-model.xml" />
+</manifest>
+
