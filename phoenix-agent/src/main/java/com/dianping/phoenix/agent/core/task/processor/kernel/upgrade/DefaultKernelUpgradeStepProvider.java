@@ -106,6 +106,7 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 			doInjectPhoenixLoader();
 		} catch (Exception e) {
 			code = Step.CODE_ERROR;
+			logger.error("error inject phoenix loader", e);
 		}
 		return code;
 	}
