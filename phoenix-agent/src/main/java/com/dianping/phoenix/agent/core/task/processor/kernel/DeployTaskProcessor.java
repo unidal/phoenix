@@ -10,9 +10,7 @@ import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.agent.core.event.MessageEvent;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessor;
-import com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeContext;
 import com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeStep;
-import com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeStepProvider;
 import com.dianping.phoenix.agent.core.task.workflow.Context;
 import com.dianping.phoenix.agent.core.task.workflow.Engine;
 import com.dianping.phoenix.agent.core.task.workflow.Step;
@@ -27,15 +25,12 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 
 	@Inject
 	Engine engine;
-	
+
 	@Inject
 	LogFormatter logFormatter;
-	
+
 	AtomicReference<Transaction> currentTxRef = new AtomicReference<Transaction>();
 	AtomicReference<Context> currentCtxRef = new AtomicReference<Context>();
-
-	public DeployTaskProcessor() {
-	}
 
 	@Override
 	protected Status doTransaction(final Transaction tx) throws IOException {
@@ -47,12 +42,10 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 		eventTrackerChain.onEvent(new MessageEvent(tx.getTxId(), String.format("updating %s to version %s", domain,
 				task.getKernelVersion())));
 		OutputStream stdOut = txMgr.getLogOutputStream(tx.getTxId());
-		KernelUpgradeStepProvider stepProvider = lookup(KernelUpgradeStepProvider.class);
-		KernelUpgradeContext ctx = new KernelUpgradeContext();
+		Context ctx = (Context) lookup(Context.class, "kernel_ctx");
 		ctx.setLogOut(stdOut);
 		ctx.setLogFormatter(logFormatter);
 		ctx.setTask(task);
-		ctx.setStepProvider(stepProvider);
 		currentCtxRef.set(ctx);
 
 		Status exitStatus = Status.SUCCESS;

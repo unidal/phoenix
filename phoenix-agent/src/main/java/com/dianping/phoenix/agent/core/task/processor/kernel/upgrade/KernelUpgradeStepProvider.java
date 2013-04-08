@@ -1,31 +1,26 @@
 package com.dianping.phoenix.agent.core.task.processor.kernel.upgrade;
 
-import java.io.OutputStream;
-
-import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
+import com.dianping.phoenix.agent.core.task.workflow.Context;
 
 public interface KernelUpgradeStepProvider {
-	int prepare(DeployTask task, OutputStream logOut);
 
-	int init() throws Exception;
+	int init(Context ctx) throws Exception;
 
-	int checkArgument() throws Exception;
+	int checkArgument(Context ctx) throws Exception;
 
-	int injectPhoenixLoader() throws Exception;
+	int injectPhoenixLoader(Context ctx) throws Exception;
 
-	int getKernelWar() throws Exception;
+	int getKernelWar(Context ctx) throws Exception;
 
-	int stopAll() throws Exception;
+	int stopAll(Context ctx) throws Exception;
 
-	int upgradeKernel() throws Exception;
+	int upgradeKernel(Context ctx) throws Exception;
 
-	int startContainer() throws Exception;
+	int startContainer(Context ctx) throws Exception;
 
-	int checkContainerStatus() throws Exception;
+	int checkContainerStatus(Context ctx) throws Exception;
 
-	int commit() throws Exception;
+	int commit(Context ctx) throws Exception;
 
-	int rollback() throws Exception;
-
-	void kill();
+	int rollback(Context ctx) throws Exception;
 }

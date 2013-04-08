@@ -1,33 +1,29 @@
 package com.dianping.phoenix.agent.core.task.processor.kernel.upgrade;
 
-import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
+import org.unidal.lookup.annotation.Inject;
+
+import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.workflow.Context;
 
 public class KernelUpgradeContext extends Context {
+	@Inject
+	private ScriptExecutor scriptExecutor;
+	@Inject
 	private KernelUpgradeStepProvider stepProvider;
-	private DeployTask task;
 
-	public void setStepProvider(KernelUpgradeStepProvider stepProvider) {
-		this.stepProvider = stepProvider;
+	public ScriptExecutor getScriptExecutor() {
+		return scriptExecutor;
 	}
 
 	public KernelUpgradeStepProvider getStepProvider() {
 		return stepProvider;
 	}
 
-	public DeployTask getTask() {
-		return task;
-	}
-
-	public void setTask(DeployTask task) {
-		this.task = task;
-	}
-
 	@Override
 	public boolean kill() {
 		try {
 			setKilled(true);
-			stepProvider.kill();
+			scriptExecutor.kill();
 			return true;
 		} catch (Exception e) {
 			return false;

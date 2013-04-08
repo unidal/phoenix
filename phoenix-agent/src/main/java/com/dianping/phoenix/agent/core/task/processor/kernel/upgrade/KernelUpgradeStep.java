@@ -60,8 +60,7 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep ROLLBACK = new KernelUpgradeStep(FAILED, FAILED, 10) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().rollback();
+			return getStepProvider(ctx).rollback(ctx);
 		}
 
 		@Override
@@ -73,8 +72,7 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep COMMIT = new KernelUpgradeStep(SUCCESS, FAILED, 9) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().commit();
+			return getStepProvider(ctx).commit(ctx);
 		}
 
 		@Override
@@ -86,8 +84,7 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep CHECK_CONTAINER_STATUS = new KernelUpgradeStep(COMMIT, ROLLBACK, 8) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().checkContainerStatus();
+			return getStepProvider(ctx).checkContainerStatus(ctx);
 		}
 
 		@Override
@@ -99,8 +96,7 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep START_CONTAINER = new KernelUpgradeStep(CHECK_CONTAINER_STATUS, ROLLBACK, 7) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().startContainer();
+			return getStepProvider(ctx).startContainer(ctx);
 		}
 
 		@Override
@@ -112,8 +108,7 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep UPGRADE_KERNEL = new KernelUpgradeStep(START_CONTAINER, ROLLBACK, 6) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().upgradeKernel();
+			return getStepProvider(ctx).upgradeKernel(ctx);
 		}
 
 		@Override
@@ -125,8 +120,7 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep STOP_ALL = new KernelUpgradeStep(UPGRADE_KERNEL, ROLLBACK, 5) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().stopAll();
+			return getStepProvider(ctx).stopAll(ctx);
 		}
 
 		@Override
@@ -138,8 +132,7 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep GET_KERNEL_WAR = new KernelUpgradeStep(STOP_ALL, ROLLBACK, 4) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().getKernelWar();
+			return getStepProvider(ctx).getKernelWar(ctx);
 		}
 
 		@Override
@@ -151,8 +144,7 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep INJECT_PHOENIX_LOADER = new KernelUpgradeStep(GET_KERNEL_WAR, ROLLBACK, 3) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().injectPhoenixLoader();
+			return getStepProvider(ctx).injectPhoenixLoader(ctx);
 		}
 
 		@Override
@@ -164,8 +156,7 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep CHECK_ARGUMENT = new KernelUpgradeStep(INJECT_PHOENIX_LOADER, FAILED, 2) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().checkArgument();
+			return getStepProvider(ctx).checkArgument(ctx);
 		}
 
 		@Override
@@ -177,8 +168,7 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep INIT = new KernelUpgradeStep(CHECK_ARGUMENT, FAILED, 1) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().init();
+			return getStepProvider(ctx).init(ctx);
 		}
 
 		@Override
@@ -188,18 +178,15 @@ public class KernelUpgradeStep extends AbstractStep {
 	};
 
 	public static KernelUpgradeStep START = new KernelUpgradeStep(INIT, FAILED, 0) {
-
-		@Override
-		public int doStep(Context ctx) throws Exception {
-			KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
-			return myCtx.getStepProvider().prepare(myCtx.getTask(), myCtx.getLogOut());
-		}
-
 		@Override
 		public String toString() {
 			return "START";
 		}
 	};
+
+	private static KernelUpgradeStepProvider getStepProvider(Context ctx) {
+		return ((KernelUpgradeContext) ctx).getStepProvider();
+	}
 
 	@Override
 	public int doStep(Context ctx) throws Exception {
@@ -209,15 +196,5 @@ public class KernelUpgradeStep extends AbstractStep {
 	@Override
 	protected int getTotalStep() {
 		return 11;
-	}
-
-	public boolean kill() {
-		boolean killed = true;
-		try {
-			new KernelUpgradeContext().getStepProvider().kill();
-		} catch (Exception e) {
-			killed = false;
-		}
-		return killed;
 	}
 }

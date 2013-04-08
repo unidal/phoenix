@@ -2,7 +2,6 @@ package com.dianping.phoenix.agent.core.task.processor.kernel.upgrade;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -12,36 +11,32 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.util.StringUtils;
 
 import com.dianping.cat.configuration.NetworkInterfaceManager;
-import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
 import com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlUtil;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DomainHealthCheckInfo;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService.CheckResult;
+import com.dianping.phoenix.agent.core.task.workflow.Context;
 import com.dianping.phoenix.agent.core.task.workflow.Step;
 import com.dianping.phoenix.configure.ConfigManager;
 
 public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements KernelUpgradeStepProvider {
 	private static final Logger logger = Logger.getLogger(DefaultKernelUpgradeStepProvider.class);
-	@Inject
-	private ScriptExecutor scriptExecutor;
+
 	@Inject
 	private ConfigManager config;
 	@Inject
 	private QaService qaService;
 
-	private OutputStream logOut;
-	private DeployTask task;
-
-	private int runShellCmd(String shellFunc) throws Exception {
-		String script = jointShellCmd(shellFunc);
-		int exitCode = scriptExecutor.exec(script, logOut, logOut);
+	private int runShellCmd(String shellFunc, Context ctx) throws Exception {
+		KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
+		String script = jointShellCmd(shellFunc, (DeployTask) myCtx.getTask());
+		int exitCode = myCtx.getScriptExecutor().exec(script, myCtx.getLogOut(), myCtx.getLogOut());
 		return exitCode;
 	}
 
-	private String jointShellCmd(String shellFunc) {
+	private String jointShellCmd(String shellFunc, DeployTask task) {
 		StringBuilder sb = new StringBuilder();
-
 		String kernelDocBase = String.format(config.getKernelDocBasePattern(), task.getDomain(),
 				task.getKernelVersion());
 
@@ -68,8 +63,9 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 		return sb.toString();
 	}
 
-	private void doInjectPhoenixLoader() throws Exception {
+	private void doInjectPhoenixLoader(Context ctx) throws Exception {
 		File serverXml = config.getServerXml();
+		DeployTask task = (DeployTask) ((KernelUpgradeContext) ctx).getTask();
 		if (serverXml == null || !serverXml.exists()) {
 			String path = serverXml == null ? null : serverXml.getAbsolutePath();
 			throw new RuntimeException(String.format("container server.xml not found %s", path));
@@ -83,27 +79,20 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 	}
 
 	@Override
-	public int prepare(DeployTask task, OutputStream logOut) {
-		this.task = task;
-		this.logOut = logOut;
+	public int init(Context ctx) throws Exception {
+		return runShellCmd("init", ctx);
+	}
+
+	@Override
+	public int checkArgument(Context ctx) throws Exception {
 		return Step.CODE_OK;
 	}
 
 	@Override
-	public int init() throws Exception {
-		return runShellCmd("init");
-	}
-
-	@Override
-	public int checkArgument() throws Exception {
-		return Step.CODE_OK;
-	}
-
-	@Override
-	public int injectPhoenixLoader() throws Exception {
+	public int injectPhoenixLoader(Context ctx) throws Exception {
 		int code = Step.CODE_OK;
 		try {
-			doInjectPhoenixLoader();
+			doInjectPhoenixLoader(ctx);
 		} catch (Exception e) {
 			code = Step.CODE_ERROR;
 			logger.error("error inject phoenix loader", e);
@@ -112,34 +101,34 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 	}
 
 	@Override
-	public int getKernelWar() throws Exception {
-		return runShellCmd("get_kernel_war");
+	public int getKernelWar(Context ctx) throws Exception {
+		return runShellCmd("get_kernel_war", ctx);
 	}
 
 	@Override
-	public int stopAll() throws Exception {
-		return runShellCmd("stop_all");
+	public int stopAll(Context ctx) throws Exception {
+		return runShellCmd("stop_all", ctx);
 	}
 
 	@Override
-	public int upgradeKernel() throws Exception {
-		return runShellCmd("upgrade_kernel");
+	public int upgradeKernel(Context ctx) throws Exception {
+		return runShellCmd("upgrade_kernel", ctx);
 	}
 
 	@Override
-	public int startContainer() throws Exception {
-		return runShellCmd("start_container");
+	public int startContainer(Context ctx) throws Exception {
+		return runShellCmd("start_container", ctx);
 	}
 
 	@Override
-	public int checkContainerStatus() throws Exception {
-		int exitCode = callQaService();
+	public int checkContainerStatus(Context ctx) throws Exception {
+		int exitCode = callQaService(ctx);
 		return exitCode;
-
 	}
 
-	private int callQaService() throws IOException {
+	private int callQaService(Context ctx) throws IOException {
 		String localIp = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
+		DeployTask task = (DeployTask) ((KernelUpgradeContext) ctx).getTask();
 		String qaServiceUrlPrefix = task.getQaServiceUrlPrefix();
 		DomainHealthCheckInfo deployInfo = new DomainHealthCheckInfo(task.getDomain(), config.getEnv(), localIp,
 				config.getContainerPort(), qaServiceUrlPrefix);
@@ -182,8 +171,7 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 			break;
 
 		default:
-			logger.error(String.format("unexpected CheckResult type %s, treat as %s", checkResult,
-					Step.CODE_ERROR));
+			logger.error(String.format("unexpected CheckResult type %s, treat as %s", checkResult, Step.CODE_ERROR));
 			exitCode = Step.CODE_ERROR;
 			break;
 
@@ -192,18 +180,12 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 	}
 
 	@Override
-	public int commit() throws Exception {
-		return runShellCmd("commit");
+	public int commit(Context ctx) throws Exception {
+		return runShellCmd("commit", ctx);
 	}
 
 	@Override
-	public int rollback() throws Exception {
-		return runShellCmd("rollback");
+	public int rollback(Context ctx) throws Exception {
+		return runShellCmd("rollback", ctx);
 	}
-
-	@Override
-	public void kill() {
-		scriptExecutor.kill();
-	}
-
 }

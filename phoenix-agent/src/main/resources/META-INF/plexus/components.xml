@@ -136,15 +136,25 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeStepProvider</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.DefaultKernelUpgradeStepProvider</implementation>
+			<role>com.dianping.phoenix.agent.core.task.workflow.Context</role>
+			<role-hint>kernel_ctx</role-hint>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeContext</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.configure.ConfigManager</role>
+					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeStepProvider</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeStepProvider</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.DefaultKernelUpgradeStepProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>

@@ -3,13 +3,17 @@ package com.dianping.phoenix.agent.core.task.workflow;
 import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.unidal.lookup.ContainerHolder;
+
+import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.tx.LogFormatter;
 
-public class Context {
+public class Context extends ContainerHolder {
 
 	private LogFormatter logFormatter;
 	private OutputStream logOut;
 	private Step endStep;
+	private Task task;
 	private int exitCode;
 	private AtomicBoolean killed = new AtomicBoolean(false);
 
@@ -56,5 +60,13 @@ public class Context {
 	public boolean kill() {
 		setKilled(true);
 		return true;
+	}
+
+	public Task getTask() {
+		return task;
+	}
+
+	public void setTask(Task task) {
+		this.task = task;
 	}
 }
