@@ -33,7 +33,7 @@ public class DeployStateTest extends ComponentTestCase {
 	public void testFailedWithBadDeploy() throws Exception {
 		BaseContext ctx = new BaseContext(m_configManager) {
 			@Override
-			public String openUrl(String url, int retryCount) throws IOException {
+			public String openUrl(String url) throws IOException {
 				if (isDeploy(url)) {
 					return "{status: \"error\", message: \"deploy id is already existed.\"}";
 				} else {
@@ -59,7 +59,7 @@ public class DeployStateTest extends ComponentTestCase {
 	public void testFailedWithBadDeployStatus() throws Exception {
 		BaseContext ctx = new BaseContext(m_configManager) {
 			@Override
-			public String openUrl(String url, int retryCount) throws IOException {
+			public String openUrl(String url) throws IOException {
 				if (isDeploy(url)) {
 					return "{status: \"ok\"}";
 				} else if (isLog(url)) {
@@ -89,7 +89,7 @@ public class DeployStateTest extends ComponentTestCase {
 	public void testFailedWithDeployException() throws Exception {
 		BaseContext ctx = new BaseContext(m_configManager) {
 			@Override
-			public String openUrl(String url, int retryCount) throws IOException {
+			public String openUrl(String url) throws IOException {
 				if (isDeploy(url)) {
 					throw new IOException("IO issue");
 				} else {
@@ -119,7 +119,7 @@ public class DeployStateTest extends ComponentTestCase {
 	public void testFailedWithRetriedUnreachables() throws Exception {
 		BaseContext ctx = new BaseContext(m_configManager) {
 			@Override
-			public String openUrl(String url, int retryCount) throws IOException {
+			public String openUrl(String url) throws IOException {
 				if (isDeploy(url)) {
 					throw new UnknownHostException("unknownHost");
 				} else {
@@ -149,7 +149,7 @@ public class DeployStateTest extends ComponentTestCase {
 	public void testSuccess() throws Exception {
 		BaseContext ctx = new BaseContext(m_configManager) {
 			@Override
-			public String openUrl(String url, int retryCount) throws IOException {
+			public String openUrl(String url) throws IOException {
 				if (isDeploy(url)) {
 					return "{status: \"ok\"}";
 				} else if (isLog(url)) {
@@ -180,7 +180,7 @@ public class DeployStateTest extends ComponentTestCase {
 			private int m_retryCount = 2;
 
 			@Override
-			public String openUrl(String url, int retryCount) throws IOException {
+			public String openUrl(String url) throws IOException {
 				if (isDeploy(url)) {
 					if (m_retryCount-- > 0) {
 						throw new IOException("Unavailable");

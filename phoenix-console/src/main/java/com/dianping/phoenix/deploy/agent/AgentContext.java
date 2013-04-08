@@ -32,7 +32,7 @@ public interface AgentContext {
 	
 	public boolean isSkipTest();
 
-	public String openUrl(String url, int retryCount) throws IOException;
+	public String openUrl(String url) throws IOException;
 
 	public AgentContext print(String pattern, Object... args);
 

@@ -127,6 +127,11 @@ function kill_by_javaclass {
 	jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
 }
 
+function change_status {
+    cd `dirname $tx_log_file`
+    awk -v REPLACE_WORD=$1 '{if(/^txJson/){sub(/PROCESSING/,REPLACE_WORD,$1);print $1;} else {print $1;}}' tx.properties > tx.properties.tmp && mv tx.properties.tmp tx.properties
+}
+
 function ensure_agent_started {
     log "checking whether agent process alive"
     agent_process_num=`jps -lvm | awk -v javaclass=$agent_class '$2==javaclass{print $0}' | wc -l`
@@ -136,10 +141,26 @@ function ensure_agent_started {
         git reset --hard
         chmod +x $agent_doc_base/startup.sh
         $agent_doc_base/startup.sh
+        echo "\r"
+        echo "--9ed2b78c112fbd17a8511812c554da62941629a8--\r"
+        echo "Status: failed\r"
+        echo "Step: FAILED\r"
+        echo "\r"
+        echo "--9ed2b78c112fbd17a8511812c554da62941629a8--\r"
+        change_status "FAILED"
         cd - > /dev/null
     else
         log "agent process is alive"
+        echo "\r"
+        echo "--9ed2b78c112fbd17a8511812c554da62941629a8--\r"
+        echo "Status: successful\r"
+        echo "Step: SUCCESS\r"
+        echo "\r"
+        echo "--9ed2b78c112fbd17a8511812c554da62941629a8--\r"
+        change_status "SUCCESS"
     fi
+    echo "\r"
+    echo "--255220d51dc7fb4aacddadedfe252a346da267d4--\r"
 }
 
 function gitpull {

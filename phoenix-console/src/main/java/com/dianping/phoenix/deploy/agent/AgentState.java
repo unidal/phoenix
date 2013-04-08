@@ -21,7 +21,7 @@ public enum AgentState {
 					host, id, domain);
 
 			try {
-				json = ctx.openUrl(url, 10);
+				json = ctx.openUrl(url);
 			} catch (Exception e) {
 				ctx.println(e.toString());
 				moveTo(ctx, UNREACHABLE);
@@ -78,7 +78,7 @@ public enum AgentState {
 						version, host, id, domain);
 
 				try {
-					json = ctx.openUrl(url, 10);
+					json = ctx.openUrl(url);
 				} catch (Exception e) {
 					ctx.println(e.toString());
 					moveTo(ctx, UNREACHABLE);
@@ -111,7 +111,7 @@ public enum AgentState {
 			String url = ctx.getConfigManager().getDeployLogUrl(host, id);
 
 			try {
-				String log = ctx.openUrl(url, 10);
+				String log = ctx.openUrl(url);
 
 				ctx.print(log);
 			} catch (Exception e) {

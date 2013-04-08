@@ -2,11 +2,8 @@ package com.dianping.phoenix.deploy.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -341,7 +338,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 
 		@Override
-		public String openUrl(String url, int retryCount) throws IOException {
+		public String openUrl(String url) throws IOException {
 			ConfigManager configManager = m_controller.getConfigManager();
 			int timeout = configManager.getDeployConnectTimeout();
 
@@ -351,41 +348,12 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 				return content;
 			} else if (url.contains("?op=log&")) {
-				InputStream in = null;
-				try {
-					in = Urls.forIO().connectTimeout(timeout).openStream(url);
-				} catch (Exception e) {
-					try {
-						Thread.sleep(timeout);
-					} catch (InterruptedException e1) {
-						// no action
-					}
-					return openUrl(url, retryCount - 1);
-				}
-				AgentReader sr = new AgentReader(new InputStreamReader(in, "utf-8"));
-				sr.setOffset(getOffset(url));
+				AgentReader sr = new AgentReader(new PhoenixInputStreamReader(url, timeout, configManager.getDeployGetlogRetrycount()));
 				AgentProgress progress = new AgentProgress();
 
 				while (sr.hasNext()) {
 					String segment = "";
-					try {
-						segment = sr.next(progress);
-					} catch (Exception e) {
-						if (retryCount > 0) {
-							StringBuilder sb = new StringBuilder();
-							int keyIdx = url.indexOf("offset=");
-							if (keyIdx > 0) {
-								sb.append(url.substring(0, keyIdx));
-								int endIdx = url.indexOf("&", keyIdx);
-								if (endIdx > 0) {
-									sb.append(url.substring(endIdx));
-								}
-							} else {
-								sb.append(url + "&offset=" + sr.getOffset());
-							}
-							return openUrl(sb.toString(), retryCount - 1);
-						}
-					}
+					segment = sr.next(progress);
 
 					try {
 						m_listener.onProgress(this, progress, segment);
@@ -402,13 +370,6 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			} else {
 				throw new IllegalStateException(String.format("Not implemented yet(%s)!", url));
 			}
-		}
-
-		private int getOffset(String url) {
-			int si = url.indexOf("offset=");
-			int ei = url.indexOf('&', si);
-			si += "offset=".length();
-			return Integer.parseInt(ei > 0 ? url.substring(si, ei) : url.substring(si));
 		}
 
 		@Override
