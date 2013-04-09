@@ -42,7 +42,7 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 		eventTrackerChain.onEvent(new MessageEvent(tx.getTxId(), String.format("updating %s to version %s", domain,
 				task.getKernelVersion())));
 		OutputStream stdOut = txMgr.getLogOutputStream(tx.getTxId());
-		Context ctx = (Context) lookup(Context.class, "kernel_ctx");
+		Context ctx = lookup(Context.class, "kernel_ctx");
 		ctx.setLogOut(stdOut);
 		ctx.setLogFormatter(logFormatter);
 		ctx.setTask(task);

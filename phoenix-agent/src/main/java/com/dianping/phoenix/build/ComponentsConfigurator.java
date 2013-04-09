@@ -23,6 +23,7 @@ import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.DefaultKernelUpgradeStepProvider;
 import com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeContext;
 import com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeStepProvider;
+import com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeContext;
 import com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeStepProvider;
 import com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeTaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.upgrade.DefaultAgentUpgradeStepProvider;
@@ -65,12 +66,11 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(Engine.class).req(LogFormatter.class));
 		all.add(C(Context.class, "kernel_ctx", KernelUpgradeContext.class).req(ScriptExecutor.class)
 				.req(KernelUpgradeStepProvider.class).is(PER_LOOKUP));
-//		all.add(C(Context.class, "agent_ctx", AgentUpgradeContext.class).req(ScriptExecutor.class)
-//				.req(AgentUpgradeStepProvider.class).is(PER_LOOKUP));
+		all.add(C(Context.class, "agent_ctx", AgentUpgradeContext.class).req(ScriptExecutor.class)
+				.req(AgentUpgradeStepProvider.class).is(PER_LOOKUP));
 		all.add(C(KernelUpgradeStepProvider.class, DefaultKernelUpgradeStepProvider.class).req(ConfigManager.class)
 				.req(QaService.class));
-		all.add(C(AgentUpgradeStepProvider.class, DefaultAgentUpgradeStepProvider.class).req(ConfigManager.class)
-				.req(ScriptExecutor.class).is(PER_LOOKUP));
+		all.add(C(AgentUpgradeStepProvider.class, DefaultAgentUpgradeStepProvider.class).req(ConfigManager.class));
 
 		all.add(C(ModuleManager.class, DefaultModuleManager.class));
 

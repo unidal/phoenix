@@ -44,8 +44,7 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			AgentUpgradeContext myCtx = (AgentUpgradeContext) ctx;
-			return myCtx.getStepProvider().upgradeAgent();
+			return getProvider(ctx).upgradeAgent(ctx);
 		}
 
 		@Override
@@ -59,8 +58,7 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			AgentUpgradeContext myCtx = (AgentUpgradeContext) ctx;
-			return myCtx.getStepProvider().dryrunAgent();
+			return getProvider(ctx).dryrunAgent(ctx);
 		}
 
 		@Override
@@ -74,8 +72,7 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			AgentUpgradeContext myCtx = (AgentUpgradeContext) ctx;
-			return myCtx.getStepProvider().gitPull();
+			return getProvider(ctx).gitPull(ctx);
 		}
 
 		@Override
@@ -88,8 +85,7 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			AgentUpgradeContext myCtx = (AgentUpgradeContext) ctx;
-			return myCtx.getStepProvider().init();
+			return getProvider(ctx).init(ctx);
 		}
 
 		@Override
@@ -102,16 +98,14 @@ public class AgentUpgradeStep extends AbstractStep {
 	public static AgentUpgradeStep START = new AgentUpgradeStep(INIT, FAIL, 0) {
 
 		@Override
-		public int doStep(Context ctx) throws Exception {
-			AgentUpgradeContext myCtx = (AgentUpgradeContext) ctx;
-			return myCtx.getStepProvider().prepare(myCtx.getTask(), myCtx.getLogOut(), myCtx.getUnderLyingFile());
-		}
-
-		@Override
 		public String toString() {
 			return "START";
 		}
 	};
+
+	private static AgentUpgradeStepProvider getProvider(Context ctx) {
+		return ((AgentUpgradeContext) ctx).getStepProvider();
+	}
 
 	private AgentUpgradeStep(AgentUpgradeStep nextStepWhenSuccess, AgentUpgradeStep nextStepWhenFail, int stepSeq) {
 		super(nextStepWhenSuccess, nextStepWhenFail, stepSeq);

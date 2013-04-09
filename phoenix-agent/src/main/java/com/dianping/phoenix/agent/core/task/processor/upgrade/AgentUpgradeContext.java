@@ -2,22 +2,17 @@ package com.dianping.phoenix.agent.core.task.processor.upgrade;
 
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.workflow.Context;
 
 public class AgentUpgradeContext extends Context {
 	@Inject
 	private AgentUpgradeStepProvider stepProvider;
+	@Inject
+	private ScriptExecutor scriptExecutor;
 
-	private AgentUpgradeTask task;
 	private String underLyingFile;
-
-	public AgentUpgradeTask getTask() {
-		return task;
-	}
-
-	public void setTask(AgentUpgradeTask task) {
-		this.task = task;
-	}
+	private String tempScriptFile = "phoenix-agent-self-upgrade.sh." + System.currentTimeMillis();
 
 	public String getUnderLyingFile() {
 		return underLyingFile;
@@ -31,7 +26,11 @@ public class AgentUpgradeContext extends Context {
 		return stepProvider;
 	}
 
-	public void setStepProvider(AgentUpgradeStepProvider stepProvider) {
-		this.stepProvider = stepProvider;
+	public ScriptExecutor getScriptExecutor() {
+		return scriptExecutor;
+	}
+
+	public String getTempScriptFile() {
+		return tempScriptFile;
 	}
 }

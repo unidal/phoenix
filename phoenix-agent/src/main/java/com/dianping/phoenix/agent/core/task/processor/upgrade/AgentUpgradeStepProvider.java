@@ -1,17 +1,16 @@
 package com.dianping.phoenix.agent.core.task.processor.upgrade;
 
-import java.io.OutputStream;
+import com.dianping.phoenix.agent.core.task.workflow.Context;
 
 public interface AgentUpgradeStepProvider {
-	int prepare(AgentUpgradeTask task, OutputStream logOut, String underLyingFile);
 
-	int init() throws Exception;
+	int init(Context ctx) throws Exception;
 
-	int checkArgument() throws Exception;
+	int checkArgument(Context ctx) throws Exception;
 
-	int gitPull() throws Exception;
+	int gitPull(Context ctx) throws Exception;
 
-	int dryrunAgent() throws Exception;
+	int dryrunAgent(Context ctx) throws Exception;
 
-	int upgradeAgent() throws Exception;
+	int upgradeAgent(Context ctx) throws Exception;
 }

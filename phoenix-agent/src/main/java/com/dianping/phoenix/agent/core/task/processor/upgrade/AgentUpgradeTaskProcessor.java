@@ -55,18 +55,16 @@ public class AgentUpgradeTaskProcessor extends AbstractSerialTaskProcessor<Agent
 		eventTrackerChain.onEvent(new MessageEvent(tx.getTxId(), String.format("updating phoenix-agent to version %s",
 				task.getAgentVersion())));
 		OutputStream stdOut = txMgr.getLogOutputStream(tx.getTxId());
-		AgentUpgradeStepProvider stepProvider = lookup(AgentUpgradeStepProvider.class);
-		AgentUpgradeContext ctx = new AgentUpgradeContext();
+		AgentUpgradeContext ctx = (AgentUpgradeContext) lookup(Context.class, "agent_ctx");
 		ctx.setLogOut(stdOut);
 		ctx.setLogFormatter(logFormatter);
 		ctx.setTask(task);
 		ctx.setUnderLyingFile(txMgr.getUnderlyingFile(tx.getTxId()).getAbsolutePath());
-		ctx.setStepProvider(stepProvider);
 		currentCtxRef.set(ctx);
 
 		Status exitStatus = Status.SUCCESS;
 		try {
-			exitStatus = newUpgradeAgent(ctx);
+			exitStatus = upgradeAgent(ctx);
 		} catch (Exception e) {
 			logger.error("error update kernel", e);
 			exitStatus = Status.FAILED;
@@ -76,7 +74,7 @@ public class AgentUpgradeTaskProcessor extends AbstractSerialTaskProcessor<Agent
 		return exitStatus;
 	}
 
-	private Status newUpgradeAgent(Context ctx) {
+	private Status upgradeAgent(Context ctx) {
 		int exitCode = engine.start(AgentUpgradeStep.START, ctx);
 		if (exitCode == Step.CODE_OK) {
 			return Status.SUCCESS;
