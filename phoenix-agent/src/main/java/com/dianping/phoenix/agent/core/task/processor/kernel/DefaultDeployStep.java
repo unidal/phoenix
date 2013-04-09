@@ -17,6 +17,7 @@ import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DomainHealthChec
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService.CheckResult;
 import com.dianping.phoenix.configure.ConfigManager;
+import com.dianping.phoenix.configure.ConfigManager.ContainerType;
 
 public class DefaultDeployStep extends ContainerHolder implements DeployStep {
 
@@ -67,7 +68,21 @@ public class DefaultDeployStep extends ContainerHolder implements DeployStep {
 		return sb.toString();
 	}
 
-	private void doInjectPhoenixLoader() throws Exception {
+	private void doInjectPhoenixLoader() throws Exception {	
+		ContainerType type = config.getContainerType();
+		if(type == ContainerType.TOMCAT){
+			File serverXmlDir = new File(config.getContainerInstallPath()+"/conf/Catalina/localhost/");
+			if (serverXmlDir != null && serverXmlDir.exists()) {
+				for(File serverXml : serverXmlDir.listFiles()){
+					File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), task.getDomain(),
+							task.getKernelVersion()));
+					String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain());
+					ServerXmlUtil.attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(),
+							kernelDocBase);
+				}
+			}
+		} 
+		
 		File serverXml = config.getServerXml();
 		if (serverXml == null || !serverXml.exists()) {
 			String path = serverXml == null ? null : serverXml.getAbsolutePath();
