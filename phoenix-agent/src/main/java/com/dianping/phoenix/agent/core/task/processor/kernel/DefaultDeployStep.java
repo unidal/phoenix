@@ -119,6 +119,7 @@ public class DefaultDeployStep extends ContainerHolder implements DeployStep {
 		try {
 			doInjectPhoenixLoader();
 		} catch (Exception e) {
+			logger.error("error inject phoenix loader", e);
 			code = CODE_ERROR;
 		}
 		return code;

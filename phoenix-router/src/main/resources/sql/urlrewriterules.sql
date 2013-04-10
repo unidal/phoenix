@@ -1,0 +1,1 @@
+select concat('<url-rewrite-rule><mask-url><![CDATA[', substring(MaskURL,2), ']></mask-url><real-url><![CDATA[', RealURL, ']]></real-url><page-id>', PageId, '</page-id></url-rewrite-rule>') from DP_URLRewriteRulesNew
