@@ -22,7 +22,7 @@ PHOENIX_AGENT_INSTALL_DIR_NAME=phoenix-agent
 
 mkdir -p $PHOENIX_DIR
 cd $PHOENIX_DIR
-#it clone https://github.com/dianping/phoenix.git
+git clone https://github.com/dianping/phoenix.git
 cd -
 
 # pull lastest phoenix code
