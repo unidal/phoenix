@@ -4,23 +4,8 @@ set -u
 log "PID is $$"
 log "CMD is $0 $@"
 
-while getopts "g:v:l:a:h:f:t:c:d:p:i:" option;do
-    case $option in
-        g)  agent_git_url=$OPTARG;;
-        v)  agent_version=$OPTARG;;
-        l)  tx_log_file=$OPTARG;;
-        a)  agent_doc_base=$OPTARG;;
-        h)  agent_git_host=$OPTARG;;
-        f)  func=`echo $OPTARG | tr '[A-Z]' '[a-z]'`;;
-        t)  tmp_script_file=$OPTARG;;
-        c)  agent_class=$OPTARG;;
-        d)  agent_dryrun_class=$OPTARG;;
-        p)  dry_run_port=$OPTARG;;
-        i)  parent_pid=$OPTARG;;
-    esac
-done
+eval "`parse_argument_and_set_variable agent_git_url agent_version tx_log_file agent_doc_base agent_git_host func tmp_script_file agent_class agent_dryrun_class dry_run_port parent_pid`"
 
 agent_war_tmp=/data/webapps/phoenix/phoenix_agent_war_tmp/
 
-$func $@
-
+$func

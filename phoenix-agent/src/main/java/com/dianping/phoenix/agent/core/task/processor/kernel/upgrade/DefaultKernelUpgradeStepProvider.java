@@ -49,16 +49,16 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 		}
 
 		sb.append(config.getAgentScriptFile().getAbsolutePath());
-		sb.append(String.format(" -b \"%s\" ", config.getContainerInstallPath()));
-		sb.append(String.format(" -x \"%s\" ", config.getServerXml()));
-		sb.append(String.format(" -c \"%s\" ", config.getContainerType().toString()));
-		sb.append(String.format(" -d \"%s\" ", task.getDomain()));
-		sb.append(String.format(" -v \"%s\" ", task.getKernelVersion()));
-		sb.append(String.format(" -k \"%s\" ", kernelDocBase));
-		sb.append(String.format(" -e \"%s\" ", config.getEnv()));
-		sb.append(String.format(" -g \"%s\" ", kernelGitUrl));
-		sb.append(String.format(" -h \"%s\" ", kernelGitHost));
-		sb.append(String.format(" -f \"%s\" ", shellFunc));
+		sb.append(String.format(" --container_install_path \"%s\" ", config.getContainerInstallPath()));
+		sb.append(String.format(" --server_xml \"%s\" ", config.getServerXml()));
+		sb.append(String.format(" --container_type \"%s\" ", config.getContainerType().toString()));
+		sb.append(String.format(" --domain \"%s\" ", task.getDomain()));
+		sb.append(String.format(" --kernel_version \"%s\" ", task.getKernelVersion()));
+		sb.append(String.format(" --domain_kernel_base \"%s\" ", kernelDocBase));
+		sb.append(String.format(" --env \"%s\" ", config.getEnv()));
+		sb.append(String.format(" --kernel_git_url \"%s\" ", kernelGitUrl));
+		sb.append(String.format(" --kernel_git_host \"%s\" ", kernelGitHost));
+		sb.append(String.format(" --func \"%s\" ", shellFunc));
 
 		return sb.toString();
 	}

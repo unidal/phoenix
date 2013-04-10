@@ -43,17 +43,17 @@ public class DefaultAgentUpgradeStepProvider implements AgentUpgradeStepProvider
 		}
 
 		sb.append(config.getAgentSelfUpgradeScriptFile().getAbsolutePath());
-		sb.append(String.format(" -g \"%s\" ", task.getAgentGitUrl()));
-		sb.append(String.format(" -v \"%s\" ", task.getAgentVersion()));
-		sb.append(String.format(" -l \"%s\" ", myCtx.getUnderLyingFile()));
-		sb.append(String.format(" -a \"%s\" ", agentDocBase));
-		sb.append(String.format(" -h \"%s\" ", agentGitHost));
-		sb.append(String.format(" -f \"%s\" ", shellFunc));
-		sb.append(String.format(" -t \"%s\" ", myCtx.getTempScriptFile()));
-		sb.append(String.format(" -c \"%s\" ", PhoenixAgent.class.getName()));
-		sb.append(String.format(" -d \"%s\" ", PhoenixAgentDryRun.class.getName()));
-		sb.append(String.format(" -p \"%d\" ", config.getDryrunPort()));
-		sb.append(String.format(" -i \"%s\" ", config.getPid()));
+		sb.append(String.format(" --agent_git_url=\"%s\" ", task.getAgentGitUrl()));
+		sb.append(String.format(" --agent_version=\"%s\" ", task.getAgentVersion()));
+		sb.append(String.format(" --tx_log_file=\"%s\" ", myCtx.getUnderLyingFile()));
+		sb.append(String.format(" --agent_doc_base=\"%s\" ", agentDocBase));
+		sb.append(String.format(" --agent_git_host=\"%s\" ", agentGitHost));
+		sb.append(String.format(" --func=\"%s\" ", shellFunc));
+		sb.append(String.format(" --tmp_script_file=\"%s\" ", myCtx.getTempScriptFile()));
+		sb.append(String.format(" --agent_class=\"%s\" ", PhoenixAgent.class.getName()));
+		sb.append(String.format(" --agent_dryrun_class=\"%s\" ", PhoenixAgentDryRun.class.getName()));
+		sb.append(String.format(" --dry_run_port=\"%d\" ", config.getDryrunPort()));
+		sb.append(String.format(" --parent_pid=\"%s\" ", config.getPid()));
 
 		return sb.toString();
 	}
