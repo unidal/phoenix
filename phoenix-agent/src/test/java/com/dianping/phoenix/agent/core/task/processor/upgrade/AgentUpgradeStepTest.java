@@ -84,7 +84,7 @@ public class AgentUpgradeStepTest extends ComponentTestCase {
 		presetList.add(AgentStep.FAIL);
 
 		stepProvider.setInitFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class AgentUpgradeStepTest extends ComponentTestCase {
 		presetList.add(AgentStep.FAIL);
 
 		stepProvider.setGitpullFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -107,7 +107,7 @@ public class AgentUpgradeStepTest extends ComponentTestCase {
 		presetList.add(AgentStep.FAIL);
 
 		stepProvider.setDryrunFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class AgentUpgradeStepTest extends ComponentTestCase {
 		presetList.add(AgentStep.FAIL);
 
 		stepProvider.setUpgradeFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -132,10 +132,10 @@ public class AgentUpgradeStepTest extends ComponentTestCase {
 		presetList.add(AgentStep.UPGRADE);
 		presetList.add(AgentStep.SUCCESS);
 
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
-	private boolean doTest() {
+	private void doTest() {
 		Engine engine = null;
 		try {
 			engine = lookup(Engine.class);
@@ -148,18 +148,6 @@ public class AgentUpgradeStepTest extends ComponentTestCase {
 		when(ctx.getStepProvider()).thenReturn(stepProvider);
 		branchList.clear();
 		branchList.add(engine.start(AgentUpgradeStep.START, ctx) == Step.CODE_OK ? AgentStep.SUCCESS : AgentStep.FAIL);
-		return isArrayEquals(branchList, presetList);
-	}
-
-	private boolean isArrayEquals(List<AgentStep> lList, List<AgentStep> rList) {
-		if (lList.size() != rList.size()) {
-			return false;
-		}
-		for (int idx = 0; idx < rList.size(); idx++) {
-			if (lList.get(idx) != rList.get(idx)) {
-				return false;
-			}
-		}
-		return true;
+		Assert.assertArrayEquals(presetList.toArray(), branchList.toArray());
 	}
 }

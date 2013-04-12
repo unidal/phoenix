@@ -144,7 +144,7 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		presetList.add(KernelStep.FAIL);
 
 		stepProvider.setInitFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -155,7 +155,7 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		presetList.add(KernelStep.FAIL);
 
 		stepProvider.setCheckArgumentFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -168,10 +168,10 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		presetList.add(KernelStep.FAIL);
 
 		stepProvider.setInjectPhoenixLoaderFail();
-		Assert.assertTrue(doTest());
+		doTest();
 
 		stepProvider.setRollbackFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -185,10 +185,10 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		presetList.add(KernelStep.FAIL);
 
 		stepProvider.setGetKernelWarFail();
-		Assert.assertTrue(doTest());
+		doTest();
 
 		stepProvider.setRollbackFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -203,10 +203,10 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		presetList.add(KernelStep.FAIL);
 
 		stepProvider.setStopAllFail();
-		Assert.assertTrue(doTest());
+		doTest();
 
 		stepProvider.setRollbackFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -222,10 +222,10 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		presetList.add(KernelStep.FAIL);
 
 		stepProvider.setUpgradeKernelFail();
-		Assert.assertTrue(doTest());
+		doTest();
 
 		stepProvider.setRollbackFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -242,10 +242,10 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		presetList.add(KernelStep.FAIL);
 
 		stepProvider.setStartContainerFail();
-		Assert.assertTrue(doTest());
+		doTest();
 
 		stepProvider.setRollbackFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -263,10 +263,10 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		presetList.add(KernelStep.FAIL);
 
 		stepProvider.setCheckContainerStatusFail();
-		Assert.assertTrue(doTest());
+		doTest();
 
 		stepProvider.setRollbackFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -284,7 +284,7 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		presetList.add(KernelStep.FAIL);
 
 		stepProvider.setCommitFail();
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
 	@Test
@@ -301,10 +301,10 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		presetList.add(KernelStep.COMMIT);
 		presetList.add(KernelStep.SUCCESS);
 
-		Assert.assertTrue(doTest());
+		doTest();
 	}
 
-	private boolean doTest() {
+	private void doTest() {
 		Engine engine = null;
 		try {
 			engine = lookup(Engine.class);
@@ -318,18 +318,6 @@ public class KernelUpgradeStepTest extends ComponentTestCase {
 		branchList.clear();
 		branchList.add(engine.start(KernelUpgradeStep.START, ctx) == Step.CODE_OK ? KernelStep.SUCCESS
 				: KernelStep.FAIL);
-		return isArrayEquals(branchList, presetList);
-	}
-
-	private boolean isArrayEquals(List<KernelStep> lList, List<KernelStep> rList) {
-		if (lList.size() != rList.size()) {
-			return false;
-		}
-		for (int idx = 0; idx < rList.size(); idx++) {
-			if (lList.get(idx) != rList.get(idx)) {
-				return false;
-			}
-		}
-		return true;
+		Assert.assertArrayEquals(branchList.toArray(), presetList.toArray());
 	}
 }
