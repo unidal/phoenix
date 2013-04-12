@@ -16,7 +16,7 @@ import com.dianping.phoenix.agent.core.task.workflow.Engine;
 import com.dianping.phoenix.agent.core.task.workflow.Step;
 
 public class AgentUpgradeStepTest extends ComponentTestCase {
-	private List<AgentStep> preList = new ArrayList<AgentStep>();
+	private List<AgentStep> presetList = new ArrayList<AgentStep>();
 	private List<AgentStep> branchList = new ArrayList<AgentStep>();
 
 	private MockStepProvider stepProvider = new MockStepProvider();
@@ -78,72 +78,77 @@ public class AgentUpgradeStepTest extends ComponentTestCase {
 	};
 
 	@Test
-	public void testInitFail() throws Exception {
-		preList.clear();
-		preList.add(AgentStep.INIT);
-		preList.add(AgentStep.FAIL);
+	public void testInitFail() {
+		presetList.clear();
+		presetList.add(AgentStep.INIT);
+		presetList.add(AgentStep.FAIL);
 
 		stepProvider.setInitFail();
 		Assert.assertTrue(doTest());
 	}
 
 	@Test
-	public void testGitpullFail() throws Exception {
-		preList.clear();
-		preList.add(AgentStep.INIT);
-		preList.add(AgentStep.GITPULL);
-		preList.add(AgentStep.FAIL);
+	public void testGitpullFail() {
+		presetList.clear();
+		presetList.add(AgentStep.INIT);
+		presetList.add(AgentStep.GITPULL);
+		presetList.add(AgentStep.FAIL);
 
 		stepProvider.setGitpullFail();
 		Assert.assertTrue(doTest());
 	}
 
 	@Test
-	public void testDryrunFail() throws Exception {
-		preList.clear();
-		preList.add(AgentStep.INIT);
-		preList.add(AgentStep.GITPULL);
-		preList.add(AgentStep.DRYRUN);
-		preList.add(AgentStep.FAIL);
+	public void testDryrunFail() {
+		presetList.clear();
+		presetList.add(AgentStep.INIT);
+		presetList.add(AgentStep.GITPULL);
+		presetList.add(AgentStep.DRYRUN);
+		presetList.add(AgentStep.FAIL);
 
 		stepProvider.setDryrunFail();
 		Assert.assertTrue(doTest());
 	}
 
 	@Test
-	public void testUpgradeFail() throws Exception {
-		preList.clear();
-		preList.add(AgentStep.INIT);
-		preList.add(AgentStep.GITPULL);
-		preList.add(AgentStep.DRYRUN);
-		preList.add(AgentStep.UPGRADE);
-		preList.add(AgentStep.FAIL);
+	public void testUpgradeFail() {
+		presetList.clear();
+		presetList.add(AgentStep.INIT);
+		presetList.add(AgentStep.GITPULL);
+		presetList.add(AgentStep.DRYRUN);
+		presetList.add(AgentStep.UPGRADE);
+		presetList.add(AgentStep.FAIL);
 
 		stepProvider.setUpgradeFail();
 		Assert.assertTrue(doTest());
 	}
 
 	@Test
-	public void testSuccess() throws Exception {
-		preList.clear();
-		preList.add(AgentStep.INIT);
-		preList.add(AgentStep.GITPULL);
-		preList.add(AgentStep.DRYRUN);
-		preList.add(AgentStep.UPGRADE);
-		preList.add(AgentStep.SUCCESS);
+	public void testSuccess() {
+		presetList.clear();
+		presetList.add(AgentStep.INIT);
+		presetList.add(AgentStep.GITPULL);
+		presetList.add(AgentStep.DRYRUN);
+		presetList.add(AgentStep.UPGRADE);
+		presetList.add(AgentStep.SUCCESS);
 
 		Assert.assertTrue(doTest());
 	}
 
-	private boolean doTest() throws Exception {
-		Engine engine = lookup(Engine.class);
+	private boolean doTest() {
+		Engine engine = null;
+		try {
+			engine = lookup(Engine.class);
+		} catch (Exception e) {
+			// ignore it
+		}
 		AgentUpgradeContext ctx = mock(AgentUpgradeContext.class);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		when(ctx.getLogOut()).thenReturn(out);
 		when(ctx.getStepProvider()).thenReturn(stepProvider);
 		branchList.clear();
 		branchList.add(engine.start(AgentUpgradeStep.START, ctx) == Step.CODE_OK ? AgentStep.SUCCESS : AgentStep.FAIL);
-		return isArrayEquals(branchList, preList);
+		return isArrayEquals(branchList, presetList);
 	}
 
 	private boolean isArrayEquals(List<AgentStep> lList, List<AgentStep> rList) {
