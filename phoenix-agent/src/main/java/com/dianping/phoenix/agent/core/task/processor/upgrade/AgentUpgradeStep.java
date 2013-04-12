@@ -18,6 +18,11 @@ public class AgentUpgradeStep extends AbstractStep {
 		}
 
 		@Override
+		public int doStep(Context ctx) throws Exception {
+			return Step.CODE_ERROR;
+		}
+
+		@Override
 		public String toString() {
 			return "FAILED";
 		}
@@ -31,6 +36,11 @@ public class AgentUpgradeStep extends AbstractStep {
 			Map<String, String> header = super.getLogChunkHeader();
 			header.put(HEADER_STATUS, STATUS_SUCCESS);
 			return header;
+		}
+
+		@Override
+		public int doStep(Context ctx) throws Exception {
+			return Step.CODE_OK;
 		}
 
 		@Override
