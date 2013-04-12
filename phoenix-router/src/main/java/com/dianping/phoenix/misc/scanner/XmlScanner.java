@@ -45,7 +45,7 @@ public abstract class XmlScanner<T> implements Scanner<T> {
             DocumentBuilder builder = factory.newDocumentBuilder();
             return doScan(builder.parse(file));
         } catch (Exception e) {
-            log.error(String.format("Pase file(%s) failed.", file), e);
+            log.error(String.format("Parse file(%s) failed.", file), e);
             throw new RuntimeException(e);
         }
     }
