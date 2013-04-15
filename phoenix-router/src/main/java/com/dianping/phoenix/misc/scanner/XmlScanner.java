@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 /**
- * TODO Comment of XMLScanner
  * 
  * @author Leo Liang
  * 
@@ -42,6 +41,11 @@ public abstract class XmlScanner<T> implements Scanner<T> {
     public List<T> scan(File file) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(false);
+            factory.setFeature("http://xml.org/sax/features/namespaces", false);
+            factory.setFeature("http://xml.org/sax/features/validation", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             DocumentBuilder builder = factory.newDocumentBuilder();
             return doScan(builder.parse(file));
         } catch (Exception e) {

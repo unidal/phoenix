@@ -39,6 +39,7 @@ public abstract class TemplateBasedFileGenerator<T> implements FileGenerator<T> 
         _ve.setProperty("class.resource.loader.cache", true);
         _ve.setProperty("class.resource.loader.modificationCheckInterval", "-1");
         _ve.setProperty("input.encoding", "UTF-8");
+        _ve.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
         _ve.init();
     }
 
