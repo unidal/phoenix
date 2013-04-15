@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="${args.get("mainClass")}"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="phoenix-router"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-javaagent:byteman-2.1.2.jar=script:${args.get("btmFile")}"/>
+</launchConfiguration>
