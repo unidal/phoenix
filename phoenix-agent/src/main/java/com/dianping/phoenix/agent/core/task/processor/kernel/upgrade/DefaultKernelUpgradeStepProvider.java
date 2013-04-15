@@ -12,22 +12,27 @@ import org.unidal.lookup.util.StringUtils;
 
 import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
-import com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlUtil;
+import com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DomainHealthCheckInfo;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService.CheckResult;
 import com.dianping.phoenix.agent.core.task.workflow.Context;
 import com.dianping.phoenix.agent.core.task.workflow.Step;
 import com.dianping.phoenix.configure.ConfigManager;
+import com.dianping.phoenix.configure.ConfigManager.ContainerType;
 
 public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements KernelUpgradeStepProvider {
 	private static final Logger logger = Logger.getLogger(DefaultKernelUpgradeStepProvider.class);
 
 	@Inject
 	private ConfigManager config;
+	
 	@Inject
 	private QaService qaService;
 
+	@Inject
+	private ServerXmlManager m_serverXmlManager;
+	
 	private int runShellCmd(String shellFunc, Context ctx) throws Exception {
 		KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
 		String script = jointShellCmd(shellFunc, (DeployTask) myCtx.getTask());
@@ -64,17 +69,32 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 	}
 
 	private void doInjectPhoenixLoader(Context ctx) throws Exception {
-		File serverXml = config.getServerXml();
 		DeployTask task = (DeployTask) ((KernelUpgradeContext) ctx).getTask();
+		ContainerType type = config.getContainerType();
+
+		if (type == ContainerType.TOMCAT) {
+			File serverXmlDir = new File(config.getContainerInstallPath() + "/conf/Catalina/localhost/");
+			if (serverXmlDir != null && serverXmlDir.exists()) {
+				for (File serverXml : serverXmlDir.listFiles()) {
+					attachPhoenixContextLoader(task, serverXml);
+				}
+			}
+		}
+
+		File serverXml = config.getServerXml();
 		if (serverXml == null || !serverXml.exists()) {
 			String path = serverXml == null ? null : serverXml.getAbsolutePath();
 			throw new RuntimeException(String.format("container server.xml not found %s", path));
 		}
 
+		attachPhoenixContextLoader(task, serverXml);
+	}
+
+	private void attachPhoenixContextLoader(DeployTask task, File serverXml) throws Exception {
 		File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), task.getDomain(),
 				task.getKernelVersion()));
 		String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain());
-		ServerXmlUtil.attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(),
+		m_serverXmlManager.attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(),
 				kernelDocBase);
 	}
 
