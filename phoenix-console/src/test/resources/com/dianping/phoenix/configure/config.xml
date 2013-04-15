@@ -19,6 +19,7 @@
 		<deploy-log-url-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy?op=log&deployId=%s]]></deploy-log-url-pattern>
 		<deploy-connect-timeout>1000</deploy-connect-timeout>
 		<deploy-read-timeout>360000</deploy-read-timeout>
+		<deploy-getlog-retrycount>10</deploy-getlog-retrycount>
 		<test-service-url-prefix><![CDATA[http://192.168.26.23:8080/qa/service/task]]></test-service-url-prefix>
 		<test-service-timeout>300000</test-service-timeout>
 	</console>

@@ -1,23 +1,22 @@
 package com.dianping.phoenix.agent.core.task.processor.upgrade;
 
-import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Logger;
+import org.codehaus.plexus.util.IOUtil;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.phoenix.agent.core.event.MessageEvent;
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessor;
+import com.dianping.phoenix.agent.core.task.workflow.Context;
+import com.dianping.phoenix.agent.core.task.workflow.Engine;
+import com.dianping.phoenix.agent.core.task.workflow.Step;
 import com.dianping.phoenix.agent.core.tx.LogFormatter;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
-import com.dianping.phoenix.configure.ConfigManager;
 
 public class AgentUpgradeTaskProcessor extends AbstractSerialTaskProcessor<AgentUpgradeTask> {
 
@@ -25,14 +24,18 @@ public class AgentUpgradeTaskProcessor extends AbstractSerialTaskProcessor<Agent
 
 	private ScriptExecutor scriptExecutor;
 	@Inject
-	private ConfigManager config;
-	@Inject
 	private LogFormatter logFormatter;
-	private AtomicReference<TransactionId> currentTxRef = new AtomicReference<TransactionId>();
+	@Inject
+	private Engine engine;
+
+	private AtomicReference<TransactionId> currentTxIdRef = new AtomicReference<TransactionId>();
+
+	private AtomicReference<Transaction> currentTxRef = new AtomicReference<Transaction>();
+	private AtomicReference<Context> currentCtxRef = new AtomicReference<Context>();
 
 	@Override
 	public boolean cancel(TransactionId txId) {
-		if (txId != null && txId.equals(currentTxRef.get())) {
+		if (txId != null && txId.equals(currentTxIdRef.get())) {
 			scriptExecutor.kill();
 			return true;
 		} else {
@@ -47,41 +50,36 @@ public class AgentUpgradeTaskProcessor extends AbstractSerialTaskProcessor<Agent
 
 	@Override
 	protected Status doTransaction(Transaction tx) throws Exception {
-		TransactionId txId = tx.getTxId();
-		scriptExecutor = lookup(ScriptExecutor.class);
-		currentTxRef.set(txId);
-		OutputStream logOut = txMgr.getLogOutputStream(txId);
-		upgradeAgent(logOut, tx);
-		return Status.SUCCESS;
-	}
-
-	private void upgradeAgent(OutputStream logOut, Transaction tx) throws IOException {
-		StringBuilder sb = new StringBuilder();
+		currentTxRef.set(tx);
 		AgentUpgradeTask task = (AgentUpgradeTask) tx.getTask();
-		logger.info(String.format("start upgrading agent to version %s", task.getAgentVersion()));
+		eventTrackerChain.onEvent(new MessageEvent(tx.getTxId(), String.format("updating phoenix-agent to version %s",
+				task.getAgentVersion())));
+		OutputStream stdOut = txMgr.getLogOutputStream(tx.getTxId());
+		AgentUpgradeContext ctx = (AgentUpgradeContext) lookup(Context.class, "agent_ctx");
+		ctx.setLogOut(stdOut);
+		ctx.setLogFormatter(logFormatter);
+		ctx.setTask(task);
+		ctx.setUnderLyingFile(txMgr.getUnderlyingFile(tx.getTxId()).getAbsolutePath());
+		currentCtxRef.set(ctx);
 
-		String agentGitHost = null;
+		Status exitStatus = Status.SUCCESS;
 		try {
-			agentGitHost = new URI(task.getAgentGitUrl()).getHost();
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(
-					String.format("error parsing host from kernel git url %s", task.getAgentGitUrl()), e);
+			exitStatus = upgradeAgent(ctx);
+		} catch (Exception e) {
+			logger.error("error update kernel", e);
+			exitStatus = Status.FAILED;
+		} finally {
+			IOUtil.close(stdOut);
 		}
-
-		sb.append(config.getAgentSelfUpgradeScriptFile().getAbsolutePath());
-		sb.append(String.format(" -g \"%s\" ", task.getAgentGitUrl()));
-		sb.append(String.format(" -v \"%s\" ", task.getAgentVersion()));
-		sb.append(String.format(" -l \"%s\" ", txMgr.getUnderlyingFile(tx.getTxId()).getAbsolutePath()));
-		sb.append(String.format(" -h \"%s\" ", agentGitHost));
-
-		// TODO
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("Progress", "100/100");
-		headers.put("Step", "FakeStep");
-		logFormatter.writeHeader(logOut, headers);
-		scriptExecutor.exec(sb.toString(), logOut, logOut);
-		logFormatter.writeChunkTerminator(logOut);
-		logFormatter.writeTerminator(logOut);
+		return exitStatus;
 	}
 
+	private Status upgradeAgent(Context ctx) {
+		int exitCode = engine.start(AgentUpgradeStep.START, ctx);
+		if (exitCode == Step.CODE_OK) {
+			return Status.SUCCESS;
+		} else {
+			return Status.FAILED;
+		}
+	}
 }

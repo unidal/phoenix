@@ -15,9 +15,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class ServerXmlUtil {
+public class ServerXmlManager {
 
-	private final static Logger logger = Logger.getLogger(ServerXmlUtil.class);
+	private final static Logger logger = Logger.getLogger(ServerXmlManager.class);
 
 	/**
 	 * Whether the value of &lt;Context&gt;'s docBase attribute matches
@@ -25,17 +25,17 @@ public class ServerXmlUtil {
 	 * 
 	 * @param docBase
 	 *            the docBase
-	 * @param docBasePattern
+	 * @param docBaseSuffix
 	 *            the docBasePattern
 	 * @return
 	 */
-	public static boolean isDocBaseMatch(String docBase, String docBasePattern) {
+	public boolean isDocBaseMatch(String docBase, String docBaseSuffix) {
 		docBase = trimAndRemoveTailingSlash(docBase);
-		docBasePattern = trimAndRemoveTailingSlash(docBasePattern);
-		return docBase.endsWith(docBasePattern);
+		docBaseSuffix = trimAndRemoveTailingSlash(docBaseSuffix);
+		return docBase.endsWith(docBaseSuffix);
 	}
 
-	private static String trimAndRemoveTailingSlash(String docBase) {
+	private String trimAndRemoveTailingSlash(String docBase) {
 		docBase = docBase.trim();
 		while (docBase.endsWith("/") || docBase.endsWith("\\")) {
 			docBase = docBase.substring(0, docBase.length() - 1);
@@ -58,7 +58,7 @@ public class ServerXmlUtil {
 	 *            phoenix loader's docBase
 	 * @throws Exception
 	 */
-	public static void attachPhoenixContextLoader(File serverXml, String docBasePattern, String loaderClass,
+	public void attachPhoenixContextLoader(File serverXml, String docBasePattern, String loaderClass,
 			File kernelDocBase) throws Exception {
 		logger.info(String.format("try to add <Loader> whose docBase matches %s in %s", docBasePattern,
 				serverXml.getAbsolutePath()));
@@ -98,7 +98,7 @@ public class ServerXmlUtil {
 	 * @param docBasePattern
 	 * @throws Exception
 	 */
-	public static void detachPhoenixContextLoader(File serverXml, String docBasePattern) throws Exception {
+	public void detachPhoenixContextLoader(File serverXml, String docBasePattern) throws Exception {
 		logger.info(String.format("try to remove <Loader> whose docBase matches %s", docBasePattern));
 
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -132,7 +132,7 @@ public class ServerXmlUtil {
 	 * @param doc
 	 * @throws Exception
 	 */
-	private static void writeDocument(File serverXml, Document doc) throws Exception {
+	private void writeDocument(File serverXml, Document doc) throws Exception {
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		DOMSource source = new DOMSource(doc);
 		FileOutputStream fout = new FileOutputStream(serverXml);

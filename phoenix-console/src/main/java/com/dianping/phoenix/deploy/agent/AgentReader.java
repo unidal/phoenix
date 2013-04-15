@@ -29,7 +29,8 @@ public class AgentReader {
 		String segment = null;
 
 		while (true) {
-			int len = m_reader.read(data);
+			int len = 0;
+			len = m_reader.read(data);
 
 			if (len > 0) {
 				m_sb.append(data, 0, len);
@@ -92,7 +93,7 @@ public class AgentReader {
 							progress.setStatus(line.substring(pos).trim());
 						} else if (line.startsWith("Step:")) {
 							int pos = "Step:".length();
-							
+
 							progress.setStep(line.substring(pos).trim());
 						}
 					} else {

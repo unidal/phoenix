@@ -2,7 +2,6 @@ package com.dianping.phoenix.deploy.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -105,7 +104,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					if (m_configManager.isShowLogTimestamp()) {
 						String timestamp = Formats.forObject().format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
-						message = String.format("[%s] Rollout to host(%s) cancelled due to error happened.", timestamp, host);
+						message = String.format("[%s] Rollout to host(%s) cancelled due to error happened.", timestamp,
+								host);
 					} else {
 						message = String.format("Rollout to host(%s) cancelled due to error happened.", host);
 					}
@@ -172,8 +172,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 								log("Rolling out to host(%s) ... %s", ip, status.toUpperCase());
 							} catch (Exception e) {
 								m_logger.warn(
-								      String.format("Error when processing onHostEnd(%s) of deploy(%s)!", ip, m_model.getId()),
-								      e);
+										String.format("Error when processing onHostEnd(%s) of deploy(%s)!", ip,
+												m_model.getId()), e);
 							}
 						}
 
@@ -269,7 +269,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		private String m_warType;
 
 		public RolloutContext(ControllerTask controller, AgentListener listener, DeployModel model, String warType,
-		      String host) {
+				String host) {
 			m_controller = controller;
 			m_listener = listener;
 			m_model = model;
@@ -348,12 +348,12 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 				return content;
 			} else if (url.contains("?op=log&")) {
-				InputStream in = Urls.forIO().connectTimeout(timeout).openStream(url);
-				AgentReader sr = new AgentReader(new InputStreamReader(in, "utf-8"));
+				AgentReader sr = new AgentReader(new PhoenixInputStreamReader(url, timeout, configManager.getDeployGetlogRetrycount()));
 				AgentProgress progress = new AgentProgress();
 
 				while (sr.hasNext()) {
-					String segment = sr.next(progress);
+					String segment = "";
+					segment = sr.next(progress);
 
 					try {
 						m_listener.onProgress(this, progress, segment);
@@ -455,7 +455,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			m_status = status;
 			m_host.setStatus(status.getName());
 			m_host.addSegment(new SegmentModel().setStatus(status.getName()) //
-			      .setCurrentTicks(100).setTotalTicks(100).setStep(status.getTitle()).setText(text));
+					.setCurrentTicks(100).setTotalTicks(100).setStep(status.getTitle()).setText(text));
 		}
 
 		@Override
@@ -470,7 +470,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		private CountDownLatch m_latch;
 
 		public RolloutTask(ControllerTask controller, AgentListener listener, DeployModel model, String warType,
-		      String host, CountDownLatch latch) {
+				String host, CountDownLatch latch) {
 			m_ctx = new RolloutContext(controller, listener, model, warType, host);
 			m_latch = latch;
 		}
@@ -501,4 +501,5 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		public void shutdown() {
 		}
 	}
+
 }

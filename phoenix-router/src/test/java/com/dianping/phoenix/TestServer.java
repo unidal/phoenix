@@ -46,13 +46,14 @@ public class TestServer {
 			}
 		};
 
-		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/user-service.war"), "/_user-service");
-		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/user-base-service.war"),
-				"/_user-base-service");
-		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/user-web.war"), "/_user-web");
-		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/shop-web.war"), "/_shop-web");
-		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/shoplist-web.war"), "/_shoplist-web");
-		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/dpindex-web.war"), "/_dpindex-web");
+//		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/user-service.war"), "/_user-service");
+//		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/user-base-service.war"),
+//				"/_user-base-service");
+//		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/user-web.war"), "/_user-web");
+//		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/shop-web.war"), "/_shop-web");
+//		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/shoplist-web.war"), "/_shoplist-web");
+//		addContext(ctxs, server, new File("/Users/marsqing/Projects/tmp/webapp/dpindex-web.war"), "/_dpindex-web");
+		addContext(ctxs, server, new File("/Volumes/HDD/dev_env_work/war/alpaca.war"), "_alpaca");
 
 		addContext(ctxs, server, new File(new File("."), "src/main/webapp/"), "/");
 

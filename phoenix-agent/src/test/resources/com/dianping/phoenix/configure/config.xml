@@ -7,7 +7,9 @@
 	<agent>
 		<container-install-path><![CDATA[~/Downloads/apache-tomcat-6.0.35]]></container-install-path>
 		<container-port><![CDATA[8080]]></container-port>
+		<dryrun-port><![CDATA[3474]]></dryrun-port>
 		<kernel-doc-base-pattern><![CDATA[/data/webapps/phoenix/phoenix-kernel/%s]]></kernel-doc-base-pattern>
+		<agent-doc-base-pattern><![CDATA[/data/webapps/phoenix/phoenix-agent/]]></agent-doc-base-pattern>
 		<domain-doc-base-keyword-pattern><![CDATA[/%1$s/current/%1$s.war]]></domain-doc-base-keyword-pattern>
 		<test-service-poll-interval>1000</test-service-poll-interval>
 		<url-connect-timeout>1000</url-connect-timeout>
