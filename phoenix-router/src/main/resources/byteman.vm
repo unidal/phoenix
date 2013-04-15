@@ -4,7 +4,7 @@ METHOD postProcessBeanFactory
 AT INVOKE setPts
 IF true
 #set($dollar = "$")
-DO #foreach($kv in $lionConfig.entrySet())
+DO #foreach($kv in $args.entrySet())
    ${dollar}this.pts.put("${kv.key}", "${kv.value}");
    #end
    System.out.println("Phoenix runtime config modification complete...")

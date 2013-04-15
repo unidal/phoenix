@@ -15,48 +15,32 @@
  */
 package com.dianping.phoenix.misc.file;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 /**
  * @author Leo Liang
  * 
  */
-public class BytemanScriptGenerator {
-    private static final VelocityEngine _ve;
-    private static final String         TEMPLATE = "byteman.vm";
-    static {
-        _ve = new VelocityEngine();
-        _ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "class");
-        _ve.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
-        _ve.setProperty("class.resource.loader.cache", true);
-        _ve.setProperty("class.resource.loader.modificationCheckInterval", "-1");
-        _ve.setProperty("input.encoding", "UTF-8");
-        _ve.setProperty("runtime.log", "/tmp/velocity.log");
-        _ve.init();
+public class BytemanScriptGenerator extends TemplateBasedFileGenerator<Map<String, String>> {
+    private static final String TEMPLATE = "byteman.vm";
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.dianping.phoenix.misc.file.TemplateBasedFileGenerator#getTemplate()
+     */
+    @Override
+    protected String getTemplate() {
+        return TEMPLATE;
     }
 
-    public void generate(File file, Map<String, String> args) throws IOException {
-        String content = buildContent(args);
-        FileUtils.writeStringToFile(file, content);
-    }
-
-    private String buildContent(Map<String, String> args) {
-        Template t = _ve.getTemplate(TEMPLATE);
-        VelocityContext context = new VelocityContext();
-        context.put("lionConfig", args);
-        StringWriter writer = new StringWriter();
-        t.merge(context, writer);
-        return writer.toString();
+    /* (non-Javadoc)
+     * @see com.dianping.phoenix.misc.file.TemplateBasedFileGenerator#getArgs(java.lang.Object)
+     */
+    @Override
+    protected Object getArgs(Map<String, String> context) {
+        return context;
     }
 
 }
