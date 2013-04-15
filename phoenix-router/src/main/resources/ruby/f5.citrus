@@ -1,0 +1,203 @@
+grammar F5
+
+rule whens
+    (when_req space (when_res)*) {
+        def value
+            when_req.value
+        end
+        def pool_targets
+            when_req.pool_targets
+        end
+    }
+end
+
+rule when_res
+    space 'when' space 'HTTP_RESPONSE' space '{' space stmts:(statement+) space '}' space
+end
+
+rule when_req
+    (space 'when' space 'HTTP_REQUEST' space '{' space stmts:(statement+) space '}' space) {
+        def value
+            stmts.matches.map {|m| m.value}
+        end
+        def pool_targets
+           stmts.matches.map {|m| m.pool_target}
+        end
+    }
+  end
+
+  rule statement
+    (space stmt:(if_stmt | else_stmt | elseif_stmt | set_stmt)) {
+        def value
+            stmt.value
+        end
+        def pool_target
+            stmt.pool_target
+        end
+    }
+  end
+
+  rule if_stmt
+    (space 'if' space '{' condition space '}' space '{' action space '}') {
+        def value
+            condition.value
+        end
+        def pool_target
+            action.pool_target
+        end
+    }
+  end
+
+  rule elseif_stmt
+     (space 'elseif' space '{' condition space '}' space '{' actions:(action+) space '}') {
+             def value
+                 condition.value
+             end
+             def pool_target
+                pool_target = nil
+                 actions.matches.each {|m| pool_target ||= m.pool_target}
+                 pool_target
+             end
+         }
+  end
+
+    rule else_stmt
+         (space 'else' space '{' action space '}') {
+                 def value
+                     [".*"]
+                 end
+                 def pool_target
+                     action.pool_target
+                 end
+         }
+    end
+
+    rule set_stmt
+          (space 'set' [^\n]+) {
+              nil
+          }
+    end
+
+  rule action
+    (space pool_or_respond:(pool | http_respond | set_stmt | http_uri | node)) {
+        def pool_target
+            pool_or_respond.value
+        end
+    }
+  end
+
+  rule node
+      (space 'node' space host:[0-9\.]+ space port:[0-9\.]* [^\n]*) {
+          "#{host}:#{port}"
+      }
+    end
+
+  rule http_uri
+    (space 'HTTP::uri' [^\n]+) {
+        'HTTP::uri'
+    }
+  end
+
+  rule http_respond
+    (space 'HTTP::respond' [^\n]+) {
+        'HTTP::respond'
+    }
+  end
+
+  rule pool
+    (space 'pool' space pool_target) {
+        pool_target.value
+    }
+  end
+
+  rule pool_target
+    (space /[^\s]+/) {
+        to_s.strip
+    }
+  end
+
+  rule simple_condition
+    (space c:atomic_condition !logical) {
+       c.value
+    }
+  end
+
+  rule compound_condition
+    (space c:atomic_condition logical cs:condition) {
+        arr = []
+        arr << c.value
+        arr << cs.value
+    }
+  end
+
+  rule matchclass_condition
+    (space '[matchclass' [^}]+) {
+        'matchclass'
+    }
+  end
+
+  rule condition
+    (space c:(simple_condition | compound_condition | matchclass_condition)) {
+        arr = []
+        arr << c.value
+        arr.flatten
+    }
+  end
+
+  rule atomic_condition
+    (space lparen* lhe:expr operator rhe:quoted_string rparen*) {
+        value = ''
+        case operator.value
+        when '=='
+            value = rhe.value
+        when 'starts_with'
+            value = "^#{rhe.value}.*"
+        when 'matches_regex'
+            value = rhe.value[-1] == '$' ? rhe.value : "#{rhe.value}.*"
+        end
+    }
+  end
+
+  rule logical
+    (space operator:('||' | '&&')) {
+        operator.to_s
+    }
+  end
+
+  rule operator
+    (space ('==' | 'starts_with' | 'matches_regex' | 'contains' | 'ends_with')) {
+        to_s.strip
+    }
+  end
+
+  rule expr
+      (space /[0-9a-z\$\[:\]]+/i) {
+        to_s.strip
+      }
+  end
+
+  rule quoted_string
+    (space '"' s:/[^\s"]+/ '"') {
+        s.to_s
+    }
+  end
+
+  rule space
+    ([ \t\n\r]*) {
+        ' '
+    }
+  end
+
+  rule lparen
+    (space '(') {
+        to_s
+    }
+  end
+
+  rule rparen
+    (space ')') {
+        to_s
+    }
+  end
+
+end
