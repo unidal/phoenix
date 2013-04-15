@@ -1,3 +1,6 @@
+# usage:
+# -javaagent:{BYTEMAN_HOME}/lib/byteman.jar=script:{BTM_HOME}/{BTM_NAME},boot:{BYTEMAN_HOME}/lib/byteman.jar -Dorg.jboss.byteman.transform.all
+#
 RULE lion change
 CLASS com.dianping.lion.client.InitializeConfig
 METHOD postProcessBeanFactory
