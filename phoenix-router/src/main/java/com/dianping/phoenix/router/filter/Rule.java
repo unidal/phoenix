@@ -1,4 +1,4 @@
-package com.dianping.phoenix.router.urlfilter;
+package com.dianping.phoenix.router.filter;
 
 
 public interface Rule {

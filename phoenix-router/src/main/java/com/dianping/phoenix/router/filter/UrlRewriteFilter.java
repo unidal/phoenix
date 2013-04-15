@@ -1,4 +1,4 @@
-package com.dianping.phoenix.router.urlfilter;
+package com.dianping.phoenix.router.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,14 +13,14 @@ import org.unidal.lookup.annotation.Inject;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.router.model.entity.UrlRewriteRule;
 
-public class UrlRewriteFilter extends ContainerHolder implements UrlFilter, Initializable {
+public class UrlRewriteFilter extends ContainerHolder implements RequestFilter, Initializable {
 
 	@Inject
 	private ConfigManager config;
 	private List<UrlRewriteRuleWrapper> ruleWrapperList = new ArrayList<UrlRewriteRuleWrapper>();
 
 	@Override
-	public UrlHolder filter(UrlHolder urlHolder, FilterChain filterChain) throws IOException {
+	public RequestHolder filter(RequestHolder urlHolder, FilterChain filterChain) throws IOException {
 		String path = urlHolder.getPath();
 		if (isPhoenixPath(path)) {
 			int sndSlashIdx = path.indexOf("/", 1);

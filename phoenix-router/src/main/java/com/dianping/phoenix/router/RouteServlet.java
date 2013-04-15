@@ -15,8 +15,8 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 import com.dianping.phoenix.router.RequestMapper.REQUEST_TYPE;
-import com.dianping.phoenix.router.urlfilter.FilterChain;
-import com.dianping.phoenix.router.urlfilter.UrlHolder;
+import com.dianping.phoenix.router.filter.FilterChain;
+import com.dianping.phoenix.router.filter.RequestHolder;
 
 @SuppressWarnings("serial")
 public class RouteServlet extends HttpServlet {
@@ -54,15 +54,17 @@ public class RouteServlet extends HttpServlet {
 			log.error("no FilterChain found", e);
 			throw new RuntimeException(e);
 		}
+		
 		if (shouldMapUri(reqUri)) {
-			String targetUrl = fc.doFilter(new UrlHolder(req)).toUrl();
-			log.info(String.format("mapping uri %s to %s", reqUri, targetUrl));
+			RequestHolder reqHolder = fc.doFilter(new RequestHolder(req));
+			String targetUrl = reqHolder.toUrl();
+			log.info(String.format("mapping uri %s to %s", reqUri, targetUrl ));
 			if(shouldMapUri(new URL(targetUrl).getPath())) {
 				String msg = "no mapping rule for " + reqUri;
 				log.error(msg);
 				throw new RuntimeException(msg);
 			}
-			IOUtils.copy(rt.send(req, targetUrl, type), resp.getOutputStream());
+			IOUtils.copy(rt.send(req, reqHolder, type), resp.getOutputStream());
 		} else {
 			resp.getOutputStream().write(reqUri.getBytes());
 		}

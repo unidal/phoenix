@@ -3,6 +3,7 @@ package com.dianping.phoenix.router;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.phoenix.router.RequestMapper.REQUEST_TYPE;
+import com.dianping.phoenix.router.filter.RequestHolder;
 
 public class RequestMapperTest extends ComponentTestCase {
 
@@ -31,14 +33,14 @@ public class RequestMapperTest extends ComponentTestCase {
 	}
 
 	@Test
-	public void testShouldPreserveHeader() {
+	public void testShouldPreserveHeader() throws IOException {
 		HttpServletRequest req = mock(HttpServletRequest.class);
 		String[] headerNames = new String[]{"a", "b"};
 		when(req.getHeaderNames()).thenReturn(makeEnumeration(headerNames));
 		when(req.getHeaders("a")).thenReturn(makeEnumeration(new String[]{"1"}));
 		when(req.getHeaders("b")).thenReturn(makeEnumeration(new String[]{"2", "3"}));
 
-		HttpRequest newReq = reqTrans.make(req, "", REQUEST_TYPE.GET);
+		HttpRequest newReq = reqTrans.make(req, new RequestHolder(req), REQUEST_TYPE.GET);
 
 		final Set<String> headerNameSet = new HashSet<String>(Arrays.asList(headerNames));
 		CollectionUtils.collect(Arrays.asList(newReq.getAllHeaders()), new Transformer() {

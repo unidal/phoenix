@@ -1,4 +1,4 @@
-package com.dianping.phoenix.router.urlfilter;
+package com.dianping.phoenix.router.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,21 +15,23 @@ public class DefaultFilterChain extends ContainerHolder implements FilterChain, 
 	private F5UrlFilter f5Filter;
 	@Inject
 	private UrlRewriteFilter urlRewriteFilter;
+	@Inject
+	private HeaderFilter headerFilter;
 
-	private List<UrlFilter> filterList = new ArrayList<UrlFilter>();
+	private List<RequestFilter> filterList = new ArrayList<RequestFilter>();
 	private int curFilterIdx = 0;
 
 	public DefaultFilterChain() {
 	}
 	
-	public DefaultFilterChain(UrlFilter ... urlFilters) {
-		for (UrlFilter filter : urlFilters) {
+	public DefaultFilterChain(RequestFilter ... urlFilters) {
+		for (RequestFilter filter : urlFilters) {
 			filterList.add(filter);
 		}
 	}
 
 	@Override
-	public UrlHolder doFilter(UrlHolder urlHolder) throws IOException {
+	public RequestHolder doFilter(RequestHolder urlHolder) throws IOException {
 		if (curFilterIdx < filterList.size()) {
 			return filterList.get(curFilterIdx++).filter(urlHolder, this);
 		}
@@ -40,6 +42,7 @@ public class DefaultFilterChain extends ContainerHolder implements FilterChain, 
 	public void initialize() throws InitializationException {
 		filterList.add(f5Filter);
 		filterList.add(urlRewriteFilter);
+		filterList.add(headerFilter);
 	}
 
 }

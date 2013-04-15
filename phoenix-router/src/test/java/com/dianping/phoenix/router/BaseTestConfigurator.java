@@ -7,10 +7,10 @@ import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.router.urlfilter.DefaultFilterChain;
-import com.dianping.phoenix.router.urlfilter.F5UrlFilter;
-import com.dianping.phoenix.router.urlfilter.FilterChain;
-import com.dianping.phoenix.router.urlfilter.UrlRewriteFilter;
+import com.dianping.phoenix.router.filter.DefaultFilterChain;
+import com.dianping.phoenix.router.filter.F5UrlFilter;
+import com.dianping.phoenix.router.filter.FilterChain;
+import com.dianping.phoenix.router.filter.UrlRewriteFilter;
 
 public class BaseTestConfigurator extends AbstractResourceConfigurator {
 

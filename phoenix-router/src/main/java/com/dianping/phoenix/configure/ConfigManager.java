@@ -13,15 +13,38 @@ public class ConfigManager implements Initializable {
 
 	private String routerConfigFile = "/data/appdatas/phoenix/router-rules.xml";
 	private RouterRules routerRules;
+	private long lastModiTime = Long.MIN_VALUE;
 
 	@Override
 	public void initialize() throws InitializationException {
-		try {
-			File file = new File(routerConfigFile);
+		loadConfigFile();
+		startReloadThread();
+	}
 
+	private void startReloadThread() {
+		new Thread() {
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(10 * 1000);
+						loadConfigFile();
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}
+		}.start();
+	}
+
+	private void loadConfigFile() throws InitializationException {
+		File file = new File(routerConfigFile);
+		try {
 			if (file.isFile()) {
-				String content = Files.forIO().readFrom(file, "utf-8");
-				routerRules = DefaultSaxParser.parse(content);
+				if (file.lastModified() > lastModiTime) {
+					lastModiTime = file.lastModified();
+					String content = Files.forIO().readFrom(file, "utf-8");
+					routerRules = DefaultSaxParser.parse(content);
+				}
 			} else {
 				routerRules = new RouterRules();
 			}
