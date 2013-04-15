@@ -18,6 +18,7 @@ import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DetachTaskProcessor;
+import com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DefaultQaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.DefaultKernelUpgradeStepProvider;
@@ -55,8 +56,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
 				.req(Engine.class).req(LogFormatter.class));
 		all.add(C(TaskProcessor.class, "detach", DetachTaskProcessor.class) //
-				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
-				.req(ConfigManager.class));
+				.req(SemaphoreWrapper.class, "kernel") //
+				.req(TransactionManager.class, ConfigManager.class, ServerXmlManager.class));
 		all.add(C(TaskProcessor.class, "agent_upgrade", AgentUpgradeTaskProcessor.class) //
 				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
 				.req(Engine.class).req(LogFormatter.class));
@@ -64,13 +65,15 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(AgentStatusReporter.class).req(ConfigManager.class));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 		all.add(C(Engine.class).req(LogFormatter.class));
-		all.add(C(Context.class, "kernel_ctx", KernelUpgradeContext.class).req(ScriptExecutor.class)
-				.req(KernelUpgradeStepProvider.class).is(PER_LOOKUP));
-		all.add(C(Context.class, "agent_ctx", AgentUpgradeContext.class).req(ScriptExecutor.class)
-				.req(AgentUpgradeStepProvider.class).is(PER_LOOKUP));
-		all.add(C(KernelUpgradeStepProvider.class, DefaultKernelUpgradeStepProvider.class).req(ConfigManager.class)
-				.req(QaService.class));
-		all.add(C(AgentUpgradeStepProvider.class, DefaultAgentUpgradeStepProvider.class).req(ConfigManager.class));
+		all.add(C(Context.class, "kernel_ctx", KernelUpgradeContext.class).is(PER_LOOKUP) //
+				.req(ScriptExecutor.class, KernelUpgradeStepProvider.class));
+		all.add(C(Context.class, "agent_ctx", AgentUpgradeContext.class).is(PER_LOOKUP) //
+				.req(ScriptExecutor.class, AgentUpgradeStepProvider.class));
+		all.add(C(KernelUpgradeStepProvider.class, DefaultKernelUpgradeStepProvider.class) //
+				.req(ConfigManager.class, QaService.class, ServerXmlManager.class));
+		all.add(C(AgentUpgradeStepProvider.class, DefaultAgentUpgradeStepProvider.class) //
+				.req(ConfigManager.class));
+		all.add(C(ServerXmlManager.class));
 
 		all.add(C(ModuleManager.class, DefaultModuleManager.class));
 

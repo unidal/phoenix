@@ -87,6 +87,9 @@
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -173,6 +176,9 @@
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -183,6 +189,10 @@
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</implementation>
 		</component>
 		<component>
 			<role>org.unidal.initialization.ModuleManager</role>

@@ -10,14 +10,17 @@ import com.dianping.phoenix.configure.ConfigManager;
 
 /**
  * Remove &lt;Loader$gt; from server.xml
+ * 
  * @author marsqing
- *
+ * 
  */
 public class DetachTaskProcessor extends AbstractSerialTaskProcessor<DetachTask> {
+	@Inject
+	private ConfigManager config;
 
 	@Inject
-	ConfigManager config;
-	
+	private ServerXmlManager m_serverXmlManager;
+
 	public DetachTaskProcessor() {
 	}
 
@@ -34,7 +37,8 @@ public class DetachTaskProcessor extends AbstractSerialTaskProcessor<DetachTask>
 	@Override
 	protected Status doTransaction(Transaction tx) throws Exception {
 		DetachTask task = (DetachTask) tx.getTask();
-		ServerXmlUtil.detachPhoenixContextLoader(config.getServerXml(), String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain()));
+		m_serverXmlManager.detachPhoenixContextLoader(config.getServerXml(),
+				String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain()));
 		return Status.SUCCESS;
 	}
 
