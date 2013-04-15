@@ -63,4 +63,7 @@ public class Engine {
 		}
 	}
 
+	public boolean kill(Context ctx) {
+		return ctx.kill();
+	}
 }

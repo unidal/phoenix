@@ -1,6 +1,7 @@
 package com.dianping.phoenix.configure;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Iterator;
@@ -40,6 +41,8 @@ public class ConfigManager implements Initializable {
 
 	private String loaderClass;
 
+	private String m_pid;
+
 	private void check() {
 		if (m_config == null) {
 			throw new RuntimeException("ConfigManager is not initialized properly!");
@@ -70,6 +73,12 @@ public class ConfigManager implements Initializable {
 		check();
 
 		return m_config.getAgent().getKernelDocBasePattern();
+	}
+
+	public String getAgentDocBasePattern() {
+		check();
+
+		return m_config.getAgent().getAgentDocBasePattern();
 	}
 
 	/**
@@ -127,6 +136,16 @@ public class ConfigManager implements Initializable {
 		return m_config.getEnv();
 	}
 
+	public int getDryrunPort() {
+		check();
+
+		return m_config.getAgent().getDryrunPort();
+	}
+
+	public String getPid() {
+		return m_pid;
+	}
+
 	@Override
 	public void initialize() throws InitializationException {
 		try {
@@ -170,6 +189,9 @@ public class ConfigManager implements Initializable {
 			throw new InitializationException(String.format(
 					"containerInstallPath %s does not have a valid tomcat or jboss installation", containerInstallPath));
 		}
+
+		// initialize pid
+		m_pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 
 		// initialize loaderClass and serverXml
 		if (containerType == ContainerType.TOMCAT) {
@@ -232,7 +254,7 @@ public class ConfigManager implements Initializable {
 		File scriptFile = getScriptFile("agent_status.sh");
 		return scriptFile;
 	}
-	
+
 	public File getAgentSelfUpgradeScriptFile() {
 		File scriptFile = getScriptFile("self_upgrade.sh");
 		return scriptFile;

@@ -46,12 +46,12 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(AgentState.FAILED, ctx.getState());
 
 		String expected = "setState: CREATED\n"
-		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
-		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... error\n"
-		      + "deploy id is already existed.\n"
-		      + "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
-		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"//
-		      + "setState: FAILED\n";
+				+ "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+				+ "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... error\n"
+				+ "deploy id is already existed.\n"
+				+ "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
+				+ "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"//
+				+ "setState: FAILED\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -74,14 +74,14 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(AgentState.FAILED, ctx.getState());
 
 		String expected = "setState: CREATED\n"
-		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
-		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
-		      + "setState: SUBMITTED\n" //
-		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
-		      + "java.lang.RuntimeException: Unexpected exception threw.\n"
-		      + "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
-		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n" //
-		      + "setState: FAILED\n";
+				+ "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+				+ "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+				+ "setState: SUBMITTED\n" //
+				+ "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
+				+ "java.lang.RuntimeException: Unexpected exception threw.\n"
+				+ "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
+				+ "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n" //
+				+ "setState: FAILED\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -102,16 +102,16 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(AgentState.FAILED, ctx.getState());
 
 		String expected = "setState: CREATED\n"
-		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
-		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
-		      + "setState: UNREACHABLE\n" //
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
-		      + "setState: UNREACHABLE\n" //
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
-		      + "setState: UNREACHABLE\n" //
-		      + "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
-		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n" //
-		      + "setState: FAILED\n";
+				+ "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+				+ "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
+				+ "setState: UNREACHABLE\n" //
+				+ "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
+				+ "setState: UNREACHABLE\n" //
+				+ "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: IO issue\n"
+				+ "setState: UNREACHABLE\n" //
+				+ "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
+				+ "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n" //
+				+ "setState: FAILED\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -132,16 +132,16 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(AgentState.FAILED, ctx.getState());
 
 		String expected = "setState: CREATED\n"
-		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
-		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
-		      + "setState: UNREACHABLE\n"
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
-		      + "setState: UNREACHABLE\n"
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
-		      + "setState: UNREACHABLE\n"
-		      + "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
-		      + "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n" //
-		      + "setState: FAILED\n" + "";
+				+ "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+				+ "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
+				+ "setState: UNREACHABLE\n"
+				+ "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
+				+ "setState: UNREACHABLE\n"
+				+ "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.net.UnknownHostException: unknownHost\n"
+				+ "setState: UNREACHABLE\n"
+				+ "updateStatus: failed, [ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n"
+				+ "[ERROR] Failed to deploy phoenix kernel(1.0) to host(localhost).\n" //
+				+ "setState: FAILED\n" + "";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -164,13 +164,13 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(AgentState.SUCCESSFUL, ctx.getState());
 
 		String expected = "setState: CREATED\n"
-		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
-		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
-		      + "setState: SUBMITTED\n" //
-		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
-		      + "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\n"
-		      + "setState: SUCCESSFUL\n" //
-		      + "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\n";
+				+ "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+				+ "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+				+ "setState: SUBMITTED\n" //
+				+ "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
+				+ "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\n"
+				+ "setState: SUCCESSFUL\n" //
+				+ "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
@@ -199,17 +199,17 @@ public class DeployStateTest extends ComponentTestCase {
 		Assert.assertEquals(AgentState.SUCCESSFUL, ctx.getState());
 
 		String expected = "setState: CREATED\n"
-		      + "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
-		      + "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
-		      + "setState: UNREACHABLE\n"
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
-		      + "setState: UNREACHABLE\n"
-		      + "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
-		      + "setState: SUBMITTED\n" //
-		      + "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
-		      + "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\n"
-		      + "setState: SUCCESSFUL\n" //
-		      + "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\n";
+				+ "[INFO] Deploy URL: http://localhost:3473/phoenix/agent/deploy?op=deploy&deployId=123&domain=test&version=1.0\n"
+				+ "[INFO] Deploying phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
+				+ "setState: UNREACHABLE\n"
+				+ "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... java.io.IOException: Unavailable\n"
+				+ "setState: UNREACHABLE\n"
+				+ "[WARN] Retry to deploy phoenix kernel(1.0) to host(localhost) for deploy(123) of domain(test)  ... ACCEPTED\n"
+				+ "setState: SUBMITTED\n" //
+				+ "[INFO] Getting status from host(localhost) for deploy(123) ... \n"
+				+ "[INFO] log and status of http://localhost:3473/phoenix/agent/deploy?op=log&deployId=123\n"
+				+ "setState: SUCCESSFUL\n" //
+				+ "[INFO] Deployed phoenix kernel(1.0) to host(localhost) successfully.\n";
 		Assert.assertEquals(expected, ctx.getLog().replaceAll("\r", ""));
 	}
 
