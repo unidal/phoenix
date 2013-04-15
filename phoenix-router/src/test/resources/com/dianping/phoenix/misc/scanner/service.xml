@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="byName"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+
+	<bean id="groupServiceServer" class="com.dianping.dpsf.spring.ServiceRegistry"
+		init-method="init" lazy-init="false">
+		<property name="port"
+			value="${group-service.remoteServer.groupService.port}" />
+		<property name="services">
+			<map>
+				<entry key="http://service.dianping.com/groupService/eventService_1.0.0"
+					value-ref="eventServiceImpl" />
+				<entry
+					key="http://service.dianping.com/groupService/eventTypeService_1.0.0"
+					value-ref="eventTypeServiceImpl" />
+				<entry
+					key="http://service.dianping.com/groupService/eventNoteService_1.0.0"
+					value-ref="eventNoteService" />
+				<entry
+					key="http://service.dianping.com/groupService/eventUserService_1.0.0"
+					value-ref="eventUserService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupUserService_1.0.0"
+					value-ref="groupUserService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupUserHonorTitleService_1.0.0"
+					value-ref="groupUserHonorTitleService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupUserScoreLevelService_1.0.0"
+					value-ref="groupUserScoreLevelService" />
+				<entry key="http://service.dianping.com/groupService/groupService_1.0.0"
+					value-ref="groupService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupLinkService_1.0.0"
+					value-ref="groupLinkService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupNoteTypeService_1.0.0"
+					value-ref="groupNoteTypeService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupTypeApplyService_1.0.0"
+					value-ref="groupTypeApplyService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupCategoryService_1.0.0"
+					value-ref="groupCategoryService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupRecommendService_1.0.0"
+					value-ref="groupRecommendService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupMedalService_1.0.0"
+					value-ref="groupMedalService" />
+				<entry
+					key="http://service.dianping.com/groupService/userGroupInfoService_1.0.0"
+					value-ref="userGroupInfoService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupNoteService_1.0.0"
+					value-ref="groupNoteService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupNoteScoreLogService_1.0.0"
+					value-ref="groupNoteScoreLogService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupOperateLogService_1.0.0"
+					value-ref="groupOperateLogService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupDCashLogService_1.0.0"
+					value-ref="groupDCashLogService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupFollowNoteService_1.0.0"
+					value-ref="groupFollowNoteService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupSurveyService_1.0.0"
+					value-ref="groupSurveyService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupSurveyMemberService_1.0.0"
+					value-ref="groupSurveyMemberService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupbackService_1.0.0"
+					value-ref="groupbackService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupRoleService_1.0.0"
+					value-ref="groupRoleService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupPicService_1.0.0"
+					value-ref="groupPicService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupUserScoreDailyLogService_1.0.0"
+					value-ref="groupUserScoreDailyLogService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupUserScoreSumService_1.0.0"
+					value-ref="groupUserScoreSumService" />
+				<entry
+					key="http://service.dianping.com/groupService/eventShopService_1.0.0"
+					value-ref="eventShopService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupIndexService_1.0.0"
+					value-ref="groupIndexService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupNoteCountService_1.0.0"
+					value-ref="groupNoteCountService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupCheckInActivityService_1.0.0"
+					value-ref="groupCheckInActivityService" />
+				<entry
+					key="http://service.dianping.com/groupService/noteVerifyFeedbackService_1.0.0"
+					value-ref="noteVerifyFeedbackService" />
+				<entry
+					key="http://service.dianping.com/groupService/eventFollowNoteService_1.0.0"
+					value-ref="eventFollowNoteService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupQAUserService_1.0.0"
+					value-ref="groupQAUserService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupSetService_1.0.0"
+					value-ref="groupSetService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupQAFollowNoteService_1.0.0"
+					value-ref="groupQAFollowNoteService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupQANoteService_1.0.0"
+					value-ref="groupQANoteService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupNoteHideContentService_1.0.0"
+					value-ref="groupNoteHideContentService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupNoteShopService_1.0.0"
+					value-ref="groupNoteShopService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupConfigurationService_1.0.0"
+					value-ref="groupConfigurationService" />
+				<entry
+					key="http://service.dianping.com/groupService/userGoldService_1.0.0"
+					value-ref="userGoldService" />
+				<entry
+					key="http://service.dianping.com/groupService/userGoldDetailService_1.0.0"
+					value-ref="userGoldDetailService" />
+				<entry
+					key="http://service.dianping.com/groupService/groupFollowNoteExtInfoService_1.0.0"
+					value-ref="groupFollowNoteExtInfoService" />
+				<entry key="http://service.dianping.com/groupService/userGoldExchangeService_1.0.0"
+					value-ref="userGoldExchangeService"></entry>
+				<entry key="http://service.dianping.com/groupService/groupNoteExtInfoService_1.0.0"
+					value-ref="groupNoteExtInfoService"></entry>					
+				<entry key="http://service.dianping.com/groupService/hotNoteService_1.0.0"
+					value-ref="hotNoteService"></entry>			
+				<entry key="http://service.dianping.com/groupService/goldEggService_1.0.0"
+					value-ref="goldEggService"></entry>	
+			</map>
+		</property>
+	</bean>
+
+	<!-- Event -->
+	<bean id="eventServiceImpl"
+		class="com.dianping.groupservice.remote.impl.event.EventServiceImpl">
+		<property name="eventDao" ref="eventDao" />
+		<property name="userService" ref="userService" />
+		<property name="cacheService" ref="cacheService" />
+		<property name="noticeService" ref="noticeService" />
+		<property name="eventUserService" ref="eventUserService" />
+		<property name="cityService" ref="cityService" />
+	</bean>
+
+	<bean id="eventTypeServiceImpl"
+		class="com.dianping.groupservice.remote.impl.event.EventTypeServiceImpl">
+		<property name="eventTypeDao" ref="eventTypeDao" />
+		<property name="cacheService" ref="cacheService" />
+	</bean>
+
+	<bean id="eventNoteService"
+		class="com.dianping.groupservice.remote.impl.event.EventNoteServiceImpl">
+		<property name="eventNoteDao" ref="eventNoteDao" />
+		<property name="userService" ref="userService" />
+		<property name="eventDao" ref="eventDao" />
+	</bean>
+
+	<bean id="eventUserService"
+		class="com.dianping.groupservice.remote.impl.event.EventUserServiceImpl">
+		<property name="eventUserDao" ref="eventUserDao" />
+		<property name="userProfileService" ref="userProfileService" />
+		<property name="userService" ref="userService" />
+		<property name="producer" ref="producer" />
+		<property name="eventDao" ref="eventDao" />
+	</bean>
+
+	<bean id="eventFollowNoteService"
+		class="com.dianping.groupservice.remote.impl.event.EventFollowNoteServiceImpl">
+		<property name="eventFollowNoteDao" ref="eventFollowNoteDao" />
+		<property name="eventFollowNoteLastDao" ref="eventFollowNoteLastDao" />
+		<property name="eventFollowNoteLogDao" ref="eventFollowNoteLogDao" />
+		<property name="cacheService" ref="cacheService" />
+		<property name="configurationService" ref="configurationService" />
+		<property name="userService" ref="userService" />
+		<property name="producer" ref="producer" />
+	</bean>
+
+	<!-- Memeber -->
+	<bean id="groupUserService"
+		class="com.dianping.groupservice.remote.impl.member.GroupUserServiceImpl">
+		<property name="groupUserDao" ref="groupUserDao" />
+		<property name="groupService" ref="groupService" />
+		<property name="userService" ref="userService" />
+		<property name="cacheService" ref="cacheService" />
+		<property name="groupRoleService" ref="groupRoleService" />
+		<property name="groupNoteService" ref="groupNoteService" />
+		<property name="groupFollowNoteService" ref="groupFollowNoteService" />
+		<property name="producer" ref="producer" />
+	</bean>
+
+	<bean id="groupUserHonorTitleService"
+		class="com.dianping.groupservice.remote.impl.member.GroupUserHonorTitleServiceImpl">
+		<property name="groupUserHonorTitleDao" ref="groupUserHonorTitleDao" />
+		<property name="cacheService" ref="cacheService" />
+	</bean>
+
+	<bean id="userGroupInfoService"
+		class="com.dianping.groupservice.remote.impl.member.UserGroupInfoServiceImpl">
+		<property name="userGroupInfoDao" ref="userGroupInfoDao" />
+		<property name="cacheService" ref="cacheService" />
+	</bean>
+
+	<bean id="groupUserScoreLevelService"
+		class="com.dianping.groupservice.remote.impl.member.GroupUserScoreLevelServiceImpl">
+		<property name="groupUserScoreLevelDao" ref="groupUserScoreLevelDao" />
+		<property name="cacheService" ref="cacheService" />
+	</bean>
+
+	<bean id="groupUserScoreDailyLogService"
+		class="com.dianping.groupservice.remote.impl.member.GroupUserScoreDailyLogServiceImpl">
+		<property name="groupUserScoreDailyLogDao" ref="groupUserScoreDailyLogDao" />
+		<property name="userGroupInfoService" ref="userGroupInfoService" />
+		<property name="groupUserScoreSumService" ref="groupUserScoreSumService" />
+		<property name="groupNoteService" ref="groupNoteService" />
+		<property name="groupFollowNoteService" ref="groupFollowNoteService" />
+		<property name="kangarooServiceClient" ref="kangarooServiceClient" />
+	</bean>
+
+	<bean id="groupUserScoreSumService"
+		class="com.dianping.groupservice.remote.impl.member.GroupUserScoreSumServiceImpl">
+		<property name="groupUserScoreSumDao" ref="groupUserScoreSumDao" />
+	</bean>
+
+	<bean id="groupQAUserService"
+		class="com.dianping.groupservice.remote.impl.member.GroupQAUserServiceImpl">
+		<property name="groupQAUserApplyInfoDao" ref="groupQAUserApplyInfoDao" />
+		<property name="groupQAUserInfoDao" ref="groupQAUserInfoDao" />
+		<property name="groupQAScoreLogDao" ref="groupQAScoreLogDao" />
+		<property name="groupQAStarInfoDao" ref="groupQAStarInfoDao" />
+		<property name="groupNoteService" ref="groupNoteService" />
+		<property name="groupFollowNoteService" ref="groupFollowNoteService" />
+		<property name="groupService" ref="groupService" />
+		<property name="cacheService" ref="cacheService" />
+		<property name="userService" ref="userService" />
+		<property name="userProfileService" ref="userProfileService" />
+	</bean>
+
+	<!-- Group -->
+	<bean id="groupService"
+		class="com.dianping.groupservice.remote.impl.group.GroupServiceImpl">
+		<property name="groupDao" ref="groupDao" />
+		<property name="userService" ref="userService" />
+		<property name="cacheService" ref="cacheService" />
+		<property name="groupConfigurationService" ref="groupConfigurationService" />
+		<property name="groupCategoryService" ref="groupCategoryService" />
+		<property name="producer" ref="producer" />
+		<property name="groupUserDao" ref="groupUserDao" />
+	</bean>
+
+	<bean id="groupSetService"
+		class="com.dianping.groupservice.remote.impl.group.GroupSetServiceImpl">
+		<property name="groupSetDao" ref="groupSetDao" />
+		<property name="groupService" ref="groupService" />
+		<property name="cacheService" ref="cacheService" />
+	</bean>
+
+	<bean id="groupLinkService"
+		class="com.dianping.groupservice.remote.impl.group.GroupLinkServiceImpl">
+		<property name="groupLinkDao" ref="groupLinkDao" />
+		<property name="cacheService" ref="cacheService" />
+	</bean>
+
+	<bean id="groupNoteTypeService"
+		class="com.dianping.groupservice.remote.impl.group.GroupNoteTypeServiceImpl">
+		<property name="groupNoteTypeDao" ref="groupNoteTypeDao" />
+		<property name="groupNoteService" ref="groupNoteService" />
+		<property name="cacheService" ref="cacheService" />
+	</bean>
+
+	<bean id="groupTypeApplyService"
+		class="com.dianping.groupservice.remote.impl.group.GroupTypeApplyServiceImpl">
+		<property name="groupService" ref="groupService" />
+		<property name="groupTypeApplyDao" ref="groupTypeApplyDao" />
+		<property name="groupCategoryService" ref="groupCategoryService" />
+	</bean>
+
+	<bean id="groupCategoryService"
+		class="com.dianping.groupservice.remote.impl.group.GroupCategoryServiceImpl">
+		<property name="categoryDao" ref="categoryDao" />
+		<property name="cacheService" ref="cacheService" />
+	</bean>
+
+	<bean id="groupRecommendService"
+		class="com.dianping.groupservice.remote.impl.group.GroupRecommendServiceImpl">
+		<property name="groupRecommendDao" ref="groupRecommendDao" />
+		<property name="groupService" ref="groupService" />
+		<property name="cacheService" ref="cacheService" />
+		<property name="groupbackService" ref="groupbackService" />
+	</bean>
+
+	<bean id="groupMedalService"
+		class="com.dianping.groupservice.remote.impl.group.GroupMedalServiceImpl">
+		<property name="groupMedalDao" ref="groupMedalDao" />
+		<property name="cacheService" ref="cacheService" />
+	</bean>
+
+	<bean id="groupPicService"
+		class="com.dianping.groupservice.remote.impl.group.GroupPicServiceImpl">
+		<property name="groupPicDao" ref="groupPicDao" />
+		<property name="groupService" ref="groupService" />
+	</bean>
+
+	<!-- Note -->
+	<bean id="groupNoteService"
+		class="com.dianping.groupservice.remote.impl.note.GroupNoteServiceImpl">
+		<property name="groupNoteDao" ref="groupNoteDao" />
+		<property name="groupRelatedNoteDao" ref="groupRelatedNoteDao" />
+		<property name="kvdbService" ref="kvdbService" />
+		<property name="userService" ref="userService" />
+		<property name="groupNoteUserService" ref="groupNoteUserService" />
+		<property name="cacheService" ref="cacheService" />
+		<property name="groupUserHonorTitleService" ref="groupUserHonorTitleService" />
+		<property name="groupCategoryService" ref="groupCategoryService" />
+		<property name="groupService" ref="groupService" />
+		<property name="groupNoteExtInfoService" ref="groupNoteExtInfoService" />
+		<property name="noticeService" ref="noticeService" />
+		<property name="groupSearchService" ref="groupSearchService" />
+		<property name="groupUserService" ref="groupUserService" />
+		<property name="kangarooServiceClient" ref="kangarooServiceClient" />
+		<property name="groupOperateLogService" ref="groupOperateLogService" />
+		<property name="groupUserScoreDailyLogService" ref="groupUserScoreDailyLogService" />
+		<property name="groupRandomDCashService" ref="groupRandomDCashService" />
+		<property name="mailService" ref="mailService" />
+		<property name="configurationService" ref="configurationService" />
+		<property name="groupSurveyService" ref="groupSurveyService" />
+		<property name="producer" ref="producer" />
+		<property name="groupConfigurationService" ref="groupConfigurationService" />
+	</bean>
+
+	<bean id="groupFollowNoteService"
+		class="com.dianping.groupservice.remote.impl.note.GroupFollowNoteServiceImpl">
+		<property name="groupFollowNoteDao" ref="groupFollowNoteDao" />
+		<property name="groupNoteDao" ref="groupNoteDao" />
+		<property name="kvdbService" ref="kvdbService" />
+		<property name="groupNoteUserService" ref="groupNoteUserService" />
+		<property name="groupUserHonorTitleService" ref="groupUserHonorTitleService" />
+		<property name="groupOperateLogService" ref="groupOperateLogService" />
+		<property name="followNoteAddService" ref="followNoteAddService" />
+		<property name="groupRandomDCashService" ref="groupRandomDCashService" />
+		<property name="groupUserScoreDailyLogService" ref="groupUserScoreDailyLogService" />
+		<property name="groupUserService" ref="groupUserService" />
+		<property name="groupService" ref="groupService" />
+		<property name="groupNoteService" ref="groupNoteService" />
+		<property name="configurationService" ref="configurationService" />
+		<property name="producer" ref="producer" />
+	</bean>
+
+	<bean id="groupNoteScoreLogService"
+		class="com.dianping.groupservice.remote.impl.note.GroupNoteScoreLogServiceImpl">
+		<property name="groupNoteScoreLogDao" ref="groupNoteScoreLogDao" />
+		<property name="userService" ref="userService" />
+		<property name="groupUserScoreDailyLogService" ref="groupUserScoreDailyLogService" />
+		<property name="groupOperateLogService" ref="groupOperateLogService" />
+		<property name="groupNoteService" ref="groupNoteService" />
+		<property name="groupNoteExtInfoService" ref="groupNoteExtInfoService" />
+	</bean>
+
+	<bean id="groupOperateLogService"
+		class="com.dianping.groupservice.remote.impl.note.GroupOperateLogServiceImpl">
+		<property name="groupOperateLogDao" ref="groupOperateLogDao" />
+		<property name="userService" ref="userService" />
+	</bean>
+
+	<bean id="groupDCashLogService"
+		class="com.dianping.groupservice.remote.impl.note.GroupDCashLogServiceImpl">
+		<property name="groupDCashLogDao" ref="groupDCashLogDao" />
+	</bean>
+
+	<bean id="groupSurveyService"
+		class="com.dianping.groupservice.remote.impl.note.GroupSurveyServiceImpl">
+		<property name="groupSurveyDao" ref="groupSurveyDao" />
+		<property name="groupSurveyMemberDao" ref="groupSurveyMemberDao" />
+		<property name="userGroupInfoService" ref="userGroupInfoService" />
+		<property name="userService" ref="userService" />
+	</bean>
+
+	<bean id="groupSurveyMemberService"
+		class="com.dianping.groupservice.remote.impl.note.GroupSurveyMemberServiceImpl">
+		<property name="groupSurveyMemberDao" ref="groupSurveyMemberDao" />
+		<property name="userService" ref="userService" />
+	</bean>
+
+	<bean id="groupbackService"
+		class="com.dianping.groupservice.remote.impl.groupback.GroupbackServiceImpl">
+		<property name="backCityDao" ref="backCityDao" />
+		<property name="cacheService" ref="cacheService" />
+	</bean>
+
+	<bean id="groupRoleService"
+		class="com.dianping.groupservice.remote.impl.group.GroupRoleServiceImpl">
+		<property name="cacheService" ref="cacheService" />
+		<property name="groupRoleDao" ref="groupRoleDao" />
+	</bean>
+
+	<bean id="groupNoteExtInfoService"
+		class="com.dianping.groupservice.remote.impl.note.GroupNoteExtInfoServiceImpl">
+		<property name="cacheService" ref="cacheService" />
+		<property name="groupNoteExtInfoDao" ref="groupNoteExtInfoDao" />
+	</bean>
+
+	<bean id="groupSearchService" class="com.dianping.search.SearchServiceClient">
+		<constructor-arg value="${group-service.search.service.url}" />
+	</bean>
+
+	<bean id="shopSearchService" class="com.dianping.search.SearchServiceClient">
+		<constructor-arg value="${group-service.shop.search.service.url}" />
+	</bean>
+
+	<bean id="eventShopService"
+		class="com.dianping.groupservice.remote.impl.event.EventShopServiceImpl">
+		<property name="shopSearchService" ref="shopSearchService" />
+	</bean>
+
+	<bean id="groupIndexService"
+		class="com.dianping.groupservice.remote.impl.note.GroupIndexServiceImpl">
+		<property name="cacheService" ref="cacheService" />
+		<property name="groupService" ref="groupService" />
+		<property name="recommendNoteDao" ref="recommendNoteDao" />
+		<property name="groupUserDao" ref="groupUserDao" />
+		<property name="groupNoteDao" ref="groupNoteDao" />
+		<property name="recommendEventDao" ref="recommendEventDao" />
+		<property name="userService" ref="userService" />
+		<property name="configurationService" ref="configurationService" />
+		<property name="pageModuleConfigService" ref="pageModuleConfigService" />
+		<property name="groupbackService" ref="groupbackService" />
+		<property name="offlineActivityService" ref="offlineActivityService" />
+	</bean>
+
+	<bean id="groupNoteCountService"
+		class="com.dianping.groupservice.remote.impl.note.GroupNoteCountServiceImpl">
+		<property name="groupNoteDao" ref="groupNoteDao" />
+	</bean>
+
+	<bean id="groupQAFollowNoteService"
+		class="com.dianping.groupservice.remote.impl.note.GroupQAFollowNoteServiceImpl">
+		<property name="groupQAUserInfoDao" ref="groupQAUserInfoDao" />
+		<property name="groupFollowNoteService" ref="groupFollowNoteService" />
+		<property name="groupQANoteExtendDao" ref="groupQANoteExtendDao" />
+		<property name="groupQAUserDataDao" ref="groupQAUserDataDao" />
+		<property name="groupQAScoreLogDao" ref="groupQAScoreLogDao" />
+		<property name="groupSetDao" ref="groupSetDao" />
+		<property name="groupQANoteService" ref="groupQANoteService" />
+	</bean>
+
+	<bean id="groupQANoteService"
+		class="com.dianping.groupservice.remote.impl.note.GroupQANoteServiceImpl">
+		<property name="groupQANoteExtendDao" ref="groupQANoteExtendDao" />
+		<property name="groupNoteService" ref="groupNoteService" />
+		<property name="groupFollowNoteService" ref="groupFollowNoteService" />
+	</bean>
+	<bean id="hotNoteService"
+		class="com.dianping.groupservice.remote.impl.note.HotNoteServiceImpl">		
+		<property name="hotNoteDao" ref="hotNoteDao" />
+	</bean>
+
+	<!-- Activity -->
+
+	<bean id="groupCheckInActivityService"
+		class="com.dianping.groupservice.remote.impl.activity.GroupCheckInActivityServiceImpl">
+		<property name="cacheService" ref="cacheService" />
+		<property name="groupCheckInActivityDao" ref="groupCheckInActivityDao" />
+	</bean>
+
+	<bean id="noteVerifyFeedbackService"
+		class="com.dianping.groupservice.remote.impl.note.NoteVerifyFeedbackServiceImpl">
+		<property name="groupNoteDao" ref="groupNoteDao" />
+		<property name="groupFollowNoteDao" ref="groupFollowNoteDao" />
+		<property name="cacheService" ref="cacheService" />
+		<property name="groupQAUserDataDao" ref="groupQAUserDataDao" />
+		<property name="groupQAScoreLogDao" ref="groupQAScoreLogDao" />
+		<property name="groupSetDao" ref="groupSetDao" />
+		<property name="groupSetService" ref="groupSetService" />
+		<property name="groupNoteExtInfoService" ref="groupNoteExtInfoService" />
+		<property name="groupFollowNoteExtInfoService" ref="groupFollowNoteExtInfoService" />
+	</bean>
+
+
+	<bean id="groupNoteHideContentService"
+		class="com.dianping.groupservice.remote.impl.note.GroupNoteHideContentServiceImpl">
+		<property name="groupNoteHideContentDao" ref="groupNoteHideContentDao" />
+	</bean>
+
+	<bean id="groupNoteShopService"
+		class="com.dianping.groupservice.remote.impl.note.GroupNoteShopServiceImpl">
+		<property name="groupNoteShopDao" ref="groupNoteShopDao" />
+	</bean>
+	
+	<bean id="groupConfigurationService"
+		class="com.dianping.groupservice.remote.impl.basedata.GroupConfigurationServiceImpl">
+		<property name="configurationService" ref="configurationService" />
+	</bean>
+	
+	<bean id="userGoldService" class="com.dianping.groupservice.remote.impl.subject.gold.UserGoldServiceImpl">
+		<property name="userGoldDao" ref="userGoldDao" />
+		<property name="userService" ref="userService" />
+	</bean>
+	
+	<bean id="userGoldDetailService" class="com.dianping.groupservice.remote.impl.subject.gold.UserGoldDetailServiceImpl">
+		<property name="userGoldDetailDao" ref="userGoldDetailDao" />
+		<property name="groupFollowNoteService" ref="groupFollowNoteService"></property>
+	</bean>
+	
+	<bean id="groupFollowNoteExtInfoService" class="com.dianping.groupservice.remote.impl.note.GroupFollowNoteExtInfoServiceImpl">
+		<property name="groupFollowNoteExtInfoDao" ref="groupFollowNoteExtInfoDao" />
+	</bean>
+	<bean id="userGoldExchangeService" class="com.dianping.groupservice.remote.impl.subject.gold.exchange.UserGoldExchangeServiceImpl">
+		<property name="userGoldService" ref="userGoldService"></property>
+		<property name="userGoldDeitailService" ref="userGoldDetailService"></property>
+		<property name="noticeService" ref="noticeService"></property>
+		<property name="userService" ref="userService"></property>
+	</bean>
+
+	<bean id="goldEggService" class="com.dianping.groupservice.remote.impl.goldegg.GoldEggServiceImpl">
+		<property name="cacheService" ref="cacheService"></property>
+		<property name="goldEggDao" ref="goldEggDao"></property>
+	</bean>
+</beans>

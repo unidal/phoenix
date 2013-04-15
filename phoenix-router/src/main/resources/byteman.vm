@@ -1,0 +1,11 @@
+RULE lion change
+CLASS com.dianping.lion.client.InitializeConfig
+METHOD postProcessBeanFactory
+AT INVOKE setPts
+IF true
+#set($dollar = "$")
+DO #foreach($kv in $lionConfig.entrySet())
+   ${dollar}this.pts.put("${kv.key}", "${kv.value}");
+   #end
+   System.out.println("Phoenix runtime config modification complete...")
+ENDRULE

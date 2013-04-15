@@ -1,3 +1,7 @@
+#!/bin/bash
+
+source ./util.sh
+
 function add_ssh_private_key {
 	local git_host=$1
 
@@ -123,4 +127,89 @@ function kill_by_javaclass {
 	local javaclass=$1	
 
 	jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
+}
+
+function change_status {
+    cd `dirname $tx_log_file`
+    awk -v REPLACE_WORD=$1 '{if(/^txJson/){sub(/PROCESSING/,REPLACE_WORD,$1);print $1;} else {print $1;}}' tx.properties > tx.properties.tmp && mv tx.properties.tmp tx.properties
+}
+
+function tag_separator {
+	echo -e "\r--9ed2b78c112fbd17a8511812c554da62941629a8--\r"
+}
+
+function tag_terminater {
+	echo -e "--255220d51dc7fb4aacddadedfe252a346da267d4--\r"
+}
+
+function tag_success {
+        tag_separator
+        echo -e "Status: successful\r"
+        echo -e "Step: SUCCESS\r"
+        tag_separator
+        change_status "SUCCESS"
+}
+
+function tag_failed {
+        tag_separator
+        echo -e "Status: failed\r"
+        echo -e "Step: FAILED\r"
+        tag_separator
+        change_status "FAILED"
+}
+
+function ensure_agent_started {
+    log "checking whether agent process alive"
+    agent_process_num=`jps -lvm | awk -v javaclass=$agent_class '$2==javaclass{print $0}' | wc -l`
+    if [ $agent_process_num -eq 0 ];then
+        log_error "no agent process found, try to git reset agent dir and start it"
+        cd $agent_doc_base
+        git reset --hard
+        chmod +x $agent_doc_base/startup.sh
+        $agent_doc_base/startup.sh
+        tag_failed
+        cd - > /dev/null
+    else
+        log "agent process is alive"
+        tag_success
+    fi
+    echo -e "\r"
+    tag_terminater
+}
+
+function gitpull {
+    sleep 1
+    add_ssh_private_key $agent_git_host
+    sync_git_repo $agent_git_url $agent_version $agent_war_tmp
+}
+
+function dryrun {
+    kill_by_javaclass $agent_dryrun_class
+    new_agent_ok=true
+    chmod +x $agent_war_tmp/startup_dryrun.sh
+    $agent_war_tmp/startup_dryrun.sh $agent_dryrun_class $dry_run_port || { new_agent_ok=false; }
+    if [ $new_agent_ok != true ]; then
+        log_error "new agent is corrputed, won't update"
+        exit 1
+    fi
+}
+
+function upgrade {
+    trap ensure_agent_started EXIT
+    log "new agent is valid, replace current agent"
+    if [ -f $tx_log_file ]; then
+        exec 1>>$tx_log_file 2>&1
+    fi
+    log "shutting down old agent"
+
+    kill -15 $parent_pid || sleep 1 || kill -9 $parent_pid
+
+    log "updating phoenix agent"
+    upgrade_local_git_repo $agent_war_tmp $agent_doc_base
+    git_commit $agent_doc_base "agent upgraded to $agent_version"
+    chmod +x $agent_doc_base/startup.sh
+
+    log "restart phoenix agent"
+    $agent_doc_base/startup.sh
+    sleep 1
 }

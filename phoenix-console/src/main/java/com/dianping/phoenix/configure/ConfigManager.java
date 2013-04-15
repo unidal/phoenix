@@ -32,7 +32,12 @@ public class ConfigManager implements Initializable {
 
 		return m_config.getConsole().getDeployConnectTimeout();
 	}
-
+	
+	public int getDeployGetlogRetrycount(){
+		check();
+		return m_config.getConsole().getDeployGetlogRetrycount();
+	}
+	
 	public String getDeployLogUrl(String host, int deployId) {
 		check();
 

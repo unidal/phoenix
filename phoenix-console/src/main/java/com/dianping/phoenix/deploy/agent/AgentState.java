@@ -17,8 +17,8 @@ public enum AgentState {
 			String json = null;
 
 			ctx.println(String.format("[INFO] Deploy URL: %s", url));
-			ctx.print("[INFO] Deploying phoenix kernel(%s) to host(%s) for deploy(%s) of domain(%s)  ... ", version, host,
-			      id, domain);
+			ctx.print("[INFO] Deploying phoenix kernel(%s) to host(%s) for deploy(%s) of domain(%s)  ... ", version,
+					host, id, domain);
 
 			try {
 				json = ctx.openUrl(url);
@@ -75,7 +75,7 @@ public enum AgentState {
 				String json = null;
 
 				ctx.print("[WARN] Retry to deploy phoenix kernel(%s) to host(%s) for deploy(%s) of domain(%s)  ... ",
-				      version, host, id, domain);
+						version, host, id, domain);
 
 				try {
 					json = ctx.openUrl(url);
