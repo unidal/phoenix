@@ -1,28 +1,29 @@
+#!/bin/bash
 
-set -e 
+set -e
 set -u
 
 cd `dirname $0`
 source ./util.sh
 
-log "PID is $$"
-log "CMD is $0 $@"
+eval "`parse_argument_and_set_variable agent_git_url agent_version tx_log_file agent_doc_base agent_git_host func tmp_script_file agent_class agent_dryrun_class dry_run_port parent_pid`"
 
-AGENT_WAR_TMP=/data/webapps/phoenix/phoenix_agent_war_tmp/
-AGENT_DIR=/data/webapps/phoenix/phoenix-agent
+ensure_not_empty agent_git_url="$agent_git_url" agent_version="$agent_version" tx_log_file="$tx_log_file" agent_doc_base="$agent_doc_base" agent_git_host="$agent_git_host" func="$func" tmp_script_file="$tmp_script_file" agent_class="$agent_class" agent_dryrun_class="$agent_dryrun_class" dry_run_port="$dry_run_port" parent_pid="$parent_pid"
 
-while getopts "g:v:l:h:" option;do
-	case $option in
-			g)      agent_git_url=$OPTARG;;
-			v)      agent_version=$OPTARG;;
-			l)      tx_log_file=$OPTARG;;
-			h)      agent_git_host=$OPTARG;;
-	esac
-done
+if [ $func = "init" ]; then
+    log "PID is $$"
+    log "CMD is $0 --func=init"
 
-tmp_upgrade_script=`mktemp /tmp/phoenix-agent-self-upgrade.sh.XXXXXX`
-cat util.sh >> $tmp_upgrade_script
-cat agent_func2.sh >> $tmp_upgrade_script
-cat upgrade_agent.sh >> $tmp_upgrade_script
-chmod +x $tmp_upgrade_script
-$tmp_upgrade_script -g $agent_git_url -v $agent_version -l $tx_log_file -h $agent_git_host -t $AGENT_WAR_TMP -a $AGENT_DIR &
+    tmp_upgrade_script=`mktemp /tmp/"$tmp_script_file"`
+    cat self_upgrade_func.sh >> $tmp_upgrade_script
+    cat self_upgrade_do.sh >> $tmp_upgrade_script
+    chmod +x $tmp_upgrade_script
+else
+    tmp_upgrade_script="/tmp/$tmp_script_file"
+    if [ -e $tmp_upgrade_script ]; then
+    	echo $@
+        $tmp_upgrade_script --agent_git_url="$agent_git_url" --agent_version="$agent_version" --tx_log_file="$tx_log_file" --agent_doc_base="$agent_doc_base" --agent_git_host="$agent_git_host" --func="$func" --tmp_script_file="$tmp_script_file" --agent_class="$agent_class" --agent_dryrun_class="$agent_dryrun_class" --dry_run_port="$dry_run_port" --parent_pid="$parent_pid"
+    else
+        exit 1
+    fi
+fi

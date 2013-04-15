@@ -19,29 +19,11 @@
 			<implementation>com.dianping.phoenix.agent.core.tx.LogFormatter</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
-		</component>
-		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.qa.DefaultQaService</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.agent.util.url.UrlContentFetcher</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployStep</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.DefaultDeployStep</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.configure.ConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -83,7 +65,7 @@
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.DeployWorkflow</role>
+					<role>com.dianping.phoenix.agent.core.task.workflow.Engine</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.tx.LogFormatter</role>
@@ -105,6 +87,9 @@
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -120,7 +105,7 @@
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.configure.ConfigManager</role>
+					<role>com.dianping.phoenix.agent.core.task.workflow.Engine</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.tx.LogFormatter</role>
@@ -152,6 +137,62 @@
 					<role>com.dianping.phoenix.agent.core.tx.LogFormatter</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.workflow.Context</role>
+			<role-hint>kernel_ctx</role-hint>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeContext</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeStepProvider</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.workflow.Context</role>
+			<role-hint>agent_ctx</role-hint>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeContext</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.shell.ScriptExecutor</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeStepProvider</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeStepProvider</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.DefaultKernelUpgradeStepProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeStepProvider</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.upgrade.DefaultAgentUpgradeStepProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</role>
+			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</implementation>
 		</component>
 		<component>
 			<role>org.unidal.initialization.ModuleManager</role>

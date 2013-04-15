@@ -11,7 +11,9 @@
   <entity name="agent" class-name="AgentConfig">
     <element name="container-install-path" value-type="String" default-value="/usr/local/jboss"/>
     <element name="container-port" value-type="int" default-value="8080" primitive="true"/>
+    <element name="dryrun-port" value-type="int" default-value="3475" primitive="true"/>
     <element name="kernel-doc-base-pattern" value-type="String" default-value="/data/webapps/phoenix/phoenix-kernel/%s"/>
+    <element name="agent-doc-base-pattern" value-type="String" default-value="/data/webapps/phoenix/phoenix-agent/"/>
     <element name="domain-doc-base-keyword-pattern" value-type="String" default-value="/%1$s/current/%1$s.war"/>
     <element name="test-service-poll-interval" value-type="int" default-value="2000" primitive="true"/>
     <element name="jboss-server-name" value-type="String" default-value="default" />

@@ -10,6 +10,10 @@ import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.agent.core.event.MessageEvent;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessor;
+import com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.KernelUpgradeStep;
+import com.dianping.phoenix.agent.core.task.workflow.Context;
+import com.dianping.phoenix.agent.core.task.workflow.Engine;
+import com.dianping.phoenix.agent.core.task.workflow.Step;
 import com.dianping.phoenix.agent.core.tx.LogFormatter;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
@@ -20,13 +24,13 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 	private final static Logger logger = Logger.getLogger(DeployTaskProcessor.class);
 
 	@Inject
-	DeployWorkflow workflow;
+	Engine engine;
+
 	@Inject
 	LogFormatter logFormatter;
-	AtomicReference<Transaction> currentTxRef = new AtomicReference<Transaction>();
 
-	public DeployTaskProcessor() {
-	}
+	AtomicReference<Transaction> currentTxRef = new AtomicReference<Transaction>();
+	AtomicReference<Context> currentCtxRef = new AtomicReference<Context>();
 
 	@Override
 	protected Status doTransaction(final Transaction tx) throws IOException {
@@ -38,9 +42,15 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 		eventTrackerChain.onEvent(new MessageEvent(tx.getTxId(), String.format("updating %s to version %s", domain,
 				task.getKernelVersion())));
 		OutputStream stdOut = txMgr.getLogOutputStream(tx.getTxId());
+		Context ctx = lookup(Context.class, "kernel_ctx");
+		ctx.setLogOut(stdOut);
+		ctx.setLogFormatter(logFormatter);
+		ctx.setTask(task);
+		currentCtxRef.set(ctx);
+
 		Status exitStatus = Status.SUCCESS;
 		try {
-			exitStatus = updateKernel(task, stdOut);
+			exitStatus = updateKernel(ctx);
 		} catch (Exception e) {
 			logger.error("error update kernel", e);
 			exitStatus = Status.FAILED;
@@ -50,10 +60,9 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 		return exitStatus;
 	}
 
-	private Status updateKernel(DeployTask task, OutputStream stdOut) throws Exception {
-		DeployStep steps = lookup(DeployStep.class);
-		int exitCode = workflow.start(task, steps, stdOut, logFormatter);
-		if (exitCode == DeployStep.CODE_OK) {
+	private Status updateKernel(Context ctx) throws Exception {
+		int exitCode = engine.start(KernelUpgradeStep.START, ctx);
+		if (exitCode == Step.CODE_OK) {
 			return Status.SUCCESS;
 		} else {
 			return Status.FAILED;
@@ -64,7 +73,7 @@ public class DeployTaskProcessor extends AbstractSerialTaskProcessor<DeployTask>
 	public boolean cancel(TransactionId txId) {
 		Transaction currentTx = currentTxRef.get();
 		if (currentTx != null && currentTx.getTxId().equals(txId)) {
-			if (workflow.kill()) {
+			if (engine.kill(currentCtxRef.get())) {
 				currentTx.setStatus(Status.KILLED);
 				return true;
 			}

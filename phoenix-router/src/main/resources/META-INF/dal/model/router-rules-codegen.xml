@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="router-rules" root="true">
+    <entity-ref name="pool" type="list" names="pools" />
+    <entity-ref name="f5-rule" type="list" names="f5-rules" />
+    <entity-ref name="url-rewrite-rule" type="list" names="url-rewrite-rules" />
+  </entity>
+  <entity name="pool">
+    <attribute name="name" value-type="String" />
+    <attribute name="url-pattern" value-type="String" />
+  </entity>
+  <entity name="f5-rule">
+    <attribute name="target-pool" value-type="String" />
+    <element name="pattern" value-type="String" type="list" names="patterns" />
+  </entity>
+  <entity name="url-rewrite-rule">
+    <element name="mask-url" value-type="String" />
+    <element name="real-url" value-type="String" />
+    <element name="page-id" value-type="int" />
+  </entity>
+</model>
+

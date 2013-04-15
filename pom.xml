@@ -15,6 +15,7 @@
 		<module>phoenix-console</module>
 		<module>phoenix-agent</module>
 		<module>phoenix-service-container</module>
+		<module>phoenix-router</module>
 	</modules>
         <build>
                 <pluginManagement>
