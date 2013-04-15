@@ -2,34 +2,5 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 
-	<filter>
-		<filter-name>SampleFilter1</filter-name>
-		<filter-class>com.dianping.phoenix.samples.SampleFilter1</filter-class>
-	</filter>
-	<filter>
-		<filter-name>SampleFilter2</filter-name>
-		<filter-class>com.dianping.phoenix.samples.SampleFilter2</filter-class>
-	</filter>
-	<filter>
-		<filter-name>SampleFilter3</filter-name>
-		<filter-class>com.dianping.phoenix.samples.SampleFilter3</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>SampleFilter1</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>SampleFilter2</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>SampleFilter3</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<listener>
-		<listener-class>com.dianping.phoenix.samples.SampleListener1</listener-class>
-	</listener>
-	<listener>
-		<listener-class>com.dianping.phoenix.samples.SampleListener2</listener-class>
-	</listener>
+	
 </web-app>

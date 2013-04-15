@@ -1,37 +1,55 @@
-package com.dianping.phoenix.router.urlfilter;
+package com.dianping.phoenix.router.filter;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-public class UrlHolder {
+public class RequestHolder {
 
 	private String protocol;
 	private String host;
 	private int port;
 	private String path;
 	private String query;
+	private Map<String, List<String>> headers = new HashMap<String, List<String>>();
 
-	public UrlHolder(URL url) {
+	public RequestHolder(URL url, Map<String, List<String>> headers) {
 		protocol = url.getProtocol();
 		host = url.getHost();
 		port = url.getPort();
 		path = url.getPath();
 		query = url.getQuery();
+		this.headers = headers;
 	}
 
-	public UrlHolder(HttpServletRequest req) {
-		// TODO may be change parameter type
+	@SuppressWarnings("unchecked")
+	public RequestHolder(HttpServletRequest req) {
 		protocol = req.getScheme();
+		// the first filter F5 filter will replace host with target pool
 		host = "127.0.0.1";
 		port = req.getLocalPort();
 		path = req.getRequestURI();
 		query = req.getQueryString();
+		Enumeration<String> names = req.getHeaderNames();
+		while (names.hasMoreElements()) {
+			String name = names.nextElement();
+			Enumeration<String> values = req.getHeaders(name);
+			List<String> valueList = new ArrayList<String>();
+			while (values.hasMoreElements()) {
+				valueList.add(values.nextElement());
+			}
+			headers.put(name, valueList);
+		}
 	}
 
-	public UrlHolder() {
+	public RequestHolder() {
 	}
 
 	public String getProtocol() {
@@ -72,6 +90,10 @@ public class UrlHolder {
 
 	public void setQuery(String query) {
 		this.query = query;
+	}
+
+	public Map<String, List<String>> getHeaders() {
+		return headers;
 	}
 
 	public String toUrl() {
