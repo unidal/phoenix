@@ -12,7 +12,11 @@ public class AgentUpgradeContext extends Context {
 	private ScriptExecutor scriptExecutor;
 
 	private String underLyingFile;
-	private String tempScriptFile = "phoenix-agent-self-upgrade.sh." + System.currentTimeMillis();
+	private String tempScriptFile;
+
+	public void setTempScriptFile(String tempScriptFile) {
+		this.tempScriptFile = tempScriptFile;
+	}
 
 	public String getUnderLyingFile() {
 		return underLyingFile;
