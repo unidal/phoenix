@@ -37,88 +37,89 @@ import org.apache.commons.lang.StringUtils;
  * 
  */
 public class ResponseFilter implements Filter {
-    private static final List<String>  ACCEPTED_CONTENT_TYPE = Arrays.asList(new String[] { "text/html" });
-    private static final List<Integer> ACCEPTED_STATUS_CODE  = Arrays.asList(new Integer[] { HttpServletResponse.SC_OK });
-    private static final String        SCRIPT_NAME           = "phoenix-router.js";
-    private static final byte[]        RESPONSE_APPEND_TEXT  = String.format("<script src=\"%s\"></script>",
-                                                                     SCRIPT_NAME).getBytes();
+	private static final List<String> ACCEPTED_CONTENT_TYPE = Arrays.asList(new String[] { "text/html" });
+	private static final List<Integer> ACCEPTED_STATUS_CODE = Arrays
+			.asList(new Integer[] { HttpServletResponse.SC_OK });
+	private static final String SCRIPT_NAME = "/phoenix-router.js";
+	private static final byte[] RESPONSE_APPEND_TEXT = String.format("<script src=\"%s\"></script>", SCRIPT_NAME)
+			.getBytes();
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
-        if (response instanceof HttpServletResponse && request instanceof HttpServletRequest) {
-            if (StringUtils.equalsIgnoreCase(SCRIPT_NAME, ((HttpServletRequest) request).getRequestURI())) {
-                IOUtils.copy(this.getClass().getResourceAsStream(SCRIPT_NAME), response.getOutputStream());
-                return;
-            }
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+			ServletException {
+		if (response instanceof HttpServletResponse && request instanceof HttpServletRequest) {
+			if (StringUtils.equalsIgnoreCase(SCRIPT_NAME, ((HttpServletRequest) request).getRequestURI())) {
+				IOUtils.copy(this.getClass().getResourceAsStream(SCRIPT_NAME), response.getOutputStream());
+				return;
+			}
 
-            StatusAwareServletResponse statusAwareServletResponse = new StatusAwareServletResponse(
-                    (HttpServletResponse) response);
+			StatusAwareServletResponse statusAwareServletResponse = new StatusAwareServletResponse(
+					(HttpServletResponse) response);
 
-            chain.doFilter(request, statusAwareServletResponse);
+			chain.doFilter(request, statusAwareServletResponse);
 
-            if (ACCEPTED_STATUS_CODE.contains(statusAwareServletResponse.getStatus())
-                    && ACCEPTED_CONTENT_TYPE
-                            .contains(StringUtils.lowerCase(statusAwareServletResponse.getContentType()))) {
-                statusAwareServletResponse.getOutputStream().write(RESPONSE_APPEND_TEXT);
-            }
+			if (ACCEPTED_STATUS_CODE.contains(statusAwareServletResponse.getStatus())
+					&& (StringUtils.isBlank(statusAwareServletResponse.getContentType()) || ACCEPTED_CONTENT_TYPE
+							.contains(statusAwareServletResponse.getContentType().toLowerCase()))) {
+				statusAwareServletResponse.getOutputStream().write(RESPONSE_APPEND_TEXT);
+			}
 
-        } else {
-            chain.doFilter(request, response);
-        }
+		} else {
+			chain.doFilter(request, response);
+		}
 
-    }
+	}
 
-    private static class StatusAwareServletResponse extends HttpServletResponseWrapper {
+	private static class StatusAwareServletResponse extends HttpServletResponseWrapper {
 
-        private int httpStatus = SC_OK;
+		private int httpStatus = SC_OK;
 
-        public StatusAwareServletResponse(HttpServletResponse response) {
-            super(response);
+		public StatusAwareServletResponse(HttpServletResponse response) {
+			super(response);
 
-        }
+		}
 
-        @Override
-        public void setStatus(int sc) {
-            httpStatus = sc;
-            super.setStatus(sc);
-        }
+		@Override
+		public void setStatus(int sc) {
+			httpStatus = sc;
+			super.setStatus(sc);
+		}
 
-        @Override
-        public void setStatus(int sc, String sm) {
-            httpStatus = sc;
-            super.setStatus(sc, sm);
-        }
+		@Override
+		public void setStatus(int sc, String sm) {
+			httpStatus = sc;
+			super.setStatus(sc, sm);
+		}
 
-        public int getStatus() {
-            return httpStatus;
-        }
+		public int getStatus() {
+			return httpStatus;
+		}
 
-        @Override
-        public void sendError(int sc) throws IOException {
-            this.httpStatus = sc;
-            super.sendError(sc);
-        }
+		@Override
+		public void sendError(int sc) throws IOException {
+			this.httpStatus = sc;
+			super.sendError(sc);
+		}
 
-        @Override
-        public void sendError(int sc, String msg) throws IOException {
-            this.httpStatus = sc;
-            super.sendError(sc, msg);
-        }
+		@Override
+		public void sendError(int sc, String msg) throws IOException {
+			this.httpStatus = sc;
+			super.sendError(sc, msg);
+		}
 
-        @Override
-        public void sendRedirect(String location) throws IOException {
-            this.httpStatus = SC_MOVED_TEMPORARILY;
-            super.sendRedirect(location);
-        }
-    }
+		@Override
+		public void sendRedirect(String location) throws IOException {
+			this.httpStatus = SC_MOVED_TEMPORARILY;
+			super.sendRedirect(location);
+		}
+	}
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+	}
 
-    @Override
-    public void destroy() {
-    }
+	@Override
+	public void destroy() {
+	}
 
 }
