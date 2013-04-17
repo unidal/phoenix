@@ -62,7 +62,7 @@ public class DefaultAgentUpgradeStepProvider implements AgentUpgradeStepProvider
 
 	@Override
 	public int init(Context ctx) throws Exception {
-		String tempScriptFile = config.getTempScriptDir() + "phoenix-agent-self-upgrade.sh."
+		String tempScriptFile = config.getTempScriptDir() + "/phoenix-agent-self-upgrade.sh."
 				+ System.currentTimeMillis();
 		File tmpFile = new File(tempScriptFile);
 		if (!tmpFile.exists()) {
