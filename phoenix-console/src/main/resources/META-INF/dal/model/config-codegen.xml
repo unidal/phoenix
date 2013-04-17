@@ -26,6 +26,7 @@
     <element name="deploy-log-url-pattern" value-type="String" />
     <element name="deploy-connect-timeout" value-type="int" />
     <element name="deploy-read-timeout" value-type="int" />
+    <element name="deploy-getlog-retrycount" value-type="int" />
     <element name="test-service-url-prefix" value-type="String" />
     <element name="test-service-timeout" value-type="int" />
   </entity>

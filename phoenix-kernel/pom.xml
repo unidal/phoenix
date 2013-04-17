@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dianping.platform</groupId>
 	<artifactId>phoenix-kernel</artifactId>
-	<version>0.1.2.8-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>phoenix-kernel</name>
 	<packaging>war</packaging>
 	<dependencies>
@@ -17,36 +17,6 @@
 			<groupId>com.dianping.cat</groupId>
 			<artifactId>cat-core</artifactId>
 			<version>0.4.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.dianping.lion</groupId>
-			<artifactId>lion-client</artifactId>
-			<version>0.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.dianping.lion</groupId>
-			<artifactId>lion-dev</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.dianping.hawk</groupId>
-			<artifactId>hawk-client</artifactId>
-			<version>0.7.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.dianping.hawk</groupId>
-			<artifactId>hawk-common</artifactId>
-			<version>0.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.dianping.dpsf</groupId>
-			<artifactId>dpsf-net</artifactId>
-			<version>1.7.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.dianping.dpsf</groupId>
-			<artifactId>pigeon-engine</artifactId>
-			<version>1.7.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

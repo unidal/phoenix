@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="gb2312"?>
+<dataset>
+	<database name="hawk">
+		<script>
+		<![CDATA[
+		insert into jrobin_host (projectId, port1) values (1, 2000);
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into jrobin_host (projectId, port1) values (2, 2001);
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into jrobin_host (projectId, port1) values (3, 2002);
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into jrobin_host (projectId, port1) values (4, 2003);
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into project (id, name) values (1, 'shoppic-service');
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into project (id, name) values (2, 'group-service');
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into project (id, name) values (3, 'account-service');
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into project (id, name) values (4, 'user-service');
+		]]>
+		</script>
+	</database>
+
+</dataset>
