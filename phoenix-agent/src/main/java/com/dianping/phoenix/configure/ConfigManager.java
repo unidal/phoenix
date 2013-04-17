@@ -81,6 +81,12 @@ public class ConfigManager implements Initializable {
 		return m_config.getAgent().getAgentDocBasePattern();
 	}
 
+	public String getTempScriptDir() {
+		check();
+
+		return m_config.getAgent().getTempScriptDir();
+	}
+
 	/**
 	 * Where domain docBase locates relative to the domain webapps root dir. Use
 	 * %s to represent domain name. Make sure starts with "/".
