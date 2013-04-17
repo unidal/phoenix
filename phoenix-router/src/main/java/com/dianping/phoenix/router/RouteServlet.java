@@ -16,7 +16,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 
 import com.dianping.phoenix.router.RequestMapper.REQUEST_TYPE;
 import com.dianping.phoenix.router.filter.FilterChain;
-import com.dianping.phoenix.router.filter.RequestHolder;
+import com.dianping.phoenix.router.filter.request.RequestHolder;
 
 @SuppressWarnings("serial")
 public class RouteServlet extends HttpServlet {
@@ -43,11 +43,12 @@ public class RouteServlet extends HttpServlet {
 		proxyRequest(req, resp, REQUEST_TYPE.GET);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void proxyRequest(HttpServletRequest req, HttpServletResponse resp, REQUEST_TYPE type)
 			throws IOException {
 		String reqUri = req.getRequestURI();
 		log.info("receiving request " + reqUri);
-		FilterChain fc;
+		FilterChain<RequestHolder> fc;
 		try {
 			fc = container.lookup(FilterChain.class);
 		} catch (ComponentLookupException e) {

@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.phoenix.router.RequestMapper.REQUEST_TYPE;
-import com.dianping.phoenix.router.filter.RequestHolder;
+import com.dianping.phoenix.router.filter.request.RequestHolder;
 
 public class RequestMapperTest extends ComponentTestCase {
 

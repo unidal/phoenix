@@ -1,4 +1,4 @@
-package com.dianping.phoenix.router.filter;
+package com.dianping.phoenix.router.filter.request;
 
 import java.net.URL;
 import java.util.ArrayList;

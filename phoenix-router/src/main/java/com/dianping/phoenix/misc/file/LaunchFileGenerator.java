@@ -42,8 +42,8 @@ public class LaunchFileGenerator extends TemplateBasedFileGenerator<LaunchFileCo
         LaunchFileGenerator lfg = new LaunchFileGenerator();
         
         LaunchFileContext context = new LaunchFileContext("com.dianping.phoenix.BizServer", new File(
-                "/Users/leoleung/phoenix-test/phoenix-lion.btm"));
+                "/Users/marsqing/Projects/tmp/phoenix-lion.btm"));
         
-        lfg.generate(new File("/Users/leoleung/phoenix-test", "phoenix.launch"), context);
+        lfg.generate(new File("/Users/marsqing/Projects/phoenix/phoenix-router", "phoenix.launch"), context);
     }
 }

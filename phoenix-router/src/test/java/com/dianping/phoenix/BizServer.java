@@ -15,12 +15,12 @@ public class BizServer {
 		// addContext(server, new
 		// File("/Users/marsqing/Projects/tmp/webapp/app2"), "/_shop-web");
 
-//		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/user-service.war"), "/_user-service");
-//		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/user-base-service.war"), "/_user-base-service");
-//		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/user-web.war"), "/_user-web");
+		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/user-service.war"), "/_user-service");
+		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/user-base-service.war"), "/_user-base-service");
+		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/user-web.war"), "/_user-web");
 		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/shop-web.war"), "/_shop-web");
-//		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/shoplist-web.war"), "/_shoplist-web");
-//		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/dpindex-web.war"), "/_dpindex-web");
+		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/shoplist-web.war"), "/_shoplist-web");
+		addContext(server, new File("/Users/marsqing/Projects/tmp/webapp/dpindex-web.war"), "/_dpindex-web");
 
 		server.start();
 		System.in.read();

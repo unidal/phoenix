@@ -2,8 +2,8 @@ package com.dianping.phoenix.router.filter;
 
 import java.io.IOException;
 
-public interface FilterChain {
+public interface FilterChain<C> {
 
-	RequestHolder doFilter(RequestHolder urlHolder) throws IOException;
+	C doFilter(C ctx) throws IOException;
 	
 }

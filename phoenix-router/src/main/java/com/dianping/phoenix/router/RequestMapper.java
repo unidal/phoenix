@@ -19,7 +19,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.unidal.lookup.ContainerHolder;
 
-import com.dianping.phoenix.router.filter.RequestHolder;
+import com.dianping.phoenix.router.filter.request.RequestHolder;
 
 public class RequestMapper extends ContainerHolder {
 
