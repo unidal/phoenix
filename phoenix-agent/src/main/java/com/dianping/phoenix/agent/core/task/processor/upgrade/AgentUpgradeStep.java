@@ -123,7 +123,7 @@ public class AgentUpgradeStep extends AbstractStep {
 
 	@Override
 	protected int getTotalStep() {
-		return 4;
+		return 5;
 	}
 
 	@Override
