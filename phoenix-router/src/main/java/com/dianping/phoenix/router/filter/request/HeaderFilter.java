@@ -1,4 +1,4 @@
-package com.dianping.phoenix.router.filter;
+package com.dianping.phoenix.router.filter.request;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HeaderFilter implements RequestFilter {
+import com.dianping.phoenix.router.filter.Filter;
+import com.dianping.phoenix.router.filter.FilterChain;
+
+public class HeaderFilter implements Filter<RequestHolder> {
 	
 	private Set<String> headerToRemoveSet = new HashSet<String>();
 
@@ -19,7 +22,7 @@ public class HeaderFilter implements RequestFilter {
 	}
 
 	@Override
-	public RequestHolder filter(RequestHolder urlHolder, FilterChain filterChain) throws IOException {
+	public RequestHolder filter(RequestHolder urlHolder, FilterChain<RequestHolder> filterChain) throws IOException {
 		Iterator<Map.Entry<String, List<String>>> iter = urlHolder.getHeaders().entrySet().iterator();
 		while(iter.hasNext()) {
 			Map.Entry<String, List<String>> entry = iter.next();

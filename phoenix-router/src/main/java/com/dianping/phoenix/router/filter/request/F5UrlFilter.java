@@ -1,4 +1,4 @@
-package com.dianping.phoenix.router.filter;
+package com.dianping.phoenix.router.filter.request;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,16 +14,18 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.configure.ConfigManager;
+import com.dianping.phoenix.router.filter.Filter;
+import com.dianping.phoenix.router.filter.FilterChain;
 import com.dianping.phoenix.router.model.entity.F5Rule;
 import com.dianping.phoenix.router.model.entity.Pool;
 
-public class F5UrlFilter extends ContainerHolder implements RequestFilter, Initializable {
+public class F5UrlFilter extends ContainerHolder implements Filter<RequestHolder>, Initializable {
 
 	@Inject
 	private ConfigManager config;
 	private List<F5RuleWrapper> f5RuleWrapperList = new ArrayList<F5UrlFilter.F5RuleWrapper>();
 
-	public RequestHolder filter(RequestHolder urlHolder, FilterChain filterChain) throws IOException {
+	public RequestHolder filter(RequestHolder urlHolder, FilterChain<RequestHolder> filterChain) throws IOException {
 		String path = urlHolder.getPath();
 		RequestHolder newUrlHolder = urlHolder;
 		for (F5RuleWrapper f5RuleWrapper : f5RuleWrapperList) {

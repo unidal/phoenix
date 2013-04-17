@@ -5,8 +5,8 @@
 			<implementation>com.dianping.phoenix.configure.ConfigManager</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.router.filter.F5UrlFilter</role>
-			<implementation>com.dianping.phoenix.router.filter.F5UrlFilter</implementation>
+			<role>com.dianping.phoenix.router.filter.request.F5UrlFilter</role>
+			<implementation>com.dianping.phoenix.router.filter.request.F5UrlFilter</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -14,8 +14,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.router.filter.UrlRewriteFilter</role>
-			<implementation>com.dianping.phoenix.router.filter.UrlRewriteFilter</implementation>
+			<role>com.dianping.phoenix.router.filter.request.UrlRewriteFilter</role>
+			<implementation>com.dianping.phoenix.router.filter.request.UrlRewriteFilter</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -23,22 +23,22 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.router.filter.HeaderFilter</role>
-			<implementation>com.dianping.phoenix.router.filter.HeaderFilter</implementation>
+			<role>com.dianping.phoenix.router.filter.request.HeaderFilter</role>
+			<implementation>com.dianping.phoenix.router.filter.request.HeaderFilter</implementation>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.router.filter.FilterChain</role>
-			<implementation>com.dianping.phoenix.router.filter.DefaultFilterChain</implementation>
+			<implementation>com.dianping.phoenix.router.filter.request.DefaultFilterChain</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.router.filter.F5UrlFilter</role>
+					<role>com.dianping.phoenix.router.filter.request.F5UrlFilter</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.router.filter.UrlRewriteFilter</role>
+					<role>com.dianping.phoenix.router.filter.request.UrlRewriteFilter</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.router.filter.HeaderFilter</role>
+					<role>com.dianping.phoenix.router.filter.request.HeaderFilter</role>
 				</requirement>
 			</requirements>
 		</component>

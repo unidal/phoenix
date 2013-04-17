@@ -8,11 +8,11 @@ import org.unidal.lookup.configuration.Component;
 
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.router.RequestMapper;
-import com.dianping.phoenix.router.filter.DefaultFilterChain;
-import com.dianping.phoenix.router.filter.F5UrlFilter;
 import com.dianping.phoenix.router.filter.FilterChain;
-import com.dianping.phoenix.router.filter.HeaderFilter;
-import com.dianping.phoenix.router.filter.UrlRewriteFilter;
+import com.dianping.phoenix.router.filter.request.DefaultFilterChain;
+import com.dianping.phoenix.router.filter.request.F5UrlFilter;
+import com.dianping.phoenix.router.filter.request.HeaderFilter;
+import com.dianping.phoenix.router.filter.request.UrlRewriteFilter;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	@Override
