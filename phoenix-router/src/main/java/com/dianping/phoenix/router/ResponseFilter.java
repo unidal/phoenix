@@ -48,7 +48,8 @@ public class ResponseFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
 		if (response instanceof HttpServletResponse && request instanceof HttpServletRequest) {
-			if (StringUtils.equalsIgnoreCase(SCRIPT_NAME, ((HttpServletRequest) request).getRequestURI())) {
+			HttpServletRequest hRequest = (HttpServletRequest) request;
+			if (StringUtils.equalsIgnoreCase(SCRIPT_NAME, hRequest.getRequestURI())) {
 				IOUtils.copy(this.getClass().getResourceAsStream(SCRIPT_NAME), response.getOutputStream());
 				return;
 			}
@@ -60,7 +61,8 @@ public class ResponseFilter implements Filter {
 
 			if (ACCEPTED_STATUS_CODE.contains(statusAwareServletResponse.getStatus())
 					&& (StringUtils.isBlank(statusAwareServletResponse.getContentType()) || ACCEPTED_CONTENT_TYPE
-							.contains(statusAwareServletResponse.getContentType().toLowerCase()))) {
+							.contains(statusAwareServletResponse.getContentType().toLowerCase()))
+					&& hRequest.getHeader("x-requested-with") == null) {
 				statusAwareServletResponse.getOutputStream().write(RESPONSE_APPEND_TEXT);
 			}
 
