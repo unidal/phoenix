@@ -3,13 +3,13 @@ package com.dianping.phoenix.router;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -33,7 +33,7 @@ public class RequestMapper extends ContainerHolder {
 			throws IOException {
 		HttpRequestBase newReq;
 		String newUrl = reqHolder.toUrl();
-		
+
 		switch (type) {
 		case GET:
 			newReq = new HttpGet(newUrl);
@@ -51,9 +51,9 @@ public class RequestMapper extends ContainerHolder {
 		default:
 			throw new RuntimeException("unsupported http request type " + type);
 		}
-		
+
 		addHeaders(newReq, reqHolder.getHeaders());
-		
+
 		return newReq;
 	}
 
@@ -68,12 +68,25 @@ public class RequestMapper extends ContainerHolder {
 		}
 	}
 
-	public InputStream send(HttpServletRequest oldReq, RequestHolder reqHolder, REQUEST_TYPE type) throws IOException {
+	public HttpResponse send(HttpServletRequest oldReq, RequestHolder reqHolder, REQUEST_TYPE type) throws IOException {
 		DefaultHttpClient hc = new DefaultHttpClient();
 		HttpRequestBase req = make(oldReq, reqHolder, type);
 		log.info("sending request to " + req.getURI());
 		HttpResponse res = hc.execute(req);
-		return res.getEntity().getContent();
+		logHeaders(req.getAllHeaders(), "Request");
+		logHeaders(res.getAllHeaders(), "Response");
+		return res;
+	}
+
+	private void logHeaders(Header[] headers, String from) {
+		if (log.isDebugEnabled()) {
+			StringBuilder sb = new StringBuilder();
+			for (Header header : headers) {
+				sb.append(header);
+				sb.append("\n");
+			}
+			log.debug(from + " headers : " + sb.toString());
+		}
 	}
 
 }

@@ -3,7 +3,7 @@ require 'pp'
 require 'set'
 require 'stringio'
 
-def parse_f5(stringio)
+def parse_f5(stringio, default_pool)
   Citrus.load 'f5'
   doc = File.read('/Users/marsqing/Downloads/WEB.MAIN.txt')
   f5 = F5.parse(doc, :root => :whens)
@@ -23,6 +23,8 @@ def parse_f5(stringio)
       f5_rule_str << "</f5-rule>\n"
     end
   end
+
+  stringio << "<pool name='Default' url-pattern='http://#{default_pool}%s' />\n"
 
   target_pool_set.each { |p| pool_str << "<!--pool name='#{p}' url-pattern='http://HOST:PORT/CONTEXT%s' /-->\n" }
 
