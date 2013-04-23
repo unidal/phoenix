@@ -43,51 +43,126 @@ public class DefaultContainerManager extends ContainerHolder implements Containe
 	private ConfigManager config;
 
 	@Override
-	public Response reportContainerStatus() throws Exception {
-		Response res = new Response();
-		File serverXml = config.getServerXml();
-		if (serverXml != null && serverXml.exists()) {
-			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document doc = builder.parse(serverXml);
-			NodeList ctxList = doc.getElementsByTagName("Context");
-			// for each <Context>
-			for (int i = 0; i < ctxList.getLength(); i++) {
-				Element ctx = (Element) ctxList.item(i);
-				String strDomainDocBase = ctx.getAttribute("docBase");
-				NodeList loaderList = ctx.getElementsByTagName("Loader");
-				String strKernelDocBase = null;
-				if (loaderList.getLength() > 0) {
-					Element loader = (Element) loaderList.item(0);
-					strKernelDocBase = loader.getAttribute("kernelDocBase");
+	public void attachContainerLoader(String domain, String version) throws Exception {
+
+		if (config.getContainerType() == ContainerType.TOMCAT) {
+			File serverXmlDir = new File(config.getContainerInstallPath() + "/conf/Catalina/localhost/");
+			if (serverXmlDir != null && serverXmlDir.exists()) {
+				for (File serverXml : serverXmlDir.listFiles()) {
+					attachPhoenixContextLoader(serverXml,
+							String.format(config.getDomainDocBaseFeaturePattern(), domain), config.getLoaderClass(),
+							new File(String.format(config.getKernelDocBasePattern(), domain, version)));
 				}
-
-				// kernel info
-				War kernelWar = reportWar(strKernelDocBase);
-				Kernel kernel = new Kernel();
-				kernel.setWar(kernelWar);
-
-				// domain info
-				Domain domain = new Domain();
-				War domainWar = reportWar(strDomainDocBase);
-				domain.setKernel(kernel);
-				domain.setWar(domainWar);
-
-				res.addDomain(domain);
 			}
 		}
 
-		Container container = new Container();
-		container.setInstallPath(config.getContainerInstallPath());
-		container.setName(config.getContainerType().toString().toLowerCase());
-		container.setStatus(getStatus());
-		// TODO
-		container.setVersion("");
-		res.setContainer(container);
-		res.setIp(NetworkInterfaceManager.INSTANCE.getLocalHostAddress());
+		File serverXml = config.getServerXml();
+		if (serverXml == null || !serverXml.exists()) {
+			String path = serverXml == null ? null : serverXml.getAbsolutePath();
+			throw new RuntimeException(String.format("container server.xml not found %s", path));
+		}
+		attachPhoenixContextLoader(serverXml, String.format(config.getDomainDocBaseFeaturePattern(), domain),
+				config.getLoaderClass(), new File(String.format(config.getKernelDocBasePattern(), domain, version)));
+	}
 
-		res.setVersion(findAgentVersion());
+	/**
+	 * Add phoenix &lt;Loader&gt; to matched &lt;Context&gt;
+	 * 
+	 * @param serverXml
+	 *            server.xml to process
+	 * @param docBasePattern
+	 *            the pattern to find &lt;Context&gt; whose docBase attribute
+	 *            matches <code>docBasePattern</code>, see
+	 *            {@link #isDocBaseMatch(String, String)}
+	 * @param loaderClass
+	 *            full class name of phoenix loader
+	 * @param kernelDocBase
+	 *            phoenix loader's docBase
+	 * @throws Exception
+	 */
+	private void attachPhoenixContextLoader(File serverXml, String docBasePattern, String loaderClass,
+			File kernelDocBase) throws Exception {
+		logger.info(String.format("try to add <Loader> whose docBase matches %s in %s", docBasePattern,
+				serverXml.getAbsolutePath()));
 
-		return res;
+		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		Document doc = builder.parse(serverXml);
+		NodeList ctxList = doc.getElementsByTagName("Context");
+
+		int ctxFound = 0;
+		for (int i = 0; i < ctxList.getLength(); i++) {
+			Element ctx = (Element) ctxList.item(i);
+			String docBase = ctx.getAttribute("docBase");
+			if (isDocBaseMatch(docBase, docBasePattern)) {
+				ctxFound++;
+				logger.info(String.format("found matched <Context docBase=\"%s\">", docBase));
+				int loaderCnt = ((Element) ctx).getElementsByTagName("Loader").getLength();
+				if (loaderCnt == 0) {
+					logger.info("no <Loader> found, add it");
+					Element loader = doc.createElement("Loader");
+					loader.setAttribute("className", loaderClass);
+					loader.setAttribute("kernelDocBase", kernelDocBase.getAbsolutePath());
+					ctx.appendChild(loader);
+					writeDocument(serverXml, doc);
+				} else {
+					logger.info("<Loader> already exists, won't add");
+				}
+				break;
+			}
+		}
+		logger.info(String.format("found %d matched <Context>", ctxFound));
+	}
+
+	@Override
+	public void detachContainerLoader(String domain) throws Exception {
+		if (config.getContainerType() == ContainerType.TOMCAT) {
+			File serverXmlDir = new File(config.getContainerInstallPath() + "/config/Catalina/localhost/");
+			if (serverXmlDir != null && serverXmlDir.exists()) {
+				for (File serverXml : serverXmlDir.listFiles()) {
+					detachPhoenixContextLoader(serverXml,
+							String.format(config.getDomainDocBaseFeaturePattern(), domain));
+				}
+			}
+		}
+		File serverXml = config.getServerXml();
+		if (serverXml == null || !serverXml.exists()) {
+			String path = serverXml == null ? null : serverXml.getAbsolutePath();
+			throw new RuntimeException(String.format("container server.xml not found %s", path));
+		}
+		detachPhoenixContextLoader(serverXml, String.format(config.getDomainDocBaseFeaturePattern(), domain));
+	}
+
+	/**
+	 * Remove phoenix &lt;Loader&gt; to matched &lt;Context&gt;
+	 * 
+	 * @param serverXml
+	 * @param docBasePattern
+	 * @throws Exception
+	 */
+	private void detachPhoenixContextLoader(File serverXml, String docBasePattern) throws Exception {
+		logger.info(String.format("try to remove <Loader> whose docBase matches %s", docBasePattern));
+
+		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		Document doc = builder.parse(serverXml);
+		NodeList ctxList = doc.getElementsByTagName("Context");
+		for (int i = 0; i < ctxList.getLength(); i++) {
+			Element ctx = (Element) ctxList.item(i);
+			String docBase = ctx.getAttribute("docBase");
+			if (isDocBaseMatch(docBase, docBasePattern)) {
+				logger.info(String.format("found matched <Context docBase=\"%s\">", docBase));
+				NodeList loaderList = ((Element) ctx).getElementsByTagName("Loader");
+				if (loaderList.getLength() > 0) {
+					logger.info("<Loader> found, remove it");
+					for (int j = 0; j < loaderList.getLength(); j++) {
+						ctx.removeChild(loaderList.item(j));
+					}
+					writeDocument(serverXml, doc);
+				} else {
+					logger.info("no <Loader> found, won't remove");
+				}
+				return;
+			}
+		}
 	}
 
 	private String findAgentVersion() {
@@ -134,6 +209,70 @@ public class DefaultContainerManager extends ContainerHolder implements Containe
 			}
 		}
 		return status;
+	}
+
+	/**
+	 * Whether the value of &lt;Context&gt;'s docBase attribute matches
+	 * specified <code>docBasePattern</code>
+	 * 
+	 * @param docBase
+	 *            the docBase
+	 * @param docBaseSuffix
+	 *            the docBasePattern
+	 * @return
+	 */
+	public boolean isDocBaseMatch(String docBase, String docBaseSuffix) {
+		docBase = trimAndRemoveTailingSlash(docBase);
+		docBaseSuffix = trimAndRemoveTailingSlash(docBaseSuffix);
+		return docBase.endsWith(docBaseSuffix);
+	}
+
+	@Override
+	public Response reportContainerStatus() throws Exception {
+		Response res = new Response();
+		File serverXml = config.getServerXml();
+		if (serverXml != null && serverXml.exists()) {
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document doc = builder.parse(serverXml);
+			NodeList ctxList = doc.getElementsByTagName("Context");
+			// for each <Context>
+			for (int i = 0; i < ctxList.getLength(); i++) {
+				Element ctx = (Element) ctxList.item(i);
+				String strDomainDocBase = ctx.getAttribute("docBase");
+				NodeList loaderList = ctx.getElementsByTagName("Loader");
+				String strKernelDocBase = null;
+				if (loaderList.getLength() > 0) {
+					Element loader = (Element) loaderList.item(0);
+					strKernelDocBase = loader.getAttribute("kernelDocBase");
+				}
+
+				// kernel info
+				War kernelWar = reportWar(strKernelDocBase);
+				Kernel kernel = new Kernel();
+				kernel.setWar(kernelWar);
+
+				// domain info
+				Domain domain = new Domain();
+				War domainWar = reportWar(strDomainDocBase);
+				domain.setKernel(kernel);
+				domain.setWar(domainWar);
+
+				res.addDomain(domain);
+			}
+		}
+
+		Container container = new Container();
+		container.setInstallPath(config.getContainerInstallPath());
+		container.setName(config.getContainerType().toString().toLowerCase());
+		container.setStatus(getStatus());
+		// TODO
+		container.setVersion("");
+		res.setContainer(container);
+		res.setIp(NetworkInterfaceManager.INSTANCE.getLocalHostAddress());
+
+		res.setVersion(findAgentVersion());
+
+		return res;
 	}
 
 	/**
@@ -189,87 +328,12 @@ public class DefaultContainerManager extends ContainerHolder implements Containe
 		}
 	}
 
-	/**
-	 * Add phoenix &lt;Loader&gt; to matched &lt;Context&gt;
-	 * 
-	 * @param serverXml
-	 *            server.xml to process
-	 * @param docBasePattern
-	 *            the pattern to find &lt;Context&gt; whose docBase attribute
-	 *            matches <code>docBasePattern</code>, see
-	 *            {@link #isDocBaseMatch(String, String)}
-	 * @param loaderClass
-	 *            full class name of phoenix loader
-	 * @param kernelDocBase
-	 *            phoenix loader's docBase
-	 * @throws Exception
-	 */
-	@Override
-	public void attachPhoenixContextLoader(File serverXml, String docBasePattern, String loaderClass, File kernelDocBase)
-			throws Exception {
-		logger.info(String.format("try to add <Loader> whose docBase matches %s in %s", docBasePattern,
-				serverXml.getAbsolutePath()));
-
-		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		Document doc = builder.parse(serverXml);
-		NodeList ctxList = doc.getElementsByTagName("Context");
-
-		int ctxFound = 0;
-		for (int i = 0; i < ctxList.getLength(); i++) {
-			Element ctx = (Element) ctxList.item(i);
-			String docBase = ctx.getAttribute("docBase");
-			if (isDocBaseMatch(docBase, docBasePattern)) {
-				ctxFound++;
-				logger.info(String.format("found matched <Context docBase=\"%s\">", docBase));
-				int loaderCnt = ((Element) ctx).getElementsByTagName("Loader").getLength();
-				if (loaderCnt == 0) {
-					logger.info("no <Loader> found, add it");
-					Element loader = doc.createElement("Loader");
-					loader.setAttribute("className", loaderClass);
-					loader.setAttribute("kernelDocBase", kernelDocBase.getAbsolutePath());
-					ctx.appendChild(loader);
-					writeDocument(serverXml, doc);
-				} else {
-					logger.info("<Loader> already exists, won't add");
-				}
-				break;
-			}
+	private String trimAndRemoveTailingSlash(String docBase) {
+		docBase = docBase.trim();
+		while (docBase.endsWith("/") || docBase.endsWith("\\")) {
+			docBase = docBase.substring(0, docBase.length() - 1);
 		}
-		logger.info(String.format("found %d matched <Context>", ctxFound));
-	}
-
-	/**
-	 * Remove phoenix &lt;Loader&gt; to matched &lt;Context&gt;
-	 * 
-	 * @param serverXml
-	 * @param docBasePattern
-	 * @throws Exception
-	 */
-	@Override
-	public void detachPhoenixContextLoader(File serverXml, String docBasePattern) throws Exception {
-		logger.info(String.format("try to remove <Loader> whose docBase matches %s", docBasePattern));
-
-		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		Document doc = builder.parse(serverXml);
-		NodeList ctxList = doc.getElementsByTagName("Context");
-		for (int i = 0; i < ctxList.getLength(); i++) {
-			Element ctx = (Element) ctxList.item(i);
-			String docBase = ctx.getAttribute("docBase");
-			if (isDocBaseMatch(docBase, docBasePattern)) {
-				logger.info(String.format("found matched <Context docBase=\"%s\">", docBase));
-				NodeList loaderList = ((Element) ctx).getElementsByTagName("Loader");
-				if (loaderList.getLength() > 0) {
-					logger.info("<Loader> found, remove it");
-					for (int j = 0; j < loaderList.getLength(); j++) {
-						ctx.removeChild(loaderList.item(j));
-					}
-					writeDocument(serverXml, doc);
-				} else {
-					logger.info("no <Loader> found, won't remove");
-				}
-				return;
-			}
-		}
+		return docBase;
 	}
 
 	/**
@@ -285,57 +349,5 @@ public class DefaultContainerManager extends ContainerHolder implements Containe
 		FileOutputStream fout = new FileOutputStream(serverXml);
 		StreamResult result = new StreamResult(fout);
 		transformer.transform(source, result);
-	}
-
-	/**
-	 * Whether the value of &lt;Context&gt;'s docBase attribute matches
-	 * specified <code>docBasePattern</code>
-	 * 
-	 * @param docBase
-	 *            the docBase
-	 * @param docBaseSuffix
-	 *            the docBasePattern
-	 * @return
-	 */
-	public boolean isDocBaseMatch(String docBase, String docBaseSuffix) {
-		docBase = trimAndRemoveTailingSlash(docBase);
-		docBaseSuffix = trimAndRemoveTailingSlash(docBaseSuffix);
-		return docBase.endsWith(docBaseSuffix);
-	}
-
-	private String trimAndRemoveTailingSlash(String docBase) {
-		docBase = docBase.trim();
-		while (docBase.endsWith("/") || docBase.endsWith("\\")) {
-			docBase = docBase.substring(0, docBase.length() - 1);
-		}
-		return docBase;
-	}
-
-	@Override
-	public void attachContainerLoader(String domain, String version) throws Exception {
-
-		if (config.getContainerType() == ContainerType.TOMCAT) {
-			File serverXmlDir = new File(config.getContainerInstallPath() + "/conf/Catalina/localhost/");
-			if (serverXmlDir != null && serverXmlDir.exists()) {
-				for (File serverXml : serverXmlDir.listFiles()) {
-					doAttach(domain, version, serverXml);
-				}
-			}
-		}
-
-		File serverXml = config.getServerXml();
-		if (serverXml == null || !serverXml.exists()) {
-			String path = serverXml == null ? null : serverXml.getAbsolutePath();
-			throw new RuntimeException(String.format("container server.xml not found %s", path));
-		}
-
-		doAttach(domain, version, serverXml);
-
-	}
-
-	private void doAttach(String domain, String version, File serverXml) throws Exception {
-		File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), domain, version));
-		String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), domain);
-		attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(), kernelDocBase);
 	}
 }
