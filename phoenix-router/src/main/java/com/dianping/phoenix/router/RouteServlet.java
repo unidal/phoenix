@@ -1,7 +1,6 @@
 package com.dianping.phoenix.router;
 
 import java.io.IOException;
-import java.net.URL;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,21 +8,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
 import org.apache.log4j.Logger;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 import com.dianping.phoenix.router.RequestMapper.REQUEST_TYPE;
-import com.dianping.phoenix.router.urlfilter.FilterChain;
-import com.dianping.phoenix.router.urlfilter.UrlHolder;
+import com.dianping.phoenix.router.filter.FilterChain;
+import com.dianping.phoenix.router.filter.request.RequestHolder;
 
 @SuppressWarnings("serial")
 public class RouteServlet extends HttpServlet {
 
 	private static Logger log = Logger.getLogger(RouteServlet.class);
 
-	private RequestMapper rt = null;
+	private RequestMapper rm = null;
 	private PlexusContainer container;
 
 	@Override
@@ -31,7 +33,7 @@ public class RouteServlet extends HttpServlet {
 		super.init();
 		try {
 			container = new DefaultPlexusContainer();
-			rt = container.lookup(RequestMapper.class);
+			rm = container.lookup(RequestMapper.class);
 		} catch (Exception e) {
 			log.error("error create plexus container", e);
 			throw new RuntimeException(e);
@@ -43,29 +45,37 @@ public class RouteServlet extends HttpServlet {
 		proxyRequest(req, resp, REQUEST_TYPE.GET);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void proxyRequest(HttpServletRequest req, HttpServletResponse resp, REQUEST_TYPE type)
 			throws IOException {
 		String reqUri = req.getRequestURI();
 		log.info("receiving request " + reqUri);
-		FilterChain fc;
+		FilterChain<RequestHolder> fc;
 		try {
 			fc = container.lookup(FilterChain.class);
 		} catch (ComponentLookupException e) {
 			log.error("no FilterChain found", e);
 			throw new RuntimeException(e);
 		}
+		
 		if (shouldMapUri(reqUri)) {
-			String targetUrl = fc.doFilter(new UrlHolder(req)).toUrl();
-			log.info(String.format("mapping uri %s to %s", reqUri, targetUrl));
-			if(shouldMapUri(new URL(targetUrl).getPath())) {
-				String msg = "no mapping rule for " + reqUri;
-				log.error(msg);
-				throw new RuntimeException(msg);
-			}
-			IOUtils.copy(rt.send(req, targetUrl, type), resp.getOutputStream());
+			RequestHolder reqHolder = fc.doFilter(new RequestHolder(req));
+			String targetUrl = reqHolder.toUrl();
+			log.info(String.format("mapping uri %s to %s", reqUri, targetUrl ));
+			HttpResponse proxyResp = rm.send(req, reqHolder, type);
+			copyResponse(proxyResp, resp);
 		} else {
 			resp.getOutputStream().write(reqUri.getBytes());
 		}
+	}
+
+	private void copyResponse(HttpResponse proxyResp, HttpServletResponse resp) throws IOException {
+		for (Header header : proxyResp.getAllHeaders()) {
+			if(!StringUtils.equalsIgnoreCase(header.getName(), "Content-Length")) {
+				resp.addHeader(header.getName(), header.getValue());
+			}
+		}
+		IOUtils.copy(proxyResp.getEntity().getContent(), resp.getOutputStream());
 	}
 
 	private boolean shouldMapUri(String reqUri) {

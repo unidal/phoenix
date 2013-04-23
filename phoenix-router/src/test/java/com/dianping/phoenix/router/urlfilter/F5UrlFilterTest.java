@@ -7,10 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.phoenix.router.urlfilter.DefaultFilterChain;
-import com.dianping.phoenix.router.urlfilter.F5UrlFilter;
-import com.dianping.phoenix.router.urlfilter.FilterChain;
-import com.dianping.phoenix.router.urlfilter.UrlHolder;
+import com.dianping.phoenix.router.filter.FilterChain;
+import com.dianping.phoenix.router.filter.request.DefaultFilterChain;
+import com.dianping.phoenix.router.filter.request.F5UrlFilter;
+import com.dianping.phoenix.router.filter.request.RequestHolder;
 
 public class F5UrlFilterTest extends ComponentTestCase {
 
@@ -44,13 +44,14 @@ public class F5UrlFilterTest extends ComponentTestCase {
 	private void test(String urlPrefix, String path, boolean match) throws IOException {
 		String expectedUrl = urlPrefix + path;
 		
-		UrlHolder urlHolder = new UrlHolder();
+		RequestHolder urlHolder = new RequestHolder();
 		urlHolder.setPath(path);
 		urlHolder.setHost("127.0.0.1");
 		urlHolder.setPort(9090);
 		urlHolder.setProtocol("http");
 		
-		FilterChain fc = new DefaultFilterChain(f5Filter);
+		@SuppressWarnings("unchecked")
+		FilterChain<RequestHolder> fc = new DefaultFilterChain(f5Filter);
 		String newUrl = fc.doFilter(urlHolder).toUrl();
 		
 		if (match) {

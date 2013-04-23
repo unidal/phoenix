@@ -1,7 +1,7 @@
 package com.dianping.phoenix.deploy.agent;
 
 public enum AgentStatus {
-	SUCCESS(0, "success"),
+	SUCCESS(0, "successful"),
 
 	PENDING(1, "pending"),
 

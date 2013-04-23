@@ -1,5 +1,7 @@
 package com.dianping.phoenix.agent.core.task.processor.upgrade;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -60,6 +62,21 @@ public class DefaultAgentUpgradeStepProvider implements AgentUpgradeStepProvider
 
 	@Override
 	public int init(Context ctx) throws Exception {
+		String tempScriptFile = config.getTempScriptDir() + "/phoenix-agent-self-upgrade.sh."
+				+ System.currentTimeMillis();
+		File tmpFile = new File(tempScriptFile);
+		if (!tmpFile.exists()) {
+			try {
+				if (!tmpFile.getParentFile().exists()) {
+					tmpFile.getParentFile().mkdirs();
+				}
+				tmpFile.createNewFile();
+			} catch (IOException e) {
+				throw new RuntimeException("Can not create temp script file: " + tempScriptFile);
+			}
+		}
+		((AgentUpgradeContext) ctx).setTempScriptFile(tempScriptFile);
+		
 		return runShellCmd("init", ctx);
 	}
 

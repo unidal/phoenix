@@ -2,7 +2,9 @@ package com.dianping.phoenix.agent.core.task.processor.upgrade;
 
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.cat.Cat;
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
+import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.workflow.Context;
 
 public class AgentUpgradeContext extends Context {
@@ -11,8 +13,15 @@ public class AgentUpgradeContext extends Context {
 	@Inject
 	private ScriptExecutor scriptExecutor;
 
+	private com.dianping.cat.message.Transaction c_agentUpgrade;
+	private String c_transId;
+
 	private String underLyingFile;
-	private String tempScriptFile = "phoenix-agent-self-upgrade.sh." + System.currentTimeMillis();
+	private String tempScriptFile;
+
+	public void setTempScriptFile(String tempScriptFile) {
+		this.tempScriptFile = tempScriptFile;
+	}
 
 	public String getUnderLyingFile() {
 		return underLyingFile;
@@ -32,5 +41,25 @@ public class AgentUpgradeContext extends Context {
 
 	public String getTempScriptFile() {
 		return tempScriptFile;
+	}
+
+	public com.dianping.cat.message.Transaction getCatTransaction() {
+		return c_agentUpgrade;
+	}
+
+	public String getCatTransactionId() {
+		return c_transId;
+	}
+
+	@Override
+	public void setTask(Task task) {
+		super.setTask(task);
+		AgentUpgradeTask tsk = (AgentUpgradeTask) task;
+		c_agentUpgrade = Cat.getProducer().newTransaction("AgentUpgrade", tsk.getAgentVersion());
+		try {
+			c_transId = Cat.getProducer().createMessageId();
+		} catch (Exception e) {
+			c_transId = "no-cat-id";
+		}
 	}
 }

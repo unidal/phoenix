@@ -1,10 +1,13 @@
+# usage:
+# -javaagent:{BYTEMAN_HOME}/lib/byteman.jar=script:{BTM_HOME}/{BTM_NAME},boot:{BYTEMAN_HOME}/lib/byteman.jar -Dorg.jboss.byteman.transform.all
+#
 RULE lion change
 CLASS com.dianping.lion.client.InitializeConfig
 METHOD postProcessBeanFactory
 AT INVOKE setPts
 IF true
 #set($dollar = "$")
-DO #foreach($kv in $lionConfig.entrySet())
+DO #foreach($kv in $args.entrySet())
    ${dollar}this.pts.put("${kv.key}", "${kv.value}");
    #end
    System.out.println("Phoenix runtime config modification complete...")

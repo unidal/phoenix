@@ -360,6 +360,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 						if ("failed".equals(progress.getStatus())) {
 							updateStatus(AgentStatus.FAILED, segment);
+						} else if("successful".equals(progress.getStatus())) {
+							updateStatus(AgentStatus.SUCCESS, segment);
 						}
 					} catch (Exception e) {
 						e.printStackTrace(); // TODO
