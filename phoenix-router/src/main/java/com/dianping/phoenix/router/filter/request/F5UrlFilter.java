@@ -46,7 +46,11 @@ public class F5UrlFilter extends ContainerHolder implements Filter<RequestHolder
 			pool2UrlPattern.put(pool.getName(), pool.getUrlPattern());
 		}
 		for (F5Rule f5Rule : f5RuleList) {
-			f5RuleWrapperList.add(new F5RuleWrapper(f5Rule, pool2UrlPattern.get(f5Rule.getTargetPool())));
+			String targetPool = pool2UrlPattern.get(f5Rule.getTargetPool());
+			if(targetPool == null) {
+				targetPool = pool2UrlPattern.get("Default");
+			}
+			f5RuleWrapperList.add(new F5RuleWrapper(f5Rule, targetPool));
 		}
 	}
 
