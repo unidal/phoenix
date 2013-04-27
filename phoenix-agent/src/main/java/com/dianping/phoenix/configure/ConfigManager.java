@@ -4,7 +4,9 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -37,7 +39,7 @@ public class ConfigManager implements Initializable {
 
 	private ContainerType containerType;
 
-	private File serverXml;
+	private List<File> serverXmlList = new ArrayList<File>();
 
 	private String loaderClass;
 
@@ -109,10 +111,27 @@ public class ConfigManager implements Initializable {
 		return loaderClass;
 	}
 
-	public File getServerXml() {
+	public List<File> getServerXmlList() {
+		return serverXmlList;
+	}
+	
+	public List<File> getServerXmlFileList() {
 		check();
-
-		return serverXml;
+		List<File> fileList = new ArrayList<File>();
+		for(File fileOrDir:serverXmlList){
+			if (fileOrDir != null && fileOrDir.exists()) {
+				if(fileOrDir.isDirectory()){	
+					for (File file : fileOrDir.listFiles()) {
+						if(file.isFile()) {
+							fileList.add(file);
+						}
+					}
+				} else {
+					fileList.add(fileOrDir);
+				}
+			}
+		}
+		return fileList;
 	}
 
 	/**
@@ -202,11 +221,12 @@ public class ConfigManager implements Initializable {
 		// initialize loaderClass and serverXml
 		if (containerType == ContainerType.TOMCAT) {
 			loaderClass = TOMCAT_LOADER_CLASS;
-			serverXml = new File(containerInstallPath + "/conf/server.xml");
+			serverXmlList.add(new File(containerInstallPath + "/conf/server.xml"));
+			serverXmlList.add(new File(containerInstallPath + "/conf/Catalina/localhost/"));
 		} else {
 			loaderClass = JBOSS_LOADER_CLASS;
-			serverXml = new File(String.format("%s/server/%s/deploy/jboss-web.deployer/server.xml",
-					containerInstallPath, m_config.getAgent().getJbossServerName()));
+			serverXmlList.add(new File(String.format("%s/server/%s/deploy/jboss-web.deployer/server.xml",
+					containerInstallPath, m_config.getAgent().getJbossServerName())));
 		}
 
 		logAllField(this);
@@ -273,5 +293,4 @@ public class ConfigManager implements Initializable {
 		}
 		return new File(scriptUrl.getPath());
 	}
-
 }

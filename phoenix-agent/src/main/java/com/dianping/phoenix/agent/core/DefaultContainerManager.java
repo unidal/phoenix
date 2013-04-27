@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -44,25 +45,20 @@ public class DefaultContainerManager extends ContainerHolder implements Containe
 
 	@Override
 	public void attachContainerLoader(String domain, String version) throws Exception {
+		
+		List<File> serverXmlList = config.getServerXmlFileList();
 
-		if (config.getContainerType() == ContainerType.TOMCAT) {
-			File serverXmlDir = new File(config.getContainerInstallPath() + "/conf/Catalina/localhost/");
-			if (serverXmlDir != null && serverXmlDir.exists()) {
-				for (File serverXml : serverXmlDir.listFiles()) {
-					attachPhoenixContextLoader(serverXml,
-							String.format(config.getDomainDocBaseFeaturePattern(), domain), config.getLoaderClass(),
-							new File(String.format(config.getKernelDocBasePattern(), domain, version)));
-				}
-			}
+		if(serverXmlList.size() == 0) {
+			throw new RuntimeException("Container config not found!");
 		}
-
-		File serverXml = config.getServerXml();
-		if (serverXml == null || !serverXml.exists()) {
-			String path = serverXml == null ? null : serverXml.getAbsolutePath();
-			throw new RuntimeException(String.format("container server.xml not found %s", path));
+	
+		for(File serverXml:serverXmlList){
+			File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), domain,
+					version));
+			String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), domain);
+			attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(),
+					kernelDocBase);
 		}
-		attachPhoenixContextLoader(serverXml, String.format(config.getDomainDocBaseFeaturePattern(), domain),
-				config.getLoaderClass(), new File(String.format(config.getKernelDocBasePattern(), domain, version)));
 	}
 
 	/**
@@ -124,12 +120,13 @@ public class DefaultContainerManager extends ContainerHolder implements Containe
 				}
 			}
 		}
-		File serverXml = config.getServerXml();
-		if (serverXml == null || !serverXml.exists()) {
-			String path = serverXml == null ? null : serverXml.getAbsolutePath();
-			throw new RuntimeException(String.format("container server.xml not found %s", path));
+		List<File> serverXmlList = config.getServerXmlFileList();
+		if(serverXmlList.size() == 0) {
+			throw new RuntimeException("Container config not found!");
 		}
-		detachPhoenixContextLoader(serverXml, String.format(config.getDomainDocBaseFeaturePattern(), domain));
+		for(File serverXml:serverXmlList){
+			detachPhoenixContextLoader(serverXml, String.format(config.getDomainDocBaseFeaturePattern(), domain));
+		}
 	}
 
 	/**
@@ -230,8 +227,8 @@ public class DefaultContainerManager extends ContainerHolder implements Containe
 	@Override
 	public Response reportContainerStatus() throws Exception {
 		Response res = new Response();
-		File serverXml = config.getServerXml();
-		if (serverXml != null && serverXml.exists()) {
+		List<File> serverXmlList = config.getServerXmlFileList();
+		for(File serverXml:serverXmlList) {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document doc = builder.parse(serverXml);
 			NodeList ctxList = doc.getElementsByTagName("Context");

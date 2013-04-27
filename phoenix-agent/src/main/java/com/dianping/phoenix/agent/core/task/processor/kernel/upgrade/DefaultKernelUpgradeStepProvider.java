@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.unidal.lookup.ContainerHolder;
@@ -52,10 +53,17 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("error parsing host from kernel git url %s", kernelGitUrl), e);
 		}
-
+		StringBuilder serverXmlString = new StringBuilder();
+		for(File serverXml:config.getServerXmlList()){
+			if(serverXmlString.length() != 0) {
+				serverXmlString.append(",");
+			}
+			serverXmlString.append(serverXml.getAbsolutePath());
+		}
+		
 		sb.append(config.getAgentScriptFile().getAbsolutePath());
 		sb.append(String.format(" --container_install_path \"%s\" ", config.getContainerInstallPath()));
-		sb.append(String.format(" --server_xml \"%s\" ", config.getServerXml()));
+		sb.append(String.format(" --server_xml \"%s\" ", serverXmlString));
 		sb.append(String.format(" --container_type \"%s\" ", config.getContainerType().toString()));
 		sb.append(String.format(" --domain \"%s\" ", task.getDomain()));
 		sb.append(String.format(" --kernel_version \"%s\" ", task.getKernelVersion()));
@@ -70,32 +78,21 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 
 	private void doInjectPhoenixLoader(Context ctx) throws Exception {
 		DeployTask task = (DeployTask) ((KernelUpgradeContext) ctx).getTask();
-		ContainerType type = config.getContainerType();
 
-		if (type == ContainerType.TOMCAT) {
-			File serverXmlDir = new File(config.getContainerInstallPath() + "/conf/Catalina/localhost/");
-			if (serverXmlDir != null && serverXmlDir.exists()) {
-				for (File serverXml : serverXmlDir.listFiles()) {
-					attachPhoenixContextLoader(task, serverXml);
-				}
-			}
+		List<File> serverXmlList = config.getServerXmlFileList();
+		
+		if(serverXmlList.size() == 0) {
+			throw new RuntimeException("Container config not found!");
+		}
+	
+		for(File serverXml:serverXmlList){
+			File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), task.getDomain(),
+					task.getKernelVersion()));
+			String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain());
+			m_serverXmlManager.attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(),
+					kernelDocBase);
 		}
 
-		File serverXml = config.getServerXml();
-		if (serverXml == null || !serverXml.exists()) {
-			String path = serverXml == null ? null : serverXml.getAbsolutePath();
-			throw new RuntimeException(String.format("container server.xml not found %s", path));
-		}
-
-		attachPhoenixContextLoader(task, serverXml);
-	}
-
-	private void attachPhoenixContextLoader(DeployTask task, File serverXml) throws Exception {
-		File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), task.getDomain(),
-				task.getKernelVersion()));
-		String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain());
-		m_serverXmlManager.attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(),
-				kernelDocBase);
 	}
 
 	@Override

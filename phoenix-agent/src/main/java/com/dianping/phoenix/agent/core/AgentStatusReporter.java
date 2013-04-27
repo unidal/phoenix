@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -42,8 +43,8 @@ public class AgentStatusReporter extends ContainerHolder {
 
 	public Response report() throws Exception {
 		Response res = new Response();
-		File serverXml = config.getServerXml();
-		if (serverXml != null && serverXml.exists()) {
+		List<File> serverXmlList = config.getServerXmlFileList();
+		for(File serverXml:serverXmlList) {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document doc = builder.parse(serverXml);
 			NodeList ctxList = doc.getElementsByTagName("Context");

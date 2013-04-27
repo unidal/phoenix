@@ -1,5 +1,7 @@
 package com.dianping.phoenix.agent.core.task.processor.kernel;
 
+import java.io.File;
+
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessor;
@@ -37,8 +39,10 @@ public class DetachTaskProcessor extends AbstractSerialTaskProcessor<DetachTask>
 	@Override
 	protected Status doTransaction(Transaction tx) throws Exception {
 		DetachTask task = (DetachTask) tx.getTask();
-		m_serverXmlManager.detachPhoenixContextLoader(config.getServerXml(),
+		for(File file:config.getServerXmlFileList()) {
+			m_serverXmlManager.detachPhoenixContextLoader(file,
 				String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain()));
+		}
 		return Status.SUCCESS;
 	}
 

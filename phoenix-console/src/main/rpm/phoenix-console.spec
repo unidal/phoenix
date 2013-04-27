@@ -15,7 +15,7 @@ BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-XXXXXXXXXX)
 
 
 %description
-A powerful console to control phoenix agent
+A powerful console to upgrade kernel and agent
 
 
 %prep
