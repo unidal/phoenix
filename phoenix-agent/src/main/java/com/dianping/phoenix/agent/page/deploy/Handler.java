@@ -16,7 +16,7 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.agent.core.Agent;
-import com.dianping.phoenix.agent.core.AgentStatusReporter;
+import com.dianping.phoenix.agent.core.ContainerManager;
 import com.dianping.phoenix.agent.core.event.EventTracker;
 import com.dianping.phoenix.agent.core.task.Task;
 import com.dianping.phoenix.agent.core.task.processor.SubmitResult;
@@ -43,7 +43,7 @@ public class Handler implements PageHandler<Context> {
 	@Inject
 	private TransactionManager txMgr;
 	@Inject
-	private AgentStatusReporter agentStatusReporter;
+	private ContainerManager m_containerManager;
 
 	@Override
 	@PayloadMeta(Payload.class)
@@ -92,7 +92,7 @@ public class Handler implements PageHandler<Context> {
 
 		switch (payload.getAction()) {
 		case DEFAULT:
-			res = agentStatusReporter.report();
+			res = m_containerManager.reportContainerStatus();
 			res.setStatus("ok");
 			break;
 
