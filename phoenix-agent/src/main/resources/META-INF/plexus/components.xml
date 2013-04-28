@@ -41,6 +41,27 @@
 			<implementation>com.dianping.phoenix.configure.ConfigManager</implementation>
 		</component>
 		<component>
+			<role>com.dianping.phoenix.agent.core.ContainerManager</role>
+			<implementation>com.dianping.phoenix.agent.core.DefaultContainerManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
+			<implementation>com.dianping.phoenix.agent.core.AgentStatusReporter</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.ContainerManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.phoenix.agent.core.Agent</role>
 			<implementation>com.dianping.phoenix.agent.core.DefaultAgent</implementation>
 			<requirements>
@@ -49,6 +70,9 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -172,15 +196,6 @@
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.upgrade.AgentUpgradeStepProvider</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.upgrade.DefaultAgentUpgradeStepProvider</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.configure.ConfigManager</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.agent.core.ContainerManager</role>
-			<implementation>com.dianping.phoenix.agent.core.DefaultContainerManager</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>

@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
@@ -23,7 +25,7 @@ import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
 
-public class DefaultAgent implements Agent {
+public class DefaultAgent implements Agent, Initializable {
 
 	private final static Logger logger = Logger.getLogger(DefaultAgent.class);
 
@@ -31,6 +33,9 @@ public class DefaultAgent implements Agent {
 	private TransactionManager txMgr;
 	@Inject
 	private TaskProcessorFactory taskProcessorFactory;
+	@Inject
+	private AgentStatusReporter agentStatusReporter;
+
 	private Map<TransactionId, TaskProcessor<Task>> txId2Processor;
 
 	public DefaultAgent() {
@@ -57,13 +62,13 @@ public class DefaultAgent implements Agent {
 				logger.error(String.format("no task processor found for %s", tx.getTask()));
 			}
 		}
-		
+
 		return submitResult;
 	}
 
 	private void addCleanupEventTracker(Transaction tx, final TransactionId txId) {
 		EventTrackerChain eventTrackerChain = new EventTrackerChain();
-		
+
 		eventTrackerChain.add(new AbstractEventTracker() {
 
 			@Override
@@ -77,7 +82,7 @@ public class DefaultAgent implements Agent {
 
 		});
 		eventTrackerChain.add(tx.getEventTracker());
-		
+
 		tx.setEventTracker(eventTrackerChain);
 	}
 
@@ -118,6 +123,11 @@ public class DefaultAgent implements Agent {
 	@Override
 	public boolean isTransactionProcessing(TransactionId txId) {
 		return txId2Processor.containsKey(txId);
+	}
+
+	@Override
+	public void initialize() throws InitializationException {
+		agentStatusReporter.initialize();
 	}
 
 }

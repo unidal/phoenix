@@ -22,6 +22,7 @@
     <element name="test-service-poll-interval" value-type="int" />
     <element name="url-connect-timeout" value-type="int" />
     <element name="url-read-timeout" value-type="int" />
+    <element name="agent-heartbeat-freq" value-type="int" />
     <element name="jboss-server-name" value-type="String" />
   </entity>
   <entity name="console">

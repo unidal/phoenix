@@ -89,6 +89,12 @@ public class ConfigManager implements Initializable {
 		return m_config.getAgent().getTempScriptDir();
 	}
 
+	public int getAgentHeartbeatFreq() {
+		check();
+
+		return m_config.getAgent().getAgentHeartbeatFreq();
+	}
+
 	/**
 	 * Where domain docBase locates relative to the domain webapps root dir. Use
 	 * %s to represent domain name. Make sure starts with "/".
@@ -114,15 +120,15 @@ public class ConfigManager implements Initializable {
 	public List<File> getServerXmlList() {
 		return serverXmlList;
 	}
-	
+
 	public List<File> getServerXmlFileList() {
 		check();
 		List<File> fileList = new ArrayList<File>();
-		for(File fileOrDir:serverXmlList){
+		for (File fileOrDir : serverXmlList) {
 			if (fileOrDir != null && fileOrDir.exists()) {
-				if(fileOrDir.isDirectory()){	
+				if (fileOrDir.isDirectory()) {
 					for (File file : fileOrDir.listFiles()) {
-						if(file.isFile()) {
+						if (file.isFile()) {
 							fileList.add(file);
 						}
 					}
