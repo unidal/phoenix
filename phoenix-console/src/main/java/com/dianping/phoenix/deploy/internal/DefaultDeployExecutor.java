@@ -20,6 +20,8 @@ import org.unidal.helper.Urls;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.tuple.Pair;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.DeployConstant;
 import com.dianping.phoenix.deploy.DeployExecutor;
@@ -275,6 +277,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			m_model = model;
 			m_warType = warType;
 			m_host = model.findHost(host);
+			logRolloutTypeToCat();
 		}
 
 		@Override
@@ -348,7 +351,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 				return content;
 			} else if (url.contains("?op=log&")) {
-				AgentReader sr = new AgentReader(new PhoenixInputStreamReader(url, timeout, configManager.getDeployGetlogRetrycount()));
+				AgentReader sr = new AgentReader(new PhoenixInputStreamReader(url, timeout,
+						configManager.getDeployGetlogRetrycount()));
 				AgentProgress progress = new AgentProgress();
 
 				while (sr.hasNext()) {
@@ -360,7 +364,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 						if ("failed".equals(progress.getStatus())) {
 							updateStatus(AgentStatus.FAILED, segment);
-						} else if("successful".equals(progress.getStatus())) {
+						} else if ("successful".equals(progress.getStatus())) {
 							updateStatus(AgentStatus.SUCCESS, segment);
 						}
 					} catch (Exception e) {
@@ -463,6 +467,17 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		@Override
 		public String getWarType() {
 			return m_warType;
+		}
+
+		@Override
+		public void logEventToCat(String stepName, boolean successOrNot) {
+			String catType = getHost() + "::" + getDomain() + "::" + getWarType();
+			Cat.getProducer().logEvent(catType, "STEP::" + stepName, successOrNot ? Message.SUCCESS : "FAILED", "");
+		}
+
+		private void logRolloutTypeToCat() {
+			String catType = getHost() + "::" + getDomain() + "::" + getWarType();
+			Cat.getProducer().logEvent(catType, "VERSION::" + getVersion() + "::" + getDeployId(), Message.SUCCESS, "");
 		}
 	}
 

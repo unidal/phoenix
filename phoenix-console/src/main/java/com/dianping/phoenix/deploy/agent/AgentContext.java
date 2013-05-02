@@ -45,4 +45,6 @@ public interface AgentContext {
 	public void setState(AgentState state);
 
 	public void updateStatus(AgentStatus status, String message);
+	
+	public void logEventToCat(String stepName, boolean successOrNot);
 }

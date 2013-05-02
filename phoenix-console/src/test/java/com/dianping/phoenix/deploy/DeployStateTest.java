@@ -345,5 +345,10 @@ public class DeployStateTest extends ComponentTestCase {
 			m_status = status;
 			m_log.append(String.format("updateStatus: %s, %s\r\n", status.getName(), message));
 		}
+
+		@Override
+		public void logEventToCat(String stepName, boolean successOrNot) {
+		}
+
 	}
 }
