@@ -2,6 +2,7 @@ package com.dianping.phoenix.deploy.agent;
 
 import java.io.IOException;
 
+import com.dianping.cat.message.Transaction;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
@@ -46,5 +47,7 @@ public interface AgentContext {
 
 	public void updateStatus(AgentStatus status, String message);
 	
-	public void logEventToCat(String stepName, boolean successOrNot);
+	public void setTransaction(Transaction transaction);
+
+	public void completeTransaction(boolean successOrNot, String metaInfos);
 }

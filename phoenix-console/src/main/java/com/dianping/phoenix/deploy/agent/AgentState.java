@@ -39,13 +39,11 @@ public enum AgentState {
 
 			if ("ok".equals(response.getStatus())) {
 				ctx.println("ACCEPTED");
-				ctx.logEventToCat(this.name(), true);
 
 				moveTo(ctx, SUBMITTED);
 			} else {
 				ctx.print(response.getStatus()).println();
 				ctx.println(response.getMessage());
-				ctx.logEventToCat(this.name(), false);
 
 				moveTo(ctx, FAILED);
 			}
@@ -92,13 +90,11 @@ public enum AgentState {
 
 				if ("ok".equals(response.getStatus())) {
 					ctx.println("ACCEPTED");
-					ctx.logEventToCat(this.name(), true);
 
 					moveTo(ctx, SUBMITTED);
 				} else {
 					ctx.print(response.getStatus()).println();
 					ctx.println(response.getMessage());
-					ctx.logEventToCat(this.name(), false);
 
 					moveTo(ctx, FAILED);
 				}
@@ -127,10 +123,8 @@ public enum AgentState {
 			}
 
 			if (ctx.getStatus() == AgentStatus.FAILED) {
-				ctx.logEventToCat(this.name(), false);
 				moveTo(ctx, FAILED);
 			} else {
-				ctx.logEventToCat(this.name(), true);
 				moveTo(ctx, SUCCESSFUL);
 			}
 		}
@@ -143,7 +137,7 @@ public enum AgentState {
 			String host = ctx.getHost();
 
 			ctx.println("[INFO] Deployed phoenix kernel(%s) to host(%s) successfully.", version, host);
-			ctx.logEventToCat(this.name(), true);
+			ctx.completeTransaction(true, null);
 		}
 	},
 
@@ -160,7 +154,7 @@ public enum AgentState {
 
 			ctx.updateStatus(AgentStatus.FAILED, message);
 			ctx.println(message);
-			ctx.logEventToCat(this.name(), false);
+			ctx.completeTransaction(false, message);
 		}
 	};
 

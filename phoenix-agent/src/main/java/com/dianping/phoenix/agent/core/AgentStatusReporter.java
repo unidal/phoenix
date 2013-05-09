@@ -9,7 +9,7 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Event;
 import com.dianping.phoenix.agent.response.entity.Domain;
 import com.dianping.phoenix.agent.response.entity.Lib;
 import com.dianping.phoenix.agent.response.entity.Response;
@@ -30,27 +30,37 @@ public class AgentStatusReporter extends ContainerHolder {
 			Response resp;
 			try {
 				resp = m_containerManager.reportContainerStatus();
+
+				// cat agent infos
 				Cat.getProducer().logEvent(
-						resp.getIp() + "::AGENT::" + resp.getVersion(),
-						resp.getContainer().getName() + "::" + resp.getContainer().getStatus(),
-						Message.SUCCESS,
-						"InstallPath=" + resp.getContainer().getInstallPath() + "&Version="
-								+ resp.getContainer().getVersion());
+						"AGENT",
+						resp.getVersion() + "::" + resp.getIp(),
+						Event.SUCCESS,
+						"ContainerType=" + resp.getContainer().getName() + "\n&ContainerInstallPath="
+								+ resp.getContainer().getInstallPath() + "\n&ContainerVersion="
+								+ resp.getContainer().getVersion() + "\n&ContainerStatus="
+								+ resp.getContainer().getStatus());
 				for (Domain domain : resp.getDomains()) {
-					String catType = resp.getIp() + "::DOMAIN::" + domain.getWar().getName() + "::"
-							+ domain.getWar().getVersion();
-					for (Lib lib : domain.getWar().getLibs()) {
-						String catName = "LIB::" + lib.getArtifactId() + "::" + lib.getVersion();
-						Cat.getProducer().logEvent(catType, catName, Message.SUCCESS, lib.getGroupId());
+					War kernelWar = domain.getKernel().getWar();
+
+					// cat kernel infos
+					for (Lib lib : kernelWar.getLibs()) {
+						Cat.getProducer().logEvent(kernelWar.getName() + "::" + kernelWar.getVersion(),
+								lib.getGroupId() + "::" + lib.getArtifactId() + "::" + lib.getVersion(),
+								Event.SUCCESS, null);
 					}
 
-					War kernelWar = domain.getKernel().getWar();
-					String catKernelType = resp.getIp() + "::KERNEL::" + domain.getWar().getName() + "::"
-							+ kernelWar.getVersion();
-					for (Lib lib : kernelWar.getLibs()) {
-						String catKernelName = "KLIB::" + lib.getArtifactId() + "::" + lib.getVersion();
-						Cat.getProducer().logEvent(catKernelType, catKernelName, Message.SUCCESS, lib.getGroupId());
+					// cat war infos
+					StringBuilder domainLibsKVPair = new StringBuilder();
+					boolean firstLib = true;
+					for (Lib lib : domain.getWar().getLibs()) {
+						domainLibsKVPair.append(firstLib ? "" : "\n&");
+						domainLibsKVPair.append(//
+								String.format("%s::%s=%s", lib.getGroupId(), lib.getArtifactId(), lib.getVersion()));
+						firstLib = firstLib ? false : firstLib;
 					}
+					Cat.getProducer().logEvent(domain.getWar().getName() + "::" + domain.getWar().getVersion(),
+							kernelWar.getVersion() + "::" + resp.getIp(), Event.SUCCESS, domainLibsKVPair.toString());
 				}
 			} catch (Exception e1) {
 				logger.error("Phoenix Agent heartbeat failed.");

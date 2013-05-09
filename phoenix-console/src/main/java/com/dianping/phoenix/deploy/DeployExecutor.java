@@ -7,5 +7,5 @@ import com.dianping.phoenix.deploy.model.entity.DeployModel;
 public interface DeployExecutor {
 	public DeployPolicy getPolicy();
 
-	public void submit(DeployModel model, List<String> hosts, String warType) throws Exception;
+	public void submit(DeployModel model, List<String> hosts, String warType, String logUri) throws Exception;
 }

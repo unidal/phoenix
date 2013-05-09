@@ -55,7 +55,7 @@ public class AgentUpgradeContext extends Context {
 	public void setTask(Task task) {
 		super.setTask(task);
 		AgentUpgradeTask tsk = (AgentUpgradeTask) task;
-		c_agentUpgrade = Cat.getProducer().newTransaction("AgentUpgrade", tsk.getAgentVersion());
+		c_agentUpgrade = Cat.getProducer().newTransaction("Agent", tsk.getAgentVersion());
 		try {
 			c_transId = Cat.getProducer().createMessageId();
 		} catch (Exception e) {

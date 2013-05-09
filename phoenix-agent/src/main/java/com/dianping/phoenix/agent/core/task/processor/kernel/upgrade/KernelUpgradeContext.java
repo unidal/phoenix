@@ -48,8 +48,8 @@ public class KernelUpgradeContext extends Context {
 	public void setTask(Task task) {
 		super.setTask(task);
 		DeployTask tsk = (DeployTask) task;
-		c_kernelUpgrade = Cat.getProducer().newTransaction("KernelUpgrade",
-				String.format("%s : %s", tsk.getDomain(), tsk.getKernelVersion()));
+		c_kernelUpgrade = Cat.getProducer().newTransaction("Kernel",
+				String.format("%s::%s", tsk.getDomain(), tsk.getKernelVersion()));
 		try {
 			c_transId = Cat.getProducer().createMessageId();
 		} catch (Exception e) {

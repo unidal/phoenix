@@ -164,7 +164,7 @@ public class AgentUpgradeStep extends AbstractStep {
 	}
 
 	private static com.dianping.cat.message.Transaction generateCatTransaction(String stepName) {
-		return Cat.getProducer().newTransaction("AgentUpgradeSteps", stepName);
+		return Cat.getProducer().newTransaction("AgentStep", stepName);
 	}
 
 }

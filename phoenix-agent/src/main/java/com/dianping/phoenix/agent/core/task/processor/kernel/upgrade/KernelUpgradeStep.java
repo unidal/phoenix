@@ -270,6 +270,6 @@ public class KernelUpgradeStep extends AbstractStep {
 	}
 
 	private static com.dianping.cat.message.Transaction generateCatTransaction(String stepName) {
-		return Cat.getProducer().newTransaction("KernelUpgradeSteps", stepName);
+		return Cat.getProducer().newTransaction("KernelStep", stepName);
 	}
 }
