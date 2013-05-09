@@ -419,8 +419,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 				while (sr.hasNext()) {
 					String segment = "";
-					segment = sr.next(progress);
-					segment = segment.replaceAll("\\t", " ");
+					segment = sr.next(progress).replaceAll("\\t", " ");
 
 					try {
 						m_listener.onProgress(this, progress, segment);
