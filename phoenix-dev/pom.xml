@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.dianping.platform</groupId>
+		<artifactId>phoenix-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>com.dianping.platform</groupId>
+	<artifactId>phoenix-dev</artifactId>
+	<version>0.1-SNAPSHOT</version>
+
+	<repositories>
+		<repository>
+			<id>jgit-repository</id>
+			<url>http://download.eclipse.org/jgit/maven</url>
+		</repository>
+		<repository>
+			<id>svnkit-repository</id>
+			<url>http://maven.tmatesoft.com/content/repositories/releases</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.jgit</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
+			<version>2.3.1.201302201838-r</version>
+		</dependency>
+		<dependency>
+			<groupId>org.tmatesoft.svnkit</groupId>
+			<artifactId>svnkit</artifactId>
+			<version>1.7.9</version>
+		</dependency>
+		<!--   for unit test   -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
