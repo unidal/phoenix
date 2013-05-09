@@ -15,7 +15,6 @@ public class KernelUpgradeContext extends Context {
 	private KernelUpgradeStepProvider stepProvider;
 
 	private com.dianping.cat.message.Transaction c_kernelUpgrade;
-	private String c_transId;
 
 	public ScriptExecutor getScriptExecutor() {
 		return scriptExecutor;
@@ -27,10 +26,6 @@ public class KernelUpgradeContext extends Context {
 
 	public com.dianping.cat.message.Transaction getCatTransaction() {
 		return c_kernelUpgrade;
-	}
-
-	public String getCatTransactionId() {
-		return c_transId;
 	}
 
 	@Override
@@ -51,9 +46,9 @@ public class KernelUpgradeContext extends Context {
 		c_kernelUpgrade = Cat.getProducer().newTransaction("Kernel",
 				String.format("%s::%s", tsk.getDomain(), tsk.getKernelVersion()));
 		try {
-			c_transId = Cat.getProducer().createMessageId();
+			setMsgId(Cat.getProducer().createMessageId());
 		} catch (Exception e) {
-			c_transId = "no-cat-id";
+			setMsgId("no-cat-id");
 		}
 	}
 }

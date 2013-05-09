@@ -134,11 +134,11 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 					log("Rolling out to host(%s) ... CANCELLED.", host);
 					t.addData(message);
+					t.setStatus(AgentStatus.CANCELLED.getName().toUpperCase());
 				} catch (Exception e) {
 					t.setStatus(e);
 					e.printStackTrace();
 				} finally {
-					t.setStatus(AgentStatus.CANCELLED.getName().toUpperCase());
 					t.complete();
 				}
 			}
@@ -213,7 +213,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					}
 				}
 			} catch (InterruptedException e) {
-				t.setStatus(e);
+				// ignore it
 			} finally {
 				try {
 					m_deployListener.onDeployEnd(m_model.getId());
