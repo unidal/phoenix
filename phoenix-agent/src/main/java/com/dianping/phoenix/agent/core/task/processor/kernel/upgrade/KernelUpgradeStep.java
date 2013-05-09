@@ -72,11 +72,9 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep ROLLBACK = new KernelUpgradeStep(FAILED, FAILED, 10) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).rollback(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -89,11 +87,9 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep COMMIT = new KernelUpgradeStep(SUCCESS, FAILED, 9) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).commit(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -106,11 +102,9 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep CHECK_CONTAINER_STATUS = new KernelUpgradeStep(COMMIT, ROLLBACK, 8) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).checkContainerStatus(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -123,11 +117,9 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep START_CONTAINER = new KernelUpgradeStep(CHECK_CONTAINER_STATUS, ROLLBACK, 7) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).startContainer(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -140,11 +132,9 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep UPGRADE_KERNEL = new KernelUpgradeStep(START_CONTAINER, ROLLBACK, 6) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).upgradeKernel(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -157,11 +147,9 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep STOP_ALL = new KernelUpgradeStep(UPGRADE_KERNEL, ROLLBACK, 5) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).stopAll(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -174,11 +162,9 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep GET_KERNEL_WAR = new KernelUpgradeStep(STOP_ALL, ROLLBACK, 4) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).getKernelWar(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -191,11 +177,9 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep INJECT_PHOENIX_LOADER = new KernelUpgradeStep(GET_KERNEL_WAR, ROLLBACK, 3) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).injectPhoenixLoader(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -208,11 +192,9 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep CHECK_ARGUMENT = new KernelUpgradeStep(INJECT_PHOENIX_LOADER, FAILED, 2) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).checkArgument(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -225,11 +207,9 @@ public class KernelUpgradeStep extends AbstractStep {
 	private static KernelUpgradeStep INIT = new KernelUpgradeStep(CHECK_ARGUMENT, FAILED, 1) {
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).init(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -269,7 +249,13 @@ public class KernelUpgradeStep extends AbstractStep {
 		}
 	}
 
-	private static com.dianping.cat.message.Transaction generateCatTransaction(String stepName) {
+	private static com.dianping.cat.message.Transaction generateCatTransaction(Context ctx, String stepName) {
+		setParentCatTransaction(ctx);
 		return Cat.getProducer().newTransaction("KernelStep", stepName);
+	}
+
+	private static void completeTransaction(com.dianping.cat.message.Transaction trans, int stepCode) {
+		trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
+		trans.complete();
 	}
 }

@@ -70,16 +70,13 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).dryrunAgent(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 
 			com.dianping.cat.message.Transaction ctxTrans = ((AgentUpgradeContext) ctx).getCatTransaction();
 			if (ctxTrans != null) {
-				ctxTrans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-				ctxTrans.complete();
+				completeTransaction(ctxTrans, stepCode);
 			}
 			return stepCode;
 		}
@@ -95,11 +92,9 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).gitPull(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -113,11 +108,9 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
+			com.dianping.cat.message.Transaction trans = generateCatTransaction(ctx, toString());
 			int stepCode = getStepProvider(ctx).init(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
+			completeTransaction(trans, stepCode);
 			return stepCode;
 		}
 
@@ -163,8 +156,13 @@ public class AgentUpgradeStep extends AbstractStep {
 		}
 	}
 
-	private static com.dianping.cat.message.Transaction generateCatTransaction(String stepName) {
+	private static com.dianping.cat.message.Transaction generateCatTransaction(Context ctx, String stepName) {
+		setParentCatTransaction(ctx);
 		return Cat.getProducer().newTransaction("AgentStep", stepName);
 	}
 
+	private static void completeTransaction(com.dianping.cat.message.Transaction trans, int stepCode) {
+		trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
+		trans.complete();
+	}
 }

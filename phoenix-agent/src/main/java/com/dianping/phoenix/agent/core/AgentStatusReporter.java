@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 
@@ -16,7 +17,7 @@ import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.entity.War;
 import com.dianping.phoenix.configure.ConfigManager;
 
-public class AgentStatusReporter extends ContainerHolder {
+public class AgentStatusReporter extends ContainerHolder implements Initializable {
 	Logger logger = Logger.getLogger(AgentStatusReporter.class);
 
 	@Inject
@@ -46,8 +47,8 @@ public class AgentStatusReporter extends ContainerHolder {
 					// cat kernel infos
 					for (Lib lib : kernelWar.getLibs()) {
 						Cat.getProducer().logEvent(kernelWar.getName() + "::" + kernelWar.getVersion(),
-								lib.getGroupId() + "::" + lib.getArtifactId() + "::" + lib.getVersion(),
-								Event.SUCCESS, null);
+								lib.getGroupId() + "::" + lib.getArtifactId() + "::" + lib.getVersion(), Event.SUCCESS,
+								null);
 					}
 
 					// cat war infos
@@ -68,6 +69,7 @@ public class AgentStatusReporter extends ContainerHolder {
 		}
 	}
 
+	@Override
 	public void initialize() {
 		Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
 

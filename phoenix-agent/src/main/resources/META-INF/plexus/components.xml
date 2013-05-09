@@ -71,9 +71,6 @@
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</role>
 				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
-				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -203,8 +200,16 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.initialization.Module</role>
+			<role-hint>status-report</role-hint>
+			<implementation>com.dianping.phoenix.agent.StatusReportModule</implementation>
+		</component>
+		<component>
 			<role>org.unidal.initialization.ModuleManager</role>
 			<implementation>org.unidal.initialization.DefaultModuleManager</implementation>
+			<configuration>
+				<topLevelModules>status-report</topLevelModules>
+			</configuration>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>

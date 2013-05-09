@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.agent.core.event.AbstractEventTracker;
@@ -25,7 +23,7 @@ import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
 import com.dianping.phoenix.agent.core.tx.TransactionManager;
 
-public class DefaultAgent implements Agent, Initializable {
+public class DefaultAgent implements Agent {
 
 	private final static Logger logger = Logger.getLogger(DefaultAgent.class);
 
@@ -33,8 +31,6 @@ public class DefaultAgent implements Agent, Initializable {
 	private TransactionManager txMgr;
 	@Inject
 	private TaskProcessorFactory taskProcessorFactory;
-	@Inject
-	private AgentStatusReporter agentStatusReporter;
 
 	private Map<TransactionId, TaskProcessor<Task>> txId2Processor;
 
@@ -124,10 +120,4 @@ public class DefaultAgent implements Agent, Initializable {
 	public boolean isTransactionProcessing(TransactionId txId) {
 		return txId2Processor.containsKey(txId);
 	}
-
-	@Override
-	public void initialize() throws InitializationException {
-		agentStatusReporter.initialize();
-	}
-
 }
