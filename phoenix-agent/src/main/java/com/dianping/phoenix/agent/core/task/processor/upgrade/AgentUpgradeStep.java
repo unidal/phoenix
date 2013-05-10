@@ -2,6 +2,7 @@ package com.dianping.phoenix.agent.core.task.processor.upgrade;
 
 import java.util.Map;
 
+import com.dianping.cat.message.Message;
 import com.dianping.phoenix.agent.core.task.workflow.AbstractStep;
 import com.dianping.phoenix.agent.core.task.workflow.Context;
 import com.dianping.phoenix.agent.core.task.workflow.Step;
@@ -40,7 +41,7 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			return Step.CODE_OK;
+			return doActivity(ctx);
 		}
 
 		@Override
@@ -54,7 +55,7 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			return getProvider(ctx).upgradeAgent(ctx);
+			return getStepProvider(ctx).upgradeAgent(ctx);
 		}
 
 		@Override
@@ -68,7 +69,18 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			return getProvider(ctx).dryrunAgent(ctx);
+			int stepCode = doStepWithCat(ctx, "AgentStep", toString());
+			com.dianping.cat.message.Transaction t = ((AgentUpgradeContext) ctx).getCatTransaction();
+			if (t != null) {
+				t.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
+				t.complete();
+			}
+			return stepCode;
+		}
+
+		@Override
+		protected int doActivity(Context ctx) throws Exception {
+			return getStepProvider(ctx).dryrunAgent(ctx);
 		}
 
 		@Override
@@ -81,8 +93,8 @@ public class AgentUpgradeStep extends AbstractStep {
 	private static AgentUpgradeStep GIT_PULL = new AgentUpgradeStep(DRYRUN_AGENT, FAIL, 2) {
 
 		@Override
-		public int doStep(Context ctx) throws Exception {
-			return getProvider(ctx).gitPull(ctx);
+		protected int doActivity(Context ctx) throws Exception {
+			return getStepProvider(ctx).gitPull(ctx);
 		}
 
 		@Override
@@ -94,8 +106,8 @@ public class AgentUpgradeStep extends AbstractStep {
 	public static AgentUpgradeStep INIT = new AgentUpgradeStep(GIT_PULL, FAIL, 1) {
 
 		@Override
-		public int doStep(Context ctx) throws Exception {
-			return getProvider(ctx).init(ctx);
+		protected int doActivity(Context ctx) throws Exception {
+			return getStepProvider(ctx).init(ctx);
 		}
 
 		@Override
@@ -108,12 +120,17 @@ public class AgentUpgradeStep extends AbstractStep {
 	public static AgentUpgradeStep START = new AgentUpgradeStep(INIT, FAIL, 0) {
 
 		@Override
+		public int doStep(Context ctx) throws Exception {
+			return doActivity(ctx);
+		}
+
+		@Override
 		public String toString() {
 			return "START";
 		}
 	};
 
-	private static AgentUpgradeStepProvider getProvider(Context ctx) {
+	private static AgentUpgradeStepProvider getStepProvider(Context ctx) {
 		return ((AgentUpgradeContext) ctx).getStepProvider();
 	}
 
@@ -128,7 +145,11 @@ public class AgentUpgradeStep extends AbstractStep {
 
 	@Override
 	public int doStep(Context ctx) throws Exception {
-		return Step.CODE_OK;
+		return doStepWithCat(ctx, "AgentStep", toString());
 	}
 
+	@Override
+	protected int doActivity(Context ctx) throws Exception {
+		return Step.CODE_OK;
+	}
 }

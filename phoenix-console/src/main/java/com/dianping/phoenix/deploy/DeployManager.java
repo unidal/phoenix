@@ -3,5 +3,5 @@ package com.dianping.phoenix.deploy;
 import java.util.List;
 
 public interface DeployManager {
-	public int deploy(String name, List<String> hosts, DeployPlan plan) throws Exception;
+	public int deploy(String name, List<String> hosts, DeployPlan plan, String logUri) throws Exception;
 }

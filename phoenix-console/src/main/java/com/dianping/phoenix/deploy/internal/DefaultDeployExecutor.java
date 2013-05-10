@@ -7,19 +7,30 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.helper.Files;
 import org.unidal.helper.Formats;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
-import org.unidal.helper.Urls;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.tuple.Pair;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Event;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
+import com.dianping.cat.message.internal.DefaultMessageProducer;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.DeployConstant;
 import com.dianping.phoenix.deploy.DeployExecutor;
@@ -65,8 +76,9 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 	}
 
 	@Override
-	public synchronized void submit(DeployModel model, List<String> hosts, String warType) throws Exception {
-		ControllerTask task = new ControllerTask(m_agentListener, model, hosts, warType);
+	public synchronized void submit(DeployModel model, List<String> hosts, String warType, String logUri)
+			throws Exception {
+		ControllerTask task = new ControllerTask(m_agentListener, model, hosts, warType, logUri);
 
 		m_deployListener.onDeployStart(model.getId());
 		Threads.forGroup("Phoenix").start(task);
@@ -85,11 +97,15 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private String m_warType;
 
-		public ControllerTask(AgentListener listener, DeployModel model, List<String> hosts, String warType) {
+		private String m_logUri;
+
+		public ControllerTask(AgentListener listener, DeployModel model, List<String> hosts, String warType,
+				String logUri) {
 			m_listener = listener;
 			m_model = model;
 			m_hosts = hosts;
 			m_warType = warType;
+			m_logUri = logUri;
 		}
 
 		private void cancelResetTasks() {
@@ -97,7 +113,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 			while (m_hostIndex < len) {
 				String host = m_hosts.get(m_hostIndex++);
-
+				Transaction t = Cat.newTransaction(m_model.getDomain(),
+						host + "::" + m_warType + "::" + m_model.getVersion());
 				try {
 					String message;
 
@@ -116,8 +133,13 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					m_deployListener.onHostCancel(m_model.getId(), host);
 
 					log("Rolling out to host(%s) ... CANCELLED.", host);
+					t.addData(message);
+					t.setStatus(AgentStatus.CANCELLED.getName().toUpperCase());
 				} catch (Exception e) {
+					t.setStatus(e);
 					e.printStackTrace();
+				} finally {
+					t.complete();
 				}
 			}
 		}
@@ -149,9 +171,12 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public void run() {
+			Transaction t = Cat.newTransaction(m_warType, m_model.getDomain() + "::" + m_model.getId());
+			reportDeployInfosToCat();
+
 			m_active = true;
 
-			Pair<CountDownLatch, List<String>> pair = submitNextRolloutTask(1);
+			Pair<CountDownLatch, List<String>> pair = submitNextRolloutTask(t, 1);
 
 			try {
 				while (m_active) {
@@ -183,7 +208,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 						} else {
 							int batchSize = m_policy.getBatchSize();
 
-							pair = submitNextRolloutTask(batchSize);
+							pair = submitNextRolloutTask(t, batchSize);
 						}
 					}
 				}
@@ -192,10 +217,36 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			} finally {
 				try {
 					m_deployListener.onDeployEnd(m_model.getId());
+					t.setStatus(Message.SUCCESS);
 				} catch (Exception e) {
 					m_logger.warn(String.format("Error when processing onEnd of deploy(%s)!", m_model.getId()), e);
+					t.setStatus(e);
+				}
+				t.complete();
+			}
+		}
+
+		private void reportDeployInfosToCat() {
+			Cat.getProducer().logEvent(m_model.getDomain() + "::" + m_model.getId(), "HostCount::" + m_hosts.size(),
+					Event.SUCCESS, null);
+			for (Map.Entry<String, HostModel> host : m_model.getHosts().entrySet()) {
+				if (!"summary".equals(host.getKey())) {
+					Cat.getProducer().logEvent(m_model.getDomain() + "::" + m_model.getId(), "Host::" + host.getKey(),
+							Event.SUCCESS, null);
 				}
 			}
+
+			Cat.getProducer().logEvent(m_model.getDomain() + "::" + m_model.getId(), "WarType::" + m_warType,
+					Event.SUCCESS, null);
+			Cat.getProducer().logEvent(m_model.getDomain() + "::" + m_model.getId(),
+					"Version::" + m_model.getVersion(), Event.SUCCESS, null);
+			Cat.getProducer().logEvent(m_model.getDomain() + "::" + m_model.getId(),
+					"DeployType::" + m_policy.getDescription(), Event.SUCCESS, null);
+			Cat.getProducer().logEvent(m_model.getDomain() + "::" + m_model.getId(),
+					"AbortOnError::" + m_model.isAbortOnError(), Event.SUCCESS, null);
+			Cat.getProducer().logEvent(m_model.getDomain() + "::" + m_model.getId(),
+					"SkipTest::" + m_model.isSkipTest(), Event.SUCCESS, null);
+			Cat.getProducer().logEvent("RemoteLink", "LogQueryUrl", Event.SUCCESS, m_logUri + m_model.getId());
 		}
 
 		private boolean shouldStop() {
@@ -221,7 +272,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			m_active = false;
 		}
 
-		private Pair<CountDownLatch, List<String>> submitNextRolloutTask(int maxCount) {
+		private Pair<CountDownLatch, List<String>> submitNextRolloutTask(Transaction parent, int maxCount) {
 			CountDownLatch latch = new CountDownLatch(maxCount);
 			int len = m_hosts.size();
 			int count = 0;
@@ -230,7 +281,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			while (m_hostIndex < len && count < maxCount) {
 				String host = m_hosts.get(m_hostIndex++);
 
-				Threads.forGroup("Phoenix").start(new RolloutTask(this, m_listener, m_model, m_warType, host, latch));
+				Threads.forGroup("Phoenix").start(
+						new RolloutTask(this, m_listener, m_model, m_warType, host, latch, parent));
 				hosts.add(host);
 				count++;
 
@@ -267,6 +319,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		private StringBuilder m_log = new StringBuilder(256);
 
 		private String m_warType;
+
+		private Transaction m_trans;
 
 		public RolloutContext(ControllerTask controller, AgentListener listener, DeployModel model, String warType,
 				String host) {
@@ -343,24 +397,36 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			int timeout = configManager.getDeployConnectTimeout();
 
 			if (url.contains("?op=deploy&")) {
-				InputStream in = Urls.forIO().connectTimeout(timeout).openStream(url);
-				String content = Files.forIO().readFrom(in, "utf-8");
+				HttpParams hp = new BasicHttpParams();
+				HttpConnectionParams.setConnectionTimeout(hp, timeout);
+
+				DefaultHttpClient dhc = new DefaultHttpClient(hp);
+
+				HttpRequestBase hrb = new HttpGet(url);
+				Cat.getManager().setup();
+				hrb.addHeader("X-Cat-Id", Cat.getProducer().createMessageId());
+				hrb.addHeader("X-Cat-Parent-Id", Cat.getManager().getThreadLocalMessageTree().getParentMessageId());
+				hrb.addHeader("X-Cat-Root-Id", Cat.getManager().getThreadLocalMessageTree().getRootMessageId());
+
+				InputStream hr = dhc.execute(hrb).getEntity().getContent();
+				String content = Files.forIO().readFrom(hr, "utf-8");
 
 				return content;
 			} else if (url.contains("?op=log&")) {
-				AgentReader sr = new AgentReader(new PhoenixInputStreamReader(url, timeout, configManager.getDeployGetlogRetrycount()));
+				AgentReader sr = new AgentReader(new PhoenixInputStreamReader(url, timeout,
+						configManager.getDeployGetlogRetrycount()));
 				AgentProgress progress = new AgentProgress();
 
 				while (sr.hasNext()) {
 					String segment = "";
-					segment = sr.next(progress);
+					segment = sr.next(progress).replaceAll("\\t", " ");
 
 					try {
 						m_listener.onProgress(this, progress, segment);
 
 						if ("failed".equals(progress.getStatus())) {
 							updateStatus(AgentStatus.FAILED, segment);
-						} else if("successful".equals(progress.getStatus())) {
+						} else if ("successful".equals(progress.getStatus())) {
 							updateStatus(AgentStatus.SUCCESS, segment);
 						}
 					} catch (Exception e) {
@@ -464,6 +530,19 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		public String getWarType() {
 			return m_warType;
 		}
+
+		@Override
+		public void setTransaction(Transaction trans) {
+			m_trans = trans;
+		}
+
+		@Override
+		public void completeTransaction(boolean successOrNot, String metaInfos) {
+			if (metaInfos != null && metaInfos.trim().length() > 0) {
+				m_trans.addData(String.format("MetaInfos=%s", metaInfos));
+			}
+			m_trans.setStatus(successOrNot ? Message.SUCCESS : "FAILED");
+		}
 	}
 
 	static class RolloutTask implements Task {
@@ -471,10 +550,14 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private CountDownLatch m_latch;
 
+		private Transaction m_parent;
+
 		public RolloutTask(ControllerTask controller, AgentListener listener, DeployModel model, String warType,
-				String host, CountDownLatch latch) {
+				String host, CountDownLatch latch, Transaction parent) {
 			m_ctx = new RolloutContext(controller, listener, model, warType, host);
 			m_latch = latch;
+
+			m_parent = parent;
 		}
 
 		@Override
@@ -484,7 +567,12 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public void run() {
+			DefaultMessageProducer producer = (DefaultMessageProducer) Cat.getProducer();
+			Transaction t = producer.newTransaction(m_parent, m_ctx.getDomain(),
+					m_ctx.getHost() + "::" + m_ctx.getWarType() + "::" + m_ctx.getVersion());
+
 			try {
+				m_ctx.setTransaction(t);
 				AgentState.execute(m_ctx);
 			} catch (Throwable e) {
 				m_ctx.print("Deployment aborted due to: %s.\r\n", e);
@@ -495,6 +583,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 				m_ctx.println(sw.toString());
 			} finally {
+				t.complete();
 				m_latch.countDown();
 			}
 		}

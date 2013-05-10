@@ -29,16 +29,40 @@ function add_ssh_private_key {
 
 function init {
 	# set up a git repo for server.xml to enable rollback/commit
-	server_xml_dir=`dirname $server_xml`
-	if [ ! -e $server_xml_dir/.git ];then
-		log "no .git directory found in server.xml directory $server_xml_dir, make it a git repo"
-		cd $server_xml_dir
-		git init
-		git add server.xml
-		git commit -m "init commit"
-		cd - > /dev/null
-		log "server.xml directory now a git repo"
-	fi
+	server_xml_arr=(${server_xml//,/ })
+	for i in ${server_xml_arr[@]}
+	do
+		log $i
+
+		if [[ -f $i ]]; then
+			server_xml_dir=`dirname $i`
+			if [ ! -e $server_xml_dir/.git ];then
+				log "no .git directory found in server xml directory $server_xml_dir, make it a git repo"
+				cd $server_xml_dir
+				git init
+				git add $i
+				git commit -m "init commit"
+				cd - > /dev/null
+				log "$server_xml_dir directory now a git repo"
+			fi
+		
+		elif [[ -d $i ]]; then
+			server_xml_dir=$i
+			if [ ! -e $server_xml_dir/.git ];then
+				log "no .git directory found in server xml directory $server_xml_dir, make it a git repo"
+				cd $server_xml_dir
+				git init
+				cd - > /dev/null
+				log "$server_xml_dir directory now a git repo"
+			fi
+			cd $server_xml_dir
+			git add -A
+			if [ `git status --short | wc -l` != 0 ]; then
+				git commit -m "init commit"
+			fi
+			cd - > /dev/null
+		fi
+	done
 }
 
 function get_kernel_war {
@@ -121,8 +145,17 @@ function rollback {
 
 	# rollback server.xml
 	log "rolling back server.xml"
-	git_rollback `dirname $server_xml` 
-	log "server.xml rolled back"
+	server_xml_arr=(${server_xml//,/ })
+	for i in ${server_xml_arr[@]}
+	do
+		if [[ -d $i ]]; then
+    			git_rollback $i 
+		elif [[ -f $i ]]; then
+    			git_rollback `dirname $i` 
+		fi
+		log "$i rolled back"
+	done
+	log "All server xml rolled back"
 
 	start_container
 	log "put container online"
@@ -154,8 +187,17 @@ function commit {
 
 	# commit server.xml
 	log "committing server.xml"
-	git_commit `dirname $server_xml` "update to $kernel_version"
-	log "committed"
+	server_xml_arr=(${server_xml//,/ })
+	for i in ${server_xml_arr[@]}
+	do
+		if [[ -d $i ]]; then
+    			git_commit $i "update to $kernel_version"
+		elif [[ -f $i ]]; then
+    			git_commit `dirname $i` "update to $kernel_version"
+		fi
+		log "$i committed"
+	done
+	log "All server xml committed"
 
 	# turn on traffic
 	log "put container online"
