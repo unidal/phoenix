@@ -44,6 +44,7 @@ public enum AgentState {
 			} else {
 				ctx.print(response.getStatus()).println();
 				ctx.println(response.getMessage());
+
 				moveTo(ctx, FAILED);
 			}
 		}
@@ -94,6 +95,7 @@ public enum AgentState {
 				} else {
 					ctx.print(response.getStatus()).println();
 					ctx.println(response.getMessage());
+
 					moveTo(ctx, FAILED);
 				}
 			}
@@ -135,6 +137,7 @@ public enum AgentState {
 			String host = ctx.getHost();
 
 			ctx.println("[INFO] Deployed phoenix kernel(%s) to host(%s) successfully.", version, host);
+			ctx.completeTransaction(true, null);
 		}
 	},
 
@@ -151,6 +154,7 @@ public enum AgentState {
 
 			ctx.updateStatus(AgentStatus.FAILED, message);
 			ctx.println(message);
+			ctx.completeTransaction(false, message);
 		}
 	};
 

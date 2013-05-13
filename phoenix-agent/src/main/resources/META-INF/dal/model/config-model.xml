@@ -20,6 +20,7 @@
     <element name="jboss-server-name" value-type="String" default-value="default" />
     <element name="url-connect-timeout" value-type="int" default-value="2000" primitive="true"/>
     <element name="url-read-timeout" value-type="int" default-value="5000" primitive="true"/>
+    <element name="agent-heartbeat-freq" value-type="int" default-value="5" primitive="true"/>
   </entity>
   <entity name="console" class-name="ConsoleConfig">
   	<element name="deploy-retry-interval" value-type="int" default-value="30000" primitive="true"/>

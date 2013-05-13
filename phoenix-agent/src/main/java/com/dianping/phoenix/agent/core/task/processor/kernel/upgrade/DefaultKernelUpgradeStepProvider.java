@@ -11,28 +11,27 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.util.StringUtils;
 
 import com.dianping.cat.configuration.NetworkInterfaceManager;
+import com.dianping.phoenix.agent.core.ContainerManager;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTask;
-import com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DomainHealthCheckInfo;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService.CheckResult;
 import com.dianping.phoenix.agent.core.task.workflow.Context;
 import com.dianping.phoenix.agent.core.task.workflow.Step;
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.configure.ConfigManager.ContainerType;
 
 public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements KernelUpgradeStepProvider {
 	private static final Logger logger = Logger.getLogger(DefaultKernelUpgradeStepProvider.class);
 
 	@Inject
 	private ConfigManager config;
-	
+
 	@Inject
 	private QaService qaService;
 
 	@Inject
-	private ServerXmlManager m_serverXmlManager;
-	
+	private ContainerManager m_containerManager;
+
 	private int runShellCmd(String shellFunc, Context ctx) throws Exception {
 		KernelUpgradeContext myCtx = (KernelUpgradeContext) ctx;
 		String script = jointShellCmd(shellFunc, (DeployTask) myCtx.getTask());
@@ -52,10 +51,17 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(String.format("error parsing host from kernel git url %s", kernelGitUrl), e);
 		}
+		StringBuilder serverXmlString = new StringBuilder();
+		for (File serverXml : config.getServerXmlList()) {
+			if (serverXmlString.length() != 0) {
+				serverXmlString.append(",");
+			}
+			serverXmlString.append(serverXml.getAbsolutePath());
+		}
 
 		sb.append(config.getAgentScriptFile().getAbsolutePath());
 		sb.append(String.format(" --container_install_path \"%s\" ", config.getContainerInstallPath()));
-		sb.append(String.format(" --server_xml \"%s\" ", config.getServerXml()));
+		sb.append(String.format(" --server_xml \"%s\" ", serverXmlString));
 		sb.append(String.format(" --container_type \"%s\" ", config.getContainerType().toString()));
 		sb.append(String.format(" --domain \"%s\" ", task.getDomain()));
 		sb.append(String.format(" --kernel_version \"%s\" ", task.getKernelVersion()));
@@ -66,36 +72,6 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 		sb.append(String.format(" --func \"%s\" ", shellFunc));
 
 		return sb.toString();
-	}
-
-	private void doInjectPhoenixLoader(Context ctx) throws Exception {
-		DeployTask task = (DeployTask) ((KernelUpgradeContext) ctx).getTask();
-		ContainerType type = config.getContainerType();
-
-		if (type == ContainerType.TOMCAT) {
-			File serverXmlDir = new File(config.getContainerInstallPath() + "/conf/Catalina/localhost/");
-			if (serverXmlDir != null && serverXmlDir.exists()) {
-				for (File serverXml : serverXmlDir.listFiles()) {
-					attachPhoenixContextLoader(task, serverXml);
-				}
-			}
-		}
-
-		File serverXml = config.getServerXml();
-		if (serverXml == null || !serverXml.exists()) {
-			String path = serverXml == null ? null : serverXml.getAbsolutePath();
-			throw new RuntimeException(String.format("container server.xml not found %s", path));
-		}
-
-		attachPhoenixContextLoader(task, serverXml);
-	}
-
-	private void attachPhoenixContextLoader(DeployTask task, File serverXml) throws Exception {
-		File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), task.getDomain(),
-				task.getKernelVersion()));
-		String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain());
-		m_serverXmlManager.attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(),
-				kernelDocBase);
 	}
 
 	@Override
@@ -110,9 +86,10 @@ public class DefaultKernelUpgradeStepProvider extends ContainerHolder implements
 
 	@Override
 	public int injectPhoenixLoader(Context ctx) throws Exception {
+		DeployTask task = (DeployTask) ((KernelUpgradeContext) ctx).getTask();
 		int code = Step.CODE_OK;
 		try {
-			doInjectPhoenixLoader(ctx);
+			m_containerManager.attachContainerLoader(task.getDomain(), task.getKernelVersion());
 		} catch (Exception e) {
 			code = Step.CODE_ERROR;
 			logger.error("error inject phoenix loader", e);

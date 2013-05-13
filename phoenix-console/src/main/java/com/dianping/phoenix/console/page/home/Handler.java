@@ -56,7 +56,9 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 					DeployPlan plan = payload.getPlan();
 
 					try {
-						int id = m_deployManager.deploy(name, hosts, plan);
+						String logUri = String.format("http://%s:%s%s?id=", //
+								ctx.getHttpServletRequest().getServerName(),ctx.getHttpServletRequest().getServerPort(),deployUri);
+						int id = m_deployManager.deploy(name, hosts, plan, logUri);
 						ctx.redirect(deployUri + "?id=" + id);
 						return;
 					} catch (Exception e) {

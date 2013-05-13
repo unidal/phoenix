@@ -31,6 +31,7 @@ public class DefaultAgent implements Agent {
 	private TransactionManager txMgr;
 	@Inject
 	private TaskProcessorFactory taskProcessorFactory;
+
 	private Map<TransactionId, TaskProcessor<Task>> txId2Processor;
 
 	public DefaultAgent() {
@@ -57,13 +58,13 @@ public class DefaultAgent implements Agent {
 				logger.error(String.format("no task processor found for %s", tx.getTask()));
 			}
 		}
-		
+
 		return submitResult;
 	}
 
 	private void addCleanupEventTracker(Transaction tx, final TransactionId txId) {
 		EventTrackerChain eventTrackerChain = new EventTrackerChain();
-		
+
 		eventTrackerChain.add(new AbstractEventTracker() {
 
 			@Override
@@ -77,7 +78,7 @@ public class DefaultAgent implements Agent {
 
 		});
 		eventTrackerChain.add(tx.getEventTracker());
-		
+
 		tx.setEventTracker(eventTrackerChain);
 	}
 
@@ -119,5 +120,4 @@ public class DefaultAgent implements Agent {
 	public boolean isTransactionProcessing(TransactionId txId) {
 		return txId2Processor.containsKey(txId);
 	}
-
 }

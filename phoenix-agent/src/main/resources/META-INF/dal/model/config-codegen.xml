@@ -17,10 +17,12 @@
     <element name="dryrun-port" value-type="int" />
     <element name="kernel-doc-base-pattern" value-type="String" />
     <element name="agent-doc-base-pattern" value-type="String" />
+    <element name="temp-script-dir" value-type="String" />
     <element name="domain-doc-base-keyword-pattern" value-type="String" />
     <element name="test-service-poll-interval" value-type="int" />
     <element name="url-connect-timeout" value-type="int" />
     <element name="url-read-timeout" value-type="int" />
+    <element name="agent-heartbeat-freq" value-type="int" />
     <element name="jboss-server-name" value-type="String" />
   </entity>
   <entity name="console">

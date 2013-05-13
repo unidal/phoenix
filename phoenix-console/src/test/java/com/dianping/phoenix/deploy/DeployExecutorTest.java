@@ -84,7 +84,7 @@ public class DeployExecutorTest extends ComponentTestCase {
 
 		DeployModel model = deployListener.onCreate("demo-app", hosts, plan);
 
-		executor.submit(model, hosts, "phoenix-kernel");
+		executor.submit(model, hosts, "phoenix-kernel", "");
 
 		if (!deployListener.getLatch().await(5, m_debug ? TimeUnit.HOURS : TimeUnit.SECONDS)) {
 			Assert.fail("Deploy flow was blocked! " + model);

@@ -16,6 +16,7 @@ public class Context extends ContainerHolder {
 	private Task task;
 	private int exitCode;
 	private AtomicBoolean killed = new AtomicBoolean(false);
+	private String msgId;
 
 	public Step getEndStep() {
 		return endStep;
@@ -68,5 +69,13 @@ public class Context extends ContainerHolder {
 
 	public void setTask(Task task) {
 		this.task = task;
+	}
+
+	public String getMsgId() {
+		return msgId;
+	}
+
+	public void setMsgId(String msgId) {
+		this.msgId = msgId;
 	}
 }
