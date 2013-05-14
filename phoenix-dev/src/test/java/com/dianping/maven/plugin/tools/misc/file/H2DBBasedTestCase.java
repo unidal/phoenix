@@ -1,4 +1,4 @@
-package com.dianping.phoenix.misc.file;
+package com.dianping.maven.plugin.tools.misc.file;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
