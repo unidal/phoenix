@@ -1,5 +1,5 @@
 /**
- * Project: phoenix-dev
+ * Project: phoenix-maven-plugin
  * 
  * File Created at 2013-5-14
  * $Id$
@@ -16,27 +16,28 @@
 package com.dianping.maven.plugin.tools.wms;
 
 /**
+ * 
  * @author Leo Liang
  * 
  */
-public class WorkspaceManagementException extends Exception {
+public class SvnRepository extends Repository {
+    private long revision = -1L;
 
-    private static final long serialVersionUID = -652464443921355874L;
 
-    public WorkspaceManagementException() {
-        super();
+    public SvnRepository() {
     }
 
-    public WorkspaceManagementException(String message) {
-        super(message);
+    public SvnRepository(String repoUrl, String user, String pwd, long revision) {
+        super(repoUrl, user, pwd);
+        this.revision = revision;
     }
 
-    public WorkspaceManagementException(String message, Throwable cause) {
-        super(message, cause);
+    public long getRevision() {
+        return revision;
     }
 
-    public WorkspaceManagementException(Throwable cause) {
-        super(cause);
+    public void setRevision(long revision) {
+        this.revision = revision;
     }
 
 }
