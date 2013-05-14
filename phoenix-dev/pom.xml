@@ -6,10 +6,13 @@
 		<artifactId>phoenix-parent</artifactId>
 		<version>0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.dianping.platform</groupId>
-	<artifactId>phoenix-dev</artifactId>
+	<groupId>com.dianping.maven.plugins</groupId>
+	<artifactId>phoenix-maven-plugin</artifactId>
 	<version>0.1-SNAPSHOT</version>
-
+	<packaging>maven-plugin</packaging>
+	<prerequisites>
+		<maven>3.0.3</maven>
+	</prerequisites>
 	<repositories>
 		<repository>
 			<id>jgit-repository</id>
@@ -22,6 +25,11 @@
 	</repositories>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.unidal.maven.plugins</groupId>
+			<artifactId>common</artifactId>
+			<version>2.0.2</version>
+		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jgit</groupId>
 			<artifactId>org.eclipse.jgit</artifactId>
@@ -44,5 +52,22 @@
 			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.dianping.maven.plugins</groupId>
+				<artifactId>phoenix-maven-plugin</artifactId>
+				<version>0.1-SNAPSHOT</version>
+				<configuration>
+					<name>Marsqing</name>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
