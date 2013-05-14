@@ -21,5 +21,5 @@ package com.dianping.maven.plugin.tools.wms;
  */
 public interface WorkspaceManagementService {
 
-    public void create(WorkspaceContext context) throws WorkSpaceManagementException;
+    public void create(WorkspaceContext context) throws WorkspaceManagementException;
 }
