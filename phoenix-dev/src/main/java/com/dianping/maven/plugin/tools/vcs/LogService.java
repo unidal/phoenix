@@ -1,4 +1,4 @@
-package com.dianping.phoenix.dev.tools;
+package com.dianping.maven.plugin.tools.vcs;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,7 +14,7 @@ public class LogService {
 
 	public void log(String message){
 		try {
-			message += '\n';
+			message += System.getProperty("line.separator");
 			output.write(message.getBytes());
 		} catch (IOException e) {
 			//do nothing

@@ -1,4 +1,4 @@
-package com.dianping.phoenix.dev.tools;
+package com.dianping.maven.plugin.tools.vcs;
 
 import org.eclipse.jgit.lib.BatchingProgressMonitor;
 

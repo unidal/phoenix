@@ -1,4 +1,4 @@
-package com.dianping.phoenix.dev.tools;
+package com.dianping.maven.plugin.tools.vcs;
 
 import static org.junit.Assert.assertFalse;
 
@@ -7,6 +7,11 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
+
+import com.dianping.maven.plugin.tools.vcs.CodeRetrieveConfig;
+import com.dianping.maven.plugin.tools.vcs.CodeRetrieveService;
+import com.dianping.maven.plugin.tools.vcs.GitCodeRetrieveConfig;
+import com.dianping.maven.plugin.tools.vcs.SVNCodeRetrieveConfig;
 
 
 public class CodeRetrieveServiceTest {
