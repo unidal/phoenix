@@ -19,7 +19,7 @@ package com.dianping.maven.plugin.tools.wms;
  * @author Leo Liang
  * 
  */
-public class WorkSpaceManagementException extends Exception {
+public class WorkspaceManagementException extends Exception {
 
     private static final long serialVersionUID = -652464443921355874L;
 
