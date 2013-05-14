@@ -11,7 +11,6 @@
 	<artifactId>phoenix-router</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<name>phoenix-router</name>
-	<packaging>war</packaging>
 	<dependencies>
 		<!--dependency>
 			<groupId>javax.servlet</groupId>

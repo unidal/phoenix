@@ -24,10 +24,26 @@ import java.util.List;
  * 
  */
 public class WorkspaceContext implements Serializable {
-    private static final long serialVersionUID = -7734656051647733810L;
+    private static final long serialVersionUID     = -7734656051647733810L;
     private File              baseDir;
     private List<String>      projects;
     private File              bootstrapProjectDir;
+    private String            phoenixRouterVersion = "0.1-SNAPSHOT";
+
+    /**
+     * @return the phoenixRouterVersion
+     */
+    public String getPhoenixRouterVersion() {
+        return phoenixRouterVersion;
+    }
+
+    /**
+     * @param phoenixRouterVersion
+     *            the phoenixRouterVersion to set
+     */
+    public void setPhoenixRouterVersion(String phoenixRouterVersion) {
+        this.phoenixRouterVersion = phoenixRouterVersion;
+    }
 
     /**
      * @return the baseDir

@@ -19,10 +19,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
+import com.dianping.maven.plugin.tools.misc.file.ContainerBizServerGenerator;
+import com.dianping.maven.plugin.tools.misc.file.ContainerPomXMLGenerator;
+import com.dianping.maven.plugin.tools.misc.file.ContainerWebXMLGenerator;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieveConfig;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieveService;
 import com.dianping.maven.plugin.tools.vcs.GitCodeRetrieveConfig;
@@ -46,7 +51,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     public void create(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException {
         if (context.getProjects() != null && context.getBaseDir() != null && out != null) {
 
-            printContent("Phoenix workspace generating...", out);
+            printContent("Generating phoenix workspace...", out);
 
             if (context.getBaseDir().exists()) {
                 try {
@@ -80,8 +85,47 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
                     printContent(String.format("Project repository(%s) unknown...", project), out);
                 }
             }
+
+            printContent("Generating phoenix-container...", out);
+
+            generateContainerProject(context);
+
+            printContent("Phoenix workspace generated...", out);
+
         } else {
             throw new WorkspaceManagementException("projects/basedir can not be null");
+        }
+    }
+
+    private void generateContainerProject(WorkspaceContext context) throws WorkspaceManagementException {
+        File projectBase = new File(context.getBaseDir(), "phoenix-container");
+        File sourceFolder = new File(projectBase, "src/main/java");
+        File resourceFolder = new File(projectBase, "src/main/resources");
+        File webinfFolder = new File(projectBase, "src/main/webapp/WEB-INF");
+        try {
+            FileUtils.forceMkdir(sourceFolder);
+            FileUtils.forceMkdir(resourceFolder);
+            FileUtils.forceMkdir(webinfFolder);
+
+            FileUtils.copyFileToDirectory(FileUtils.toFile(this.getClass().getResource("/byteman-2.1.2.jar")),
+                    resourceFolder);
+
+            // web.xml
+            ContainerWebXMLGenerator containerWebXMLGenerator = new ContainerWebXMLGenerator();
+            containerWebXMLGenerator.generate(new File(webinfFolder, "web.xml"), null);
+
+            // pom.xml
+            ContainerPomXMLGenerator containerPomXMLGenerator = new ContainerPomXMLGenerator();
+            Map<String, String> containerPomXMLGeneratorContext = new HashMap<String, String>();
+            containerPomXMLGeneratorContext.put("phoenixRouterVersion", context.getPhoenixRouterVersion());
+            containerPomXMLGenerator.generate(new File(projectBase, "pom.xml"),
+                    containerPomXMLGeneratorContext);
+            
+            // BizServer.java
+            ContainerBizServerGenerator containerBizServerGenerator = new ContainerBizServerGenerator();
+            containerBizServerGenerator.generate(new File(sourceFolder, "com/dianping/phoenix/container/BizServer.java"), null);
+        } catch (Exception e) {
+            throw new WorkspaceManagementException(e);
         }
     }
 
@@ -128,7 +172,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
         WorkspaceContext context = new WorkspaceContext();
         List<String> projects = new ArrayList<String>();
         projects.add("shop-web");
-        projects.add("user-web");
+        // projects.add("user-web");
         context.setProjects(projects);
         context.setBaseDir(new File("/Users/leoleung/test"));
         wms.create(context, System.out);
