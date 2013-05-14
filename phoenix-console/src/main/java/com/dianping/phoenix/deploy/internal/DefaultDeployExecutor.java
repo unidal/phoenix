@@ -30,7 +30,7 @@ import com.dianping.cat.Cat;
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
-import com.dianping.cat.message.internal.DefaultMessageProducer;
+import com.dianping.cat.message.internal.DefaultMessageManager;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.DeployConstant;
 import com.dianping.phoenix.deploy.DeployExecutor;
@@ -321,8 +321,6 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private String m_warType;
 
-		private Transaction m_trans;
-
 		public RolloutContext(ControllerTask controller, AgentListener listener, DeployModel model, String warType,
 				String host) {
 			m_controller = controller;
@@ -397,8 +395,6 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			ConfigManager configManager = m_controller.getConfigManager();
 			int timeout = configManager.getDeployConnectTimeout();
 
-			Cat.getManager().setup();
-
 			if (url.contains("?op=deploy&")) {
 				Transaction t = Cat.newTransaction("HTTP", url.substring(0, url.indexOf('?')));
 
@@ -409,14 +405,15 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 					HttpConnectionParams.setConnectionTimeout(hp, timeout);
 
-					hrb.addHeader("X-Cat-Id", Cat.getProducer().createMessageId());
+					String id = Cat.getProducer().createMessageId();
+
+					Cat.getProducer().logEvent("RemoteCall", url, Message.SUCCESS, id);
+
+					hrb.addHeader("X-Cat-Id", id);
 					hrb.addHeader("X-Cat-Parent-Id", Cat.getManager().getThreadLocalMessageTree().getParentMessageId());
 					hrb.addHeader("X-Cat-Root-Id", Cat.getManager().getThreadLocalMessageTree().getRootMessageId());
 
 					InputStream hr = dhc.execute(hrb).getEntity().getContent();
-
-					Cat.getProducer().logEvent("RemoteCall", url, Message.SUCCESS, null);
-
 					String content = Files.forIO().readFrom(hr, "utf-8");
 
 					t.setStatus(Message.SUCCESS);
@@ -433,27 +430,39 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					t.complete();
 				}
 			} else if (url.contains("?op=log&")) {
-				AgentReader sr = new AgentReader(new PhoenixInputStreamReader(url, timeout,
-						configManager.getDeployGetlogRetrycount()));
-				AgentProgress progress = new AgentProgress();
+				Transaction t = Cat.newTransaction("HTTP", url.substring(0, url.indexOf('?')));
 
-				while (sr.hasNext()) {
-					String segment = "";
-					segment = sr.next(progress).replaceAll("\\t", " ");
+				try {
+					AgentReader sr = new AgentReader(new PhoenixInputStreamReader(url, timeout,
+							configManager.getDeployGetlogRetrycount()));
+					AgentProgress progress = new AgentProgress();
 
-					try {
-						m_listener.onProgress(this, progress, segment);
+					while (sr.hasNext()) {
+						String segment = "";
+						segment = sr.next(progress).replaceAll("\\t", " ");
 
-						if ("failed".equals(progress.getStatus())) {
-							updateStatus(AgentStatus.FAILED, segment);
-						} else if ("successful".equals(progress.getStatus())) {
-							updateStatus(AgentStatus.SUCCESS, segment);
+						try {
+							m_listener.onProgress(this, progress, segment);
+
+							if ("failed".equals(progress.getStatus())) {
+								updateStatus(AgentStatus.FAILED, segment);
+							} else if ("successful".equals(progress.getStatus())) {
+								updateStatus(AgentStatus.SUCCESS, segment);
+							}
+						} catch (Exception e) {
+							e.printStackTrace(); // TODO
 						}
-					} catch (Exception e) {
-						e.printStackTrace(); // TODO
 					}
+					t.setStatus(Message.SUCCESS);
+				} catch (IOException e) {
+					t.setStatus(e);
+					Cat.logError(e);
+				} catch (RuntimeException e) {
+					t.setStatus(e);
+					Cat.logError(e);
+				} finally {
+					t.complete();
 				}
-
 				return "";
 			} else {
 				throw new IllegalStateException(String.format("Not implemented yet(%s)!", url));
@@ -550,19 +559,6 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		public String getWarType() {
 			return m_warType;
 		}
-
-		@Override
-		public void setTransaction(Transaction trans) {
-			m_trans = trans;
-		}
-
-		@Override
-		public void completeTransaction(boolean successOrNot, String metaInfos) {
-			if (metaInfos != null && metaInfos.trim().length() > 0) {
-				m_trans.addData(String.format("MetaInfos=%s", metaInfos));
-			}
-			m_trans.setStatus(successOrNot ? Message.SUCCESS : "FAILED");
-		}
 	}
 
 	static class RolloutTask implements Task {
@@ -576,7 +572,6 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				String host, CountDownLatch latch, Transaction parent) {
 			m_ctx = new RolloutContext(controller, listener, model, warType, host);
 			m_latch = latch;
-
 			m_parent = parent;
 		}
 
@@ -587,13 +582,22 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		@Override
 		public void run() {
-			DefaultMessageProducer producer = (DefaultMessageProducer) Cat.getProducer();
-			Transaction t = producer.newTransaction(m_parent, m_ctx.getDomain(),
-					m_ctx.getHost() + ":" + m_ctx.getWarType() + ":" + m_ctx.getVersion());
+			Cat.setup(null);
+			DefaultMessageManager manager = (DefaultMessageManager) Cat.getManager();
+
+			manager.start(m_parent);
+
+			Transaction t = Cat.newTransaction(m_ctx.getDomain(), m_ctx.getHost() + ":" + m_ctx.getWarType() + ":"
+					+ m_ctx.getVersion());
 
 			try {
-				m_ctx.setTransaction(t);
 				AgentState.execute(m_ctx);
+
+				if (m_ctx.getStatus() == AgentStatus.FAILED) {
+					t.setStatus(m_ctx.getStatus().name());
+				} else {
+					t.setStatus(Message.SUCCESS);
+				}
 			} catch (Throwable e) {
 				m_ctx.print("Deployment aborted due to: %s.\r\n", e);
 
@@ -604,6 +608,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				m_ctx.println(sw.toString());
 			} finally {
 				t.complete();
+				Cat.reset();
 				m_latch.countDown();
 			}
 		}

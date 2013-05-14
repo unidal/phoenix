@@ -2,7 +2,6 @@ package com.dianping.phoenix.deploy.agent;
 
 import java.io.IOException;
 
-import com.dianping.cat.message.Transaction;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
@@ -30,7 +29,7 @@ public interface AgentContext {
 	public String getVersion();
 
 	public String getWarType();
-	
+
 	public boolean isSkipTest();
 
 	public String openUrl(String url) throws IOException;
@@ -46,8 +45,4 @@ public interface AgentContext {
 	public void setState(AgentState state);
 
 	public void updateStatus(AgentStatus status, String message);
-	
-	public void setTransaction(Transaction transaction);
-
-	public void completeTransaction(boolean successOrNot, String metaInfos);
 }
