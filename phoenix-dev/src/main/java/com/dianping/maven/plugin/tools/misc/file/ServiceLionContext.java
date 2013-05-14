@@ -13,7 +13,7 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.phoenix.misc.file;
+package com.dianping.maven.plugin.tools.misc.file;
 
 import java.io.File;
 import java.util.Map;

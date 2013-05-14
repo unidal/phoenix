@@ -13,7 +13,7 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.phoenix.misc.file;
+package com.dianping.maven.plugin.tools.misc.file;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,10 +24,10 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-import com.dianping.phoenix.misc.scanner.ProjectMetaScanner;
-import com.dianping.phoenix.misc.scanner.ProjectPortEntry;
-import com.dianping.phoenix.misc.scanner.Scanner;
-import com.dianping.phoenix.misc.scanner.ServiceScanner;
+import com.dianping.maven.plugin.tools.misc.scanner.ProjectMetaScanner;
+import com.dianping.maven.plugin.tools.misc.scanner.ProjectPortEntry;
+import com.dianping.maven.plugin.tools.misc.scanner.Scanner;
+import com.dianping.maven.plugin.tools.misc.scanner.ServiceScanner;
 
 /**
  * @author Leo Liang
@@ -37,7 +37,6 @@ public class ServiceLionPropertiesGenerator {
     private static final String SERVICE_META_FILE = "service-port.xml";
     private static final String OUTPUT            = "phoenix-lion.btm";
 
-    @SuppressWarnings("unchecked")
     protected void generate(ServiceLionContext context) throws Exception {
 
         File projectMetaOutput = new File(context.getOutputBaseDir(), SERVICE_META_FILE);

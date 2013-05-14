@@ -13,7 +13,7 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.phoenix.misc.file;
+package com.dianping.maven.plugin.tools.misc.file;
 
 import java.io.File;
 import java.util.HashMap;
@@ -45,7 +45,10 @@ public class BytemanScriptGeneratorTest {
 
     @Test
     public void test() throws Exception {
-        String expected = "RULE lion change\n"
+        String expected = "# usage:\n"
+                + "# -javaagent:{BYTEMAN_HOME}/lib/byteman.jar=script:{BTM_HOME}/{BTM_NAME},boot:{BYTEMAN_HOME}/lib/byteman.jar -Dorg.jboss.byteman.transform.all\n"
+                + "#\n"
+                + "RULE lion change\n"
                 + "CLASS com.dianping.lion.client.InitializeConfig\n"
                 + "METHOD postProcessBeanFactory\n"
                 + "AT INVOKE setPts\n"
