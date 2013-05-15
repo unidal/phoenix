@@ -37,7 +37,7 @@ public class DefaultDeviceManager implements DeviceManager,Initializable{
 	
 	private static final String KEY_ENV = "env";
 	
-	private static final String baseUrlPattern = "http://cmdb.dp/cmdb/device%s&wt=xml";
+	private static final String baseUrlPattern = "http://10.1.1.129/cmdb/device%s&wt=xml";
 	
 	private static final String getCatalogUrl = String.format(baseUrlPattern, "/s?q=*&facet=catalog");
 	
