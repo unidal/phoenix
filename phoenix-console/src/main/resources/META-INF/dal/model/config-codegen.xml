@@ -29,6 +29,13 @@
     <element name="deploy-getlog-retrycount" value-type="int" />
     <element name="test-service-url-prefix" value-type="String" />
     <element name="test-service-timeout" value-type="int" />
+    <entity-ref name="cmdb" />
+  </entity>
+  <entity name="cmdb">
+    <element name="baseUrlPattern" value-type="String" />
+    <element name="catalogUrlPart" value-type="String" />
+    <element name="domainUrlPatternPart" value-type="String" />
+    <element name="ipUrlPatternPart" value-type="String" />
   </entity>
 </model>
 
