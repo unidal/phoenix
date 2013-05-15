@@ -162,10 +162,10 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             public Repository find(String project) {
                 if ("shop-web".equals(project)) {
                     return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/shop/trunk/shop-web/",
-                            "peng.hu", "qweasd", -1l);
+                            "-", "-", -1l);
                 } else if ("user-web".equals(project)) {
                     return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-web/",
-                            "peng.hu", "qweasd", -1l);
+                            "-", "-", -1l);
                 } else {
                     return null;
                 }

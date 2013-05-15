@@ -31,23 +31,23 @@ public class DummyRepositoryManager implements RepositoryManager {
     @Override
     public Repository find(String project) {
         if ("shop-web".equals(project)) {
-            return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/shop/trunk/shop-web/", "peng.hu",
-                    "qweasd", -1l);
+            return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/shop/trunk/shop-web/", "-",
+                    "-", -1l);
         } else if ("user-web".equals(project)) {
-            return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-web/", "peng.hu",
-                    "qweasd", -1l);
+            return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-web/", "-",
+                    "-", -1l);
         } else if ("shoplist-web".equals(project)) {
             return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/shop/trunk/shoplist-web/",
-                    "peng.hu", "qweasd", -1l);
+                    "-", "-", -1l);
         } else if ("dpindex-web".equals(project)) {
             return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/dpindex/trunk/dpindex-web/",
-                    "peng.hu", "qweasd", -1l);
+                    "-", "-", -1l);
         } else if ("user-service".equals(project)) {
-            return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-service/", "peng.hu",
-                    "qweasd", -1l);
+            return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-service/", "-",
+                    "-", -1l);
         } else if ("user-base-service".equals(project)) {
-            return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-base-service/", "peng.hu",
-                    "qweasd", -1l);
+            return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-base-service/", "-",
+                    "-", -1l);
         } else {
             return null;
         }
