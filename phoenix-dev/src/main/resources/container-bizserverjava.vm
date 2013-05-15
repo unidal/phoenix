@@ -23,6 +23,8 @@ public class BizServer {
             }
         }
 
+        addContext(server, new File(new File("."), "src/main/webapp/"), "/");
+        
         server.start();
         System.in.read();
     }
