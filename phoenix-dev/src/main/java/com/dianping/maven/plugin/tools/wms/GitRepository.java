@@ -1,5 +1,5 @@
 /**
- * Project: phoenix-dev
+ * Project: phoenix-maven-plugin
  * 
  * File Created at 2013-5-14
  * $Id$
@@ -15,13 +15,19 @@
  */
 package com.dianping.maven.plugin.tools.wms;
 
-import java.io.OutputStream;
-
 /**
  * @author Leo Liang
  * 
  */
-public interface WorkspaceManagementService {
+public class GitRepository extends Repository {
+    private String branch;
 
-    public void create(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException;
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
 }
