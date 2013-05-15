@@ -21,6 +21,7 @@ import com.dianping.phoenix.deliverable.DeliverableStatus;
 import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.DeployPolicy;
+import com.dianping.phoenix.project.entity.BussinessLine;
 import com.dianping.phoenix.project.entity.Project;
 import com.dianping.phoenix.service.ProjectManager;
 
@@ -101,9 +102,8 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 		switch (action) {
 		case HOME:
 			try {
-				List<Project> projects = m_projectManager.searchProjects(payload.getKeyword());
-
-				model.setProjects(projects);
+				List<BussinessLine> bussinessLineList = m_projectManager.getBussinessLineList();
+				model.setBussinessLines(bussinessLineList);
 			} catch (Exception e) {
 				m_logger.warn(String.format("Error when searching projects with keyword(%s)!", payload.getKeyword()), e);
 				ctx.addError("project.search", e);

@@ -102,6 +102,7 @@
                      <manifest>${basedir}/src/main/resources/META-INF/dal/model/response-manifest.xml,
                      ${basedir}/src/main/resources/META-INF/dal/model/config-manifest.xml,
                      ${basedir}/src/main/resources/META-INF/dal/model/project-manifest.xml,
+                     ${basedir}/src/main/resources/META-INF/dal/model/device-manifest.xml,
                      ${basedir}/src/main/resources/META-INF/dal/model/deploy-manifest.xml,</manifest>
                   </configuration>
                </execution>

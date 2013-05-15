@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<responce>
+    <code>200</code>
+    <numfound>1236</numfound>
+    <page>1</page>
+    <devices>       
+        <device type="1" id="2" unique="CNG048T5GD">
+                            <attribute name="status">在线</attribute>  
+                            <attribute name="dev_type">物理机</attribute>
+                            <attribute name="app">search-audit</attribute>
+                            <attribute name="hostname">search-audit02.nh</attribute>
+                            <attribute name="catalog">基础平台</attribute>
+                            <attribute name="private_ip">10.1.1.5</attribute>
+                            <attribute name="rd_duty">吕召刚</attribute>           
+        </device>
+        <device type="1" id="78" unique="CNG032TXTM">
+							<attribute name="status">在线</attribute>
+							<attribute name="dev_type">物理机</attribute>
+							<attribute name="app">search-audit</attribute>
+							<attribute name="hostname">search-audit01.nh</attribute>
+							<attribute name="catalog">基础平台</attribute>
+							<attribute name="private_ip">10.1.1.197</attribute>
+							<attribute name="rd_duty">吕召刚</attribute>
+		</device>       
+    </devices>
+    <facets>
+            <facet attribute="dev_type">
+                    <value name="VMware">796</value>
+                    <value name="物理机">313</value>
+                    <value name="KVM">116</value>
+                    <value name="KVM宿主机">11</value>
+            </facet>
+            <facet attribute="catalog">
+                    <value name="信息线">530</value>
+                    <value name="商务线">250</value>
+                    <value name="架构">104</value>
+                    <value name="基础平台">102</value>
+                    <value name="数据库">89</value>
+                    <value name="运维">47</value>
+                    <value name="BA">33</value>
+                    <value name="邮件">25</value>
+                    <value name="DW">10</value>
+                    <value name="下线">5</value>
+                    <value name="研发管理">3</value>
+            </facet>
+    </facets>
+</responce>

@@ -1,28 +1,34 @@
 <%@ page contentType="text/html; charset=utf-8"%>
+
 <%@ taglib prefix="a" uri="http://www.dianping.com/phoenix/console"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
+
 <jsp:useBean id="ctx" type="com.dianping.phoenix.console.page.home.Context" scope="request" />
 <jsp:useBean id="payload" type="com.dianping.phoenix.console.page.home.Payload" scope="request" />
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.home.Model" scope="request" />
+<script src="js/jquery-1.8.1.min.js" ></script>
+<script src="js/console-home.js" type="text/javascript"></script>
 
 <a:layout>
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span12">
-				<ul class="nav nav-tabs">
-					<li class="active">
-						<a href="#">主站</a>
-					</li>
-					<li>
-						<a href="#">团购</a>
-					</li>
-					<li>
-						<a href="#">手机</a>
-					</li>
-					<li>
-						<a href="#">其他</a>
-					</li>
+				<ul class="nav nav-tabs" id="myTab">
+					<c:set var="flag" scope="page" value="true"/>
+					<c:forEach var="bussinessLine" items="${model.bussinessLines}">
+						<c:choose>
+						    <c:when test="${flag}">
+						       <li class="active bl">
+						       <c:set var="flag" scope="page" value="false"/>
+						    </c:when>
+						    <c:otherwise>
+						        <li class="bl">
+						    </c:otherwise>
+						</c:choose>
+									<a href="#${bussinessLine.name}">${bussinessLine.name}</a>
+								</li>
+					</c:forEach>
 					<li class="pull-right">
 						<input type="text" style="margin-bottom: -12px;" placeholder="输入项目名...">
 						<button class="btn" style="margin-bottom: -12px;">Search</button>
@@ -30,33 +36,46 @@
 				</ul>
 			</div>
 		</div>
-		<div class="row-fluid">
-			<div class="span12">
-				<table class="table table-bordered table-striped table-condensed table-page">
-					<thead>
-						<tr>
-							<th width="35">Status</th>
-							<th width="220">Project</th>
-							<th width="120">Owner</th>
-							<th width="150">Machine(Active/Inactive)</th>
-							<th>Kernel Versions</th>
-							<th>App Versions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach var="project" items="${model.projects}">
+		<div class="tab-content">
+			<c:set var="flag" scope="page" value="true"/>
+			<c:forEach var="bussinessLine" items="${model.bussinessLines}">	
+			<c:choose>
+				<c:when test="${flag}">
+					<div class="tab-pane active row-fluid" id="${bussinessLine.name}">
+					<c:set var="flag" scope="page" value="false"/>
+				</c:when>
+				<c:otherwise>
+					<div class="tab-pane row-fluid" id="${bussinessLine.name}">
+				</c:otherwise>
+			</c:choose>
+				<div class="span12">
+					<table class="table table-bordered table-striped table-condensed table-page">
+						<thead>
 							<tr>
-								<td><img src="${model.webapp}/img/green.gif"></td>
-								<td><a href="?op=project&type=${payload.plan.warType}&project=${project.name}">${project.name}</a></td>
-								<td>${project.owner}</td>
-								<td>${w:size(project.hosts)}/0</td>
-								<td>1.2, 1.5, 1.6</td>
-								<td>2.0.0, 2.0.1</td>
+								<th width="35">Status</th>
+								<th width="220">Project</th>
+								<th width="120">Owner</th>
+								<th width="150">Machine(Active/Inactive)</th>
+								<th>Kernel Versions</th>
+								<th>App Versions</th>
 							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+								<c:forEach var="project" items="${bussinessLine.projects}">
+									<tr>									
+										<td><img src="${model.webapp}/img/green.gif"></td>
+										<td><a href="?op=project&type=${payload.plan.warType}&project=${project.value.name}">${project.value.name}</a></td>
+										<td>owner</td>
+										<td>host</td>
+										<td>1.2, 1.5, 1.6</td>
+										<td>2.0.0, 2.0.1</td>									
+									</tr>
+								</c:forEach>		
+						</tbody>
+					</table>
+				</div>
 			</div>
+			</c:forEach>
 		</div>
 	</div>
 </a:layout>
