@@ -26,6 +26,10 @@ A powerful console to upgrade kernel and agent
 
 
 %install
+# add user phoenix
+useradd phoenix 2>/dev/null || true
+usermod -a -G nobody phoenix
+
 # clean rpm build root
 [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT/*
 
@@ -43,9 +47,7 @@ cp project.xml $CONSOLE_CONFIG_DIR
 cp datasources.xml $CONSOLE_CONFIG_DIR
 
 %post
-# add user phoenix
-useradd phoenix >/dev/null || true
-usermod -a -G nobody phoenix
+
 # change required file permissions
 CONSOLE_INSTALL_DIR=$RPM_BUILD_ROOT/data/webapps/phoenix/phoenix-console
 SERVER_XML=/usr/local/jboss/server/default/deploy/jboss-web.deployer/server.xml
