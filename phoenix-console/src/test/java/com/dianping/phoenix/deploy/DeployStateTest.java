@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.cat.message.Transaction;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.agent.AgentContext;
 import com.dianping.phoenix.deploy.agent.AgentState;
@@ -347,12 +346,5 @@ public class DeployStateTest extends ComponentTestCase {
 			m_log.append(String.format("updateStatus: %s, %s\r\n", status.getName(), message));
 		}
 
-		@Override
-		public void setTransaction(Transaction transaction) {
-		}
-
-		@Override
-		public void completeTransaction(boolean successOrNot, String metaInfos) {
-		}
 	}
 }

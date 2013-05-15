@@ -83,6 +83,9 @@ public class DefaultDeployListener implements DeployListener {
 		model.setId(deployId);
 		model.setDomain(domain);
 		model.setPlan(plan);
+		model.setAbortOnError(plan.isAbortOnError());
+		model.setVersion(plan.getVersion());
+		model.setSkipTest(plan.isSkipTest());
 
 		m_projectManager.storeModel(model);
 		return model;
