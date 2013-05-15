@@ -32,10 +32,10 @@
     <entity-ref name="cmdb" />
   </entity>
   <entity name="cmdb">
-    <element name="baseUrlPattern" value-type="String" />
-    <element name="catalogUrlPart" value-type="String" />
-    <element name="domainUrlPatternPart" value-type="String" />
-    <element name="ipUrlPatternPart" value-type="String" />
+    <element name="base-url-pattern" value-type="String" />
+    <element name="catalog-url-part" value-type="String" />
+    <element name="domain-url-pattern-part" value-type="String" />
+    <element name="ip-url-pattern-part" value-type="String" />
   </entity>
 </model>
 
