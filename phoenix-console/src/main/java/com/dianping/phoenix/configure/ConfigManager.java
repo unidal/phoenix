@@ -8,6 +8,7 @@ import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.configure.entity.AgentConfig;
+import com.dianping.phoenix.configure.entity.Cmdb;
 import com.dianping.phoenix.configure.entity.Config;
 import com.dianping.phoenix.configure.entity.ConsoleConfig;
 import com.dianping.phoenix.configure.entity.GitConfig;
@@ -116,15 +117,20 @@ public class ConfigManager implements Initializable {
 				if (m_config.getAgent() == null) {
 					m_config.setAgent(new AgentConfig());
 				}
-
+				
 				if (m_config.getConsole() == null) {
 					m_config.setConsole(new ConsoleConfig());
+				}
+				
+				if (m_config.getConsole().getCmdb() == null) {
+					m_config.getConsole().setCmdb(new Cmdb());
 				}
 			} else {
 				m_config = new Config();
 				m_config.setGit(new GitConfig());
 				m_config.setAgent(new AgentConfig());
 				m_config.setConsole(new ConsoleConfig());
+				m_config.getConsole().setCmdb(new Cmdb());
 			}
 		} catch (Exception e) {
 			throw new InitializationException(String.format("Unable to load configuration file(%s)!", m_configFile), e);
@@ -143,5 +149,29 @@ public class ConfigManager implements Initializable {
 		check();
 
 		m_config.getConsole().setDeployRetryInterval(retryInterval); // in second
+	}
+	
+	private String getCmdbBaseUrl(){
+		return m_config.getConsole().getCmdb().getBaseUrlPattern();
+	}
+	public String getCmdbCatalogUrl(){
+		check();
+		String baseUrlPattern = getCmdbBaseUrl();
+		String catalogUrlPart = m_config.getConsole().getCmdb().getCatalogUrlPart();
+		return String.format(baseUrlPattern, catalogUrlPart);
+	}
+	
+	public String getCmdbDomainUrlPattern(){
+		check();
+		String baseUrlPattern = getCmdbBaseUrl();
+		String domainUrlPattern = m_config.getConsole().getCmdb().getDomainUrlPatternPart();
+		return String.format(baseUrlPattern, domainUrlPattern);
+	}
+	
+	public String getCmdbIpUrlPattern(){
+		check();
+		String baseUrlPattern = getCmdbBaseUrl();
+		String ipUrlPattern = m_config.getConsole().getCmdb().getIpUrlPatternPart();
+		return String.format(baseUrlPattern, ipUrlPattern);
 	}
 }

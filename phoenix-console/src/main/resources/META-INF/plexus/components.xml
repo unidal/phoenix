@@ -50,6 +50,11 @@
 		<component>
 			<role>com.dianping.phoenix.service.DeviceManager</role>
 			<implementation>com.dianping.phoenix.service.DefaultDeviceManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.service.ProjectManager</role>

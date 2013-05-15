@@ -26,7 +26,7 @@ fi
 cd -
 
 # pull lastest phoenix code
-cd $PHOENIX_DIR
+cd $PHOENIX_DIR/phoenix-console
 git pull
 
 # package it
@@ -41,30 +41,7 @@ mkdir -p $RPM_SOURCE_NAME/$PHOENIX_CONSOLE_INSTALL_DIR_NAME
 unzip -d $RPM_SOURCE_NAME/$PHOENIX_CONSOLE_INSTALL_DIR_NAME $PHOENIX_DIR/phoenix-console/target/phoenix-console-*.war
 
 # prepare config.xml
-cat >$RPM_SOURCE_NAME/project.xml <<EOF
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-	<project name="user-web" owner="qing.gu">
-		<description>Sample Application</description>
-		<hosts>
-			<host ip="127.0.0.1" status="up">
-				<war name="user-web" version="0.1-SNAPSHOT">
-					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="3.4" />
-					<dependency groupId="opensymphony" artifactId="sitemesh" version="1.1" />
-					<dependency groupId="org.apache.struts" artifactId="struts2-core" version="2.2.0" />
-					<dependency groupId="org.apache.struts" artifactId="struts2-json-plugin" version="2.1.8" />
-					<dependency groupId="org.springframework" artifactId="spring-web" version="3.0" />
-				</war>
-				<war name="kernel" version="0.1-SNAPSHOT">
-					<dependency groupId="com.dianping.cat" artifactId="cat-core" version="4.1" />
-					<dependency groupId="org.apache.struts" artifactId="struts2-json-plugin" version="2.2.0" />
-					<dependency groupId="org.springframework" artifactId="spring-web" version="2.5.6" />
-				</war>
-			</host>
-		</hosts>
-	</project>
-</root>
-EOF
+cp $PHOENIX_DIR/phoenix-console/src/test/resources/com/dianping/phoenix/deploy/project.xml $RPM_SOURCE_NAME/
 
 cat >$RPM_SOURCE_NAME/datasources.xml <<EOF
 <?xml version="1.0" encoding="utf-8"?>
@@ -92,7 +69,7 @@ tar czf $RPM_SOURCE_NAME.tar.gz $RPM_SOURCE_NAME
 
 rpmdev-setuptree
 cp $RPM_SOURCE_NAME.tar.gz ~/rpmbuild/SOURCES/
-cp $PHOENIX_DIR/phoenix-console/src/main/resources/rpm/phoenix-console.spec ~/rpmbuild/SPECS/
+cp $PHOENIX_DIR/phoenix-console/src/main/rpm/phoenix-console.spec ~/rpmbuild/SPECS/
 	
 cd -
 

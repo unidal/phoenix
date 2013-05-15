@@ -50,6 +50,7 @@ cp phoenix-bootstrap.jar $BOOTSTRAP_JAR_DIR
 
 %post
 # add user phoenix
+useradd phoenix >/dev/null || true
 usermod -a -G nobody phoenix
 # change required file permissions
 

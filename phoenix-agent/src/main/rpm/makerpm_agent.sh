@@ -33,7 +33,7 @@ fi
 cd -
 
 # pull lastest phoenix code
-cd $PHOENIX_DIR
+cd $PHOENIX_DIR/phoenix-agent
 git pull
 
 # package it
@@ -66,7 +66,7 @@ tar czf $RPM_SOURCE_NAME.tar.gz $RPM_SOURCE_NAME
 
 rpmdev-setuptree
 cp $RPM_SOURCE_NAME.tar.gz ~/rpmbuild/SOURCES/
-cp $PHOENIX_DIR/phoenix-agent/src/main/resources/rpm/phoenix-agent-$container.spec ~/rpmbuild/SPECS/
+cp $PHOENIX_DIR/phoenix-agent/src/main/rpm/phoenix-agent-$container.spec ~/rpmbuild/SPECS/
 
 cd -
 
