@@ -28,9 +28,7 @@ public class DefaultDeviceManager implements DeviceManager,Initializable{
 	private List<String> bussinessLineList = new ArrayList<String>();
 	
 	private Map<String,List<String>> bussinessLineToDomainListMap = new HashMap<String,List<String>>();
-	
-//	private Map<String,List<Device>> domainToHostListMap = new HashMap<String,List<Device>>();
-	
+		
 	private static final String KEY_OWNER = "rd_duty";
 	
 	private static final String KEY_IP = "private_ip";
@@ -52,36 +50,42 @@ public class DefaultDeviceManager implements DeviceManager,Initializable{
 	public Project findProjectBy(String name) throws Exception {
 		Responce root = readCmdb(String.format(getIpUrlPattern, name));
 		Project project = new Project(name);
-		for(Device device:root.getDevices()){
-			if(device.getAttributes().get(KEY_OWNER)!= null){
-				project.setOwner(device.getAttributes().get(KEY_OWNER).getText());
-			}
-			//TODO:set description
-			project.setDescription("");
-			Host host = new Host();
-			Attribute ipAttr = device.getAttributes().get(KEY_IP);
-			if(ipAttr != null){
-				project.addHost(host);
-				host.setIp(ipAttr.getText());
-				Attribute envAttr = device.getAttributes().get(KEY_ENV);
-				Attribute statusAttr = device.getAttributes().get(KEY_STATUS);
-				if(envAttr!= null){
-					host.setEnv(envAttr.getText());
+		//TODO:set description
+		project.setDescription("");
+		if(root != null && root.getDevices()!= null){
+			for(Device device:root.getDevices()){
+				Map<String,Attribute> attributeMap = device.getAttributes();
+				if(attributeMap == null){
+					continue;
 				}
-				if(statusAttr!= null){
-					host.setStatus(statusAttr.getText());
+				Attribute owner = attributeMap.get(KEY_OWNER);
+				Attribute ip = attributeMap.get(KEY_IP);
+				Attribute env = attributeMap.get(KEY_ENV);
+				Attribute  status = attributeMap.get(KEY_STATUS);
+				if(owner!= null && project.getOwner() != null){
+					project.setOwner(owner.getText());
 				}
+				Host host = new Host();
+				if(ip != null){
+					project.addHost(host);
+					host.setIp(ip.getText());
+					if(env!= null){
+						host.setEnv(env.getText());
+					}
+					if(status!= null){
+						host.setStatus(status.getText());
+					}
+				}	
+				//TODO:set war info
 			}
-			
-			//TODO:set war info
+			if(project.getHosts() != null) {
+				Collections.sort(project.getHosts(), new IPComparator());
+			}
+
 		}
-		Collections.sort(project.getHosts(), new IPComparator());
-//		Collections.sort(hostList,);
-//		for(ComparableHost ch:hostList){
-//			project.addHost(ch.host);
-//		}
 		return project;
 	}
+	
 	protected static class IPComparator implements Comparator<Host> {
 
 		@Override
@@ -180,17 +184,4 @@ public class DefaultDeviceManager implements DeviceManager,Initializable{
 			return result;
 		}
 	}
-	
-//	@Override
-//	public List<String> getIpListByDomain(String domain){
-//		
-//		List<String> result = getAttributeList(String.format(getIpUrlPattern, domain),"private_ip");
-//		if(result.size() == 0 && domainToIpListMap.containsKey(domain)){
-//			return domainToIpListMap.get(domain);
-//		} else {
-//			domainToIpListMap.put(domain, result);
-//			return result;
-//		}
-//	}
-	
 }

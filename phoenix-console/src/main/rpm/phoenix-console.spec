@@ -44,6 +44,7 @@ cp datasources.xml $CONSOLE_CONFIG_DIR
 
 %post
 # add user phoenix
+useradd phoenix >/dev/null || true
 usermod -a -G nobody phoenix
 # change required file permissions
 CONSOLE_INSTALL_DIR=$RPM_BUILD_ROOT/data/webapps/phoenix/phoenix-console
