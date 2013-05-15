@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.initialization.DefaultModuleManager;
+import org.unidal.initialization.Module;
 import org.unidal.initialization.ModuleManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
+import com.dianping.phoenix.agent.StatusReportModule;
 import com.dianping.phoenix.agent.core.Agent;
 import com.dianping.phoenix.agent.core.AgentStatusReporter;
+import com.dianping.phoenix.agent.core.ContainerManager;
 import com.dianping.phoenix.agent.core.DefaultAgent;
+import com.dianping.phoenix.agent.core.DefaultContainerManager;
 import com.dianping.phoenix.agent.core.shell.DefaultScriptExecutor;
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
 import com.dianping.phoenix.agent.core.task.processor.SemaphoreWrapper;
@@ -18,7 +22,6 @@ import com.dianping.phoenix.agent.core.task.processor.TaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DeployTaskProcessor;
 import com.dianping.phoenix.agent.core.task.processor.kernel.DetachTaskProcessor;
-import com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.DefaultQaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService;
 import com.dianping.phoenix.agent.core.task.processor.kernel.upgrade.DefaultKernelUpgradeStepProvider;
@@ -50,6 +53,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 		all.add(C(ScriptExecutor.class, DefaultScriptExecutor.class).is(PER_LOOKUP));
 		all.add(C(ConfigManager.class));
+		all.add(C(ContainerManager.class, DefaultContainerManager.class).req(ConfigManager.class));
+		all.add(C(AgentStatusReporter.class).req(ConfigManager.class, ContainerManager.class));
 		all.add(C(Agent.class, DefaultAgent.class).req(TransactionManager.class) //
 				.req(TaskProcessorFactory.class));
 		all.add(C(TaskProcessor.class, "deploy", DeployTaskProcessor.class) //
@@ -57,12 +62,11 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(Engine.class).req(LogFormatter.class));
 		all.add(C(TaskProcessor.class, "detach", DetachTaskProcessor.class) //
 				.req(SemaphoreWrapper.class, "kernel") //
-				.req(TransactionManager.class, ConfigManager.class, ServerXmlManager.class));
+				.req(TransactionManager.class, ContainerManager.class));
 		all.add(C(TaskProcessor.class, "agent_upgrade", AgentUpgradeTaskProcessor.class) //
 				.req(SemaphoreWrapper.class, "kernel").req(TransactionManager.class) //
 				.req(Engine.class).req(LogFormatter.class));
 		all.add(C(TaskProcessorFactory.class));
-		all.add(C(AgentStatusReporter.class).req(ConfigManager.class));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
 		all.add(C(Engine.class).req(LogFormatter.class));
 		all.add(C(Context.class, "kernel_ctx", KernelUpgradeContext.class).is(PER_LOOKUP) //
@@ -70,17 +74,23 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(Context.class, "agent_ctx", AgentUpgradeContext.class).is(PER_LOOKUP) //
 				.req(ScriptExecutor.class, AgentUpgradeStepProvider.class));
 		all.add(C(KernelUpgradeStepProvider.class, DefaultKernelUpgradeStepProvider.class) //
-				.req(ConfigManager.class, QaService.class, ServerXmlManager.class));
+				.req(ConfigManager.class, QaService.class, ContainerManager.class));
 		all.add(C(AgentUpgradeStepProvider.class, DefaultAgentUpgradeStepProvider.class) //
 				.req(ConfigManager.class));
-		all.add(C(ServerXmlManager.class));
 
-		all.add(C(ModuleManager.class, DefaultModuleManager.class));
+		// Please keep it as last
+		defineWebComponents(all);
+
+		return all;
+	}
+
+	private void defineWebComponents(List<Component> all) {
+		all.add(C(Module.class, StatusReportModule.ID, StatusReportModule.class));
+		all.add(C(ModuleManager.class, DefaultModuleManager.class) //
+				.config(E("topLevelModules").value(StatusReportModule.ID)));
 
 		// Please keep it as last
 		all.addAll(new WebComponentConfigurator().defineComponents());
-
-		return all;
 	}
 
 	public static void main(String[] args) {

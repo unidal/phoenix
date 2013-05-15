@@ -178,9 +178,9 @@
 				<statement-cache-size>1000</statement-cache-size>
 				<properties>
 					<driver>com.mysql.jdbc.Driver</driver>
-					<URL>jdbc:mysql://192.168.26.80:3306/phoenix</URL>
+					<URL>jdbc:mysql://root:root@192.168.26.23:3306/phoenix</URL>
 					<user>root</user>
-					<password>root</password>
+					<password></password>
 					<connectionProperties><![CDATA[useUnicode=true&autoReconnect=true]]></connectionProperties>
 				</properties>
 			</configuration>

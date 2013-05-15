@@ -2,7 +2,6 @@ package com.dianping.phoenix.agent.core.task.processor.upgrade;
 
 import java.util.Map;
 
-import com.dianping.cat.Cat;
 import com.dianping.cat.message.Message;
 import com.dianping.phoenix.agent.core.task.workflow.AbstractStep;
 import com.dianping.phoenix.agent.core.task.workflow.Context;
@@ -42,7 +41,7 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			return Step.CODE_OK;
+			return doActivity(ctx);
 		}
 
 		@Override
@@ -70,18 +69,18 @@ public class AgentUpgradeStep extends AbstractStep {
 
 		@Override
 		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
-			int stepCode = getStepProvider(ctx).dryrunAgent(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
-
-			com.dianping.cat.message.Transaction ctxTrans = ((AgentUpgradeContext) ctx).getCatTransaction();
-			if (ctxTrans != null) {
-				ctxTrans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-				ctxTrans.complete();
+			int stepCode = doStepWithCat(ctx, "AgentStep", toString());
+			com.dianping.cat.message.Transaction t = ((AgentUpgradeContext) ctx).getCatTransaction();
+			if (t != null) {
+				t.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
+				t.complete();
 			}
 			return stepCode;
+		}
+
+		@Override
+		protected int doActivity(Context ctx) throws Exception {
+			return getStepProvider(ctx).dryrunAgent(ctx);
 		}
 
 		@Override
@@ -94,13 +93,8 @@ public class AgentUpgradeStep extends AbstractStep {
 	private static AgentUpgradeStep GIT_PULL = new AgentUpgradeStep(DRYRUN_AGENT, FAIL, 2) {
 
 		@Override
-		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
-			int stepCode = getStepProvider(ctx).gitPull(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
-			return stepCode;
+		protected int doActivity(Context ctx) throws Exception {
+			return getStepProvider(ctx).gitPull(ctx);
 		}
 
 		@Override
@@ -112,13 +106,8 @@ public class AgentUpgradeStep extends AbstractStep {
 	public static AgentUpgradeStep INIT = new AgentUpgradeStep(GIT_PULL, FAIL, 1) {
 
 		@Override
-		public int doStep(Context ctx) throws Exception {
-			setParentCatTransaction(ctx);
-			com.dianping.cat.message.Transaction trans = generateCatTransaction(toString());
-			int stepCode = getStepProvider(ctx).init(ctx);
-			trans.setStatus(stepCode == Step.CODE_OK ? Message.SUCCESS : STATUS_FAIL);
-			trans.complete();
-			return stepCode;
+		protected int doActivity(Context ctx) throws Exception {
+			return getStepProvider(ctx).init(ctx);
 		}
 
 		@Override
@@ -129,6 +118,11 @@ public class AgentUpgradeStep extends AbstractStep {
 	};
 
 	public static AgentUpgradeStep START = new AgentUpgradeStep(INIT, FAIL, 0) {
+
+		@Override
+		public int doStep(Context ctx) throws Exception {
+			return doActivity(ctx);
+		}
 
 		@Override
 		public String toString() {
@@ -151,20 +145,11 @@ public class AgentUpgradeStep extends AbstractStep {
 
 	@Override
 	public int doStep(Context ctx) throws Exception {
+		return doStepWithCat(ctx, "AgentStep", toString());
+	}
+
+	@Override
+	protected int doActivity(Context ctx) throws Exception {
 		return Step.CODE_OK;
 	}
-
-	private static void setParentCatTransaction(Context ctx) {
-		try {
-			Cat.getManager().getThreadLocalMessageTree()
-					.setMessageId(((AgentUpgradeContext) ctx).getCatTransactionId());
-		} catch (Exception e) {
-			// ignore it
-		}
-	}
-
-	private static com.dianping.cat.message.Transaction generateCatTransaction(String stepName) {
-		return Cat.getProducer().newTransaction("AgentUpgradeSteps", stepName);
-	}
-
 }

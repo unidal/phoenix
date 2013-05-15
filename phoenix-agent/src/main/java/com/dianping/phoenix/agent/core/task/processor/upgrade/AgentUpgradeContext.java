@@ -14,7 +14,6 @@ public class AgentUpgradeContext extends Context {
 	private ScriptExecutor scriptExecutor;
 
 	private com.dianping.cat.message.Transaction c_agentUpgrade;
-	private String c_transId;
 
 	private String underLyingFile;
 	private String tempScriptFile;
@@ -47,19 +46,15 @@ public class AgentUpgradeContext extends Context {
 		return c_agentUpgrade;
 	}
 
-	public String getCatTransactionId() {
-		return c_transId;
-	}
-
 	@Override
 	public void setTask(Task task) {
 		super.setTask(task);
 		AgentUpgradeTask tsk = (AgentUpgradeTask) task;
-		c_agentUpgrade = Cat.getProducer().newTransaction("AgentUpgrade", tsk.getAgentVersion());
+		c_agentUpgrade = Cat.getProducer().newTransaction("Agent", tsk.getAgentVersion());
 		try {
-			c_transId = Cat.getProducer().createMessageId();
+			setMsgId(Cat.getProducer().createMessageId());
 		} catch (Exception e) {
-			c_transId = "no-cat-id";
+			setMsgId("no-cat-id");
 		}
 	}
 }

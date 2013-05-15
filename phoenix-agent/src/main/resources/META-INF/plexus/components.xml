@@ -41,6 +41,27 @@
 			<implementation>com.dianping.phoenix.configure.ConfigManager</implementation>
 		</component>
 		<component>
+			<role>com.dianping.phoenix.agent.core.ContainerManager</role>
+			<implementation>com.dianping.phoenix.agent.core.DefaultContainerManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
+			<implementation>com.dianping.phoenix.agent.core.AgentStatusReporter</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.ContainerManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.phoenix.agent.core.Agent</role>
 			<implementation>com.dianping.phoenix.agent.core.DefaultAgent</implementation>
 			<requirements>
@@ -85,10 +106,7 @@
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.configure.ConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</role>
+					<role>com.dianping.phoenix.agent.core.ContainerManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -115,15 +133,6 @@
 		<component>
 			<role>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</role>
 			<implementation>com.dianping.phoenix.agent.core.task.processor.TaskProcessorFactory</implementation>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
-			<implementation>com.dianping.phoenix.agent.core.AgentStatusReporter</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.configure.ConfigManager</role>
-				</requirement>
-			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
@@ -177,7 +186,7 @@
 					<role>com.dianping.phoenix.agent.core.task.processor.kernel.qa.QaService</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</role>
+					<role>com.dianping.phoenix.agent.core.ContainerManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -191,12 +200,16 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</role>
-			<implementation>com.dianping.phoenix.agent.core.task.processor.kernel.ServerXmlManager</implementation>
+			<role>org.unidal.initialization.Module</role>
+			<role-hint>status-report</role-hint>
+			<implementation>com.dianping.phoenix.agent.StatusReportModule</implementation>
 		</component>
 		<component>
 			<role>org.unidal.initialization.ModuleManager</role>
 			<implementation>org.unidal.initialization.DefaultModuleManager</implementation>
+			<configuration>
+				<topLevelModules>status-report</topLevelModules>
+			</configuration>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
@@ -238,31 +251,13 @@
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
+					<role>com.dianping.phoenix.agent.core.ContainerManager</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.page.deploy.JspViewer</role>
 			<implementation>com.dianping.phoenix.agent.page.deploy.JspViewer</implementation>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
-			<implementation>com.dianping.phoenix.agent.core.AgentStatusReporter</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.configure.ConfigManager</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.configure.ConfigManager</role>
-			<implementation>com.dianping.phoenix.configure.ConfigManager</implementation>
-			<requirements>
-				<requirement>
-					<role>java.lang.String</role>
-				</requirement>
-			</requirements>
 		</component>
 	</components>
 </plexus>

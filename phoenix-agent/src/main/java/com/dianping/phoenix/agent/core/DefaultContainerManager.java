@@ -34,7 +34,6 @@ import com.dianping.phoenix.agent.response.entity.War;
 import com.dianping.phoenix.agent.util.Artifact;
 import com.dianping.phoenix.agent.util.ArtifactResolver;
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.configure.ConfigManager.ContainerType;
 import com.site.lookup.annotation.Inject;
 
 public class DefaultContainerManager extends ContainerHolder implements ContainerManager {
@@ -45,19 +44,17 @@ public class DefaultContainerManager extends ContainerHolder implements Containe
 
 	@Override
 	public void attachContainerLoader(String domain, String version) throws Exception {
-		
+
 		List<File> serverXmlList = config.getServerXmlFileList();
 
-		if(serverXmlList.size() == 0) {
+		if (serverXmlList.size() == 0) {
 			throw new RuntimeException("Container config not found!");
 		}
-	
-		for(File serverXml:serverXmlList){
-			File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), domain,
-					version));
+
+		for (File serverXml : serverXmlList) {
+			File kernelDocBase = new File(String.format(config.getKernelDocBasePattern(), domain, version));
 			String domainDocBasePattern = String.format(config.getDomainDocBaseFeaturePattern(), domain);
-			attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(),
-					kernelDocBase);
+			attachPhoenixContextLoader(serverXml, domainDocBasePattern, config.getLoaderClass(), kernelDocBase);
 		}
 	}
 
@@ -111,20 +108,11 @@ public class DefaultContainerManager extends ContainerHolder implements Containe
 
 	@Override
 	public void detachContainerLoader(String domain) throws Exception {
-		if (config.getContainerType() == ContainerType.TOMCAT) {
-			File serverXmlDir = new File(config.getContainerInstallPath() + "/config/Catalina/localhost/");
-			if (serverXmlDir != null && serverXmlDir.exists()) {
-				for (File serverXml : serverXmlDir.listFiles()) {
-					detachPhoenixContextLoader(serverXml,
-							String.format(config.getDomainDocBaseFeaturePattern(), domain));
-				}
-			}
-		}
 		List<File> serverXmlList = config.getServerXmlFileList();
-		if(serverXmlList.size() == 0) {
+		if (serverXmlList.size() == 0) {
 			throw new RuntimeException("Container config not found!");
 		}
-		for(File serverXml:serverXmlList){
+		for (File serverXml : serverXmlList) {
 			detachPhoenixContextLoader(serverXml, String.format(config.getDomainDocBaseFeaturePattern(), domain));
 		}
 	}
@@ -228,7 +216,7 @@ public class DefaultContainerManager extends ContainerHolder implements Containe
 	public Response reportContainerStatus() throws Exception {
 		Response res = new Response();
 		List<File> serverXmlList = config.getServerXmlFileList();
-		for(File serverXml:serverXmlList) {
+		for (File serverXml : serverXmlList) {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document doc = builder.parse(serverXml);
 			NodeList ctxList = doc.getElementsByTagName("Context");

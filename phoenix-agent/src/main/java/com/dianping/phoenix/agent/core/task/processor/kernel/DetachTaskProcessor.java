@@ -1,14 +1,12 @@
 package com.dianping.phoenix.agent.core.task.processor.kernel;
 
-import java.io.File;
-
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.phoenix.agent.core.ContainerManager;
 import com.dianping.phoenix.agent.core.task.processor.AbstractSerialTaskProcessor;
 import com.dianping.phoenix.agent.core.tx.Transaction;
 import com.dianping.phoenix.agent.core.tx.Transaction.Status;
 import com.dianping.phoenix.agent.core.tx.TransactionId;
-import com.dianping.phoenix.configure.ConfigManager;
 
 /**
  * Remove &lt;Loader$gt; from server.xml
@@ -18,10 +16,7 @@ import com.dianping.phoenix.configure.ConfigManager;
  */
 public class DetachTaskProcessor extends AbstractSerialTaskProcessor<DetachTask> {
 	@Inject
-	private ConfigManager config;
-
-	@Inject
-	private ServerXmlManager m_serverXmlManager;
+	private ContainerManager m_containerManager;
 
 	public DetachTaskProcessor() {
 	}
@@ -39,9 +34,10 @@ public class DetachTaskProcessor extends AbstractSerialTaskProcessor<DetachTask>
 	@Override
 	protected Status doTransaction(Transaction tx) throws Exception {
 		DetachTask task = (DetachTask) tx.getTask();
-		for(File file:config.getServerXmlFileList()) {
-			m_serverXmlManager.detachPhoenixContextLoader(file,
-				String.format(config.getDomainDocBaseFeaturePattern(), task.getDomain()));
+		try {
+			m_containerManager.detachContainerLoader(task.getDomain());
+		} catch (Exception e) {
+			return Status.FAILED;
 		}
 		return Status.SUCCESS;
 	}

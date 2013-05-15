@@ -1,5 +1,8 @@
 package com.dianping.phoenix.deploy.agent;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
 import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.transform.DefaultJsonParser;
 
@@ -7,6 +10,9 @@ public enum AgentState {
 	CREATED(0, 1, 2, 9) {
 		@Override
 		protected void doActivity(AgentContext ctx) throws Exception {
+			Transaction t = Cat.newTransaction("phoenix-agent:" + ctx.getDomain(),
+					ctx.getHost() + ":" + ctx.getWarType() + ":" + ctx.getVersion());
+
 			int id = ctx.getDeployId();
 			String domain = ctx.getDomain();
 			String version = ctx.getVersion();
@@ -20,12 +26,24 @@ public enum AgentState {
 			ctx.print("[INFO] Deploying phoenix kernel(%s) to host(%s) for deploy(%s) of domain(%s)  ... ", version,
 					host, id, domain);
 
+			boolean shouldRetry = false;
+
 			try {
 				json = ctx.openUrl(url);
+				t.setStatus(Message.SUCCESS);
 			} catch (Exception e) {
+				t.setStatus(e);
+				Cat.logError(e);
+
 				ctx.println(e.toString());
-				moveTo(ctx, UNREACHABLE);
+				shouldRetry = true;
 				return;
+			} finally {
+				t.complete();
+
+				if (shouldRetry) {
+					moveTo(ctx, UNREACHABLE);
+				}
 			}
 
 			Response response;
@@ -44,6 +62,7 @@ public enum AgentState {
 			} else {
 				ctx.print(response.getStatus()).println();
 				ctx.println(response.getMessage());
+
 				moveTo(ctx, FAILED);
 			}
 		}
@@ -59,11 +78,15 @@ public enum AgentState {
 			if (retriedCount >= MAX_RETRY_COUNT) {
 				moveTo(ctx, FAILED);
 			} else {
+
 				long retryInterval = ctx.getConfigManager().getDeployRetryInterval();
 
 				ctx.setRetriedCount(retriedCount + 1);
 
 				Thread.sleep(retryInterval); // sleep a while before retry
+
+				Transaction t = Cat.newTransaction("phoenix-agent:" + ctx.getDomain(),
+						ctx.getHost() + ":" + ctx.getWarType() + ":" + ctx.getVersion());
 
 				String host = ctx.getHost();
 				int id = ctx.getDeployId();
@@ -77,12 +100,25 @@ public enum AgentState {
 				ctx.print("[WARN] Retry to deploy phoenix kernel(%s) to host(%s) for deploy(%s) of domain(%s)  ... ",
 						version, host, id, domain);
 
+				boolean shouldRetry = false;
+
 				try {
 					json = ctx.openUrl(url);
+					t.setStatus(Message.SUCCESS);
 				} catch (Exception e) {
 					ctx.println(e.toString());
-					moveTo(ctx, UNREACHABLE);
+
+					t.setStatus(e);
+					Cat.logError(e);
+
+					shouldRetry = true;
 					return;
+				} finally {
+					t.complete();
+
+					if (shouldRetry) {
+						moveTo(ctx, UNREACHABLE);
+					}
 				}
 
 				Response response = DefaultJsonParser.parse(json);
@@ -94,6 +130,7 @@ public enum AgentState {
 				} else {
 					ctx.print(response.getStatus()).println();
 					ctx.println(response.getMessage());
+
 					moveTo(ctx, FAILED);
 				}
 			}

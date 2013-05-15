@@ -29,7 +29,7 @@ public interface AgentContext {
 	public String getVersion();
 
 	public String getWarType();
-	
+
 	public boolean isSkipTest();
 
 	public String openUrl(String url) throws IOException;
