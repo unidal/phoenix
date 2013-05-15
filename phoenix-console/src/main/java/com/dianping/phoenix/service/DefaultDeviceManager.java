@@ -11,8 +11,10 @@ import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.lookup.annotation.Inject;
 
 
+import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.device.entity.Attribute;
 import com.dianping.phoenix.device.entity.Device;
 import com.dianping.phoenix.device.entity.Facet;
@@ -25,9 +27,12 @@ import com.dianping.phoenix.project.entity.Project;
 
 public class DefaultDeviceManager implements DeviceManager,Initializable{
 	
-	private List<String> bussinessLineList = new ArrayList<String>();
+	@Inject
+	private ConfigManager m_configManager;
 	
-	private Map<String,List<String>> bussinessLineToDomainListMap = new HashMap<String,List<String>>();
+	private List<String> m_bussinessLineList = new ArrayList<String>();
+	
+	private Map<String,List<String>> m_bussinessLineToDomainListMap = new HashMap<String,List<String>>();
 		
 	private static final String KEY_OWNER = "rd_duty";
 	
@@ -36,19 +41,12 @@ public class DefaultDeviceManager implements DeviceManager,Initializable{
 	private static final String KEY_STATUS = "status";
 	
 	private static final String KEY_ENV = "env";
-	
-	private static final String baseUrlPattern = "http://10.1.1.129/cmdb/device%s&wt=xml";
-	
-	private static final String getCatalogUrl = String.format(baseUrlPattern, "/s?q=*&facet=catalog");
-	
-	private static final String getDomainUrlPattern = String.format(baseUrlPattern, "/s?q=catalog:%s&facet=app");
-	
-	private static final String getIpUrlPattern = String.format(baseUrlPattern, "/s?q=app:%s&facet=private_ip");
 
 
 	@Override
 	public Project findProjectBy(String name) throws Exception {
-		Responce root = readCmdb(String.format(getIpUrlPattern, name));
+		String ipUrlPattern = m_configManager.getCmdbIpUrlPattern();	
+		Responce root = readCmdb(String.format(ipUrlPattern, name));
 		Project project = new Project(name);
 		//TODO:set description
 		project.setDescription("");
@@ -164,23 +162,25 @@ public class DefaultDeviceManager implements DeviceManager,Initializable{
 	
 	@Override
 	public List<String> getBussinessLineList(){
-		List<String> result = getAttributeList(getCatalogUrl,"catalog");
+		String catalogUrl = m_configManager.getCmdbCatalogUrl();
+		List<String> result = getAttributeList(catalogUrl,"catalog");
 		if(result != null){
-			bussinessLineList = result;
+			m_bussinessLineList = result;
 		}
-		return bussinessLineList;
+		return m_bussinessLineList;
 	}
 	
 	@Override
 	public List<String> getDomainListByBussinessLine(String bussinessLine){
-		List<String> result = getAttributeList(String.format(getDomainUrlPattern, bussinessLine),"app");
-		if(result == null && bussinessLineToDomainListMap.containsKey(bussinessLine)){
-			return bussinessLineToDomainListMap.get(bussinessLine);
-		} else if(result == null && !bussinessLineToDomainListMap.containsKey(bussinessLine)){
-			bussinessLineToDomainListMap.put(bussinessLine, new ArrayList<String>());
-			return bussinessLineToDomainListMap.get(bussinessLine);
+		String domainUrlPattern = m_configManager.getCmdbDomainUrlPattern();	
+		List<String> result = getAttributeList(String.format(domainUrlPattern, bussinessLine),"app");
+		if(result == null && m_bussinessLineToDomainListMap.containsKey(bussinessLine)){
+			return m_bussinessLineToDomainListMap.get(bussinessLine);
+		} else if(result == null && !m_bussinessLineToDomainListMap.containsKey(bussinessLine)){
+			m_bussinessLineToDomainListMap.put(bussinessLine, new ArrayList<String>());
+			return m_bussinessLineToDomainListMap.get(bussinessLine);
 		} else {
-			bussinessLineToDomainListMap.put(bussinessLine, result);
+			m_bussinessLineToDomainListMap.put(bussinessLine, result);
 			return result;
 		}
 	}

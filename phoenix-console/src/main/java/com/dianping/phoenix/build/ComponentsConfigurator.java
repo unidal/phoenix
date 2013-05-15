@@ -73,7 +73,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(DeliverableManager.class, DefaultDeliverableManager.class) //
 		      .req(WarService.class, GitService.class, DeliverableDao.class, LogService.class));
 
-		all.add(C(DeviceManager.class, DefaultDeviceManager.class));
+		all.add(C(DeviceManager.class, DefaultDeviceManager.class) //
+				  .req(ConfigManager.class));
 		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
 			      .req(DeploymentDao.class, DeploymentDetailsDao.class, DeviceManager.class));
 
