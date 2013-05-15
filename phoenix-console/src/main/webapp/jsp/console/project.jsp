@@ -47,6 +47,7 @@
 							<thead>
 								<tr>
 									<th><input type="checkbox" id="all-machine-check"/> Machine</th>
+									<th>env</th>
 									<th>Kernel</th>
 									<th>App</th>
 								</tr>
@@ -56,13 +57,14 @@
 									<tr>
 										<td>
 											${w:showCheckbox('host', host, payload.hosts, 'ip', 'ip')}
-											<c:if test="${host.status=='up'}">
+											<c:if test="${host.status=='在线'}">
 											   <div class="z6 a-f-e" title="可用"></div>
 											</c:if>
-											<c:if test="${host.status=='down'}">
+											<c:if test="${host.status!='在线'}">
 											   <div class="u6 a-f-e" title="不可用"></div>
 											</c:if>
 										</td>
+										<td>${host.env}</td>
 										<td>1.0</td>
 										<td>2.0.3</td>
 									</tr>

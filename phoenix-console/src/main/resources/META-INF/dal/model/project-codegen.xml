@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model>
   <entity name="root" root="true">
+    <entity-ref name="bussinessLine" type="list" names="bussinessLines" />
+  </entity>
+  <entity name="bussinessLine">
+    <attribute name="name" value-type="String" />
     <entity-ref name="project" type="list" names="projects" />
   </entity>
   <entity name="project">
@@ -12,6 +16,7 @@
   <entity name="host">
     <attribute name="ip" value-type="String" />
     <attribute name="status" value-type="String" />
+    <attribute name="env" value-type="String" />
     <entity-ref name="war" type="list" names="wars" />
   </entity>
   <entity name="war">

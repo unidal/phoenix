@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.dianping.phoenix.console.dal.deploy.Deployment;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
+import com.dianping.phoenix.project.entity.BussinessLine;
 import com.dianping.phoenix.project.entity.Project;
 
 public interface ProjectManager {
@@ -13,7 +14,7 @@ public interface ProjectManager {
 
 	public Project findProjectBy(String name) throws Exception;
 
-	public List<Project> searchProjects(String keyword) throws Exception;
+	public List<BussinessLine> getBussinessLineList() throws Exception;
 
 	public void storeModel(DeployModel model);
 }
