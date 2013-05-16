@@ -65,7 +65,7 @@ public class ServiceMetaGenerator extends TemplateBasedFileGenerator<ServiceMeta
             }
             stmt = conn.createStatement();
             ResultSet rs = stmt
-                    .executeQuery("SELECT s.serviceName AS serviceName, h.port1 AS port FROM jrobin_host h, project p, service s WHERE h.projectId=p.id AND s.projectId = p.id AND h.port1 IS NOT NULL ORDER BY PORT ASC;");
+                    .executeQuery("SELECT s.serviceName AS serviceName, h.port1 AS port FROM jrobin_host h, service s WHERE s.projectId = h.projectId AND h.port1 IS NOT NULL ORDER BY PORT ASC;");
             while (rs.next()) {
                 String serviceName = rs.getString("serviceName");
                 int port = rs.getInt("port");
