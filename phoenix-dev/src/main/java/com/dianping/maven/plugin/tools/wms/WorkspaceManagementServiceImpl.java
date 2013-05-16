@@ -28,6 +28,7 @@ import org.apache.commons.io.FileUtils;
 import com.dianping.maven.plugin.tools.misc.file.ContainerBizServerGenerator;
 import com.dianping.maven.plugin.tools.misc.file.ContainerPomXMLGenerator;
 import com.dianping.maven.plugin.tools.misc.file.ContainerWebXMLGenerator;
+import com.dianping.maven.plugin.tools.misc.file.WorkspacePomXMLGenerator;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieveConfig;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieveService;
 import com.dianping.maven.plugin.tools.vcs.GitCodeRetrieveConfig;
@@ -90,11 +91,33 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
             generateContainerProject(context);
 
+            printContent("Generating phoenix-workspace pom...", out);
+
+            generateWorkspacePom(context);
+
+            printContent("Generating ws folder...", out);
+
+            try {
+                FileUtils.forceMkdir(new File(context.getBaseDir(), "ws"));
+            } catch (IOException e) {
+                throw new WorkspaceManagementException(e);
+            }
+
             printContent("Phoenix workspace generated...", out);
 
         } else {
             throw new WorkspaceManagementException("projects/basedir can not be null");
         }
+    }
+
+    private void generateWorkspacePom(WorkspaceContext context) throws WorkspaceManagementException {
+        WorkspacePomXMLGenerator generator = new WorkspacePomXMLGenerator();
+        try {
+            generator.generate(new File(context.getBaseDir(), "pom.xml"), context.getProjects());
+        } catch (Exception e) {
+            throw new WorkspaceManagementException(e);
+        }
+
     }
 
     private void generateContainerProject(WorkspaceContext context) throws WorkspaceManagementException {
@@ -118,13 +141,13 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             ContainerPomXMLGenerator containerPomXMLGenerator = new ContainerPomXMLGenerator();
             Map<String, String> containerPomXMLGeneratorContext = new HashMap<String, String>();
             containerPomXMLGeneratorContext.put("phoenixRouterVersion", context.getPhoenixRouterVersion());
-            containerPomXMLGenerator.generate(new File(projectBase, "pom.xml"),
-                    containerPomXMLGeneratorContext);
-            
+            containerPomXMLGenerator.generate(new File(projectBase, "pom.xml"), containerPomXMLGeneratorContext);
+
             // BizServer.java
             ContainerBizServerGenerator containerBizServerGenerator = new ContainerBizServerGenerator();
-            containerBizServerGenerator.generate(new File(sourceFolder, "com/dianping/phoenix/container/BizServer.java"), null);
-            
+            containerBizServerGenerator.generate(
+                    new File(sourceFolder, "com/dianping/phoenix/container/BizServer.java"), null);
+
             context.setBootstrapProjectDir(projectBase);
         } catch (Exception e) {
             throw new WorkspaceManagementException(e);
@@ -161,11 +184,11 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             @Override
             public Repository find(String project) {
                 if ("shop-web".equals(project)) {
-                    return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/shop/trunk/shop-web/",
-                            "-", "-", -1l);
+                    return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/shop/trunk/shop-web/", "-",
+                            "-", -1l);
                 } else if ("user-web".equals(project)) {
-                    return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-web/",
-                            "-", "-", -1l);
+                    return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-web/", "-",
+                            "-", -1l);
                 } else {
                     return null;
                 }
