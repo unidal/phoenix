@@ -19,17 +19,17 @@ package com.dianping.maven.plugin.tools.misc.scanner;
  * @author Leo Liang
  * 
  */
-public class ProjectPortEntry {
-    private String project;
+public class ServicePortEntry {
+    private String service;
     private int    port;
 
-    public ProjectPortEntry(String project, int port) {
-        this.project = project;
+    public ServicePortEntry(String service, int port) {
+        this.service = service;
         this.port = port;
     }
 
-    public String getProject() {
-        return project;
+    public String getService() {
+        return service;
     }
 
     public int getPort() {
@@ -41,7 +41,7 @@ public class ProjectPortEntry {
         final int prime = 31;
         int result = 1;
         result = prime * result + port;
-        result = prime * result + ((project == null) ? 0 : project.hashCode());
+        result = prime * result + ((service == null) ? 0 : service.hashCode());
         return result;
     }
 
@@ -53,13 +53,13 @@ public class ProjectPortEntry {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        ProjectPortEntry other = (ProjectPortEntry) obj;
+        ServicePortEntry other = (ServicePortEntry) obj;
         if (port != other.port)
             return false;
-        if (project == null) {
-            if (other.project != null)
+        if (service == null) {
+            if (other.service != null)
                 return false;
-        } else if (!project.equals(other.project))
+        } else if (!service.equals(other.service))
             return false;
         return true;
     }

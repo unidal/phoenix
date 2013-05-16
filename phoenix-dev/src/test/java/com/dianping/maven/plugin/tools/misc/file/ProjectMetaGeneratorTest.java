@@ -28,27 +28,27 @@ import org.junit.Test;
  * 
  */
 public class ProjectMetaGeneratorTest extends H2DBBasedTestCase {
-    private File file = new File(System.getProperty("java.io.tmpdir", "."), "project-meta.xml");
+    private File file = new File(System.getProperty("java.io.tmpdir", "."), "service-meta.xml");
 
     @Test
     public void test() throws Exception {
-        String expected = "<projects>\n"
-                        + "    <project name=\"shoppic-service\">\n"
+        String expected = "<services>\n"
+                        + "    <service name=\"http://service.dianping.com/shoppicService/shoppicService_1.0.0\">\n"
                         + "        <port>2000</port>\n" 
-                        + "    </project>\n" 
-                        + "    <project name=\"group-service\">\n" 
+                        + "    </service>\n" 
+                        + "    <service name=\"http://service.dianping.com/groupService/groupService_1.0.0\">\n" 
                         + "        <port>2001</port>\n" 
-                        + "    </project>\n" 
-                        + "    <project name=\"account-service\">\n" 
+                        + "    </service>\n" 
+                        + "    <service name=\"http://service.dianping.com/accountService/accountService_1.0.0\">\n" 
                         + "        <port>2002</port>\n" 
-                        + "    </project>\n" 
-                        + "    <project name=\"user-service\">\n" 
+                        + "    </service>\n" 
+                        + "    <service name=\"http://service.dianping.com/userService/userService_1.0.0\">\n" 
                         + "        <port>2003</port>\n" 
-                        + "    </project>\n"
-                        + "</projects>";
-        ProjectMetaContext context = new ProjectMetaContext("org.h2.Driver",
+                        + "    </service>\n"
+                        + "</services>";
+        ServiceMetaContext context = new ServiceMetaContext("org.h2.Driver",
                 "jdbc:h2:mem:hawk;DB_CLOSE_DELAY=-1", "", "");
-        ProjectMetaGenerator smg = new ProjectMetaGenerator();
+        ServiceMetaGenerator smg = new ServiceMetaGenerator();
         smg.generate(file, context);
         Assert.assertEquals(expected, FileUtils.readFileToString(file));
     }
@@ -58,17 +58,17 @@ public class ProjectMetaGeneratorTest extends H2DBBasedTestCase {
     }
 
     protected String getCreateScriptConfigFile() {
-        return "project-meta-generator-test-create.xml";
+        return "service-meta-generator-test-create.xml";
     }
 
     protected String getDataFile() {
-        return "project-meta-generator-test-data.xml";
+        return "service-meta-generator-test-data.xml";
     }
 
     public static void main(String[] args) throws Exception {
-        ProjectMetaContext context = new ProjectMetaContext("com.mysql.jdbc.Driver",
+        ServiceMetaContext context = new ServiceMetaContext("com.mysql.jdbc.Driver",
                 "jdbc:mysql://192.168.7.105:3306/hawk", "dpcom_hawk", "123456");
-        ProjectMetaGenerator smg = new ProjectMetaGenerator();
+        ServiceMetaGenerator smg = new ServiceMetaGenerator();
         smg.generate(new File("/Users/leoleung/project-port.xml"), context);
     }
 }

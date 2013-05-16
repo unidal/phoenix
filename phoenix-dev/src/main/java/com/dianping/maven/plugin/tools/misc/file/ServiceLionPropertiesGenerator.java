@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-import com.dianping.maven.plugin.tools.misc.scanner.ProjectMetaScanner;
-import com.dianping.maven.plugin.tools.misc.scanner.ProjectPortEntry;
+import com.dianping.maven.plugin.tools.misc.scanner.ServiceMetaScanner;
+import com.dianping.maven.plugin.tools.misc.scanner.ServicePortEntry;
 import com.dianping.maven.plugin.tools.misc.scanner.Scanner;
 import com.dianping.maven.plugin.tools.misc.scanner.ServiceScanner;
 
@@ -35,22 +35,21 @@ import com.dianping.maven.plugin.tools.misc.scanner.ServiceScanner;
  */
 public class ServiceLionPropertiesGenerator {
     private static final String SERVICE_META_FILE = "service-port.xml";
-    private static final String OUTPUT            = "phoenix-lion.btm";
 
-    protected void generate(ServiceLionContext context) throws Exception {
+    public void generate(File file, ServiceLionContext context) throws Exception {
 
-        File projectMetaOutput = new File(context.getOutputBaseDir(), SERVICE_META_FILE);
+        File serviceMetaOutput = new File(file.getParentFile(), SERVICE_META_FILE);
 
-        if (context.isRefreshProjectMeta()) {
-            ProjectMetaGenerator projectMetaGenerator = new ProjectMetaGenerator();
-            projectMetaGenerator.generate(projectMetaOutput, context.getProjectMetaContext());
+        if (context.isRefreshServiceMeta()) {
+            ServiceMetaGenerator serviceMetaGenerator = new ServiceMetaGenerator();
+            serviceMetaGenerator.generate(serviceMetaOutput, context.getServiceMetaContext());
         }
 
-        Scanner<ProjectPortEntry> projectMetaScanner = new ProjectMetaScanner();
-        List<ProjectPortEntry> projectPortsList = projectMetaScanner.scan(projectMetaOutput);
-        Map<String, Integer> projectPortMapping = new HashMap<String, Integer>();
-        for (ProjectPortEntry entry : projectPortsList) {
-            projectPortMapping.put(entry.getProject(), entry.getPort());
+        Scanner<ServicePortEntry> serviceMetaScanner = new ServiceMetaScanner();
+        List<ServicePortEntry> servicePortList = serviceMetaScanner.scan(serviceMetaOutput);
+        Map<String, Integer> servicePortMapping = new HashMap<String, Integer>();
+        for (ServicePortEntry entry : servicePortList) {
+            servicePortMapping.put(entry.getService(), entry.getPort());
         }
 
         Map<String, String> serviceLionContents = new HashMap<String, String>();
@@ -67,13 +66,13 @@ public class ServiceLionPropertiesGenerator {
 
             for (String serviceKey : serviceKeys) {
                 serviceLionContents.put(serviceKey,
-                        context.getServiceHost() + ":" + projectPortMapping.get(entry.getKey()));
+                        context.getServiceHost() + ":" + servicePortMapping.get(serviceKey));
             }
 
         }
 
         BytemanScriptGenerator bytemanScriptGenerator = new BytemanScriptGenerator();
-        bytemanScriptGenerator.generate(new File(context.getOutputBaseDir(), OUTPUT), serviceLionContents);
+        bytemanScriptGenerator.generate(file, serviceLionContents);
 
     }
 
@@ -81,11 +80,11 @@ public class ServiceLionPropertiesGenerator {
         ServiceLionPropertiesGenerator serviceLionPropertiesGenerator = new ServiceLionPropertiesGenerator();
 
         Map<String, File> projectBaseDirMapping = new HashMap<String, File>();
-        projectBaseDirMapping.put("alpaca", new File("/Volumes/HDD/dev_env_work/war/alpaca.war"));
-        ProjectMetaContext projectMetaContext = new ProjectMetaContext("com.mysql.jdbc.Driver",
+        projectBaseDirMapping.put("ssss", new File("/Volumes/HDD/dev_env_work/war/alpaca.war"));
+        ServiceMetaContext projectMetaContext = new ServiceMetaContext("com.mysql.jdbc.Driver",
                 "jdbc:mysql://192.168.7.105:3306/hawk", "dpcom_hawk", "123456");
-        serviceLionPropertiesGenerator.generate(new ServiceLionContext(projectBaseDirMapping, projectMetaContext,
-                "127.0.0.1", new File("/Users/leoleung/phoenix-test"), true));
+        serviceLionPropertiesGenerator.generate(new File("/Users/leoleung/phoenix-test/phoenix-lion.btm"),
+                new ServiceLionContext(projectBaseDirMapping, projectMetaContext, "127.0.0.1", true));
     }
 
 }
