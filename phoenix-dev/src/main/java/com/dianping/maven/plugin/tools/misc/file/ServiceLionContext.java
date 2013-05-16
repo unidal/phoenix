@@ -20,38 +20,32 @@ import java.util.Map;
 
 public class ServiceLionContext {
     private Map<String, File>  projectBaseDirMapping;
-    private File               outputBaseDir;
-    private ProjectMetaContext projectMetaContext;
+    private ServiceMetaContext serviceMetaContext;
     private String             serviceHost;
-    private boolean            refreshProjectMeta;
+    private boolean            refreshServiceMeta;
 
-    public ServiceLionContext(Map<String, File> projectBaseDirMapping, ProjectMetaContext projectMetaContext,
-            String serviceHost, File outputBaseDir, boolean refreshProjectMeta) {
+    public ServiceLionContext(Map<String, File> projectBaseDirMapping, ServiceMetaContext serviceMetaContext,
+            String serviceHost, boolean refreshServiceMeta) {
         this.projectBaseDirMapping = projectBaseDirMapping;
-        this.outputBaseDir = outputBaseDir;
-        this.projectMetaContext = projectMetaContext;
+        this.serviceMetaContext = serviceMetaContext;
         this.serviceHost = serviceHost;
-        this.refreshProjectMeta = refreshProjectMeta;
+        this.refreshServiceMeta = refreshServiceMeta;
     }
 
     public Map<String, File> getProjectBaseDirMapping() {
         return projectBaseDirMapping;
     }
 
-    public File getOutputBaseDir() {
-        return outputBaseDir;
-    }
-
-    public ProjectMetaContext getProjectMetaContext() {
-        return projectMetaContext;
+    public ServiceMetaContext getServiceMetaContext() {
+        return serviceMetaContext;
     }
 
     public String getServiceHost() {
         return serviceHost;
     }
 
-    public boolean isRefreshProjectMeta() {
-        return refreshProjectMeta;
+    public boolean isRefreshServiceMeta() {
+        return refreshServiceMeta;
     }
 
 }

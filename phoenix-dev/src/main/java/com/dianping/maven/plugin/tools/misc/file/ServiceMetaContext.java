@@ -15,13 +15,13 @@
  */
 package com.dianping.maven.plugin.tools.misc.file;
 
-public class ProjectMetaContext {
+public class ServiceMetaContext {
     private String driverClass;
     private String url;
     private String user;
     private String pwd;
 
-    public ProjectMetaContext(String driverClass, String url, String user, String pwd) {
+    public ServiceMetaContext(String driverClass, String url, String user, String pwd) {
         this.driverClass = driverClass;
         this.url = url;
         this.user = user;
