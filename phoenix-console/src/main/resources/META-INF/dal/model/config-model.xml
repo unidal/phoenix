@@ -27,5 +27,11 @@
     <element name="test-service-url-prefix" value-type="String" default-value="http://192.168.26.23:8080/qa/service/task"/>
     <element name="test-service-timeout" value-type="long" default-value="300000" primitive="true"/>
   </entity>
+  <entity name="cmdb" class-name="Cmdb">
+  	<element name="base-url-pattern" value-type="String" default-value="http://10.1.1.129/cmdb/device%s&amp;wt=xml"/>
+  	<element name="catalog-url-part" value-type="String" default-value="/s?q=*&amp;facet=catalog"/>
+  	<element name="domain-url-pattern-part" value-type="String" default-value="/s?q=catalog:%s&amp;facet=app"/>
+  	<element name="ip-url-pattern-part" value-type="String" default-value="/s?q=app:%s&amp;facet=private_ip"/>
+  </entity>
 </model>
 

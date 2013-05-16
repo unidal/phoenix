@@ -27,6 +27,10 @@ A powerful customized J2EE web container (JBoss, Jetty, Tomcat)
 
 %install
 
+# add user phoenix
+useradd phoenix 2>/dev/null || true
+usermod -a -G nobody phoenix
+
 [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT/*
 
 # where to install agent files
@@ -49,8 +53,6 @@ cp phoenix-bootstrap.jar $BOOTSTRAP_JAR_DIR
 
 
 %post
-# add user phoenix
-usermod -a -G nobody phoenix
 # change required file permissions
 
 TOMCAT_SERVER_XML=/usr/local/tomcat/conf/server.xml

@@ -35,19 +35,21 @@ public class AgentStatusReporter extends ContainerHolder implements Initializabl
 				// cat agent infos
 				Cat.getProducer().logEvent(
 						"AGENT",
-						resp.getVersion() + "::" + resp.getIp(),
+						toValidVersion(resp.getVersion()) + ":" + resp.getIp(),
 						Event.SUCCESS,
-						"ContainerType=" + resp.getContainer().getName() + "\n&ContainerInstallPath="
-								+ resp.getContainer().getInstallPath() + "\n&ContainerVersion="
-								+ resp.getContainer().getVersion() + "\n&ContainerStatus="
+						"ContainerType=" + resp.getContainer().getName() + "\nContainerInstallPath="
+								+ resp.getContainer().getInstallPath() + "\nContainerVersion="
+								+ toValidVersion(resp.getContainer().getVersion()) + "\nContainerStatus="
 								+ resp.getContainer().getStatus());
 				for (Domain domain : resp.getDomains()) {
 					War kernelWar = domain.getKernel().getWar();
 
 					// cat kernel infos
 					for (Lib lib : kernelWar.getLibs()) {
-						Cat.getProducer().logEvent(kernelWar.getName() + "::" + kernelWar.getVersion(),
-								lib.getGroupId() + "::" + lib.getArtifactId() + "::" + lib.getVersion(), Event.SUCCESS,
+						Cat.getProducer().logEvent(
+								kernelWar.getName() + ":" + toValidVersion(kernelWar.getVersion()),
+								lib.getGroupId() == null ? "UnknowGroupId" : lib.getGroupId() + ":"
+										+ lib.getArtifactId() + ":" + toValidVersion(lib.getVersion()), Event.SUCCESS,
 								null);
 					}
 
@@ -55,18 +57,34 @@ public class AgentStatusReporter extends ContainerHolder implements Initializabl
 					StringBuilder domainLibsKVPair = new StringBuilder();
 					boolean firstLib = true;
 					for (Lib lib : domain.getWar().getLibs()) {
-						domainLibsKVPair.append(firstLib ? "" : "\n&");
+						domainLibsKVPair.append(firstLib ? "" : "\n");
 						domainLibsKVPair.append(//
-								String.format("%s::%s=%s", lib.getGroupId(), lib.getArtifactId(), lib.getVersion()));
+								String.format("%s:%s:%s",
+										lib.getGroupId() == null ? "UnknowGroupId" : lib.getGroupId(),
+										lib.getArtifactId(), toValidVersion(lib.getVersion())));
 						firstLib = firstLib ? false : firstLib;
 					}
-					Cat.getProducer().logEvent(domain.getWar().getName() + "::" + domain.getWar().getVersion(),
-							kernelWar.getVersion() + "::" + resp.getIp(), Event.SUCCESS, domainLibsKVPair.toString());
+					Cat.getProducer().logEvent(
+							domain.getWar().getName() + ":" + toValidVersion(domain.getWar().getVersion()),
+							toValidVersion(kernelWar.getVersion()) + ":" + resp.getIp(), Event.SUCCESS,
+							domainLibsKVPair.toString());
 				}
 			} catch (Exception e1) {
 				logger.error("Phoenix Agent heartbeat failed.");
 			}
 		}
+	}
+
+	private static String toValidVersion(String version) {
+		String unknowVersion = "UnknowVersion";
+		if (version != null) {
+			String versionStr = version.trim().toLowerCase();
+			if (versionStr.length() <= 0 || "null".equals(versionStr) || "n/a".equals(versionStr)) {
+				return unknowVersion;
+			}
+			return versionStr;
+		}
+		return unknowVersion;
 	}
 
 	@Override

@@ -22,5 +22,11 @@
 		<deploy-getlog-retrycount>10</deploy-getlog-retrycount>
 		<test-service-url-prefix><![CDATA[http://192.168.26.23:8080/qa/service/task]]></test-service-url-prefix>
 		<test-service-timeout>300000</test-service-timeout>
+		<cmdb>
+			<base-url-pattern><![CDATA[http://10.1.1.129/cmdb/device%s&wt=xml]]></base-url-pattern>
+			<catalog-url-part><![CDATA[/s?q=*&facet=catalog]]></catalog-url-part>
+			<domain-url-pattern-part><![CDATA[/s?q=catalog:%s&facet=app]]></domain-url-pattern-part>
+			<ip-url-pattern-part><![CDATA[/s?q=app:%s&facet=private_ip]]></ip-url-pattern-part>
+		</cmdb>
 	</console>
 </config>
