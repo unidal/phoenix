@@ -43,7 +43,8 @@ import com.dianping.maven.plugin.tools.vcs.SVNCodeRetrieveConfig;
  */
 public class WorkspaceManagementServiceImpl implements WorkspaceManagementService {
 
-    private final static String LINE_SEPARATOR = System.getProperty("line.separator");
+    private final static String LINE_SEPARATOR   = System.getProperty("line.separator");
+    private final static String CONTAINER_FOLDER = "phoenix-container";
     private RepositoryManager   repositoryManager;
 
     public void setRepositoryManager(RepositoryManager repositoryManager) {
@@ -51,7 +52,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     }
 
     @Override
-    public void create(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException {
+    public File create(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException {
         if (context.getProjects() != null && context.getBaseDir() != null && out != null) {
 
             printContent("Generating phoenix workspace...", out);
@@ -111,6 +112,8 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
             printContent("Phoenix workspace generated...", out);
 
+            return new File(context.getBaseDir(), CONTAINER_FOLDER);
+
         } else {
             throw new WorkspaceManagementException("projects/basedir can not be null");
         }
@@ -143,7 +146,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     }
 
     private void generateContainerProject(WorkspaceContext context) throws WorkspaceManagementException {
-        File projectBase = new File(context.getBaseDir(), "phoenix-container");
+        File projectBase = new File(context.getBaseDir(), CONTAINER_FOLDER);
         File sourceFolder = new File(projectBase, "src/main/java");
         File resourceFolder = new File(projectBase, "src/main/resources");
         File webinfFolder = new File(projectBase, "src/main/webapp/WEB-INF");
@@ -170,7 +173,6 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             containerBizServerGenerator.generate(
                     new File(sourceFolder, "com/dianping/phoenix/container/BizServer.java"), null);
 
-            context.setBootstrapProjectDir(projectBase);
         } catch (Exception e) {
             throw new WorkspaceManagementException(e);
         }

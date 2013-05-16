@@ -27,7 +27,6 @@ public class WorkspaceContext implements Serializable {
     private static final long serialVersionUID     = -7734656051647733810L;
     private File              baseDir;
     private List<String>      projects;
-    private File              bootstrapProjectDir;
     private String            phoenixRouterVersion = "0.1-SNAPSHOT";
 
     /**
@@ -73,21 +72,6 @@ public class WorkspaceContext implements Serializable {
      */
     public void setProjects(List<String> projects) {
         this.projects = projects;
-    }
-
-    /**
-     * @return the bootstrapProjectDir
-     */
-    public File getBootstrapProjectDir() {
-        return bootstrapProjectDir;
-    }
-
-    /**
-     * @param bootstrapProjectDir
-     *            the bootstrapProjectDir to set
-     */
-    public void setBootstrapProjectDir(File bootstrapProjectDir) {
-        this.bootstrapProjectDir = bootstrapProjectDir;
     }
 
 }
