@@ -28,6 +28,8 @@ import org.apache.commons.io.FileUtils;
 import com.dianping.maven.plugin.tools.misc.file.ContainerBizServerGenerator;
 import com.dianping.maven.plugin.tools.misc.file.ContainerPomXMLGenerator;
 import com.dianping.maven.plugin.tools.misc.file.ContainerWebXMLGenerator;
+import com.dianping.maven.plugin.tools.misc.file.WorkspaceEclipseBatGenerator;
+import com.dianping.maven.plugin.tools.misc.file.WorkspaceEclipseSHGenerator;
 import com.dianping.maven.plugin.tools.misc.file.WorkspacePomXMLGenerator;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieveConfig;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieveService;
@@ -95,6 +97,10 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
             generateWorkspacePom(context);
 
+            printContent("Generating phoenix-workspace startup script...", out);
+
+            generateWorkspaceScript(context);
+
             printContent("Generating ws folder...", out);
 
             try {
@@ -107,6 +113,22 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
         } else {
             throw new WorkspaceManagementException("projects/basedir can not be null");
+        }
+    }
+
+    private void generateWorkspaceScript(WorkspaceContext context) throws WorkspaceManagementException {
+        try {
+            WorkspaceEclipseBatGenerator workspaceEclipseBatGenerator = new WorkspaceEclipseBatGenerator();
+            File eclipseBatFile = new File(context.getBaseDir(), "eclipse.bat");
+            workspaceEclipseBatGenerator.generate(eclipseBatFile, null);
+            eclipseBatFile.setExecutable(true);
+
+            WorkspaceEclipseSHGenerator workspaceEclipseSHGenerator = new WorkspaceEclipseSHGenerator();
+            File eclipseSHFile = new File(context.getBaseDir(), "eclipse.sh");
+            workspaceEclipseSHGenerator.generate(eclipseSHFile, null);
+            eclipseSHFile.setExecutable(true);
+        } catch (Exception e) {
+            throw new WorkspaceManagementException(e);
         }
     }
 
