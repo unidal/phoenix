@@ -1,0 +1,3 @@
+#foreach($ctxAndDir in $ctx.ctxMap.entrySet())
+${ctxAndDir.key}=${ctxAndDir.value.absolutePath}
+#end
