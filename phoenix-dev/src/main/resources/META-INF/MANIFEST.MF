@@ -1,0 +1,2 @@
+Premain-Class: com.dianping.hotdeploy.instrumentation.MyInstrumentation
+Can-Redefine-Classes: true
