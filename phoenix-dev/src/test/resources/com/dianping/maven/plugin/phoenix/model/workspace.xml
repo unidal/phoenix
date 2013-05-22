@@ -1,0 +1,13 @@
+<workspace dir="/Users/marsqing/Projects/tmp/phoenix-maven-tmp">
+
+	<phoenix-project>
+		<router version="0.1-SNAPSHOT" port="8080">
+			<default-url-pattern>http://www.51ping.com%s</default-url-pattern>
+		</router>
+	</phoenix-project>
+	
+	<biz-project name="user-web" />
+	<biz-project name="user-service" />
+	<biz-project name="user-base-service" />
+	
+</workspace>
