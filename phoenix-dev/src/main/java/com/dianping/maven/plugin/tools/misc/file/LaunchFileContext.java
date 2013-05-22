@@ -18,20 +18,31 @@ package com.dianping.maven.plugin.tools.misc.file;
 import java.io.File;
 
 public class LaunchFileContext {
-    private String mainClass;
-    private File   btmFile;
+	private String mainClass;
+	private File btmFile;
 
-    public LaunchFileContext(String mainClass, File btmFile) {
-        this.mainClass = mainClass;
-        this.btmFile = btmFile;
-    }
+	public LaunchFileContext(String mainClass, File btmFile) {
+		this.mainClass = mainClass;
+		this.btmFile = btmFile;
+	}
 
-    public String getMainClass() {
-        return mainClass;
-    }
+	public LaunchFileContext() {
+	}
 
-    public File getBtmFile() {
-        return btmFile;
-    }
+	public void setMainClass(String mainClass) {
+		this.mainClass = mainClass;
+	}
+
+	public void setBtmFile(File btmFile) {
+		this.btmFile = btmFile;
+	}
+
+	public String getMainClass() {
+		return mainClass;
+	}
+
+	public File getBtmFile() {
+		return btmFile;
+	}
 
 }

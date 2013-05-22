@@ -28,12 +28,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 /**
- * TODO Comment of ProjectMetaScanner
  * 
  * @author Leo Liang
  * 
  */
-public class ProjectMetaScanner extends XmlScanner<ProjectPortEntry> {
+public class ServiceMetaScanner extends XmlScanner<ServicePortEntry> {
 
     /*
      * (non-Javadoc)
@@ -42,19 +41,19 @@ public class ProjectMetaScanner extends XmlScanner<ProjectPortEntry> {
      * com.dianping.phoenix.misc.scanner.XmlScanner#doScan(org.w3c.dom.Document)
      */
     @Override
-    protected List<ProjectPortEntry> doScan(Document doc) throws Exception {
-        List<ProjectPortEntry> resList = new ArrayList<ProjectPortEntry>();
+    protected List<ServicePortEntry> doScan(Document doc) throws Exception {
+        List<ServicePortEntry> resList = new ArrayList<ServicePortEntry>();
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
-        XPathExpression expr = xpath.compile("//project");
+        XPathExpression expr = xpath.compile("//service");
 
         Object xmlRes = expr.evaluate(doc, XPathConstants.NODESET);
 
         NodeList nodes = (NodeList) xmlRes;
 
         for (int i = 0; i < nodes.getLength(); i++) {
-            String projectName = nodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
-            XPathExpression portExpr = xpath.compile("//project[@name='" + projectName + "']/port/text()");
+            String serviceName = nodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
+            XPathExpression portExpr = xpath.compile("//service[@name='" + serviceName + "']/port/text()");
             Object portRes = portExpr.evaluate(doc, XPathConstants.NODESET);
             NodeList ports = (NodeList) portRes;
             int projectPort = -1;
@@ -62,8 +61,8 @@ public class ProjectMetaScanner extends XmlScanner<ProjectPortEntry> {
                 projectPort = Integer.parseInt(ports.item(0).getNodeValue());
             }
 
-            if (projectPort > 0 && StringUtils.isNotBlank(projectName)) {
-                resList.add(new ProjectPortEntry(projectName, projectPort));
+            if (projectPort > 0 && StringUtils.isNotBlank(serviceName)) {
+                resList.add(new ServicePortEntry(serviceName, projectPort));
             }
         }
 

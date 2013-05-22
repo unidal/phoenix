@@ -19,39 +19,52 @@ import java.io.File;
 import java.util.Map;
 
 public class ServiceLionContext {
-    private Map<String, File>  projectBaseDirMapping;
-    private File               outputBaseDir;
-    private ProjectMetaContext projectMetaContext;
-    private String             serviceHost;
-    private boolean            refreshProjectMeta;
+	private Map<String, File> projectBaseDirMapping;
+	private ServiceMetaContext serviceMetaContext;
+	private String serviceHost;
+	private boolean refreshServiceMeta;
 
-    public ServiceLionContext(Map<String, File> projectBaseDirMapping, ProjectMetaContext projectMetaContext,
-            String serviceHost, File outputBaseDir, boolean refreshProjectMeta) {
-        this.projectBaseDirMapping = projectBaseDirMapping;
-        this.outputBaseDir = outputBaseDir;
-        this.projectMetaContext = projectMetaContext;
-        this.serviceHost = serviceHost;
-        this.refreshProjectMeta = refreshProjectMeta;
-    }
+	public ServiceLionContext(Map<String, File> projectBaseDirMapping, ServiceMetaContext serviceMetaContext,
+			String serviceHost, boolean refreshServiceMeta) {
+		this.projectBaseDirMapping = projectBaseDirMapping;
+		this.serviceMetaContext = serviceMetaContext;
+		this.serviceHost = serviceHost;
+		this.refreshServiceMeta = refreshServiceMeta;
+	}
 
-    public Map<String, File> getProjectBaseDirMapping() {
-        return projectBaseDirMapping;
-    }
+	public ServiceLionContext() {
+	}
 
-    public File getOutputBaseDir() {
-        return outputBaseDir;
-    }
+	public void setProjectBaseDirMapping(Map<String, File> projectBaseDirMapping) {
+		this.projectBaseDirMapping = projectBaseDirMapping;
+	}
 
-    public ProjectMetaContext getProjectMetaContext() {
-        return projectMetaContext;
-    }
+	public void setServiceMetaContext(ServiceMetaContext serviceMetaContext) {
+		this.serviceMetaContext = serviceMetaContext;
+	}
 
-    public String getServiceHost() {
-        return serviceHost;
-    }
+	public void setServiceHost(String serviceHost) {
+		this.serviceHost = serviceHost;
+	}
 
-    public boolean isRefreshProjectMeta() {
-        return refreshProjectMeta;
-    }
+	public void setRefreshServiceMeta(boolean refreshServiceMeta) {
+		this.refreshServiceMeta = refreshServiceMeta;
+	}
+
+	public Map<String, File> getProjectBaseDirMapping() {
+		return projectBaseDirMapping;
+	}
+
+	public ServiceMetaContext getServiceMetaContext() {
+		return serviceMetaContext;
+	}
+
+	public String getServiceHost() {
+		return serviceHost;
+	}
+
+	public boolean isRefreshServiceMeta() {
+		return refreshServiceMeta;
+	}
 
 }

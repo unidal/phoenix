@@ -1,0 +1,1595 @@
+<services>
+    <service name="http://service.dianping.com/shopService/MyListUserService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/ShopModificationService/ShopModification_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopServiceForCRM_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopUserService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/MyListFlowerService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/MyListFollowNoteService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/ShopRankingDataService/ShopRankingDataService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/myListService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/ShopSeriesService/ShopSeriesService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/dishTagService/dishTagService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/tuangouService/tuangouService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/pageSEOConfigService/pageSEOConfigService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopTagService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/tuangouService_1.0.0">
+        <port>2000</port>
+    </service>
+    <service name="http://service.dianping.com/hawk/example/mockExampleSerivce">
+        <port>11111</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/shoppicOpenApiService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/shoppicMobileService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/userAlbumTagService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/shoppicAdminService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/shoppicService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/shoppicUserService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/shopPicTagIndexService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/picTagConfService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/officialAlbumService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/shopsearchPictureService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/picFlowerService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/picTagGroupModuleService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/commonShopPicService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/picTagTemplateService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/userAlbumService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/shopwebPictureService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/officialAlbumForWebService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/shoppicService/shoppictagService_1.0.0">
+        <port>2002</port>
+    </service>
+    <service name="http://service.dianping.com/feedBackService/feedBackService_1.0.0">
+        <port>2003</port>
+    </service>
+    <service name="http://service.dianping.com/cityToneService/cityToneService_1.0.0">
+        <port>2003</port>
+    </service>
+    <service name="http://service.dianping.com/followNoteService/followNoteService_1.0.0">
+        <port>2003</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewService_1.0.0">
+        <port>2003</port>
+    </service>
+    <service name="http://service.dianping.com/voteGoodService/voteGoodService_1.0.0">
+        <port>2003</port>
+    </service>
+    <service name="http://service.dianping.com/friendService/friendService_1.0.0">
+        <port>2003</port>
+    </service>
+    <service name="http://service.dianping.com/thirdPartyUserService/thirdPartyUserService_1.0.0">
+        <port>2003</port>
+    </service>
+    <service name="http://service.dianping.com/smsService/smsService_1.0.0">
+        <port>2003</port>
+    </service>
+    <service name="http://service.dianping.com/promoService/promoService_1.0.0">
+        <port>2003</port>
+    </service>
+    <service name="http://service.dianping.com/awLinkService/awLinkService_1.0.0">
+        <port>2003</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/commentService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/auditNotifyService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/honeyService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/mayorService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/honeyRecommendService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/followRecommendService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/clientTypeService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/checkInService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/campaignService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/userFeedListService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/notificationService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/userInfoService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/transitionService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/brushPastUserService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/userFriendshipService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/checkInService/badgeService_1.0.0">
+        <port>2005</port>
+    </service>
+    <service name="http://service.dianping.com/decoratorService/decoratorService_1.0.0">
+        <port>2006</port>
+    </service>
+    <service name="http://service.dianping.com/cacheService/cacheConfigService_1.0.0">
+        <port>2007</port>
+    </service>
+    <service name="http://service.dianping.com/cacheService/cacheManageService_1.0.0">
+        <port>2007</port>
+    </service>
+    <service name="http://service.dianping.com/mailService/mailService_1.0.0">
+        <port>2008</port>
+    </service>
+    <service name="http://service.dianping.com/commons/admin/authenticationService_1.0.0">
+        <port>5005</port>
+    </service>
+    <service name="http://service.dianping.com/commons/admin/menuService_1.0.0">
+        <port>5005</port>
+    </service>
+    <service name="http://service.dianping.com/feedService/feedService_1.0.0">
+        <port>2009</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupNoteHideContentService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupDCashService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/userGoldDetailService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupConfigurationService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupSurveyService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupRecommendService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupUserScoreDailyLogService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/hotNoteService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/eventUserService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupQANoteService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupNoteScoreLogService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupOperateLogService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupLinkService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/specialDayService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupFollowNoteExtInfoService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupSurveyMemberService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupQAUserService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupMedalService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupUserService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupUserScoreSumService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupDCashLogService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupNoteTypeService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupNoteCountService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/eventService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/noteVerifyFeedbackService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupbackService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupSetService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/userGroupInfoService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupUserHonorTitleService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupNoteExtInfoService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/eventShopService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupFollowNoteService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/goldEggService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/userGoldExchangeService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupTypeApplyService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupWinningActivityService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/eventTypeService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupRoleService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupNoteShopService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupQAFollowNoteService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupNoteService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupUserScoreLevelService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupIndexService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/noteQuoteServiceService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/userGoldService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupCategoryService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/eventFollowNoteService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupCheckInActivityService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/eventNoteService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/groupService/groupPicService_1.0.0">
+        <port>2011</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userCashService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/dCashService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/feedPrivacyService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userTagService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/mstarService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/messageService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userTaskService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userStatisticService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/notificationService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/favouriteService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/dcashExchangeService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/cashTranService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userInfoService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/consumeDcashService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/badgeService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userCityService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userLocationService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userAtUCService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userWeddingService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userSkinService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/postInfoService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/userPSMService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/userService/friendService_1.0.0">
+        <port>2012</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/recommendNoteService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/followNoteBodyService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/pageModuleConfigService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupQAStarService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/recommendEventService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupElderService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupSetService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/backCityService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupHonorTitleService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/eventService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/starUserInfoService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupCategoryService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/eventUserService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/hotNoteService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupNoteActivityService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/recommendGroupService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupUserService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupAdminPowerService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/ruleService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupFollowNoteService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/operateLogInfoService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/topNoteService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/noteSurveyService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupQANoteService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/noteService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupDataCountService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupRandomDCashActivityService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/groupbackService/groupOperateLogService_1.0.0">
+        <port>2013</port>
+    </service>
+    <service name="http://service.dianping.com/picCenterServiceServer/pictureForMobileService_1.0.0">
+        <port>2014</port>
+    </service>
+    <service name="http://service.dianping.com/picCenterServiceServer/pictureJobService_1.0.0">
+        <port>2014</port>
+    </service>
+    <service name="http://service.dianping.com/picCenterServiceServer/pictureAuditService_1.0.0">
+        <port>2014</port>
+    </service>
+    <service name="http://service.dianping.com/picCenterServiceServer/pictureFollowNoteService_1.0.0">
+        <port>2014</port>
+    </service>
+    <service name="http://service.dianping.com/picCenterServiceServer/shopPictureService_1.0.0">
+        <port>2014</port>
+    </service>
+    <service name="http://service.dianping.com/picCenterServiceServer/pictureService_1.0.0">
+        <port>2014</port>
+    </service>
+    <service name="http://service.dianping.com/picCenterServiceServer/userPictureService_1.0.0">
+        <port>2014</port>
+    </service>
+    <service name="http://service.dianping.com/picCenterServiceServer/pictureFollowNoteAuditService_1.0.0">
+        <port>2014</port>
+    </service>
+    <service name="http://service.dianping.com/picCenterServiceServer/pictureAdminService_1.0.0">
+        <port>2014</port>
+    </service>
+    <service name="http://service.dianping.com/smsService/smsRemoteService_1.0.0">
+        <port>2015</port>
+    </service>
+    <service name="http://service.dianping.com/mobileVerifyService/mobileVerifyService_1.0.0">
+        <port>2016</port>
+    </service>
+    <service name="http://service.dianping.com/mailVerifyService/mailVerifyService_1.0.0">
+        <port>2016</port>
+    </service>
+    <service name="http://service.dianping.com/accountModifyService/accountModifyService_1.0.0">
+        <port>2016</port>
+    </service>
+    <service name="http://service.dianping.com/lostUserService/lostUserService_1.0.0">
+        <port>2016</port>
+    </service>
+    <service name="http://service.dianping.com/userBlackService/userBlackService_1.0.0">
+        <port>2016</port>
+    </service>
+    <service name="http://service.dianping.com/accountSecurityService/accountSecurityService_1.0.0">
+        <port>2016</port>
+    </service>
+    <service name="http://service.dianping.com/userAccountService/userAccountService_1.0.0">
+        <port>2016</port>
+    </service>
+    <service name="http://service.dianping.com/thirdUserService/thirdUserService_1.0.0">
+        <port>2016</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewFlowerService_1.0.0">
+        <port>2017</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewFollowNoteService_1.0.0">
+        <port>2017</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewService_2.0.0">
+        <port>2017</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewMobileService_1.0.0">
+        <port>2017</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewUserService_1.0.0">
+        <port>2017</port>
+    </service>
+    <service name="http://service.dianping.com/promoService/promoService_2.0.0">
+        <port>2018</port>
+    </service>
+    <service name="http://service.dianping.com/promoService/promoFollowNoteService_1.0.0">
+        <port>2018</port>
+    </service>
+    <service name="http://service.dianping.com/promoService/promoApiService_1.0.0">
+        <port>2018</port>
+    </service>
+    <service name="http://service.dianping.com/infoService/infoService_1.0.0">
+        <port>2018</port>
+    </service>
+    <service name="http://service.dianping.com/test/testService_1.0.0">
+        <port>2018</port>
+    </service>
+    <service name="http://service.dianping.com/infoService/infoFollowNoteService_1.0.0">
+        <port>2018</port>
+    </service>
+    <service name="http://service.dianping.com/kangaroo/GroupNoteService_1.0.0">
+        <port>2019</port>
+    </service>
+    <service name="http://service.dianping.com/citytoneService/citytoneService_2.0.0">
+        <port>2020</port>
+    </service>
+    <service name="http://service.dianping.com/auditbackService/contentVerifyCategoryService_1.0.0">
+        <port>2021</port>
+    </service>
+    <service name="http://service.dianping.com/auditbackService/contentTypeService_1.0.0">
+        <port>2021</port>
+    </service>
+    <service name="http://service.dianping.com/auditbackService/historyVerifyService_1.0.0">
+        <port>2021</port>
+    </service>
+    <service name="http://service.dianping.com/auditbackService/contentVerifyService_1.0.0">
+        <port>2021</port>
+    </service>
+    <service name="http://service.dianping.com/auditbackService/blackListService_1.0.0">
+        <port>2021</port>
+    </service>
+    <service name="http://service.dianping.com/orderRemoteService/orderNotifyRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealGroupRemoteService/dealGroupRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealGroupStockRemoteService/dealGroupStockRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/naviCategoryRemoteService/naviCategoryRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/orderRemoteService/orderRemoteGetService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/payOrderRemoteService/payOrderRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealShopRemoteService/dealShopRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/naviDealCategoryRemoteService/naviDealCategoryRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/receiptRemoteService/receiptRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealGroupEntryService/dealGroupPublishService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/userSMSRemoteService/userSMSRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealCategoryRemoteService/dealCategoryRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/tgEventService/tgEventService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealRecommendRemoteService/dealRecommendRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealGroupRemoteService/dealGroupRemoteService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/orderRemoteService/cpsRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dpfootService/feedbackService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/naviTagRemoteService/naviTagRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealShopRemoteService/dealShopRemoteService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealGroupRemindService/dealGroupRemindService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/couponRemoteService/couponRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/naviDealTagRemoteService/naviDealTagRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealRemoteService/dealRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dpfootService/faqService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealRemoteService/dealRemoteService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealCategoryRemoteService/dealCategoryRemoteService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/accountRemoteService/accountRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dpfootService/zsFeedbackService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealRegionRemoteService/dealRegionRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dpfootService/seoShopService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealRegionRemoteService/dealRegionRemoteService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealRecommendRemoteService/dealRecommendRemoteService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealFavoriteRemoteService/dealFavoriteRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/deliveryRemoteService/deliveryRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealFavoriteRemoteService/dealFavoriteRemoteService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/filmReservationRemoteService/filmReservationRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/naviDealCategoryRemoteService/naviDealCategoryRemoteService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/cpsAPIService/cpsAPIService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/payChannelService/payChannelService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/naviDealTagRemoteService/naviDealTagRemoteService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/orderRemoteService/orderRemoteAddService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealGroupRemindService/dealGroupRemindService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/movieRemoteService/movieRemoteService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dealGroupStockRemoteService/dealGroupStockRemoteService_2.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dpfootService/mediaReportService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/dpfootService/companyInfoServiceService_1.0.0">
+        <port>2022</port>
+    </service>
+    <service name="http://service.dianping.com/userAdminServer/personalInfoService_1.0.0">
+        <port>2023</port>
+    </service>
+    <service name="http://service.dianping.com/userAdminServer/badgeAdminService_1.0.0">
+        <port>2023</port>
+    </service>
+    <service name="http://service.dianping.com/cpsAPIService/cpsAPIService_2.0.0">
+        <port>2023</port>
+    </service>
+    <service name="http://service.dianping.com/userCardService/jFRemoteCardService_1.0.0">
+        <port>2023</port>
+    </service>
+    <service name="http://service.dianping.com/userAdminServer/badgeLogService_1.0.0">
+        <port>2023</port>
+    </service>
+    <service name="http://service.dianping.com/userCardService/memberCardService_1.0.0">
+        <port>2023</port>
+    </service>
+    <service name="http://service.dianping.com/rankSearchService/rankSearchService_1.0.0">
+        <port>2023</port>
+    </service>
+    <service name="http://service.dianping.com/payChannelQueryService/payChannelQueryService_1.0.0">
+        <port>2024</port>
+    </service>
+    <service name="http://service.dianping.com/payChannelService/channelRefundTransferService_1.0.0">
+        <port>2024</port>
+    </service>
+    <service name="http://service.dianping.com/payChannelOneKeyService/oneKeySignApplyService_1.0.0">
+        <port>2024</port>
+    </service>
+    <service name="http://service.dianping.com/payChannelOneKeyService/oneKeyUnsignApplyService_1.0.0">
+        <port>2024</port>
+    </service>
+    <service name="http://service.dianping.com/payChannelOneKeyService/oneKeyQueryService_1.0.0">
+        <port>2024</port>
+    </service>
+    <service name="http://service.dianping.com/paymentChannelGateService/paymentChannelGateService_1.0.0">
+        <port>2024</port>
+    </service>
+    <service name="http://service.dianping.com/socialRelationshipService/friendService_2.0.0">
+        <port>2025</port>
+    </service>
+    <service name="http://service.dianping.com/socialRelationshipService/blockService_1.0.0">
+        <port>2025</port>
+    </service>
+    <service name="http://service.dianping.com/accountQueryService/accountQueryRemoteService_1.0.0">
+        <port>2025</port>
+    </service>
+    <service name="http://service.dianping.com/payEngineService/payEngineNotifyRemoteService_1.0.0">
+        <port>2025</port>
+    </service>
+    <service name="http://service.dianping.com/unipayService/unipayNotifyRemoteService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/unipayService/orderPaymentRemoteService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/payEngineService/payEngineRemoteService_1.0.0">
+        <port>2025</port>
+    </service>
+    <service name="http://service.dianping.com/unipayService/refundPaymentRemoteService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/payEngineService/payEngineQueryRemoteService_1.0.0">
+        <port>2025</port>
+    </service>
+    <service name="http://service.dianping.com/accountManageService/accountManageRemoteService_1.0.0">
+        <port>2025</port>
+    </service>
+    <service name="http://service.dianping.com/unipayService/couponManagerRemoteService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/getOrderService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/userAccountAuditService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/dealCategoryRemoteService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/updateOrderService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/deliverAddressService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/orderBlackListService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/buyVerifyService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/socialFeedService/localFeedService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/refundOrderService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/updateStockService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/payOrderService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/addOrderService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/orderService/htRefundService_1.0.0">
+        <port>2026</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopForPoiService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/MyListUserService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/MyListFlowerService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopForManagementService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopForMemberCardService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/MyListFollowNoteService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopForCRMService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopForUserService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopForMobileService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/dishTagService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopPageCacheService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/tuangouService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopForBusinessService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopTagService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/ShopForRecommenderService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/ShopProductService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopForMessageService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/myListService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopForDealService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/ShopRankingDataService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/shopService/shopSeriesService_2.0.0">
+        <port>2027</port>
+    </service>
+    <service name="http://service.dianping.com/messageService/flowerService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewAdminService_2.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/messageService/followNoteService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/messageService/userInteractionService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewServiceForGroup_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewServiceForEvent_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/messageService/messageService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/tuanGouAlgoRemoteService/tuanGouAlgoRemoteService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewService_3.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewFaithAdminService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/messageService/noticeService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewServiceForFlower_2.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/messageService/subscriptionService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewServiceForFollowNote_2.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/messageService/userMesssageGuideService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/messageService/messageSendWhiteListService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewServiceForMobile_2.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/messageService/subscriptionTypeService_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewServiceForVerify_1.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/reviewService/reviewServiceForUser_2.0.0">
+        <port>2028</port>
+    </service>
+    <service name="http://service.dianping.com/mapService/landMarkMapService_1.0.0">
+        <port>2029</port>
+    </service>
+    <service name="http://service.dianping.com/mapService/poiService_1.0.0">
+        <port>2029</port>
+    </service>
+    <service name="http://service.dianping.com/mapService/routeService_1.0.0">
+        <port>2029</port>
+    </service>
+    <service name="http://service.dianping.com/payGateService/payEngine_1.0.0">
+        <port>2029</port>
+    </service>
+    <service name="http://service.dianping.com/payGateService/billingService_1.0.0">
+        <port>2029</port>
+    </service>
+    <service name="http://service.dianping.com/mapService/geocodingService_1.0.0">
+        <port>2029</port>
+    </service>
+    <service name="http://service.dianping.com/mapService/adminGeocodingService_1.0.0">
+        <port>2029</port>
+    </service>
+    <service name="http://service.dianping.com/mapService/coordinateTransferService_1.0.0">
+        <port>2029</port>
+    </service>
+    <service name="http://service.dianping.com/shopAccountService/shopAccountService_1.0.0">
+        <port>2029</port>
+    </service>
+    <service name="http://service.dianping.com/mapService/regionMapService_1.0.0">
+        <port>2029</port>
+    </service>
+    <service name="http://service.dianping.com/baseDataService/userAuthenticationLevelService_1.0.0">
+        <port>2030</port>
+    </service>
+    <service name="http://service.dianping.com/baseDataService/categoryService_1.0.0">
+        <port>2030</port>
+    </service>
+    <service name="http://service.dianping.com/baseDataService/regionService_1.0.0">
+        <port>2030</port>
+    </service>
+    <service name="http://service.dianping.com/baseDataService/cityService_1.0.0">
+        <port>2030</port>
+    </service>
+    <service name="http://service.dianping.com/mobiRGCService/mobiRGCService_1.0.0">
+        <port>2030</port>
+    </service>
+    <service name="http://service.dianping.com/mobiLocateService/mobiLocateService_1.0.0">
+        <port>2030</port>
+    </service>
+    <service name="http://service.dianping.com/mobiOffsetService/mobiOffsetService_1.0.0">
+        <port>2030</port>
+    </service>
+    <service name="http://service.dianping.com/coordinateService/coordinateService_1.0.0">
+        <port>2030</port>
+    </service>
+    <service name="http://service.dianping.com/userBaseService/userProfileService_1.0.0">
+        <port>2032</port>
+    </service>
+    <service name="http://service.dianping.com/userBaseService/userService_1.0.0">
+        <port>2032</port>
+    </service>
+    <service name="http://service.dianping.com/userBaseService/userServiceForMobile_1.0.0">
+        <port>2032</port>
+    </service>
+    <service name="http://service.dianping.com/userBaseService/userAtUCService_1.0.0">
+        <port>2032</port>
+    </service>
+    <service name="http://service.dianping.com/userBaseService/userLocationService_1.0.0">
+        <port>2032</port>
+    </service>
+    <service name="http://service.dianping.com/memberCardService/memberCardService_1.0.0">
+        <port>2033</port>
+    </service>
+    <service name="http://service.dianping.com/memberCardService/memberCardUserFeedService_1.0.0">
+        <port>2033</port>
+    </service>
+    <service name="http://service.dianping.com/memberCardService/memberCardForMobileService_1.0.0">
+        <port>2033</port>
+    </service>
+    <service name="http://service.dianping.com/memberCardService/memberCardServiceForShop_1.0.0">
+        <port>2033</port>
+    </service>
+    <service name="http://service.dianping.com/exchange/exchangeService_1.0.0">
+        <port>2040</port>
+    </service>
+    <service name="http://service.dianping.com/currency/currencyService_1.0.0">
+        <port>2045</port>
+    </service>
+    <service name="http://service.dianping.com/currency/currencyTransService_1.0.0">
+        <port>2045</port>
+    </service>
+    <service name="http://service.dianping.com/shopBizService/contactInfoService_1.0.0">
+        <port>2049</port>
+    </service>
+    <service name="http://service.dianping.com/usercommon/UserCommonService_1.0.0">
+        <port>2052</port>
+    </service>
+    <service name="http://service.dianping.com/MagicMirrorService/hawkInputService_1.0.0">
+        <port>2060</port>
+    </service>
+    <service name="http://service.dianping.com/MagicStreamService/hawkInputService_1.0.0">
+        <port>2060</port>
+    </service>
+    <service name="http://service.dianping.com/MagicStreamService/dpsfInputService_1.0.0">
+        <port>2060</port>
+    </service>
+    <service name="http://service.dianping.com/MagicMirrorService/dpsfInputService_1.0.0">
+        <port>2060</port>
+    </service>
+    <service name="http://service.dianping.com/ba/adwords/orderService">
+        <port>2077</port>
+    </service>
+    <service name="http://service.dianping.com/airecService/airecService_1.0.0">
+        <port>2080</port>
+    </service>
+    <service name="http://service.dianping.com/memberCardRecomService/memberCardRecomService_1.0.0">
+        <port>2088</port>
+    </service>
+    <service name="http://service.dianping.com/ai/nominationService_1.0.0">
+        <port>2099</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/activityTypeService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/activityOperateRuleService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/activityDataRuleService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/offlineActivityShopService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/offlineActivitySpecificOpRuleService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/offlineActivityUserService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/activityAdminPowerService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/offlineActivityService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/activityApplyItemService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/activityModeService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/offlineActivityBlackListService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/offlineActivityFollowNoteService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/reviewCountService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/offlineActivitySmsService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/activityOperateLogService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/offlineActivityNoteService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/offlineActivityManualRecService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/activityService/offlineActivityNoticeService_1.0.0">
+        <port>2121</port>
+    </service>
+    <service name="http://service.dianping.com/keyword/wordService_1.0.0">
+        <port>2222</port>
+    </service>
+    <service name="http://service.dianping.com/dpRecommend/recommenderService_1.0.0">
+        <port>2500</port>
+    </service>
+    <service name="http://service.dianping.com/dpRecommend/sameFriendsService_1.0.0">
+        <port>2500</port>
+    </service>
+    <service name="http://service.dianping.com/dpRecommend/friendFeedBackService_1.0.0">
+        <port>2500</port>
+    </service>
+    <service name="http://service.dianping.com/dpRecommend/sameShopFavorService_1.0.0">
+        <port>2500</port>
+    </service>
+    <service name="http://service.dianping.com/eventsService/prizeService_2.0.0">
+        <port>3000</port>
+    </service>
+    <service name="http://service.dianping.com/eventsService/eventsService_1.0.0">
+        <port>3000</port>
+    </service>
+    <service name="http://service.dianping.com/eventsService/commentService_1.0.0">
+        <port>3000</port>
+    </service>
+    <service name="http://service.dianping.com/eventsService/attendUserService_1.0.0">
+        <port>3000</port>
+    </service>
+    <service name="http://service.dianping.com/eventsService/eventLogService_1.0.0">
+        <port>3000</port>
+    </service>
+    <service name="http://service.dianping.com/eventsService/eventPromoService_1.0.0">
+        <port>3000</port>
+    </service>
+    <service name="http://service.dianping.com/eventsService/questionnaireService_1.0.0">
+        <port>3000</port>
+    </service>
+    <service name="http://service.dianping.com/eventsService/prizeService_1.0.0">
+        <port>3000</port>
+    </service>
+    <service name="http://service.dianping.com/eventsService/simplePrizeService_1.0.0">
+        <port>3000</port>
+    </service>
+    <service name="http://service.dianping.com/eventsService/webModuleService_1.0.0">
+        <port>3000</port>
+    </service>
+    <service name="http://service.dianping.com/cmsService/cmsService_1.0.0">
+        <port>3005</port>
+    </service>
+    <service name="http://service.dianping.com/pvcounterService/sampleService_1.0.0">
+        <port>3186</port>
+    </service>
+    <service name="http://service.dianping.com/midas/pvcounterService/sampleService_1.0.0">
+        <port>3186</port>
+    </service>
+    <service name="http://service.dianping.com/midas/pvcounterService/pvcounterService_1.0.0">
+        <port>3186</port>
+    </service>
+    <service name="http://service.dianping.com/pigeonService/demoService_1.0.0">
+        <port>3333</port>
+    </service>
+    <service name="http://service.dianping.com/poi/AIRemoteService">
+        <port>3333</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/siteShopRangeService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/shopBookingService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/monthlyBillCheckService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainFCServiceImpl">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService22/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/siteGrouponDealInfoService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService9/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/demoService28/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/siteBookingRebateService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/shopBusinessService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainBookingApplyService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService16/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/shopRangeService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService3/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/demoService29/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintianMagicAccountService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/rtbookingService/ShopConfigService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/echoService/nextId">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainAccountConfigService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService10/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/jobBookingRecordService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService23/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainBookingConfigService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/shopCooperationService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/rtbookingService/ReservationService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/echoService/customerService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/demoService4/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainBookingRebateService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService17/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainGrouponBookingService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/rtbookingService/TableService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService30/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/remindDinningService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/jobBookingConfigService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainOperationLogService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/bookingSettingService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService11/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/open/openCpsRemoteService_1.0.0">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/siteBookingService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/rtbookingService/InventoryService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainRechargeRemindConfigService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService24/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/donkeyService/seqService_1.0.0">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/remindChargeService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/apiCreditScoreService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/echoService/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/demoService5/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/siteGrouponBookingService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/echoService/exampleService_1.0.0">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/demoService18/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/rtbookingService/LogService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainDunningService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/jobBusinessService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainBillingService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService31/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/siteBookingInfoService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/open/cpsDealStatementRemoteService_1.0.0">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainRemindService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/swallowService/producerService_1.0.0">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService12/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/shopBookingRebateService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService25/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/siteGrouponBookingInfoService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService6/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/jobDunningService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService19/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/autoChargeService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainContractService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/customerServiceReportService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/apiBookingConfigService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService0/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainBillingConfigService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/shopBookingApplyService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService13/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/MaintainMonthlyBillService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService26/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/remindConsumptionService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService7/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainBusinessService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/metadataService/cityService_1.0.0">
+        <port>4001</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/apiCooperationService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService20/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/mockListenService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService1/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/shopBookingApplyCityService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/rtbookingService/ShopStatusService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/metadataService/categoryService_1.0.0">
+        <port>4001</port>
+    </service>
+    <service name="http://service.dianping.com/demoService14/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainBillSendRecordService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/apiBookingService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService27/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/shopBookingConfigService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/apiBookingAvailableService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainGrouponDealInfoService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/job/changeBookingConfigSameNumberService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService8/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/siteCreditScoreService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService21/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/donkeyService/nextId">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/metadataService/regionService_1.0.0">
+        <port>4001</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/magicAccountService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService2/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainReviseArrivalService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/maintainBookingService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/shopMonthlyBillService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/apiBookingRebateService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/demoService15/orderService">
+        <port>7050</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/shopGrouponDealInfoService">
+        <port>4000</port>
+    </service>
+    <service name="http://service.dianping.com/mobile/recommendStore">
+        <port>5001</port>
+    </service>
+    <service name="http://service.dianping.com/shopAdminService/shopAdminServiceForPoi_3.0.0">
+        <port>5003</port>
+    </service>
+    <service name="http://service.dianping.com/shopAdminService/shopAdminServiceForClaim_3.0.0">
+        <port>5003</port>
+    </service>
+    <service name="http://service.dianping.com/miscOperatorService/picAdminLogOperatorService_1.0.0">
+        <port>5004</port>
+    </service>
+    <service name="http://service.dianping.com/bookingService/callOutService">
+        <port>5100</port>
+    </service>
+    <service name="http://service.dianping.com/testService/echoService_1.0.0">
+        <port>6666</port>
+    </service>
+    <service name="http://service.dianping.com/ecService/testService">
+        <port>9100</port>
+    </service>
+    <service name="http://service.dianping.com/hawk/server/hawkProvider">
+        <port>9988</port>
+    </service>
+    <service name="http://service.dianping.com/hawk/server/jRobinServiceServer">
+        <port>9988</port>
+    </service>
+    <service name="http://service.dianping.com/hawk/alarm/alarmDataRemoteSerivce">
+        <port>9989</port>
+    </service>
+    <service name="http://service.dianping.com/hawk/alarm/alarmRuleRemoteSerivce">
+        <port>9989</port>
+    </service>
+    <service name="http://service.dianping.com/hawk/alarm/commonAlarmSerivce">
+        <port>9989</port>
+    </service>
+    <service name="http://service.dianping.com/pigeontest/testLionService">
+        <port>20003</port>
+    </service>
+    <service name="http://service.dianping.com/alpacaService/fetcherService_1.0.0">
+        <port>27077</port>
+    </service>
+</services>

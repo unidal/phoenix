@@ -15,6 +15,7 @@
  */
 package com.dianping.maven.plugin.tools.wms;
 
+import java.io.File;
 import java.io.OutputStream;
 
 /**
@@ -23,5 +24,5 @@ import java.io.OutputStream;
  */
 public interface WorkspaceManagementService {
 
-    public void create(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException;
+    public File create(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException;
 }

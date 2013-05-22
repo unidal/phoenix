@@ -1,5 +1,9 @@
 package com.dianping.maven.plugin.tools.velocity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import org.apache.velocity.Template;
@@ -28,6 +32,15 @@ public enum VelocityEngineManager {
 	public void build(String tplPath, VelocityContext ctx, Writer out) {
         Template t = ve.getTemplate(tplPath);
         t.merge(ctx, out);
+	}
+	
+	public void build(String tplPath, Object ctx, File targetFile) throws IOException {
+		Template t = ve.getTemplate(tplPath);
+		VelocityContext vctx = new VelocityContext();
+		vctx.put("ctx", ctx);
+		Writer w = new OutputStreamWriter(new FileOutputStream(targetFile), "UTF-8");
+		t.merge(vctx, w);
+		w.close();
 	}
 	
 }

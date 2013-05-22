@@ -28,8 +28,8 @@ import org.apache.commons.lang.StringUtils;
  * @author Leo Liang
  * 
  */
-public class ProjectMetaGenerator extends TemplateBasedFileGenerator<ProjectMetaContext> {
-    private static final String TEMPLATE = "project-meta.vm";
+public class ServiceMetaGenerator extends TemplateBasedFileGenerator<ServiceMetaContext> {
+    private static final String TEMPLATE = "service-meta.vm";
 
     /*
      * (non-Javadoc)
@@ -50,8 +50,8 @@ public class ProjectMetaGenerator extends TemplateBasedFileGenerator<ProjectMeta
      * .lang.Object)
      */
     @Override
-    protected Object getArgs(ProjectMetaContext context) throws Exception {
-        Map<String, Integer> projectPortMapping = new LinkedHashMap<String, Integer>();
+    protected Object getArgs(ServiceMetaContext context) throws Exception {
+        Map<String, Integer> servicePortMapping = new LinkedHashMap<String, Integer>();
 
         Class.forName(context.getDriverClass());
 
@@ -65,12 +65,12 @@ public class ProjectMetaGenerator extends TemplateBasedFileGenerator<ProjectMeta
             }
             stmt = conn.createStatement();
             ResultSet rs = stmt
-                    .executeQuery("SELECT DISTINCT p.id AS id, p.name AS project, j.port1 AS port FROM jrobin_host j, project p WHERE j.projectId=p.id AND j.port1 IS NOT NULL ORDER BY port ASC");
+                    .executeQuery("SELECT s.serviceName AS serviceName, h.port1 AS port FROM jrobin_host h, service s WHERE s.projectId = h.projectId AND h.port1 IS NOT NULL ORDER BY PORT ASC;");
             while (rs.next()) {
-                String project = rs.getString("project");
+                String serviceName = rs.getString("serviceName");
                 int port = rs.getInt("port");
-                if (StringUtils.isNotBlank(project)) {
-                    projectPortMapping.put(project, port);
+                if (StringUtils.isNotBlank(serviceName)) {
+                    servicePortMapping.put(serviceName, port);
                 }
             }
         } finally {
@@ -90,7 +90,7 @@ public class ProjectMetaGenerator extends TemplateBasedFileGenerator<ProjectMeta
             }
         }
 
-        return projectPortMapping;
+        return servicePortMapping;
 
     }
 

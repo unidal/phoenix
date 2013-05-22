@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="workspace" root="true">
+    <attribute name="dir" value-type="String" />
+    <entity-ref name="phoenix-project" />
+    <entity-ref name="biz-project" type="list" names="biz-projects" />
+  </entity>
+  <entity name="phoenix-project">
+    <entity-ref name="router" />
+  </entity>
+  <entity name="router">
+    <attribute name="version" value-type="String" />
+    <attribute name="port" value-type="int" />
+    <element name="default-url-pattern" value-type="String" />
+  </entity>
+  <entity name="biz-project">
+    <attribute name="name" value-type="String" />
+  </entity>
+</model>
+

@@ -1,7 +1,7 @@
-<projects>
+<services>
 #foreach($kv in $args.entrySet())
-    <project name="$kv.key">
+    <service name="$kv.key">
         <port>$kv.value</port>
-    </project>
+    </service>
 #end
-</projects>
+</services>

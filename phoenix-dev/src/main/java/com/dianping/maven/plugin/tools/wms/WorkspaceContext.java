@@ -17,6 +17,7 @@ package com.dianping.maven.plugin.tools.wms;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,8 +27,7 @@ import java.util.List;
 public class WorkspaceContext implements Serializable {
     private static final long serialVersionUID     = -7734656051647733810L;
     private File              baseDir;
-    private List<String>      projects;
-    private File              bootstrapProjectDir;
+    private List<String>      projects = new ArrayList<String>();
     private String            phoenixRouterVersion = "0.1-SNAPSHOT";
 
     /**
@@ -74,20 +74,9 @@ public class WorkspaceContext implements Serializable {
     public void setProjects(List<String> projects) {
         this.projects = projects;
     }
-
-    /**
-     * @return the bootstrapProjectDir
-     */
-    public File getBootstrapProjectDir() {
-        return bootstrapProjectDir;
-    }
-
-    /**
-     * @param bootstrapProjectDir
-     *            the bootstrapProjectDir to set
-     */
-    public void setBootstrapProjectDir(File bootstrapProjectDir) {
-        this.bootstrapProjectDir = bootstrapProjectDir;
+    
+    public void addProject(String project) {
+    	projects.add(project);
     }
 
 }
