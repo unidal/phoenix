@@ -12,9 +12,8 @@ public class GitCodeRetrieveConfig extends CodeRetrieveConfig{
 		super();
 	}
 
-	public GitCodeRetrieveConfig(String repoUrl, String localPath,
-			String username, String password, OutputStream logOutput, String branchName) {
-		super(repoUrl, localPath, username, password, logOutput);
+	public GitCodeRetrieveConfig(String repoUrl, String localPath, OutputStream logOutput, String branchName) {
+		super(repoUrl, localPath, logOutput);
 		this.branchName = branchName;
 	}
 
@@ -34,4 +33,9 @@ public class GitCodeRetrieveConfig extends CodeRetrieveConfig{
 			throw new ConfigIncompleteException("branchName:" + branchName + " is invalid!");  
 		}
 	}
+
+	@Override
+   public String getType() {
+	   return CodeRetrieverContext.GIT;
+   }
 }

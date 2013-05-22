@@ -1,85 +1,25 @@
 <plexus>
 	<components>
 		<component>
-			<role>com.dianping.maven.plugin.tools.wms.RepositoryManager</role>
-			<implementation>com.dianping.maven.plugin.tools.wms.DummyRepositoryManager</implementation>
+			<role>com.dianping.maven.plugin.tools.vcs.CodeRetrieverManager</role>
+			<implementation>com.dianping.maven.plugin.tools.vcs.CodeRetrieverManager</implementation>
+		</component>
+		<component>
+			<role>com.dianping.maven.plugin.tools.vcs.ICodeRetriever</role>
+			<role-hint>git</role-hint>
+			<implementation>com.dianping.maven.plugin.tools.vcs.GitCodeRetriever</implementation>
+		</component>
+		<component>
+			<role>com.dianping.maven.plugin.tools.vcs.ICodeRetriever</role>
+			<role-hint>svn</role-hint>
+			<implementation>com.dianping.maven.plugin.tools.vcs.SVNCodeRetriever</implementation>
 		</component>
 		<component>
 			<role>com.dianping.maven.plugin.tools.wms.WorkspaceManagementService</role>
 			<implementation>com.dianping.maven.plugin.tools.wms.WorkspaceManagementServiceImpl</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.maven.plugin.tools.wms.RepositoryManager</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.maven.plugin.tools.misc.file.ServiceLionPropertiesGenerator</role>
-			<implementation>com.dianping.maven.plugin.tools.misc.file.ServiceLionPropertiesGenerator</implementation>
-		</component>
-		<component>
-			<role>com.dianping.maven.plugin.tools.misc.file.LaunchFileGenerator</role>
-			<implementation>com.dianping.maven.plugin.tools.misc.file.LaunchFileGenerator</implementation>
-		</component>
-		<component>
-			<role>com.dianping.maven.plugin.phoenix.F5Manager</role>
-			<implementation>com.dianping.maven.plugin.phoenix.DefaultF5Manager</implementation>
-		</component>
-		<component>
-			<role>com.dianping.maven.plugin.phoenix.model.visitor.BizServerContextVisitor</role>
-			<implementation>com.dianping.maven.plugin.phoenix.model.visitor.BizServerContextVisitor</implementation>
-		</component>
-		<component>
-			<role>com.dianping.maven.plugin.phoenix.model.visitor.LaunchFileContextVisitor</role>
-			<implementation>com.dianping.maven.plugin.phoenix.model.visitor.LaunchFileContextVisitor</implementation>
-		</component>
-		<component>
-			<role>com.dianping.maven.plugin.phoenix.model.visitor.RouterRuleContextVisitor</role>
-			<implementation>com.dianping.maven.plugin.phoenix.model.visitor.RouterRuleContextVisitor</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
-			<requirements>
-				<requirement>
-					<role>com.dianping.maven.plugin.phoenix.F5Manager</role>
-					<field-name>f5Mgr</field-name>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.maven.plugin.phoenix.model.visitor.ServiceLionContextVisitor</role>
-			<implementation>com.dianping.maven.plugin.phoenix.model.visitor.ServiceLionContextVisitor</implementation>
-		</component>
-		<component>
-			<role>com.dianping.maven.plugin.phoenix.model.visitor.WorkspaceContextVisitor</role>
-			<implementation>com.dianping.maven.plugin.phoenix.model.visitor.WorkspaceContextVisitor</implementation>
-		</component>
-		<component>
-			<role>com.dianping.maven.plugin.phoenix.WorkspaceFacade</role>
-			<implementation>com.dianping.maven.plugin.phoenix.WorkspaceFacade</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
-			<requirements>
-				<requirement>
-					<role>com.dianping.maven.plugin.tools.wms.WorkspaceManagementService</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.maven.plugin.tools.misc.file.ServiceLionPropertiesGenerator</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.maven.plugin.tools.misc.file.LaunchFileGenerator</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.maven.plugin.phoenix.model.visitor.BizServerContextVisitor</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.maven.plugin.phoenix.model.visitor.LaunchFileContextVisitor</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.maven.plugin.phoenix.model.visitor.RouterRuleContextVisitor</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.maven.plugin.phoenix.model.visitor.ServiceLionContextVisitor</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.maven.plugin.phoenix.model.visitor.WorkspaceContextVisitor</role>
+					<role>com.dianping.maven.plugin.tools.vcs.CodeRetrieverManager</role>
 				</requirement>
 			</requirements>
 		</component>

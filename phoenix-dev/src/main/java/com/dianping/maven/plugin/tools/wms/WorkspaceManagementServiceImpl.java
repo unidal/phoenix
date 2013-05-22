@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.unidal.lookup.ContainerHolder;
+import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.maven.plugin.tools.misc.file.ContainerBizServerGenerator;
 import com.dianping.maven.plugin.tools.misc.file.ContainerPomXMLGenerator;
@@ -32,7 +34,7 @@ import com.dianping.maven.plugin.tools.misc.file.WorkspaceEclipseBatGenerator;
 import com.dianping.maven.plugin.tools.misc.file.WorkspaceEclipseSHGenerator;
 import com.dianping.maven.plugin.tools.misc.file.WorkspacePomXMLGenerator;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieveConfig;
-import com.dianping.maven.plugin.tools.vcs.CodeRetrieveService;
+import com.dianping.maven.plugin.tools.vcs.CodeRetrieverManager;
 import com.dianping.maven.plugin.tools.vcs.GitCodeRetrieveConfig;
 import com.dianping.maven.plugin.tools.vcs.SVNCodeRetrieveConfig;
 
@@ -46,6 +48,9 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     private final static String LINE_SEPARATOR   = System.getProperty("line.separator");
     private final static String CONTAINER_FOLDER = "phoenix-container";
     private RepositoryManager   repositoryManager;
+   
+    @Inject
+    private CodeRetrieverManager codeRetrieverManager;
 
     public void setRepositoryManager(RepositoryManager repositoryManager) {
         this.repositoryManager = repositoryManager;
@@ -84,7 +89,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
                 if (codeRetrieveConfig != null) {
                     printContent(
                             String.format("Checking out project %s(repo:%s)...", project, repository.getRepoUrl()), out);
-                    CodeRetrieveService.getInstance().retrieveCode(codeRetrieveConfig);
+                    codeRetrieverManager.getCodeRetriever(codeRetrieveConfig).retrieveCode();
                 } else {
                     printContent(String.format("Project repository(%s) unknown...", project), out);
                 }
@@ -191,10 +196,10 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
     private CodeRetrieveConfig toCodeRetrieveConfig(Repository repository, String path, OutputStream out) {
         if (repository instanceof SvnRepository) {
-            return new SVNCodeRetrieveConfig(repository.getRepoUrl(), path, repository.getUser(), repository.getPwd(),
+            return new SVNCodeRetrieveConfig(repository.getRepoUrl(), path,
                     out, ((SvnRepository) repository).getRevision());
         } else if (repository instanceof GitRepository) {
-            return new GitCodeRetrieveConfig(repository.getRepoUrl(), path, repository.getUser(), repository.getPwd(),
+            return new GitCodeRetrieveConfig(repository.getRepoUrl(), path,
                     out, ((GitRepository) repository).getBranch());
         } else {
             return null;

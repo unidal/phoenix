@@ -11,9 +11,8 @@ public class SVNCodeRetrieveConfig extends CodeRetrieveConfig{
 		super();
 	}
 
-	public SVNCodeRetrieveConfig(String repoUrl, String localPath,
-			String username, String password, OutputStream logOutput, long version) {
-		super(repoUrl, localPath, username, password, logOutput);
+	public SVNCodeRetrieveConfig(String repoUrl, String localPath,OutputStream logOutput, long version) {
+		super(repoUrl, localPath, logOutput);
 		this.version = version;
 	}
 
@@ -26,4 +25,9 @@ public class SVNCodeRetrieveConfig extends CodeRetrieveConfig{
 	public void setVersion(long version) {
 		this.version = version;
 	}
+
+	@Override
+   public String getType() {
+	   return CodeRetrieverContext.SVN;
+   }
 }

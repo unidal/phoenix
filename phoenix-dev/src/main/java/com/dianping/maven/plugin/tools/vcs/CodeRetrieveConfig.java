@@ -7,25 +7,21 @@ import org.eclipse.jgit.util.FileUtils;
 import org.eclipse.jgit.util.StringUtils;
 
 public abstract class CodeRetrieveConfig {
-
 	private String repoUrl;
 	private String localPath;
-	private String username;
-	private String password;
 	private OutputStream logOutput;
 
 	public CodeRetrieveConfig(){}
 	
-	public CodeRetrieveConfig(String repoUrl, String localPath,
-			String username, String password, OutputStream logOutput) {
+	public CodeRetrieveConfig(String repoUrl, String localPath,OutputStream logOutput) {
 		super();
 		this.repoUrl = repoUrl;
 		this.localPath = localPath;
-		this.username = username;
-		this.password = password;
 		this.logOutput = logOutput;
 	}
 
+	public abstract String getType();
+	
 	String getRepoUrl() {
 		return repoUrl;
 	}
@@ -38,18 +34,6 @@ public abstract class CodeRetrieveConfig {
 	public void setLocalPath(String localPath) {
 		this.localPath = localPath;
 	}
-	String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
 	OutputStream getLogOutput() {
 		return logOutput;
 	}
@@ -58,12 +42,6 @@ public abstract class CodeRetrieveConfig {
 	}
 
 	void validate(){
-		if(StringUtils.isEmptyOrNull(username)){
-			throw new ConfigIncompleteException("username:" + username + " is invalid!");
-		}
-		if(StringUtils.isEmptyOrNull(password)){
-			throw new ConfigIncompleteException("password:" + password + " is invalid!"); 
-		}
 		if(StringUtils.isEmptyOrNull(repoUrl)){
 			throw new ConfigIncompleteException("repoUrl:" + repoUrl + " is invalid!"); 
 		}
