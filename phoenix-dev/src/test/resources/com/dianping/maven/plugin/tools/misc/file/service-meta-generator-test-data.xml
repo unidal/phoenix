@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="gb2312"?>
+<dataset>
+	<database name="hawk">
+		<script>
+		<![CDATA[
+		insert into jrobin_host (projectId, port1) values (1, 2000);
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into jrobin_host (projectId, port1) values (2, 2001);
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into jrobin_host (projectId, port1) values (3, 2002);
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into jrobin_host (projectId, port1) values (4, 2003);
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into project (id, name) values (1, 'shoppic-service');
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into project (id, name) values (2, 'group-service');
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into project (id, name) values (3, 'account-service');
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into project (id, name) values (4, 'user-service');
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into service (id, projectId, serviceName) values (1, 1, 'http://service.dianping.com/shoppicService/shoppicService_1.0.0');
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into service (id, projectId, serviceName) values (2, 2, 'http://service.dianping.com/groupService/groupService_1.0.0');
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into service (id, projectId, serviceName) values (3, 3, 'http://service.dianping.com/accountService/accountService_1.0.0');
+		]]>
+		</script>
+		<script>
+		<![CDATA[
+		insert into service (id, projectId, serviceName) values (4, 4, 'http://service.dianping.com/userService/userService_1.0.0');
+		]]>
+		</script>
+	</database>
+
+</dataset>

@@ -1,7 +1,0 @@
-<projects>
-#foreach($kv in $args.entrySet())
-    <project name="$kv.key">
-        <port>$kv.value</port>
-    </project>
-#end
-</projects>

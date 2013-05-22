@@ -8,10 +8,11 @@ import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Deployment;
 import com.dianping.phoenix.console.dal.deploy.Deliverable;
 import com.dianping.phoenix.deploy.DeployPolicy;
+import com.dianping.phoenix.project.entity.BussinessLine;
 import com.dianping.phoenix.project.entity.Project;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
-	private List<Project> m_projects;
+	private List<BussinessLine> m_bussinessLines;
 
 	private Project m_project;
 
@@ -45,9 +46,9 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 	public Project getProject() {
 		return m_project;
 	}
-
-	public List<Project> getProjects() {
-		return m_projects;
+	
+	public List<BussinessLine> getBussinessLines() {
+		return m_bussinessLines;
 	}
 
 	public void setActiveDeployment(Deployment activeDeployment) {
@@ -66,7 +67,8 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 		m_project = project;
 	}
 
-	public void setProjects(List<Project> projects) {
-		m_projects = projects;
+	public void setBussinessLines(List<BussinessLine> bussinessLines) {
+		this.m_bussinessLines = bussinessLines;
 	}
+
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model model-package="com.dianping.phoenix.device"  enable-sax-parser="true">
+	<entity name="device">
+    <attribute name="type" value-type="int" />
+    <attribute name="id" value-type="int" />
+    <attribute name="unique" value-type="String" />
+    <entity-ref name="attribute" type="map" names="attributes" />
+  </entity>
+	<entity name="attribute">
+    	<attribute name="name" value-type="String" key="true" />
+  	</entity>
+  	
+</model>
+
+

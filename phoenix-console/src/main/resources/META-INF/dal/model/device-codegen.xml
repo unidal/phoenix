@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="responce" root="true">
+    <element name="code" value-type="int" />
+    <element name="numfound" value-type="int" />
+    <element name="page" value-type="int" />
+    <entity-ref name="device" type="list" names="devices" xml-indent="true" />
+    <entity-ref name="facet" type="list" names="facets" xml-indent="true" />
+  </entity>
+  <entity name="device">
+    <attribute name="type" value-type="int" />
+    <attribute name="id" value-type="int" />
+    <attribute name="unique" value-type="String" />
+    <entity-ref name="attribute" type="list" names="attributes" />
+  </entity>
+  <entity name="attribute">
+    <attribute name="name" value-type="String" />
+    <element name="text" value-type="String" text="true" />
+  </entity>
+  <entity name="facet">
+    <attribute name="attribute" value-type="String" />
+    <entity-ref name="value" type="list" names="values" />
+  </entity>
+  <entity name="value">
+    <attribute name="name" value-type="String" />
+    <element name="text" value-type="int" text="true" />
+  </entity>
+</model>
+

@@ -26,9 +26,11 @@ import com.dianping.phoenix.deploy.internal.DefaultAgentListener;
 import com.dianping.phoenix.deploy.internal.DefaultDeployExecutor;
 import com.dianping.phoenix.deploy.internal.DefaultDeployListener;
 import com.dianping.phoenix.deploy.internal.DefaultDeployManager;
+import com.dianping.phoenix.service.DefaultDeviceManager;
 import com.dianping.phoenix.service.DefaultGitService;
-import com.dianping.phoenix.service.DefaultProjectManager;
 import com.dianping.phoenix.service.DefaultWarService;
+import com.dianping.phoenix.service.DeviceManager;
+import com.dianping.phoenix.service.DefaultProjectManager;
 import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.LogService;
 import com.dianping.phoenix.service.ProjectManager;
@@ -71,8 +73,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(DeliverableManager.class, DefaultDeliverableManager.class) //
 		      .req(WarService.class, GitService.class, DeliverableDao.class, LogService.class));
 
+		all.add(C(DeviceManager.class, DefaultDeviceManager.class) //
+				  .req(ConfigManager.class));
 		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
-		      .req(DeploymentDao.class, DeploymentDetailsDao.class));
+			      .req(DeploymentDao.class, DeploymentDetailsDao.class, DeviceManager.class));
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //

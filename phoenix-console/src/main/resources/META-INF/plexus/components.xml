@@ -48,6 +48,15 @@
 			</requirements>
 		</component>
 		<component>
+			<role>com.dianping.phoenix.service.DeviceManager</role>
+			<implementation>com.dianping.phoenix.service.DefaultDeviceManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.phoenix.service.ProjectManager</role>
 			<implementation>com.dianping.phoenix.service.DefaultProjectManager</implementation>
 			<requirements>
@@ -56,6 +65,9 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.DeviceManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -171,9 +183,9 @@
 				<statement-cache-size>1000</statement-cache-size>
 				<properties>
 					<driver>com.mysql.jdbc.Driver</driver>
-					<URL>jdbc:mysql://192.168.26.80:3306/phoenix</URL>
+					<URL>jdbc:mysql://root:root@192.168.26.23:3306/phoenix</URL>
 					<user>root</user>
-					<password>root</password>
+					<password></password>
 					<connectionProperties><![CDATA[useUnicode=true&autoReconnect=true]]></connectionProperties>
 				</properties>
 			</configuration>

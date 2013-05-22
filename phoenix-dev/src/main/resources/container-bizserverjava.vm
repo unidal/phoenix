@@ -1,0 +1,69 @@
+package com.dianping.phoenix.container;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.webapp.WebAppContext;
+
+public class BizServer {
+
+	private static final String PORT_KEY = "bizserver.port";
+	private static final Logger log = Logger.getLogger(BizServer.class);
+
+	public static void main(String[] args) throws Exception {
+		Properties prop = loadProperties();
+
+		Server server = new Server(Integer.valueOf(prop.getProperty(PORT_KEY,"8080")));
+
+		for (String key : prop.stringPropertyNames()) {
+			if (!PORT_KEY.equals(key)) {
+				File warRoot = new File(prop.getProperty(key));
+				if (!new File(warRoot, "WEB-INF/web.xml").exists()) {
+					log.error("no web.xml under war root WEB-INF");
+				} else {
+					log.info(String.format("add %s to web context path %s", warRoot, key));
+					addContext(server, warRoot, key);
+				}
+			}
+		}
+
+		addContext(server, new File(new File("."), "src/main/webapp/"), "/");
+
+		server.start();
+		System.in.read();
+		server.stop();
+	}
+
+	private static void addContext(Server server, File warRoot, String path) {
+		WebAppContext context = new WebAppContext();
+		context.setContextPath(path);
+		context.setDescriptor(new File(warRoot, "WEB-INF/web.xml").getPath());
+		context.setResourceBase(warRoot.getPath());
+		server.addHandler(context);
+	}
+
+	private static Properties loadProperties() throws IOException {
+		Properties prop = new Properties();
+		InputStream input = null;
+
+		try {
+			input = BizServer.class.getResourceAsStream("/bizServer.properties");
+			if (input != null) {
+				prop.load(input);
+			}
+			return prop;
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+
+				}
+			}
+		}
+	}
+}

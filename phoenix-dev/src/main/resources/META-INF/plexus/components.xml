@@ -1,0 +1,27 @@
+<plexus>
+	<components>
+		<component>
+			<role>com.dianping.maven.plugin.tools.vcs.CodeRetrieverManager</role>
+			<implementation>com.dianping.maven.plugin.tools.vcs.CodeRetrieverManager</implementation>
+		</component>
+		<component>
+			<role>com.dianping.maven.plugin.tools.vcs.ICodeRetriever</role>
+			<role-hint>git</role-hint>
+			<implementation>com.dianping.maven.plugin.tools.vcs.GitCodeRetriever</implementation>
+		</component>
+		<component>
+			<role>com.dianping.maven.plugin.tools.vcs.ICodeRetriever</role>
+			<role-hint>svn</role-hint>
+			<implementation>com.dianping.maven.plugin.tools.vcs.SVNCodeRetriever</implementation>
+		</component>
+		<component>
+			<role>com.dianping.maven.plugin.tools.wms.WorkspaceManagementService</role>
+			<implementation>com.dianping.maven.plugin.tools.wms.WorkspaceManagementServiceImpl</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.maven.plugin.tools.vcs.CodeRetrieverManager</role>
+				</requirement>
+			</requirements>
+		</component>
+	</components>
+</plexus>

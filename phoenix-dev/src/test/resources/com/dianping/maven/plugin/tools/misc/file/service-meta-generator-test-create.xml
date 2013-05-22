@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="gb2312"?>
+<databases>
+	<database name="hawk">
+		<tables>
+			<table name="project">
+		    <![CDATA[
+		    CREATE TABLE project(
+		    	id INT,
+		    	name VARCHAR(200)
+		    )
+		    ]]>
+			</table>
+			<table name="jrobin_host">
+		    <![CDATA[
+		    CREATE TABLE jrobin_host(
+		    	id INT,
+		    	projectId INT,
+		    	port1 INT
+		    )
+		    ]]>
+			</table>
+			<table name="service">
+		    <![CDATA[
+		    CREATE TABLE service(
+		    	id INT,
+		    	projectId INT,
+		    	serviceName VARCHAR(200)
+		    )
+		    ]]>
+			</table>
+		</tables>
+	</database>
+</databases>

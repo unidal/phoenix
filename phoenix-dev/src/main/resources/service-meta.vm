@@ -1,0 +1,7 @@
+<services>
+#foreach($kv in $args.entrySet())
+    <service name="$kv.key">
+        <port>$kv.value</port>
+    </service>
+#end
+</services>

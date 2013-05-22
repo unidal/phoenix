@@ -1,0 +1,2 @@
+@echo off
+"%ECLIPSE_HOME%"\eclipse.exe -data %~dp0\ws

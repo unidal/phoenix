@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd `dirname "$0"`
+WORKSPACE_HOME=`pwd`
+
+"$ECLIPSE_HOME"/eclipse -data "$WORKSPACE_HOME"/ws &
