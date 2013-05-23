@@ -1,4 +1,4 @@
-package com.dianping.maven.plugin.tools.misc.file;
+package com.dianping.maven.plugin.tools.generator;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

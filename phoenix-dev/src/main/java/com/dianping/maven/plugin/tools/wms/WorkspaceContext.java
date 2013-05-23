@@ -27,8 +27,24 @@ import java.util.List;
 public class WorkspaceContext implements Serializable {
     private static final long serialVersionUID     = -7734656051647733810L;
     private File              baseDir;
-    private List<String>      projects = new ArrayList<String>();
+    private List<String>      projects             = new ArrayList<String>();
     private String            phoenixRouterVersion = "0.1-SNAPSHOT";
+    private boolean           cleanFolder;
+
+    /**
+     * @return the cleanFolder
+     */
+    public boolean isCleanFolder() {
+        return cleanFolder;
+    }
+
+    /**
+     * @param cleanFolder
+     *            the cleanFolder to set
+     */
+    public void setCleanFolder(boolean cleanFolder) {
+        this.cleanFolder = cleanFolder;
+    }
 
     /**
      * @return the phoenixRouterVersion
@@ -74,9 +90,9 @@ public class WorkspaceContext implements Serializable {
     public void setProjects(List<String> projects) {
         this.projects = projects;
     }
-    
+
     public void addProject(String project) {
-    	projects.add(project);
+        projects.add(project);
     }
 
 }

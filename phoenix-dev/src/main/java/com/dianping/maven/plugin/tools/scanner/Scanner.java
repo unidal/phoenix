@@ -13,25 +13,16 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.maven.plugin.tools.misc.file;
+package com.dianping.maven.plugin.tools.scanner;
 
+import java.io.File;
 import java.util.List;
 
 /**
  * @author Leo Liang
  * 
  */
-public class WorkspacePomXMLGenerator extends TemplateBasedFileGenerator<List<String>> {
-    private static final String TEMPLATE = "workspace-parentpomxml.vm";
+public interface Scanner<T> {
 
-    @Override
-    protected String getTemplate() {
-        return TEMPLATE;
-    }
-
-    @Override
-    protected Object getArgs(List<String> context) {
-        return context;
-    }
-
+    public List<T> scan(File file);
 }

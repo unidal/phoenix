@@ -3,7 +3,7 @@ package com.dianping.maven.plugin.phoenix.model.visitor;
 import java.io.File;
 
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
-import com.dianping.maven.plugin.tools.misc.file.LaunchFileContext;
+import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileContext;
 
 public class LaunchFileContextVisitor extends AbstractVisitor<LaunchFileContext> {
 

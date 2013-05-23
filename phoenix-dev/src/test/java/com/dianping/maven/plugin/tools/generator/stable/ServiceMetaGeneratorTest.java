@@ -13,7 +13,7 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.maven.plugin.tools.misc.file;
+package com.dianping.maven.plugin.tools.generator.stable;
 
 import java.io.File;
 
@@ -22,32 +22,29 @@ import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+import com.dianping.maven.plugin.tools.generator.H2DBBasedTestCase;
+
 /**
  * 
  * @author Leo Liang
  * 
  */
-public class ProjectMetaGeneratorTest extends H2DBBasedTestCase {
+public class ServiceMetaGeneratorTest extends H2DBBasedTestCase {
     private File file = new File(System.getProperty("java.io.tmpdir", "."), "service-meta.xml");
 
     @Test
     public void test() throws Exception {
         String expected = "<services>\n"
-                        + "    <service name=\"http://service.dianping.com/shoppicService/shoppicService_1.0.0\">\n"
-                        + "        <port>2000</port>\n" 
-                        + "    </service>\n" 
-                        + "    <service name=\"http://service.dianping.com/groupService/groupService_1.0.0\">\n" 
-                        + "        <port>2001</port>\n" 
-                        + "    </service>\n" 
-                        + "    <service name=\"http://service.dianping.com/accountService/accountService_1.0.0\">\n" 
-                        + "        <port>2002</port>\n" 
-                        + "    </service>\n" 
-                        + "    <service name=\"http://service.dianping.com/userService/userService_1.0.0\">\n" 
-                        + "        <port>2003</port>\n" 
-                        + "    </service>\n"
-                        + "</services>";
-        ServiceMetaContext context = new ServiceMetaContext("org.h2.Driver",
-                "jdbc:h2:mem:hawk;DB_CLOSE_DELAY=-1", "", "");
+                + "    <service name=\"http://service.dianping.com/shoppicService/shoppicService_1.0.0\">\n"
+                + "        <port>2000</port>\n" + "    </service>\n"
+                + "    <service name=\"http://service.dianping.com/groupService/groupService_1.0.0\">\n"
+                + "        <port>2001</port>\n" + "    </service>\n"
+                + "    <service name=\"http://service.dianping.com/accountService/accountService_1.0.0\">\n"
+                + "        <port>2002</port>\n" + "    </service>\n"
+                + "    <service name=\"http://service.dianping.com/userService/userService_1.0.0\">\n"
+                + "        <port>2003</port>\n" + "    </service>\n" + "</services>";
+        ServiceMetaContext context = new ServiceMetaContext("org.h2.Driver", "jdbc:h2:mem:hawk;DB_CLOSE_DELAY=-1", "",
+                "");
         ServiceMetaGenerator smg = new ServiceMetaGenerator();
         smg.generate(file, context);
         Assert.assertEquals(expected, FileUtils.readFileToString(file));

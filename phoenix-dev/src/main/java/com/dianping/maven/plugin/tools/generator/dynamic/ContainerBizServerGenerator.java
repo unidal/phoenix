@@ -13,16 +13,18 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.maven.plugin.tools.misc.file;
+package com.dianping.maven.plugin.tools.generator.dynamic;
 
 import java.util.Map;
+
+import com.dianping.maven.plugin.tools.generator.TemplateBasedFileGenerator;
 
 /**
  * @author Leo Liang
  * 
  */
-public class ContainerWebXMLGenerator extends TemplateBasedFileGenerator<Map<String, String>> {
-    private static final String TEMPLATE = "container-webxml.vm";
+public class ContainerBizServerGenerator extends TemplateBasedFileGenerator<Map<String, String>> {
+    private static final String TEMPLATE = "container-bizserverjava.vm";
 
     /*
      * (non-Javadoc)
