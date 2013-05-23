@@ -13,6 +13,7 @@ public class SVNCodeRetriever implements ICodeRetriever{
 	private SVNClientManager svnClientManager = SVNClientManager.newInstance();
 	private SVNCodeRetrieveConfig svnConfig;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void retrieveCode() {
 		LogService logService = new LogService(svnConfig.getLogOutput());
@@ -34,6 +35,7 @@ public class SVNCodeRetriever implements ICodeRetriever{
 			updateClient.setIgnoreExternals(false);
 			// checkout the latest version if version is null
 			logService.log("Repository checkout start");
+			logService.log(String.format("checkout to %s", exportDir.getAbsolutePath()));
 			updateClient.doCheckout(url, exportDir, version, version, true);
 			logService.log("Repository checkout end");
 		} catch (Exception e) {

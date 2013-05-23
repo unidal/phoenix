@@ -1,5 +1,6 @@
 package com.dianping.maven.plugin.phoenix;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +9,6 @@ import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.unidal.maven.plugin.common.PropertyProviders;
@@ -24,17 +24,6 @@ import com.dianping.maven.plugin.tools.console.ConsoleIO;
  * @requiresProject false
  */
 public class CreateProjectMojo extends AbstractMojo {
-	/**
-	 * @parameter expression="${project}"
-	 * @required
-	 * @readonly
-	 */
-	private MavenProject m_project;
-
-	/**
-	 * @parameter expression="${project.build.outputDirectory}" default-value=""
-	 */
-	private String m_targetDir;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -44,13 +33,14 @@ public class CreateProjectMojo extends AbstractMojo {
 
 		List<String> bizProjects = new ArrayList<String>();
 		try {
-			bizProjects = new ConsoleIO().choice(availableValues, 3, "biz");
+			bizProjects = new ConsoleIO().choice(availableValues, 3, "Which project(s) to checkout(separate by comma)");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// select workspace dir
-		String wsDir = PropertyProviders.fromConsole().forString("workspace-dir", "", ".", null);
+		String wsDir = PropertyProviders.fromConsole().forString("workspace-dir", "Directory to put code",
+				new File(".").getAbsolutePath(), null);
 
 		WorkspaceFacade wsFacade;
 		try {

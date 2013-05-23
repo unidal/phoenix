@@ -171,6 +171,8 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
             FileUtils.copyFileToDirectory(FileUtils.toFile(this.getClass().getResource("/byteman-2.1.2.jar")),
                     resourceFolder);
+            FileUtils.copyFileToDirectory(FileUtils.toFile(this.getClass().getResource("/instrumentation-util-0.0.1.jar")),
+                    resourceFolder);
 
             // clone gitconfig
             GitCodeRetrieveConfig gitConfig = new GitCodeRetrieveConfig(context.getGitConfigRepositoryUrl(), new File(
