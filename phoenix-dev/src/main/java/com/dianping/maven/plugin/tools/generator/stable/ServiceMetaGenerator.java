@@ -15,6 +15,7 @@
  */
 package com.dianping.maven.plugin.tools.generator.stable;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -96,4 +97,9 @@ public class ServiceMetaGenerator extends TemplateBasedFileGenerator<ServiceMeta
 
     }
 
+    public static void main(String[] args) throws Exception {
+        ServiceMetaGenerator serviceMetaGenerator = new ServiceMetaGenerator();
+        serviceMetaGenerator.generate(new File("/Users/leoleung/service-meta.xml"), new ServiceMetaContext(
+                "com.mysql.jdbc.Driver", "jdbc:mysql://192.168.7.105:3306/hawk", "dpcom_hawk", "123456"));
+    }
 }

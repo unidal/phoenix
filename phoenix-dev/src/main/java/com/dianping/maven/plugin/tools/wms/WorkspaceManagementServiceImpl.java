@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.maven.plugin.tools.generator.dynamic.ContainerBizServerGenerator;
@@ -99,7 +101,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
             printContent("Generating phoenix-container...", out);
 
-            generateContainerProject(context);
+            generateContainerProject(context, out);
 
             printContent("Generating phoenix-workspace pom...", out);
 
@@ -156,7 +158,8 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
     }
 
-    private void generateContainerProject(WorkspaceContext context) throws WorkspaceManagementException {
+    private void generateContainerProject(WorkspaceContext context, OutputStream out)
+            throws WorkspaceManagementException {
         File projectBase = new File(context.getBaseDir(), CONTAINER_FOLDER);
         File sourceFolder = new File(projectBase, "src/main/java");
         File resourceFolder = new File(projectBase, "src/main/resources");
@@ -168,6 +171,11 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
             FileUtils.copyFileToDirectory(FileUtils.toFile(this.getClass().getResource("/byteman-2.1.2.jar")),
                     resourceFolder);
+
+            // clone gitconfig
+            GitCodeRetrieveConfig gitConfig = new GitCodeRetrieveConfig(context.getGitConfigRepositoryUrl(), new File(
+                    resourceFolder, "gitconf").getAbsolutePath(), out, context.getGitConfigRepositoryBranch());
+            codeRetrieverManager.getCodeRetriever(gitConfig).retrieveCode();
 
             // web.xml
             ContainerWebXMLGenerator containerWebXMLGenerator = new ContainerWebXMLGenerator();
@@ -213,7 +221,10 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     }
 
     public static void main(String[] args) throws Exception {
+        PlexusContainer plexusContainer = new DefaultPlexusContainer();
         WorkspaceManagementServiceImpl wms = new WorkspaceManagementServiceImpl();
+        wms.setRepositoryManager(plexusContainer.lookup(RepositoryManager.class));
+        wms.codeRetrieverManager = plexusContainer.lookup(CodeRetrieverManager.class);
         wms.setRepositoryManager(new RepositoryManager() {
 
             @Override
@@ -235,6 +246,8 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
         // projects.add("user-web");
         context.setProjects(projects);
         context.setBaseDir(new File("/Users/leoleung/test"));
+        context.setGitConfigRepositoryBranch("master");
+        context.setGitConfigRepositoryUrl("http://code.dianpingoa.com/arch/phoenix-maven-config.git");
         wms.create(context, System.out);
     }
 }
