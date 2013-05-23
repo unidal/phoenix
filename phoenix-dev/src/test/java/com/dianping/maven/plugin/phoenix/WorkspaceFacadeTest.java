@@ -13,10 +13,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Before;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
+import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
+import com.dianping.maven.plugin.phoenix.model.entity.PhoenixProject;
+import com.dianping.maven.plugin.phoenix.model.entity.Router;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
 import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileContext;
@@ -56,10 +60,32 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
 
     @Test
     public void testCreateAll() throws Exception {
-        String samplePath = "/com/dianping/maven/plugin/phoenix/model/workspace.xml";
-        String workspaceXml = IOUtils.toString(this.getClass().getResourceAsStream(samplePath));
-        Workspace model = DefaultSaxParser.parse(workspaceXml);
-        facade.create(model);
+        // String samplePath =
+        // "/com/dianping/maven/plugin/phoenix/model/workspace.xml";
+        // String workspaceXml =
+        // IOUtils.toString(this.getClass().getResourceAsStream(samplePath));
+        // Workspace model = DefaultSaxParser.parse(workspaceXml);
+        // facade.create(model);
+
+        Workspace model = new Workspace();
+        model.setDir("/Users/marsqing/Projects/tmp/phoenix-maven-tmp");
+        BizProject bizProject = new BizProject();
+        bizProject.setName("user-web");
+        model.addBizProject(bizProject);
+
+        PhoenixProject phoenixProject = new PhoenixProject();
+        Router router = new Router();
+        router.setDefaultUrlPattern("http://www.51ping.com%s");
+        router.setPort(8080);
+        router.setVersion("0.1-SNAPSHOT");
+        phoenixProject.setRouter(router);
+        model.setPhoenixProject(phoenixProject);
+
+        try {
+            facade.create(model);
+        } catch (Exception e) {
+            throw new MojoFailureException("error create phoenix workspace", e);
+        }
 
         File wsDir = new File(model.getDir());
 
@@ -112,9 +138,7 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
         // "jdbc:mysql://192.168.7.105:3306/hawk", "dpcom_hawk", "123456");
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         File lionFile = new File(tmpDir, "phoenix-lion.btm");
-        File serviceMetaFile = new File(tmpDir, "service-meta.xml");
-
-        lionGenerator.generate(lionFile, new ServiceLionContext(projectBaseDirMapping, "127.0.0.1", serviceMetaFile));
+        lionGenerator.generate(lionFile, new ServiceLionContext(projectBaseDirMapping, "127.0.0.1", null));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         IOUtils.copy(new FileInputStream(lionFile), out);
         String resultFile = new String(out.toByteArray(), UTF_8);

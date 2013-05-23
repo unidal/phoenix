@@ -29,28 +29,26 @@ public class WorkspaceFacade {
 	@Inject
 	private LaunchFileGenerator launchGenerator;
 	@Inject
-	private RouterRuleContextVisitor routerRuleCtxVisitor;
-	@Inject
-	private BizServerContextVisitor bizServerCtxVisitor;
-	@Inject
-	private WorkspaceContextVisitor workspaceCtxVisitor;
-	@Inject
-	private ServiceLionContextVisitor serviceLionCtxVisitor;
-	@Inject
-	private LaunchFileContextVisitor launchFileContextVisitor;
+	private F5Manager f5Mgr;
 
 	public void create(Workspace model) throws Exception {
+		WorkspaceContextVisitor workspaceCtxVisitor = new WorkspaceContextVisitor();
 		model.accept(workspaceCtxVisitor);
 		createSkeletonWorkspace(workspaceCtxVisitor.getVisitResult());
 		createResources(model);
 	}
 
 	private File resourceFileFor(File rootDir, String fileName) {
-		return new File(rootDir, "src/main/resources/" + fileName);
+		return new File(rootDir, "phoenix-container/src/main/resources/" + fileName);
 	}
 
 	void createResources(Workspace model) throws Exception {
 		File projectDir = new File(model.getDir());
+
+		RouterRuleContextVisitor routerRuleCtxVisitor = new RouterRuleContextVisitor(f5Mgr);
+		BizServerContextVisitor bizServerCtxVisitor = new BizServerContextVisitor();
+		ServiceLionContextVisitor serviceLionCtxVisitor = new ServiceLionContextVisitor();
+		LaunchFileContextVisitor launchFileContextVisitor = new LaunchFileContextVisitor();
 
 		model.accept(routerRuleCtxVisitor);
 		model.accept(bizServerCtxVisitor);
