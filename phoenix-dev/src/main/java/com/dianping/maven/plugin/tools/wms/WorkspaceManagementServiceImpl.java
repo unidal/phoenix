@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.maven.plugin.tools.misc.file.ContainerBizServerGenerator;
@@ -47,8 +46,9 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
     private final static String LINE_SEPARATOR   = System.getProperty("line.separator");
     private final static String CONTAINER_FOLDER = "phoenix-container";
+    
+    @Inject
     private RepositoryManager   repositoryManager;
-   
     @Inject
     private CodeRetrieverManager codeRetrieverManager;
 

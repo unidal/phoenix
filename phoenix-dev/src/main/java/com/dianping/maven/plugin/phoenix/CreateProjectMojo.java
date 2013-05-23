@@ -1,5 +1,7 @@
 package com.dianping.maven.plugin.phoenix;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,9 +17,11 @@ import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.PhoenixProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Router;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
+import com.dianping.maven.plugin.tools.console.ConsoleIO;
 
 /**
  * @goal create-project
+ * @requiresProject false
  */
 public class CreateProjectMojo extends AbstractMojo {
 	/**
@@ -37,9 +41,13 @@ public class CreateProjectMojo extends AbstractMojo {
 		// select biz project
 		List<String> availableValues = Arrays.asList(new String[] { "dpindex-web", "shop-web", "shoplist-web",
 				"user-web", "user-service", "user-base-service" });
-		String projectInput = PropertyProviders.fromConsole().forString("biz", "Choose projects:", availableValues,
-				"dpindex-web", null);
-		String[] bizProjects = projectInput.split(",");
+
+		List<String> bizProjects = new ArrayList<String>();
+		try {
+			bizProjects = new ConsoleIO().choice(availableValues, 3, "biz");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		// select workspace dir
 		String wsDir = PropertyProviders.fromConsole().forString("workspace-dir", "", ".", null);
@@ -54,10 +62,9 @@ public class CreateProjectMojo extends AbstractMojo {
 
 		Workspace model = new Workspace();
 		model.setDir(wsDir);
-
-		for (int i = 0; i < bizProjects.length; i++) {
+		for (String bizProjectName : bizProjects) {
 			BizProject bizProject = new BizProject();
-			bizProject.setName(bizProjects[i]);
+			bizProject.setName(bizProjectName);
 			model.addBizProject(bizProject);
 		}
 
@@ -75,6 +82,5 @@ public class CreateProjectMojo extends AbstractMojo {
 			throw new MojoFailureException("error create phoenix workspace", e);
 		}
 
-		getLog().info(projectInput);
 	}
 }
