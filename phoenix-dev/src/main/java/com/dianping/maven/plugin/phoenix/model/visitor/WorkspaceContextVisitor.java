@@ -28,6 +28,8 @@ public class WorkspaceContextVisitor extends AbstractVisitor<WorkspaceContext> {
 	@Override
 	public void visitWorkspace(Workspace workspace) {
 		result.setBaseDir(new File(workspace.getDir()));
+		result.setGitConfigRepositoryUrl(workspace.getPhoenixProject().getGitConf().getRepositoryUrl());
+		result.setGitConfigRepositoryBranch(workspace.getPhoenixProject().getGitConf().getBranch());
 		super.visitWorkspace(workspace);
 	}
 

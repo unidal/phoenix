@@ -31,12 +31,20 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.maven.plugin.tools.misc.file.ServiceLionPropertiesGenerator</role>
-			<implementation>com.dianping.maven.plugin.tools.misc.file.ServiceLionPropertiesGenerator</implementation>
+			<role>com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator</role>
+			<implementation>com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator</implementation>
 		</component>
 		<component>
-			<role>com.dianping.maven.plugin.tools.misc.file.LaunchFileGenerator</role>
-			<implementation>com.dianping.maven.plugin.tools.misc.file.LaunchFileGenerator</implementation>
+			<role>com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator</role>
+			<implementation>com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator</implementation>
+		</component>
+		<component>
+			<role>com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator</role>
+			<implementation>com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator</implementation>
+		</component>
+		<component>
+			<role>com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator</role>
+			<implementation>com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator</implementation>
 		</component>
 		<component>
 			<role>com.dianping.maven.plugin.phoenix.F5Manager</role>
@@ -51,10 +59,16 @@
 					<role>com.dianping.maven.plugin.tools.wms.WorkspaceManagementService</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.maven.plugin.tools.misc.file.ServiceLionPropertiesGenerator</role>
+					<role>com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.maven.plugin.tools.misc.file.LaunchFileGenerator</role>
+					<role>com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.maven.plugin.phoenix.F5Manager</role>

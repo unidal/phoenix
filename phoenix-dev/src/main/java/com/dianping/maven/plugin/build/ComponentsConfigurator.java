@@ -9,7 +9,9 @@ import org.unidal.lookup.configuration.Component;
 import com.dianping.maven.plugin.phoenix.DefaultF5Manager;
 import com.dianping.maven.plugin.phoenix.F5Manager;
 import com.dianping.maven.plugin.phoenix.WorkspaceFacade;
+import com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieverContext;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieverManager;
@@ -37,6 +39,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(ServiceLionPropertiesGenerator.class));
 		all.add(C(LaunchFileGenerator.class));
+		all.add(C(BizServerPropertiesGenerator.class));
+		all.add(C(RouterRuleGenerator.class));
 
 		all.add(C(F5Manager.class, DefaultF5Manager.class));
 
@@ -45,6 +49,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(WorkspaceManagementService.class) //
 				.req(ServiceLionPropertiesGenerator.class) //
 				.req(LaunchFileGenerator.class) //
+				.req(BizServerPropertiesGenerator.class) //
+				.req(RouterRuleGenerator.class) //
 				.req(F5Manager.class));
 
 		return all;
