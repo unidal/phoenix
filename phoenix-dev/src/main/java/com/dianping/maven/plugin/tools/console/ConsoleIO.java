@@ -31,6 +31,7 @@ public class ConsoleIO {
 			throws IOException {
 		out.println(prompt);
 		out.println(format(availableValues, column));
+		out.flush();
 
 		List<String> choosedValues = new ArrayList<String>();
 

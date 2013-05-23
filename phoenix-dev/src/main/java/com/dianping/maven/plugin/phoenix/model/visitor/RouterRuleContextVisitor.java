@@ -1,7 +1,5 @@
 package com.dianping.maven.plugin.phoenix.model.visitor;
 
-import org.unidal.lookup.annotation.Inject;
-
 import com.dianping.maven.plugin.phoenix.F5Manager;
 import com.dianping.maven.plugin.phoenix.F5Pool;
 import com.dianping.maven.plugin.phoenix.RouterRuleContext;
@@ -10,11 +8,11 @@ import com.dianping.maven.plugin.phoenix.model.entity.PhoenixProject;
 
 public class RouterRuleContextVisitor extends AbstractVisitor<RouterRuleContext> {
 
-	@Inject
 	private F5Manager f5Mgr;
 
-	public RouterRuleContextVisitor() {
+	public RouterRuleContextVisitor(F5Manager f5Mgr) {
 		result = new RouterRuleContext();
+		this.f5Mgr = f5Mgr;
 	}
 
 	@Override
