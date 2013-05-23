@@ -11,11 +11,12 @@ import com.dianping.maven.plugin.phoenix.model.visitor.LaunchFileContextVisitor;
 import com.dianping.maven.plugin.phoenix.model.visitor.RouterRuleContextVisitor;
 import com.dianping.maven.plugin.phoenix.model.visitor.ServiceLionContextVisitor;
 import com.dianping.maven.plugin.phoenix.model.visitor.WorkspaceContextVisitor;
+import com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator;
-import com.dianping.maven.plugin.tools.velocity.VelocityEngineManager;
 import com.dianping.maven.plugin.tools.wms.WorkspaceContext;
 import com.dianping.maven.plugin.tools.wms.WorkspaceManagementException;
 import com.dianping.maven.plugin.tools.wms.WorkspaceManagementService;
@@ -28,6 +29,10 @@ public class WorkspaceFacade {
 	private ServiceLionPropertiesGenerator lionGenerator;
 	@Inject
 	private LaunchFileGenerator launchGenerator;
+	@Inject
+	private BizServerPropertiesGenerator bizGenerator;
+	@Inject
+	private RouterRuleGenerator routerGenerator;
 	@Inject
 	private F5Manager f5Mgr;
 
@@ -67,11 +72,11 @@ public class WorkspaceFacade {
 	}
 
 	void createRouterRuleXml(File routerRulesFile, RouterRuleContext ctx) throws IOException {
-		VelocityEngineManager.INSTANCE.build("/router-rules.vm", ctx, routerRulesFile);
+		routerGenerator.generate(routerRulesFile, ctx);
 	}
 
 	void createBizServerProperties(File bizServerFile, BizServerContext ctx) throws IOException {
-		VelocityEngineManager.INSTANCE.build("/bizServer.vm", ctx, bizServerFile);
+		bizGenerator.generate(bizServerFile, ctx);
 	}
 
 	void createLionProperties(File lionFile, ServiceLionContext ctx) throws Exception {

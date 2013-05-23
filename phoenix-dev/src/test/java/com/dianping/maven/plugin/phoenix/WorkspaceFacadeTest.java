@@ -13,14 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Before;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
-import com.dianping.maven.plugin.phoenix.model.entity.PhoenixProject;
-import com.dianping.maven.plugin.phoenix.model.entity.Router;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
 import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileContext;
@@ -60,32 +56,10 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
 
     @Test
     public void testCreateAll() throws Exception {
-        // String samplePath =
-        // "/com/dianping/maven/plugin/phoenix/model/workspace.xml";
-        // String workspaceXml =
-        // IOUtils.toString(this.getClass().getResourceAsStream(samplePath));
-        // Workspace model = DefaultSaxParser.parse(workspaceXml);
-        // facade.create(model);
-
-        Workspace model = new Workspace();
-        model.setDir("/Users/marsqing/Projects/tmp/phoenix-maven-tmp");
-        BizProject bizProject = new BizProject();
-        bizProject.setName("user-web");
-        model.addBizProject(bizProject);
-
-        PhoenixProject phoenixProject = new PhoenixProject();
-        Router router = new Router();
-        router.setDefaultUrlPattern("http://www.51ping.com%s");
-        router.setPort(8080);
-        router.setVersion("0.1-SNAPSHOT");
-        phoenixProject.setRouter(router);
-        model.setPhoenixProject(phoenixProject);
-
-        try {
-            facade.create(model);
-        } catch (Exception e) {
-            throw new MojoFailureException("error create phoenix workspace", e);
-        }
+		String samplePath = "/com/dianping/maven/plugin/phoenix/model/workspace.xml";
+		String workspaceXml = IOUtils.toString(this.getClass().getResourceAsStream(samplePath));
+		Workspace model = DefaultSaxParser.parse(workspaceXml);
+		facade.create(model);
 
         File wsDir = new File(model.getDir());
 
