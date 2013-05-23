@@ -13,33 +13,26 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.maven.plugin.tools.misc.file;
+package com.dianping.maven.plugin.tools.generator.dynamic;
 
-import java.util.Map;
+import java.util.List;
+
+import com.dianping.maven.plugin.tools.generator.TemplateBasedFileGenerator;
 
 /**
  * @author Leo Liang
  * 
  */
-public class ContainerPomXMLGenerator extends TemplateBasedFileGenerator<Map<String, String>> {
-    private static final String TEMPLATE = "container-pomxml.vm";
+public class WorkspaceEclipseBatGenerator extends TemplateBasedFileGenerator<List<String>> {
+    private static final String TEMPLATE = "workspace-eclipsebat.vm";
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.dianping.phoenix.misc.file.TemplateBasedFileGenerator#getTemplate()
-     */
     @Override
     protected String getTemplate() {
         return TEMPLATE;
     }
 
-    /* (non-Javadoc)
-     * @see com.dianping.phoenix.misc.file.TemplateBasedFileGenerator#getArgs(java.lang.Object)
-     */
     @Override
-    protected Object getArgs(Map<String, String> context) {
+    protected Object getArgs(List<String> context) {
         return context;
     }
 

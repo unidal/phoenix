@@ -13,7 +13,7 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.maven.plugin.tools.misc.file;
+package com.dianping.maven.plugin.tools.generator.stable;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.dianping.maven.plugin.tools.generator.TemplateBasedFileGenerator;
 
 /**
  * @author Leo Liang

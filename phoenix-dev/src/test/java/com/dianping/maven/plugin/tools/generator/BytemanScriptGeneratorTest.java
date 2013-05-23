@@ -13,7 +13,7 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.maven.plugin.tools.misc.file;
+package com.dianping.maven.plugin.tools.generator;
 
 import java.io.File;
 import java.util.HashMap;
@@ -25,6 +25,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.dianping.maven.plugin.tools.generator.BytemanScriptGenerator;
 
 /**
  * @author Leo Liang

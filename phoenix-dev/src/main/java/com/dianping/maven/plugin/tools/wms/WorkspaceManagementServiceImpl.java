@@ -26,12 +26,12 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.unidal.lookup.annotation.Inject;
 
-import com.dianping.maven.plugin.tools.misc.file.ContainerBizServerGenerator;
-import com.dianping.maven.plugin.tools.misc.file.ContainerPomXMLGenerator;
-import com.dianping.maven.plugin.tools.misc.file.ContainerWebXMLGenerator;
-import com.dianping.maven.plugin.tools.misc.file.WorkspaceEclipseBatGenerator;
-import com.dianping.maven.plugin.tools.misc.file.WorkspaceEclipseSHGenerator;
-import com.dianping.maven.plugin.tools.misc.file.WorkspacePomXMLGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.ContainerBizServerGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.ContainerPomXMLGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.ContainerWebXMLGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.WorkspaceEclipseBatGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.WorkspaceEclipseSHGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.WorkspacePomXMLGenerator;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieveConfig;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieverManager;
 import com.dianping.maven.plugin.tools.vcs.GitCodeRetrieveConfig;
@@ -44,11 +44,11 @@ import com.dianping.maven.plugin.tools.vcs.SVNCodeRetrieveConfig;
  */
 public class WorkspaceManagementServiceImpl implements WorkspaceManagementService {
 
-    private final static String LINE_SEPARATOR   = System.getProperty("line.separator");
-    private final static String CONTAINER_FOLDER = "phoenix-container";
-    
+    private final static String  LINE_SEPARATOR   = System.getProperty("line.separator");
+    private final static String  CONTAINER_FOLDER = "phoenix-container";
+
     @Inject
-    private RepositoryManager   repositoryManager;
+    private RepositoryManager    repositoryManager;
     @Inject
     private CodeRetrieverManager codeRetrieverManager;
 
@@ -62,21 +62,23 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
             printContent("Generating phoenix workspace...", out);
 
-            if (context.getBaseDir().exists()) {
+            if (context.getBaseDir().exists() && context.isCleanFolder()) {
                 try {
                     FileUtils.cleanDirectory(context.getBaseDir());
                 } catch (IOException e) {
                     throw new WorkspaceManagementException(e);
                 }
+                printContent(String.format("Workspace folder(%s) cleared...", context.getBaseDir()), out);
             }
-            printContent(String.format("Workspace folder(%s) cleared...", context.getBaseDir()), out);
 
-            try {
-                FileUtils.forceMkdir(context.getBaseDir());
-            } catch (IOException e) {
-                throw new WorkspaceManagementException(e);
+            if (!context.getBaseDir().exists()) {
+                try {
+                    FileUtils.forceMkdir(context.getBaseDir());
+                } catch (IOException e) {
+                    throw new WorkspaceManagementException(e);
+                }
+                printContent(String.format("Workspace folder(%s) created...", context.getBaseDir()), out);
             }
-            printContent(String.format("Workspace folder(%s) created...", context.getBaseDir()), out);
 
             for (String project : context.getProjects()) {
                 Repository repository = repositoryManager.find(project);
@@ -109,13 +111,17 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
             printContent("Generating ws folder...", out);
 
-            try {
-                FileUtils.forceMkdir(new File(context.getBaseDir(), "ws"));
-            } catch (IOException e) {
-                throw new WorkspaceManagementException(e);
-            }
+            File workspaceFolder = new File(context.getBaseDir(), "ws");
 
-            printContent("Phoenix workspace generated...", out);
+            if (!workspaceFolder.exists()) {
+                try {
+                    FileUtils.forceMkdir(workspaceFolder);
+                } catch (IOException e) {
+                    throw new WorkspaceManagementException(e);
+                }
+
+                printContent("Phoenix workspace generated...", out);
+            }
 
             return new File(context.getBaseDir(), CONTAINER_FOLDER);
 
@@ -196,11 +202,11 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
     private CodeRetrieveConfig toCodeRetrieveConfig(Repository repository, String path, OutputStream out) {
         if (repository instanceof SvnRepository) {
-            return new SVNCodeRetrieveConfig(repository.getRepoUrl(), path,
-                    out, ((SvnRepository) repository).getRevision());
+            return new SVNCodeRetrieveConfig(repository.getRepoUrl(), path, out,
+                    ((SvnRepository) repository).getRevision());
         } else if (repository instanceof GitRepository) {
-            return new GitCodeRetrieveConfig(repository.getRepoUrl(), path,
-                    out, ((GitRepository) repository).getBranch());
+            return new GitCodeRetrieveConfig(repository.getRepoUrl(), path, out,
+                    ((GitRepository) repository).getBranch());
         } else {
             return null;
         }

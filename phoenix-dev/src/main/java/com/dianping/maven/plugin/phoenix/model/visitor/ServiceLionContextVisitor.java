@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
-import com.dianping.maven.plugin.tools.misc.file.ServiceLionContext;
+import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionContext;
 
 public class ServiceLionContextVisitor extends AbstractVisitor<ServiceLionContext> {
 
 	public ServiceLionContextVisitor() {
 		result = new ServiceLionContext();
-		// use defautl service-port.xml
-		result.setRefreshServiceMeta(false);
 		result.setServiceHost("127.0.0.1");
 	}
 

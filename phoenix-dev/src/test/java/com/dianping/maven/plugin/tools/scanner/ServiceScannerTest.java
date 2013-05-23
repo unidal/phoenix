@@ -13,7 +13,7 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.maven.plugin.tools.misc.scanner;
+package com.dianping.maven.plugin.tools.scanner;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +21,9 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.dianping.maven.plugin.tools.scanner.Scanner;
+import com.dianping.maven.plugin.tools.scanner.ServiceScanner;
 
 /**
  * TODO Comment of ServiceScannerTest
