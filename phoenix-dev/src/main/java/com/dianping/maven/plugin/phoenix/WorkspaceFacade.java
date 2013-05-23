@@ -11,10 +11,10 @@ import com.dianping.maven.plugin.phoenix.model.visitor.LaunchFileContextVisitor;
 import com.dianping.maven.plugin.phoenix.model.visitor.RouterRuleContextVisitor;
 import com.dianping.maven.plugin.phoenix.model.visitor.ServiceLionContextVisitor;
 import com.dianping.maven.plugin.phoenix.model.visitor.WorkspaceContextVisitor;
-import com.dianping.maven.plugin.tools.misc.file.LaunchFileContext;
-import com.dianping.maven.plugin.tools.misc.file.LaunchFileGenerator;
-import com.dianping.maven.plugin.tools.misc.file.ServiceLionContext;
-import com.dianping.maven.plugin.tools.misc.file.ServiceLionPropertiesGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileContext;
+import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionContext;
+import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator;
 import com.dianping.maven.plugin.tools.velocity.VelocityEngineManager;
 import com.dianping.maven.plugin.tools.wms.WorkspaceContext;
 import com.dianping.maven.plugin.tools.wms.WorkspaceManagementException;
@@ -29,28 +29,26 @@ public class WorkspaceFacade {
 	@Inject
 	private LaunchFileGenerator launchGenerator;
 	@Inject
-	private RouterRuleContextVisitor routerRuleCtxVisitor;
-	@Inject
-	private BizServerContextVisitor bizServerCtxVisitor;
-	@Inject
-	private WorkspaceContextVisitor workspaceCtxVisitor;
-	@Inject
-	private ServiceLionContextVisitor serviceLionCtxVisitor;
-	@Inject
-	private LaunchFileContextVisitor launchFileContextVisitor;
+	private F5Manager f5Mgr;
 
 	public void create(Workspace model) throws Exception {
+		WorkspaceContextVisitor workspaceCtxVisitor = new WorkspaceContextVisitor();
 		model.accept(workspaceCtxVisitor);
 		createSkeletonWorkspace(workspaceCtxVisitor.getVisitResult());
 		createResources(model);
 	}
 
 	private File resourceFileFor(File rootDir, String fileName) {
-		return new File(rootDir, "src/main/resources/" + fileName);
+		return new File(rootDir, "phoenix-container/src/main/resources/" + fileName);
 	}
 
 	void createResources(Workspace model) throws Exception {
 		File projectDir = new File(model.getDir());
+
+		RouterRuleContextVisitor routerRuleCtxVisitor = new RouterRuleContextVisitor(f5Mgr);
+		BizServerContextVisitor bizServerCtxVisitor = new BizServerContextVisitor();
+		ServiceLionContextVisitor serviceLionCtxVisitor = new ServiceLionContextVisitor();
+		LaunchFileContextVisitor launchFileContextVisitor = new LaunchFileContextVisitor();
 
 		model.accept(routerRuleCtxVisitor);
 		model.accept(bizServerCtxVisitor);
