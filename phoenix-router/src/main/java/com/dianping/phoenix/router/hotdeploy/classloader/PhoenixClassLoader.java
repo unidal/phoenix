@@ -54,6 +54,9 @@ public class PhoenixClassLoader extends URLClassLoader {
 	}
 
 	private void parseAndAddClasspath(File projectDir) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug(String.format("\n##### Starting scan project dir: [%s].", projectDir.getPath()));
+		}
 		File cf = new File(projectDir, File.separator + ".classpath");
 		if (cf.exists() && cf.isFile()) {
 			List<URL> extraDirs = new ArrayList<URL>();
@@ -64,7 +67,7 @@ public class PhoenixClassLoader extends URLClassLoader {
 					Element ele = (Element) cps.item(idx);
 					String kind = ele.getAttribute("kind");
 					String path = ele.getAttribute("path");
-					if ("var".equals(kind)) {
+					if ("var".equals(kind) || "lib".equals(kind)) {
 						if (path.startsWith(MVN_REPO_PREFIX)) {
 							path = MVN_REPO_HOME + path.substring(MVN_REPO_PREFIX.length());
 						} else {
@@ -74,9 +77,12 @@ public class PhoenixClassLoader extends URLClassLoader {
 					} else if ("output".equals(kind)) {
 						path = cf.getParent() + File.separator + path;
 						if (!(m_classesDir = new File(path)).exists() || !m_classesDir.isDirectory()) {
-							LOGGER.warn(String.format("Classes dir [%s] doesn't exist.", path));
+							LOGGER.warn(String.format("Classes dir [%s] does not exist.", path));
 						} else {
 							super.addURL(m_classesDir.toURI().toURL());
+							if (LOGGER.isDebugEnabled()) {
+								LOGGER.debug(String.format("#####\tAdd URL [%s].", m_classesDir.toURI().toURL()));
+							}
 						}
 					}
 				}
@@ -84,10 +90,13 @@ public class PhoenixClassLoader extends URLClassLoader {
 				throw new RuntimeException("Can not parse classpath file.", e);
 			}
 			if (m_classesDir == null || !m_classesDir.exists() || !m_classesDir.isDirectory()) {
-				throw new RuntimeException("Can not find classes-dir in project-dir.");
+				throw new RuntimeException("Can not find classes dir in project.");
 			}
 			for (URL var : extraDirs) {
 				super.addURL(var);
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug(String.format("#####\tAdd URL [%s].", var));
+				}
 			}
 		} else {
 			throw new RuntimeException("Can not find classpath file.");
@@ -96,16 +105,31 @@ public class PhoenixClassLoader extends URLClassLoader {
 
 	private void addPaths(File classesDir, List<File> libDirs) {
 		try {
-			super.addURL(classesDir.toURI().toURL());
+			URL classesDirUrl = classesDir.toURI().toURL();
+			super.addURL(classesDirUrl);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(String.format("##### Add URL [%s].", classesDirUrl));
+			}
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("ClassesDir is incorrectly.", e);
 		}
 		if (libDirs != null) {
 			for (File libDir : libDirs) {
-				try {
-					super.addURL(ensureDirExists(libDir).toURI().toURL());
-				} catch (Exception e) {
-					LOGGER.warn(String.format("Path [%s] is not a correctly directory, ignore it.", libDir));
+				if (libDir.exists()) {
+					try {
+						URL libDirUrl = libDir.toURI().toURL();
+						super.addURL(libDirUrl);
+						if (LOGGER.isDebugEnabled()) {
+							LOGGER.debug(String.format("##### Add URL [%s].", libDirUrl));
+						}
+					} catch (Exception e) {
+						LOGGER.warn(String.format("Path [%s] is not a correctly entity, ignore it.", libDir));
+					}
+				} else {
+					LOGGER.warn(String.format("Entity [%s] does not exist, ignore it", libDir));
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER.debug(String.format("##### File [%s] does not exist.", libDir));
+					}
 				}
 			}
 		}
@@ -152,7 +176,7 @@ public class PhoenixClassLoader extends URLClassLoader {
 					}
 				}
 			} else {
-				LOGGER.warn(String.format("Path [ %s ] doesn't has any class file.", classesDir));
+				LOGGER.warn(String.format("Path [%s] does not has any class file.", classesDir));
 			}
 			m_lastCheck = System.currentTimeMillis();
 			m_holder = newHolder;
