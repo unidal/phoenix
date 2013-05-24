@@ -44,21 +44,36 @@ public class PhoenixClassLoader extends URLClassLoader {
 	protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 		// First, check if the class has already been loaded
 		Class<?> c = findLoadedClass(name);
-		if (c == null) {
+		ClassNotFoundException ex = null;
+		ClassLoader parent = getParent();
+		boolean isParentPriority = false;
+
+		if (name.startsWith("java.") || name.startsWith("javax.servlet.") || name.startsWith("javax.el.")) {
+			isParentPriority = true;
+		}
+
+		if (c == null && parent != null && isParentPriority) {
 			try {
-				c = findClass(name);
+				getParent().loadClass(name);
 			} catch (ClassNotFoundException e) {
-				// ClassNotFoundException thrown if class not found
+				ex = e;
 			}
+		} else {
 			if (c == null) {
-				// If still not found, then invoke parent's loadClass in order
-				// to find the class.
-				if (super.getParent() != null) {
-					c = super.getParent().loadClass(name);
+				try {
+					c = findClass(name);
+				} catch (ClassNotFoundException e) {
+					ex = e;
 				}
 			}
+			if (c == null && parent != null) {
+				c = parent.loadClass(name);
+			}
 		}
-		if (c != null && resolve) {
+		if (c == null) {
+			throw ex;
+		}
+		if (resolve) {
 			resolveClass(c);
 		}
 		return c;
