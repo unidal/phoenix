@@ -21,13 +21,6 @@ package com.dianping.maven.plugin.tools.wms;
  */
 public class DummyRepositoryManager implements RepositoryManager {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.dianping.maven.plugin.tools.wms.RepositoryManager#find(java.lang.
-     * String)
-     */
     @Override
     public Repository find(String project) {
         if ("shop-web".equals(project)) {
