@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +56,7 @@ public class PhoenixClassLoader extends URLClassLoader {
 	private void parseAndAddClasspath(File projectDir) {
 		File cf = new File(projectDir, File.separator + ".classpath");
 		if (cf.exists() && cf.isFile()) {
+			List<URL> extraDirs = new ArrayList<URL>();
 			try {
 				DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 				NodeList cps = db.parse(cf).getElementsByTagName("classpathentry");
@@ -68,17 +70,24 @@ public class PhoenixClassLoader extends URLClassLoader {
 						} else {
 							path = projectDir.getAbsolutePath() + File.separator + path;
 						}
-						super.addURL(new File(path).toURI().toURL());
+						extraDirs.add(new File(path).toURI().toURL());
 					} else if ("output".equals(kind)) {
 						path = cf.getParent() + File.separator + path;
 						if (!(m_classesDir = new File(path)).exists() || !m_classesDir.isDirectory()) {
-							throw new RuntimeException("Class files dir is not exist.");
+							LOGGER.warn(String.format("Classes dir [%s] doesn't exist.", path));
+						} else {
+							super.addURL(m_classesDir.toURI().toURL());
 						}
-						super.addURL(new File(path).toURI().toURL());
 					}
 				}
 			} catch (Exception e) {
 				throw new RuntimeException("Can not parse classpath file.", e);
+			}
+			if (m_classesDir == null || !m_classesDir.exists() || !m_classesDir.isDirectory()) {
+				throw new RuntimeException("Can not find classes-dir in project-dir.");
+			}
+			for (URL var : extraDirs) {
+				super.addURL(var);
 			}
 		} else {
 			throw new RuntimeException("Can not find classpath file.");
