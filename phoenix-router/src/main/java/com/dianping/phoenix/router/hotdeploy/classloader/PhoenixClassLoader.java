@@ -40,6 +40,30 @@ public class PhoenixClassLoader extends URLClassLoader {
 		startMonitorThread(checkFreq);
 	}
 
+	@Override
+	protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+		// First, check if the class has already been loaded
+		Class<?> c = findLoadedClass(name);
+		if (c == null) {
+			try {
+				c = findClass(name);
+			} catch (ClassNotFoundException e) {
+				// ClassNotFoundException thrown if class not found
+			}
+			if (c == null) {
+				// If still not found, then invoke parent's loadClass in order
+				// to find the class.
+				if (super.getParent() != null) {
+					c = super.getParent().loadClass(name);
+				}
+			}
+		}
+		if (c != null && resolve) {
+			resolveClass(c);
+		}
+		return c;
+	}
+
 	public PhoenixClassLoader(File classesDir, List<File> extraClasspathEntry, int checkFreq) {
 		super(new URL[] {});
 		m_classesDir = ensureDirExists(classesDir);
