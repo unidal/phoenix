@@ -9,7 +9,11 @@ public class DeployPlan {
 
 	private boolean m_abortOnError = true;
 
-	private boolean m_skipTest;
+	private boolean m_skipTest = true;
+
+	private boolean m_autoContinue;
+
+	private int m_deployInterval;
 
 	public String getPolicy() {
 		return m_policy;
@@ -31,6 +35,10 @@ public class DeployPlan {
 		return m_skipTest;
 	}
 
+	public boolean isAutoContinue() {
+		return m_autoContinue;
+	}
+
 	public void setAbortOnError(boolean abortOnError) {
 		m_abortOnError = abortOnError;
 	}
@@ -43,6 +51,10 @@ public class DeployPlan {
 		m_skipTest = testService;
 	}
 
+	public void setAutoContinue(boolean autoContinue) {
+		m_autoContinue = autoContinue;
+	}
+
 	public void setVersion(String version) {
 		m_version = version;
 	}
@@ -51,9 +63,17 @@ public class DeployPlan {
 		m_warType = warType;
 	}
 
+	public void setDeployInterval(int deployInterval) {
+		m_deployInterval = deployInterval;
+	}
+
+	public int getDeployInterval() {
+		return m_deployInterval;
+	}
+
 	@Override
 	public String toString() {
 		return String.format("%s[version=%s, policy=%s, abortOnError=%s]", DeployPlan.class.getSimpleName(), m_version,
-		      m_policy, m_abortOnError);
+				m_policy, m_abortOnError);
 	}
 }

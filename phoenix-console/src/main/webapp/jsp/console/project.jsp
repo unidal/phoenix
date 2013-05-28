@@ -139,6 +139,26 @@
 						 	<thead>
 							    <tr>
 									<th colspan="3">
+										<label class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">发布控制</strong></label>
+									</th>
+							    </tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td width="180">
+										<input type="radio" id="${ctx.nextHtmlId}" name="plan.autoContinue" value="false" checked onchange="disableTxt('txt_deployInterval')"> <label for="${ctx.currentHtmlId }">手动控制</label>
+									</td>
+									<td>
+										<input type="radio" id="${ctx.nextHtmlId }" name="plan.autoContinue" value="true" onchange="enableTxt('txt_deployInterval')"> <label for="${ctx.currentHtmlId}">发布间隔/秒: </label>
+										<input type="text" id="txt_deployInterval" name="plan.deployInterval" value="0">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="table table-condensed lion nohover" style="margin:0 0 0;border-bottom:1px solid #DDD;">
+						 	<thead>
+							    <tr>
+									<th colspan="3">
 										<label class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">冒烟测试服务</strong></label>
 									</th>
 							    </tr>
@@ -156,7 +176,22 @@
 						</table>
 					</div>
 				</div>
-
+				<script type="text/javascript">
+					$(document).ready(function() {
+						if($("[name='plan.autoContinue'][value='true']")[0].checked){
+							$("[name='plan.deployInterval']")[0].disabled = false;
+						} else {
+							$("[name='plan.deployInterval']")[0].disabled = true;
+						}
+					});
+					function disableTxt(id) {
+					    document.getElementById(id).disabled = true;
+					}
+					function enableTxt(id) {
+					    document.getElementById(id).disabled = false;
+					    document.getElementById(id).focus();
+					}
+				</script>
 				<br />
 				<div class="row-fluid">
 					<button type="submit" name="deploy" value="Deploy" class="btn btn-primary">Deploy</button>

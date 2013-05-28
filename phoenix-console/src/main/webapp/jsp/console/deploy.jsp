@@ -73,6 +73,15 @@
 				<div class="page-header">
 					<strong style="color:#08C;">部署方式</strong>：${w:showResult(model.policies, deploy.plan.policy, 'id', 'description')}&nbsp;&nbsp;&nbsp;&nbsp;
                     <strong style="color:#08C;">错误处理</strong>：${w:translate(deploy.plan.abortOnError, 'true|false', '中断后续发布|继续后续发布', '')}&nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong style="color:#08C;">发布控制</strong>：
+                    <c:choose>
+	                    <c:when test="${deploy.plan.autoContinue}">
+	                    	自动(${deploy.plan.deployInterval}秒)
+	                    </c:when>
+	                    <c:otherwise>
+	                    	手动
+	                    </c:otherwise>
+                    </c:choose>&nbsp;&nbsp;&nbsp;&nbsp;
                     <strong style="color:#08C;">冒烟测试服务</strong>：${w:translate(deploy.plan.skipTest, 'false|true', '打开|关闭', '')}
 				</div>
 				<c:forEach var="entry" items="${deploy.hosts}" varStatus="status">
