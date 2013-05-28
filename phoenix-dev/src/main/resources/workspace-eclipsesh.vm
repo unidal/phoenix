@@ -3,4 +3,6 @@
 cd `dirname "$0"`
 WORKSPACE_HOME=`pwd`
 
+mvn eclipse:eclipse
+
 "$ECLIPSE_HOME"/eclipse -data "$WORKSPACE_HOME"/ws &

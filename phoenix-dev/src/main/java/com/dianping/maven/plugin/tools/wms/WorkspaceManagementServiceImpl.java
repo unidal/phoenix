@@ -201,13 +201,13 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
         }
     }
 
-	private void copyJar(String fileName, File resourceFolder) throws FileNotFoundException, IOException {
-		InputStream byteManStream = this.getClass().getResourceAsStream("/" + fileName);
-		FileOutputStream byteManJar = new FileOutputStream(new File(resourceFolder, fileName));
-		IOUtils.copy(byteManStream, byteManJar);
-		IOUtils.closeQuietly(byteManStream);
-		IOUtils.closeQuietly(byteManJar);
-	}
+    private void copyJar(String fileName, File resourceFolder) throws FileNotFoundException, IOException {
+        InputStream byteManStream = this.getClass().getResourceAsStream("/" + fileName);
+        FileOutputStream byteManJar = new FileOutputStream(new File(resourceFolder, fileName));
+        IOUtils.copy(byteManStream, byteManJar);
+        IOUtils.closeQuietly(byteManStream);
+        IOUtils.closeQuietly(byteManJar);
+    }
 
     private void printContent(String content, OutputStream out) {
 
@@ -237,25 +237,14 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
         WorkspaceManagementServiceImpl wms = new WorkspaceManagementServiceImpl();
         wms.setRepositoryManager(plexusContainer.lookup(RepositoryManager.class));
         wms.codeRetrieverManager = plexusContainer.lookup(CodeRetrieverManager.class);
-        wms.setRepositoryManager(new RepositoryManager() {
-
-            @Override
-            public Repository find(String project) {
-                if ("shop-web".equals(project)) {
-                    return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/shop/trunk/shop-web/", "-",
-                            "-", -1l);
-                } else if ("user-web".equals(project)) {
-                    return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-web/", "-",
-                            "-", -1l);
-                } else {
-                    return null;
-                }
-            }
-        });
+        wms.setRepositoryManager(new DummyRepositoryManager());
         WorkspaceContext context = new WorkspaceContext();
         List<String> projects = new ArrayList<String>();
         projects.add("shop-web");
-        // projects.add("user-web");
+        projects.add("shoplist-web");
+        projects.add("user-web");
+        projects.add("user-service");
+        projects.add("user-base-service");
         context.setProjects(projects);
         context.setBaseDir(new File("/Users/leoleung/test"));
         context.setGitConfigRepositoryBranch("master");
