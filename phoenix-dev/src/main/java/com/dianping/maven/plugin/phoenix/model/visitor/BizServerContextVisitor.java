@@ -51,7 +51,7 @@ public class BizServerContextVisitor extends AbstractVisitor<BizServerContext> {
 		}
 		
 		if (webProjectDirFound != null) {
-			result.addWebContext("_" + projectName, webProjectDirFound);
+			result.addWebContext("/_" + projectName, webProjectDirFound);
 		}
 		super.visitBizProject(bizProject);
 	}
