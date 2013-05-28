@@ -3,10 +3,27 @@ package com.dianping.phoenix.container;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.webapp.WebAppContext;
+import org.w3c.dom.NodeList;
+
 import com.dianping.phoenix.router.hotdeploy.classloader.PhoenixClassLoader;
 
 public class BizServer {
@@ -17,6 +34,12 @@ public class BizServer {
 		Properties prop = loadProperties();
 		Server server = new Server(Integer.valueOf(prop.getProperty(PORT_KEY,
 				"8080")));
+
+		Map<String, String> projectPathMapping = listProjectPathMapping(new File(
+				"").getAbsoluteFile().getParentFile());
+
+		Map<String, List<String>> projectDenpendencies = listProjectDependencies(
+				prop, projectPathMapping);
 
 		for (String key : prop.stringPropertyNames()) {
 			if (!PORT_KEY.equals(key)) {
@@ -29,20 +52,100 @@ public class BizServer {
 				} else {
 					log.info(String.format("add %s to web context path %s",
 							projectDir, key));
-					addContext(server, projectDir, key, true);
+					addContext(server, projectDir, key, true,
+							projectDenpendencies);
 				}
 			}
 		}
 
-		addContext(server, new File("."), "/", false);
+		addContext(server, new File("."), "/", false, projectDenpendencies);
 
 		server.start();
 		System.in.read();
 		server.stop();
 	}
 
+	@SuppressWarnings("unchecked")
+	private static Map<String, String> listProjectPathMapping(File dir)
+			throws Exception {
+		Map<String, String> res = new HashMap<String, String>();
+
+		Collection<File> poms = FileUtils.listFiles(dir,
+				FileFilterUtils.nameFileFilter("pom.xml"),
+				TrueFileFilter.INSTANCE);
+		for (File pom : poms) {
+			NodeList nodes = findNodesInXML(pom, "/project/artifactId/text()");
+			if (nodes.getLength() >= 1) {
+				String artifactId = nodes.item(0).getNodeValue();
+				if (StringUtils.isNotBlank(artifactId)) {
+					res.put(artifactId, pom.getParentFile().getAbsoluteFile()
+							.getAbsolutePath());
+				}
+			}
+		}
+
+		return res;
+	}
+
+	private static NodeList findNodesInXML(File file, String xpathExpr)
+			throws Exception {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setValidating(false);
+		factory.setFeature("http://xml.org/sax/features/namespaces", false);
+		factory.setFeature("http://xml.org/sax/features/validation", false);
+		factory.setFeature(
+				"http://apache.org/xml/features/nonvalidating/load-dtd-grammar",
+				false);
+		factory.setFeature(
+				"http://apache.org/xml/features/nonvalidating/load-external-dtd",
+				false);
+		XPathExpression expr = XPathFactory.newInstance().newXPath()
+				.compile(xpathExpr);
+		return (NodeList) expr.evaluate(factory.newDocumentBuilder()
+				.parse(file), XPathConstants.NODESET);
+	}
+
+	private static Map<String, List<String>> listProjectDependencies(
+			Properties bizServerProp, Map<String, String> projectPathMapping)
+			throws Exception {
+		Map<String, List<String>> res = new HashMap<String, List<String>>();
+
+		for (String contextPath : bizServerProp.stringPropertyNames()) {
+			File classPathFile = new File(
+					bizServerProp.getProperty(contextPath), ".classpath");
+
+			NodeList nodes = findNodesInXML(classPathFile,
+					"//classpathentry[@kind='src']");
+
+			for (int i = 0; i < nodes.getLength(); i++) {
+				String nodeValue = nodes.item(i).getAttributes()
+						.getNamedItem("path").getNodeValue();
+				if (nodeValue.startsWith("/")) {
+					String projectName = nodeValue.substring(1);
+					if (projectPathMapping.containsKey(projectName)) {
+						if (!res.containsKey(contextPath)) {
+							res.put(contextPath, new ArrayList<String>());
+						}
+						File classesPath = new File(
+								projectPathMapping.get(projectName),
+								"/target/classes");
+						if (classesPath.exists() && classesPath.isDirectory()) {
+							res.get(contextPath).add(
+									classesPath.getAbsolutePath());
+						}
+					}
+
+				}
+			}
+
+		}
+
+		return res;
+	}
+
 	private static void addContext(Server server, File projectDir, String path,
-			boolean hotReDeploy) throws IOException {
+			boolean hotReDeploy, Map<String, List<String>> projectDenpendencies)
+			throws IOException {
 
 		if (!path.startsWith("/")) {
 			throw new RuntimeException("web context path should start with /");
@@ -58,31 +161,12 @@ public class BizServer {
 			PhoenixClassLoader pcl = new PhoenixClassLoader(
 					projectDir.getAbsoluteFile(), 2000, context,
 					BizServer.class.getClassLoader());
-			if ("/_user-web".equals(path)) {
-				File wsDir = projectDir.getParentFile();
-				pcl.addClassPath(new File(wsDir,
-						"user-service/user-remote/target/classes/")
-						.getAbsolutePath());
-				pcl.addClassPath(new File(wsDir,
-						"user-base-service/user-base-remote/target/classes/")
-						.getAbsolutePath());
-			}
-
-			if ("/_user-service".equals(path)) {
-				File wsDir = projectDir.getParentFile().getParentFile();
-				pcl.addClassPath(new File(wsDir,
-						"user-service/user-remote/target/classes/")
-						.getAbsolutePath());
-				pcl.addClassPath(new File(wsDir,
-						"user-base-service/user-base-remote/target/classes/")
-						.getAbsolutePath());
-			}
-
-			if ("/_user-base-service".equals(path)) {
-				File wsDir = projectDir.getParentFile().getParentFile();
-				pcl.addClassPath(new File(wsDir,
-						"user-base-service/user-base-remote/target/classes/")
-						.getAbsolutePath());
+			if (projectDenpendencies.containsKey(path)) {
+				for (String classPath : projectDenpendencies.get(path)) {
+					pcl.addClassPath(classPath);
+					log.info(String.format("%s add class path %s for project dependency", path,
+							classPath));
+				}
 			}
 
 			context.setClassLoader(pcl);
