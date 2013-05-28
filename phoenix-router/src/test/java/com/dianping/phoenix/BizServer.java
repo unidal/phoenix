@@ -10,8 +10,8 @@ public class BizServer {
 	public static void main(String[] args) throws Exception {
 		Server server = new Server(9090);
 
-		// addContext(ctxs, server, new
-		// File("/Users/marsqing/Projects/tmp/webapp/app1"), "/_user-web");
+		// addContext(server, new
+		// File("/Users/marsqing/Projects/tmp/webapp/app1"), "/_app1");
 		// addContext(server, new
 		// File("/Users/marsqing/Projects/tmp/webapp/app2"), "/_shop-web");
 
@@ -24,6 +24,7 @@ public class BizServer {
 
 		server.start();
 		System.in.read();
+		server.stop();
 	}
 
 	public static void addContext(Server server, File warRoot, String path) {

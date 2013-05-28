@@ -16,7 +16,10 @@
 package com.dianping.maven.plugin.tools.wms;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.unidal.lookup.annotation.Inject;
@@ -169,10 +173,8 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             FileUtils.forceMkdir(resourceFolder);
             FileUtils.forceMkdir(webinfFolder);
 
-            FileUtils.copyFileToDirectory(FileUtils.toFile(this.getClass().getResource("/byteman-2.1.2.jar")),
-                    resourceFolder);
-            FileUtils.copyFileToDirectory(FileUtils.toFile(this.getClass().getResource("/instrumentation-util-0.0.1.jar")),
-                    resourceFolder);
+            copyJar("byteman-2.1.2.jar", resourceFolder);
+            copyJar("instrumentation-util-0.0.1.jar", resourceFolder);
 
             // clone gitconfig
             GitCodeRetrieveConfig gitConfig = new GitCodeRetrieveConfig(context.getGitConfigRepositoryUrl(), new File(
@@ -198,6 +200,14 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             throw new WorkspaceManagementException(e);
         }
     }
+
+	private void copyJar(String fileName, File resourceFolder) throws FileNotFoundException, IOException {
+		InputStream byteManStream = this.getClass().getResourceAsStream("/" + fileName);
+		FileOutputStream byteManJar = new FileOutputStream(new File(resourceFolder, fileName));
+		IOUtils.copy(byteManStream, byteManJar);
+		IOUtils.closeQuietly(byteManStream);
+		IOUtils.closeQuietly(byteManJar);
+	}
 
     private void printContent(String content, OutputStream out) {
 

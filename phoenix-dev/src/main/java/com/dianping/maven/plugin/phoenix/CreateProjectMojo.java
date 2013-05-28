@@ -1,6 +1,5 @@
 package com.dianping.maven.plugin.phoenix;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +13,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.unidal.maven.plugin.common.PropertyProviders;
 
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
+import com.dianping.maven.plugin.phoenix.model.entity.GitConf;
 import com.dianping.maven.plugin.phoenix.model.entity.PhoenixProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Router;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
@@ -40,7 +40,7 @@ public class CreateProjectMojo extends AbstractMojo {
 
 		// select workspace dir
 		String wsDir = PropertyProviders.fromConsole().forString("workspace-dir", "Directory to put code",
-				new File(".").getAbsolutePath(), null);
+				System.getProperty("user.dir"), null);
 
 		WorkspaceFacade wsFacade;
 		try {
@@ -59,11 +59,18 @@ public class CreateProjectMojo extends AbstractMojo {
 		}
 
 		PhoenixProject phoenixProject = new PhoenixProject();
+		// router
 		Router router = new Router();
-		router.setDefaultUrlPattern("http://www.51ping.com%s");
+		router.setDefaultUrlPattern("http://w.51ping.com%s");
 		router.setPort(8080);
 		router.setVersion("0.1-SNAPSHOT");
 		phoenixProject.setRouter(router);
+		// git conf
+		GitConf gitConf = new GitConf();
+		gitConf.setBranch("master");
+		gitConf.setRepositoryUrl("http://code.dianpingoa.com/arch/phoenix-maven-config.git");
+		phoenixProject.setGitConf(gitConf);
+		
 		model.setPhoenixProject(phoenixProject);
 
 		try {

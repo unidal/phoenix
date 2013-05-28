@@ -13,6 +13,7 @@ public class RouteServer {
 
 		server.start();
 		System.in.read();
+		server.stop();
 	}
 
 }

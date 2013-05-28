@@ -1,6 +1,7 @@
 package com.dianping.phoenix.router.hotdeploy.classloader;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -16,12 +17,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
+import org.mortbay.jetty.webapp.WebAppClassLoader;
+import org.mortbay.jetty.webapp.WebAppContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.dianping.phoenix.router.hotdeploy.ClassRedefiner;
 
-public class PhoenixClassLoader extends URLClassLoader {
+public class PhoenixClassLoader extends WebAppClassLoader {
 	private static final Logger LOGGER = Logger.getLogger(PhoenixClassLoader.class);
 
 	private static final String HOME_DIR = System.getProperty("user.home");
@@ -34,53 +37,20 @@ public class PhoenixClassLoader extends URLClassLoader {
 
 	private ClassRedefiner m_deployer = new ClassRedefiner(this);
 
-	public PhoenixClassLoader(File projectDir, int checkFreq) {
-		super(new URL[] {});
+	public PhoenixClassLoader(File projectDir, int checkFreq, WebAppContext ctx, ClassLoader parent) throws IOException {
+		super(parent, ctx);
 		parseAndAddClasspath(projectDir);
 		startMonitorThread(checkFreq);
 	}
 
 	@Override
 	protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-		// First, check if the class has already been loaded
-		Class<?> c = findLoadedClass(name);
-		ClassNotFoundException ex = null;
-		ClassLoader parent = getParent();
-		boolean isParentPriority = false;
-
-		if (name.startsWith("java.") || name.startsWith("javax.servlet.") || name.startsWith("javax.el.")) {
-			isParentPriority = true;
-		}
-
-		if (c == null && parent != null && isParentPriority) {
-			try {
-				getParent().loadClass(name);
-			} catch (ClassNotFoundException e) {
-				ex = e;
-			}
-		} else {
-			if (c == null) {
-				try {
-					c = findClass(name);
-				} catch (ClassNotFoundException e) {
-					ex = e;
-				}
-			}
-			if (c == null && parent != null) {
-				c = parent.loadClass(name);
-			}
-		}
-		if (c == null) {
-			throw ex;
-		}
-		if (resolve) {
-			resolveClass(c);
-		}
-		return c;
+		return super.loadClass(name, resolve);
 	}
 
-	public PhoenixClassLoader(File classesDir, List<File> extraClasspathEntry, int checkFreq) {
-		super(new URL[] {});
+	public PhoenixClassLoader(File classesDir, List<File> extraClasspathEntry, int checkFreq, WebAppContext ctx,
+			ClassLoader parent) throws IOException {
+		super(parent, ctx);
 		m_classesDir = ensureDirExists(classesDir);
 		addPaths(m_classesDir, extraClasspathEntry);
 		startMonitorThread(checkFreq);
