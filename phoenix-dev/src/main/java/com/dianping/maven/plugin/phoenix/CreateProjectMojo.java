@@ -8,8 +8,6 @@ import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusContainer;
 import org.unidal.maven.plugin.common.PropertyProviders;
 
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
@@ -25,7 +23,11 @@ import com.dianping.maven.plugin.tools.remedy.PomRemedy;
  * @requiresProject false
  */
 public class CreateProjectMojo extends AbstractMojo {
-
+	/**
+	 * @component
+	 */
+	private WorkspaceFacade m_wsFacade;
+	
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		// select biz project
@@ -43,14 +45,23 @@ public class CreateProjectMojo extends AbstractMojo {
 		String wsDir = PropertyProviders.fromConsole().forString("workspace-dir", "Directory to put code",
 				System.getProperty("user.dir"), null);
 
-		WorkspaceFacade wsFacade;
+		Workspace model = buildModel(bizProjects, wsDir);
+
 		try {
-			PlexusContainer plexus = new DefaultPlexusContainer();
-			wsFacade = plexus.lookup(WorkspaceFacade.class);
+			m_wsFacade.create(model);
 		} catch (Exception e) {
-			throw new MojoFailureException("error lookup WorkspaceFacade from container", e);
+			throw new MojoFailureException("error create phoenix workspace", e);
 		}
 
+		try {
+			PomRemedy.main(new String[] { model.getDir() });
+		} catch (Exception e) {
+			throw new MojoFailureException("error remedy pom", e);
+		}
+
+	}
+
+	private Workspace buildModel(List<String> bizProjects, String wsDir) {
 		Workspace model = new Workspace();
 		model.setDir(wsDir);
 		for (String bizProjectName : bizProjects) {
@@ -66,6 +77,7 @@ public class CreateProjectMojo extends AbstractMojo {
 		router.setPort(8080);
 		router.setVersion("0.1-SNAPSHOT");
 		phoenixProject.setRouter(router);
+		
 		// git conf
 		GitConf gitConf = new GitConf();
 		gitConf.setBranch("master");
@@ -73,18 +85,6 @@ public class CreateProjectMojo extends AbstractMojo {
 		phoenixProject.setGitConf(gitConf);
 
 		model.setPhoenixProject(phoenixProject);
-
-		try {
-			wsFacade.create(model);
-		} catch (Exception e) {
-			throw new MojoFailureException("error create phoenix workspace", e);
-		}
-
-		try {
-			PomRemedy.main(new String[] { model.getDir() });
-		} catch (Exception e) {
-			throw new MojoFailureException("error remedy pom", e);
-		}
-
+		return model;
 	}
 }
