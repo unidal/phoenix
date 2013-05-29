@@ -1,13 +1,13 @@
-package com.dianping.maven.plugin.phoenix.model.visitor;
+package com.dianping.maven.plugin.tools.generator.dynamic.model.visitor;
 
 import java.io.File;
 import java.io.FileFilter;
 
 import org.apache.log4j.Logger;
 
-import com.dianping.maven.plugin.phoenix.BizServerContext;
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
+import com.dianping.maven.plugin.tools.generator.dynamic.BizServerContext;
 
 public class BizServerContextVisitor extends AbstractVisitor<BizServerContext> {
 

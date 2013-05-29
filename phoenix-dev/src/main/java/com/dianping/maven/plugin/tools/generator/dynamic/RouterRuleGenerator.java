@@ -3,7 +3,6 @@ package com.dianping.maven.plugin.tools.generator.dynamic;
 import java.io.File;
 import java.io.IOException;
 
-import com.dianping.maven.plugin.phoenix.RouterRuleContext;
 import com.dianping.maven.plugin.tools.velocity.VelocityEngineManager;
 
 public class RouterRuleGenerator {

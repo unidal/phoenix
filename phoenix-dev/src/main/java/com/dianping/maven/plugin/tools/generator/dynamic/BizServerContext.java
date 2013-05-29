@@ -1,4 +1,4 @@
-package com.dianping.maven.plugin.phoenix;
+package com.dianping.maven.plugin.tools.generator.dynamic;
 
 import java.io.File;
 import java.util.HashMap;
