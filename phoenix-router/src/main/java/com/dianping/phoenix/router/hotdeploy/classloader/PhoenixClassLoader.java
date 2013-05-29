@@ -64,7 +64,7 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 
 	private void parseAndAddClasspath(File projectDir) {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug(String.format("\n##### Starting scan project dir: [%s].", projectDir.getPath()));
+			LOGGER.debug(String.format("##### Starting scan project dir: [%s].", projectDir.getPath()));
 		}
 		File cf = new File(projectDir, File.separator + ".classpath");
 		if (cf.exists() && cf.isFile()) {

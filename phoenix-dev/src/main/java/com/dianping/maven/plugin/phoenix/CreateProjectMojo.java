@@ -18,6 +18,7 @@ import com.dianping.maven.plugin.phoenix.model.entity.PhoenixProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Router;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
 import com.dianping.maven.plugin.tools.console.ConsoleIO;
+import com.dianping.maven.plugin.tools.remedy.PomRemedy;
 
 /**
  * @goal create-project
@@ -70,13 +71,19 @@ public class CreateProjectMojo extends AbstractMojo {
 		gitConf.setBranch("master");
 		gitConf.setRepositoryUrl("http://code.dianpingoa.com/arch/phoenix-maven-config.git");
 		phoenixProject.setGitConf(gitConf);
-		
+
 		model.setPhoenixProject(phoenixProject);
 
 		try {
 			wsFacade.create(model);
 		} catch (Exception e) {
 			throw new MojoFailureException("error create phoenix workspace", e);
+		}
+
+		try {
+			PomRemedy.main(new String[] { model.getDir() });
+		} catch (Exception e) {
+			throw new MojoFailureException("error remedy pom", e);
 		}
 
 	}

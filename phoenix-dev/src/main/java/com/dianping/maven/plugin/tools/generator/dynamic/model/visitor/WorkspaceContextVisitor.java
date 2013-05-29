@@ -1,4 +1,4 @@
-package com.dianping.maven.plugin.phoenix.model.visitor;
+package com.dianping.maven.plugin.tools.generator.dynamic.model.visitor;
 
 import java.io.File;
 
