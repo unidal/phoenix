@@ -32,7 +32,8 @@ public class PomRemedy {
 		}
 
 		final File dirToScan = new File(args[0]);
-		System.out.println("scanning " + dirToScan.getAbsolutePath());
+		System.out.println(String.format("scanning %s for all pom.xml under top 2 level directory",
+				dirToScan.getAbsolutePath()));
 		IOFileFilter fileFilter = new NameFileFilter("pom.xml");
 		IOFileFilter dirFilter = new IOFileFilter() {
 
@@ -49,6 +50,7 @@ public class PomRemedy {
 
 		Collection<File> poms = FileUtils.listFiles(dirToScan, fileFilter, dirFilter);
 		for (File pom : poms) {
+			System.out.println("scanning " + pom.getAbsolutePath());
 			remedy(pom);
 		}
 	}
@@ -65,23 +67,27 @@ public class PomRemedy {
 				Node versionEle = pluginEle.getElementsByTagName("version").item(0);
 				Float version = Float.parseFloat(versionEle.getTextContent().trim());
 				if (version < 2.9) {
+					System.out.println("bump maven-eclipse-plugin's version to 2.9");
 					versionEle.setTextContent("2.9");
 				}
 			} catch (Exception e) {
 				// ignore it
 			}
-			
-			XPathExpression ajdtExpr = xpath.compile("//plugin[artifactId='maven-eclipse-plugin']/configuration/ajdtVersion");
+
+			XPathExpression ajdtExpr = xpath
+					.compile("//plugin[artifactId='maven-eclipse-plugin']/configuration/ajdtVersion");
 			Element ajdtEle = (Element) ajdtExpr.evaluate(doc, XPathConstants.NODE);
-			if(ajdtEle == null) {
-				if(pluginEle.getElementsByTagName("configuration").getLength() == 0) {
+			if (ajdtEle == null) {
+				if (pluginEle.getElementsByTagName("configuration").getLength() == 0) {
 					pluginEle.appendChild(doc.createElement("configuration"));
 				}
 				ajdtEle = doc.createElement("ajdtVersion");
 				ajdtEle.setTextContent("none");
 				pluginEle.getElementsByTagName("configuration").item(0).appendChild(ajdtEle);
+				System.out.println("add <ajdtVersion> to <configuration>");
 			} else {
 				ajdtEle.setTextContent("none");
+				System.out.println("change value of <ajdtVersion> to none");
 			}
 		}
 
