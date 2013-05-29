@@ -194,7 +194,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             // BizServer.java
             ContainerBizServerGenerator containerBizServerGenerator = new ContainerBizServerGenerator();
             containerBizServerGenerator.generate(
-                    new File(sourceFolder, "com/dianping/phoenix/container/BizServer.java"), null);
+                    new File(sourceFolder, "com/dianping/phoenix/container/PhoenixServer.java"), null);
 
         } catch (Exception e) {
             throw new WorkspaceManagementException(e);
