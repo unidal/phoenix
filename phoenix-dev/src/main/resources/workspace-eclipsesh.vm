@@ -5,4 +5,4 @@ WORKSPACE_HOME=`pwd`
 
 mvn eclipse:eclipse
 
-"$ECLIPSE_HOME"/eclipse -data "$WORKSPACE_HOME"/ws &
+"$ECLIPSE_HOME"/eclipse -data "$WORKSPACE_HOME"/ws > /dev/null 2>&1 &
