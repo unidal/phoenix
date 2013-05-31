@@ -1,5 +1,6 @@
 package com.dianping.maven.plugin.phoenix;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +55,7 @@ public class CreateProjectMojo extends AbstractMojo {
 		}
 
 		try {
-			PomRemedy.main(new String[] { model.getDir() });
+			PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
 		} catch (Exception e) {
 			throw new MojoFailureException("error remedy pom", e);
 		}

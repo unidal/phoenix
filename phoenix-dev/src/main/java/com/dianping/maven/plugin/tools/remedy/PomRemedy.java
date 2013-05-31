@@ -2,6 +2,7 @@ package com.dianping.maven.plugin.tools.remedy;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -18,21 +19,21 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-public class PomRemedy {
+public enum PomRemedy {
 
-	public static void main(String[] args) throws Exception {
-		args = new String[] { "/Users/marsqing/Projects/tmp/phoenix-maven-tmp" };
-		if (args.length != 1) {
-			System.out.println("usage: dir");
-			return;
-		}
+	INSTANCE;
+	
+	private static Logger log = Logger.getLogger(PomRemedy.class);
 
-		final File dirToScan = new File(args[0]);
-		System.out.println(String.format("scanning %s for all pom.xml under top 2 level directory",
+	public void remedyPomIn(final File dirToScan) throws Exception {
+
+		log.info(String.format("scanning %s for all pom.xml under top 2 level directory",
 				dirToScan.getAbsolutePath()));
 		IOFileFilter fileFilter = new NameFileFilter("pom.xml");
 		IOFileFilter dirFilter = new IOFileFilter() {
@@ -50,52 +51,83 @@ public class PomRemedy {
 
 		Collection<File> poms = FileUtils.listFiles(dirToScan, fileFilter, dirFilter);
 		for (File pom : poms) {
-			System.out.println("scanning " + pom.getAbsolutePath());
-			remedy(pom);
+			log.info("scanning " + pom.getAbsolutePath());
+			Document doc = remedy(pom);
+			writeDocument(new FileOutputStream(pom), doc);
 		}
 	}
 
-	public static void remedy(File pom) throws Exception {
+	Document remedy(File pom) throws Exception {
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document doc = builder.parse(pom);
 
 		XPath xpath = XPathFactory.newInstance().newXPath();
-		XPathExpression pluginExpr = xpath.compile("//plugin[artifactId='maven-eclipse-plugin']");
+		XPathExpression pluginExpr = xpath.compile("/project/build/plugins/plugin[artifactId='maven-eclipse-plugin']");
 		Element pluginEle = (Element) pluginExpr.evaluate(doc, XPathConstants.NODE);
-		if (pluginEle != null) {
-			try {
-				Node versionEle = pluginEle.getElementsByTagName("version").item(0);
-				Float version = Float.parseFloat(versionEle.getTextContent().trim());
-				if (version < 2.9) {
-					System.out.println("bump maven-eclipse-plugin's version to 2.9");
-					versionEle.setTextContent("2.9");
-				}
-			} catch (Exception e) {
-				// ignore it
-			}
-
-			XPathExpression ajdtExpr = xpath
-					.compile("//plugin[artifactId='maven-eclipse-plugin']/configuration/ajdtVersion");
-			Element ajdtEle = (Element) ajdtExpr.evaluate(doc, XPathConstants.NODE);
-			if (ajdtEle == null) {
-				if (pluginEle.getElementsByTagName("configuration").getLength() == 0) {
-					pluginEle.appendChild(doc.createElement("configuration"));
-				}
-				ajdtEle = doc.createElement("ajdtVersion");
-				ajdtEle.setTextContent("none");
-				pluginEle.getElementsByTagName("configuration").item(0).appendChild(ajdtEle);
-				System.out.println("add <ajdtVersion> to <configuration>");
-			} else {
-				ajdtEle.setTextContent("none");
-				System.out.println("change value of <ajdtVersion> to none");
-			}
+		if (pluginEle == null) {
+			log.info("no maven-eclipse-plugin found, add it");
+			pluginEle = createPluginElement(doc);
 		}
 
+		try {
+			Node versionEle = pluginEle.getElementsByTagName("version").item(0);
+			Float version = Float.parseFloat(versionEle.getTextContent().trim());
+			if (version < 2.9) {
+				log.info("bump maven-eclipse-plugin's version to 2.9");
+				versionEle.setTextContent("2.9");
+			}
+		} catch (Exception e) {
+			// ignore it
+		}
+
+		XPathExpression ajdtExpr = xpath
+				.compile("/project/build/plugins/plugin[artifactId='maven-eclipse-plugin']/configuration/ajdtVersion");
+		Element ajdtEle = (Element) ajdtExpr.evaluate(doc, XPathConstants.NODE);
+		if (ajdtEle == null) {
+			createOrGetChildElement(pluginEle, "configuration");
+			ajdtEle = doc.createElement("ajdtVersion");
+			ajdtEle.setTextContent("none");
+			pluginEle.getElementsByTagName("configuration").item(0).appendChild(ajdtEle);
+			log.info("add <ajdtVersion> to <configuration>");
+		} else {
+			ajdtEle.setTextContent("none");
+			log.info("change value of <ajdtVersion> to none");
+		}
+		
+		return doc;
+	}
+
+	void writeDocument(OutputStream out, Document doc) throws Exception {
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		DOMSource source = new DOMSource(doc);
-		FileOutputStream fout = new FileOutputStream(pom);
-		StreamResult result = new StreamResult(fout);
+		StreamResult result = new StreamResult(out);
 		transformer.transform(source, result);
+		out.close();
+	}
+
+	private Element createOrGetChildElement(Element parent, String childEleName) {
+		NodeList children = parent.getElementsByTagName(childEleName);
+		Element child;
+		if (children.getLength() == 0) {
+			child = parent.getOwnerDocument().createElement(childEleName);
+			parent.appendChild(child);
+		} else {
+			child = (Element) children.item(0);
+		}
+		return child;
+	}
+
+	private Element createPluginElement(Document doc) {
+		Element buildEle = createOrGetChildElement(doc.getDocumentElement(), "build");
+		Element pluginsEle = createOrGetChildElement(buildEle, "plugins");
+		Element pluginEle = createOrGetChildElement(pluginsEle, "plugin");
+		Element groupId = createOrGetChildElement(pluginEle, "groupId");
+		groupId.setTextContent("org.apache.maven.plugins");
+		Element artifactId = createOrGetChildElement(pluginEle, "artifactId");
+		artifactId.setTextContent("maven-eclipse-plugin");
+		Element version = createOrGetChildElement(pluginEle, "version");
+		version.setTextContent("2.9");
+		return pluginEle;
 	}
 
 }
