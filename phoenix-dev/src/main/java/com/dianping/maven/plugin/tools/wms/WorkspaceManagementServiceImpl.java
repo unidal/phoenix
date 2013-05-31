@@ -173,8 +173,9 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             FileUtils.forceMkdir(resourceFolder);
             FileUtils.forceMkdir(webinfFolder);
 
-            copyJar("byteman-2.1.2.jar", resourceFolder);
-            copyJar("instrumentation-util-0.0.1.jar", resourceFolder);
+            copyFile("byteman-2.1.2.jar", resourceFolder);
+            copyFile("instrumentation-util-0.0.1.jar", resourceFolder);
+            copyFile("log4j.xml", resourceFolder);
 
             // clone gitconfig
             GitCodeRetrieveConfig gitConfig = new GitCodeRetrieveConfig(context.getGitConfigRepositoryUrl(), new File(
@@ -201,7 +202,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
         }
     }
 
-    private void copyJar(String fileName, File resourceFolder) throws FileNotFoundException, IOException {
+    private void copyFile(String fileName, File resourceFolder) throws FileNotFoundException, IOException {
         InputStream byteManStream = this.getClass().getResourceAsStream("/" + fileName);
         FileOutputStream byteManJar = new FileOutputStream(new File(resourceFolder, fileName));
         IOUtils.copy(byteManStream, byteManJar);
