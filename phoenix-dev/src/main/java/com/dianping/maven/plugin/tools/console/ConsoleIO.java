@@ -30,7 +30,7 @@ public class ConsoleIO {
 	public List<String> choose(List<String> availableValues, int column, String prompt, PrintWriter out, Reader in)
 			throws IOException {
 		out.println(prompt);
-		out.println(format(availableValues, column));
+		out.println(format(availableValues, column).trim());
 		out.flush();
 
 		List<String> choosedValues = new ArrayList<String>();
