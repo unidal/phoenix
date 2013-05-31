@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,11 +35,18 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 	private File m_classesDir;
 
 	private ClassRedefiner m_deployer = new ClassRedefiner(this);
+	
+	private File m_projectDir;
 
 	public PhoenixClassLoader(File projectDir, int checkFreq, WebAppContext ctx, ClassLoader parent) throws IOException {
 		super(parent, ctx);
+		m_projectDir = projectDir;
 		parseAndAddClasspath(projectDir);
 		startMonitorThread(checkFreq);
+	}
+	
+	public File getProjectDir() {
+		return m_projectDir;
 	}
 
 	@Override
@@ -48,7 +54,7 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 		return super.loadClass(name, resolve);
 	}
 
-	public PhoenixClassLoader(File classesDir, List<File> extraClasspathEntry, int checkFreq, WebAppContext ctx,
+	private PhoenixClassLoader(File classesDir, List<File> extraClasspathEntry, int checkFreq, WebAppContext ctx,
 			ClassLoader parent) throws IOException {
 		super(parent, ctx);
 		m_classesDir = ensureDirExists(classesDir);
