@@ -9,7 +9,7 @@ public class LaunchFileContextVisitor extends AbstractVisitor<LaunchFileContext>
 
 	public LaunchFileContextVisitor() {
 		result = new LaunchFileContext();
-		result.setMainClass("com.dianping.phoenix.container.BizServer");
+		result.setMainClass("com.dianping.phoenix.container.PhoenixServer");
 	}
 
 	@Override
