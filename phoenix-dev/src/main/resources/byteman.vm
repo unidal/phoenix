@@ -12,3 +12,13 @@ DO #foreach($kv in $args.entrySet())
    #end
    System.out.println("Phoenix runtime config modification complete...")
 ENDRULE
+
+RULE TemplateUtils
+CLASS com.dianping.w3c.pagelet.template.freemarker.TemplateUtils
+METHOD freemarker(Template ,String, Map)
+HELPER com.dianping.phoenix.router.remedy.TemplateUtilsRemedy
+AT ENTRY
+IF true
+DO
+	$2=getWebappDir($1);
+ENDRULE

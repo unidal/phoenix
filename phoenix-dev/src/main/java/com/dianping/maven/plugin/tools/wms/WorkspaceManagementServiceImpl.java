@@ -16,7 +16,10 @@
 package com.dianping.maven.plugin.tools.wms;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.unidal.lookup.annotation.Inject;
@@ -169,10 +173,9 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             FileUtils.forceMkdir(resourceFolder);
             FileUtils.forceMkdir(webinfFolder);
 
-            FileUtils.copyFileToDirectory(FileUtils.toFile(this.getClass().getResource("/byteman-2.1.2.jar")),
-                    resourceFolder);
-            FileUtils.copyFileToDirectory(FileUtils.toFile(this.getClass().getResource("/instrumentation-util-0.0.1.jar")),
-                    resourceFolder);
+            copyFile("byteman-2.1.2.jar", resourceFolder);
+            copyFile("instrumentation-util-0.0.1.jar", resourceFolder);
+            copyFile("log4j.xml", resourceFolder);
 
             // clone gitconfig
             GitCodeRetrieveConfig gitConfig = new GitCodeRetrieveConfig(context.getGitConfigRepositoryUrl(), new File(
@@ -192,11 +195,19 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             // BizServer.java
             ContainerBizServerGenerator containerBizServerGenerator = new ContainerBizServerGenerator();
             containerBizServerGenerator.generate(
-                    new File(sourceFolder, "com/dianping/phoenix/container/BizServer.java"), null);
+                    new File(sourceFolder, "com/dianping/phoenix/container/PhoenixServer.java"), null);
 
         } catch (Exception e) {
             throw new WorkspaceManagementException(e);
         }
+    }
+
+    private void copyFile(String fileName, File resourceFolder) throws FileNotFoundException, IOException {
+        InputStream byteManStream = this.getClass().getResourceAsStream("/" + fileName);
+        FileOutputStream byteManJar = new FileOutputStream(new File(resourceFolder, fileName));
+        IOUtils.copy(byteManStream, byteManJar);
+        IOUtils.closeQuietly(byteManStream);
+        IOUtils.closeQuietly(byteManJar);
     }
 
     private void printContent(String content, OutputStream out) {
@@ -227,25 +238,14 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
         WorkspaceManagementServiceImpl wms = new WorkspaceManagementServiceImpl();
         wms.setRepositoryManager(plexusContainer.lookup(RepositoryManager.class));
         wms.codeRetrieverManager = plexusContainer.lookup(CodeRetrieverManager.class);
-        wms.setRepositoryManager(new RepositoryManager() {
-
-            @Override
-            public Repository find(String project) {
-                if ("shop-web".equals(project)) {
-                    return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/shop/trunk/shop-web/", "-",
-                            "-", -1l);
-                } else if ("user-web".equals(project)) {
-                    return new SvnRepository("http://192.168.8.45:81/svn/dianping/dianping/user/trunk/user-web/", "-",
-                            "-", -1l);
-                } else {
-                    return null;
-                }
-            }
-        });
+        wms.setRepositoryManager(new DummyRepositoryManager());
         WorkspaceContext context = new WorkspaceContext();
         List<String> projects = new ArrayList<String>();
         projects.add("shop-web");
-        // projects.add("user-web");
+        projects.add("shoplist-web");
+        projects.add("user-web");
+        projects.add("user-service");
+        projects.add("user-base-service");
         context.setProjects(projects);
         context.setBaseDir(new File("/Users/leoleung/test"));
         context.setGitConfigRepositoryBranch("master");

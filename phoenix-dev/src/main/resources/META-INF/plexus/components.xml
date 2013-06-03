@@ -47,8 +47,8 @@
 			<implementation>com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator</implementation>
 		</component>
 		<component>
-			<role>com.dianping.maven.plugin.phoenix.F5Manager</role>
-			<implementation>com.dianping.maven.plugin.phoenix.DefaultF5Manager</implementation>
+			<role>com.dianping.maven.plugin.tools.generator.dynamic.F5Manager</role>
+			<implementation>com.dianping.maven.plugin.tools.generator.dynamic.DefaultF5Manager</implementation>
 		</component>
 		<component>
 			<role>com.dianping.maven.plugin.phoenix.WorkspaceFacade</role>
@@ -71,7 +71,7 @@
 					<role>com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.maven.plugin.phoenix.F5Manager</role>
+					<role>com.dianping.maven.plugin.tools.generator.dynamic.F5Manager</role>
 				</requirement>
 			</requirements>
 		</component>

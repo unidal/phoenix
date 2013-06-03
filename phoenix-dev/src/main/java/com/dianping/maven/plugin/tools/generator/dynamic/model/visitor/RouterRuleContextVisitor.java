@@ -1,10 +1,10 @@
-package com.dianping.maven.plugin.phoenix.model.visitor;
+package com.dianping.maven.plugin.tools.generator.dynamic.model.visitor;
 
-import com.dianping.maven.plugin.phoenix.F5Manager;
-import com.dianping.maven.plugin.phoenix.F5Pool;
-import com.dianping.maven.plugin.phoenix.RouterRuleContext;
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.PhoenixProject;
+import com.dianping.maven.plugin.tools.generator.dynamic.F5Manager;
+import com.dianping.maven.plugin.tools.generator.dynamic.F5Pool;
+import com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleContext;
 
 public class RouterRuleContextVisitor extends AbstractVisitor<RouterRuleContext> {
 
