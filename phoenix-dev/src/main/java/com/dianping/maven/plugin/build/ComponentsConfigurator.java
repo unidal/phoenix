@@ -6,10 +6,10 @@ import java.util.List;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
-import com.dianping.maven.plugin.phoenix.DefaultF5Manager;
-import com.dianping.maven.plugin.phoenix.F5Manager;
 import com.dianping.maven.plugin.phoenix.WorkspaceFacade;
 import com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.DefaultF5Manager;
+import com.dianping.maven.plugin.tools.generator.dynamic.F5Manager;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator;

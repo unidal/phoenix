@@ -31,6 +31,7 @@ public class ClassRedefiner {
 		if (classesDir.exists() && classesDir.isDirectory() && modifiedClasses != null) {
 			for (File f : modifiedClasses) {
 				if (f.exists() && f.isFile() && f.getPath().endsWith(".class")) {
+					LOGGER.debug(String.format("%s changed, redefine it", f.getAbsolutePath()));
 					try {
 						FileInputStream fin = new FileInputStream(f);
 						ByteArrayOutputStream bout = new ByteArrayOutputStream();

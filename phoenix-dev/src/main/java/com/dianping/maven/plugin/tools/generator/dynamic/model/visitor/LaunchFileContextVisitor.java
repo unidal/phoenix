@@ -1,4 +1,4 @@
-package com.dianping.maven.plugin.phoenix.model.visitor;
+package com.dianping.maven.plugin.tools.generator.dynamic.model.visitor;
 
 import java.io.File;
 
@@ -9,12 +9,12 @@ public class LaunchFileContextVisitor extends AbstractVisitor<LaunchFileContext>
 
 	public LaunchFileContextVisitor() {
 		result = new LaunchFileContext();
-		result.setMainClass("com.dianping.phoenix.container.BizServer");
+		result.setMainClass("com.dianping.phoenix.container.PhoenixServer");
 	}
 
 	@Override
 	public void visitWorkspace(Workspace workspace) {
-		result.setBtmFile(new File(workspace.getDir() + "/src/main/resources/phoenix.launch"));
+		result.setBtmFile(new File(new File(workspace.getDir()), "phoenix-container/src/main/resources/service-lion.btm"));
 		super.visitWorkspace(workspace);
 	}
 

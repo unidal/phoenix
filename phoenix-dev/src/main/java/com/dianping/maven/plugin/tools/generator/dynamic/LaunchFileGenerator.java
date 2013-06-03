@@ -43,7 +43,7 @@ public class LaunchFileGenerator extends TemplateBasedFileGenerator<LaunchFileCo
     public static void main(String[] args) throws Exception {
         LaunchFileGenerator lfg = new LaunchFileGenerator();
         
-        LaunchFileContext context = new LaunchFileContext("com.dianping.phoenix.BizServer", new File(
+        LaunchFileContext context = new LaunchFileContext("com.dianping.phoenix.PhoenixServer", new File(
                 "/Users/marsqing/Projects/tmp/phoenix-lion.btm"));
         
         lfg.generate(new File("/Users/marsqing/Projects/phoenix/phoenix-router", "phoenix.launch"), context);
