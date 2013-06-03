@@ -31,46 +31,59 @@ public class AgentStatusReporter extends ContainerHolder implements Initializabl
 			Response resp;
 			try {
 				resp = m_containerManager.reportContainerStatus();
-
-				// cat agent infos
-				Cat.getProducer().logEvent(
-						"AGENT",
-						toValidVersion(resp.getVersion()) + ":" + resp.getIp(),
-						Event.SUCCESS,
-						"ContainerType=" + resp.getContainer().getName() + "\nContainerInstallPath="
-								+ resp.getContainer().getInstallPath() + "\nContainerVersion="
-								+ toValidVersion(resp.getContainer().getVersion()) + "\nContainerStatus="
-								+ resp.getContainer().getStatus());
-				for (Domain domain : resp.getDomains()) {
-					War kernelWar = domain.getKernel().getWar();
-
-					// cat kernel infos
-					for (Lib lib : kernelWar.getLibs()) {
-						Cat.getProducer().logEvent(
-								kernelWar.getName() + ":" + toValidVersion(kernelWar.getVersion()),
-								lib.getGroupId() == null ? "UnknowGroupId" : lib.getGroupId() + ":"
-										+ lib.getArtifactId() + ":" + toValidVersion(lib.getVersion()), Event.SUCCESS,
-								null);
-					}
-
-					// cat war infos
-					StringBuilder domainLibsKVPair = new StringBuilder();
-					boolean firstLib = true;
-					for (Lib lib : domain.getWar().getLibs()) {
-						domainLibsKVPair.append(firstLib ? "" : "\n");
-						domainLibsKVPair.append(//
-								String.format("%s:%s:%s",
-										lib.getGroupId() == null ? "UnknowGroupId" : lib.getGroupId(),
-										lib.getArtifactId(), toValidVersion(lib.getVersion())));
-						firstLib = firstLib ? false : firstLib;
-					}
+				if (resp != null) {
+					// cat agent infos
 					Cat.getProducer().logEvent(
-							domain.getWar().getName() + ":" + toValidVersion(domain.getWar().getVersion()),
-							toValidVersion(kernelWar.getVersion()) + ":" + resp.getIp(), Event.SUCCESS,
-							domainLibsKVPair.toString());
+							"AGENT",
+							toValidVersion(resp.getVersion()) + ":" + resp.getIp(),
+							Event.SUCCESS,
+							"ContainerType=" + resp.getContainer().getName() + "\nContainerInstallPath="
+									+ resp.getContainer().getInstallPath() + "\nContainerVersion="
+									+ toValidVersion(resp.getContainer().getVersion()) + "\nContainerStatus="
+									+ resp.getContainer().getStatus());
+					if (resp.getDomains() != null && resp.getDomains().size() > 0) {
+						for (Domain domain : resp.getDomains()) {
+							War kernelWar = null;
+							if (domain.getKernel() != null) {
+								kernelWar = domain.getKernel().getWar();
+								if (kernelWar != null) {
+									// cat kernel infos
+									for (Lib lib : kernelWar.getLibs()) {
+										Cat.getProducer().logEvent(
+												kernelWar.getName() + ":" + toValidVersion(kernelWar.getVersion()),
+												lib.getGroupId() == null ? "UnknowGroupId" : lib.getGroupId() + ":"
+														+ lib.getArtifactId() + ":" + toValidVersion(lib.getVersion()),
+												Event.SUCCESS, null);
+									}
+								}
+							}
+
+							// cat war infos
+							StringBuilder domainLibsKVPair = new StringBuilder();
+							boolean firstLib = true;
+							if (domain.getWar() != null) {
+								for (Lib lib : domain.getWar().getLibs()) {
+									domainLibsKVPair.append(firstLib ? "" : "\n");
+									domainLibsKVPair.append(//
+											String.format("%s:%s:%s",
+													lib.getGroupId() == null ? "UnknowGroupId" : lib.getGroupId(),
+													lib.getArtifactId(), toValidVersion(lib.getVersion())));
+									firstLib = firstLib ? false : firstLib;
+								}
+								Cat.getProducer().logEvent(
+										domain.getWar().getName() + ":" + toValidVersion(domain.getWar().getVersion()),
+										toValidVersion(kernelWar.getVersion()) + ":" + resp.getIp(), Event.SUCCESS,
+										domainLibsKVPair.toString());
+							}
+						}
+					} else {
+						logger.warn("No domains found on this server.");
+					}
+				} else {
+					throw new RuntimeException("Can not parse agent infos.");
 				}
-			} catch (Exception e1) {
-				logger.error("Phoenix Agent heartbeat failed.");
+			} catch (Exception e) {
+				logger.error("Phoenix Agent heartbeat failed.", e);
 			}
 		}
 	}
