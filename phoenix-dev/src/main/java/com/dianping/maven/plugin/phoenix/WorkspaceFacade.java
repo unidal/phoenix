@@ -49,6 +49,10 @@ public class WorkspaceFacade {
 	private File resourceFileFor(File rootDir, String fileName) {
 		return new File(rootDir, "phoenix-container/src/main/resources/" + fileName);
 	}
+	
+	private File rootFileFor(File rootDir, String fileName) {
+		return new File(rootDir, "phoenix-container/" + fileName);
+	}
 
 	void createResources(Workspace model) throws Exception {
 		File projectDir = new File(model.getDir());
@@ -67,7 +71,7 @@ public class WorkspaceFacade {
 		createBizServerProperties(resourceFileFor(projectDir, "bizServer.properties"),
 				bizServerCtxVisitor.getVisitResult());
 		createLionProperties(resourceFileFor(projectDir, "service-lion.btm"), serviceLionCtxVisitor.getVisitResult());
-		createEcliseLaunchFile(resourceFileFor(projectDir, "phoenix.launch"), launchFileContextVisitor.getVisitResult());
+		createEcliseLaunchFile(rootFileFor(projectDir, "phoenix.launch"), launchFileContextVisitor.getVisitResult());
 	}
 
 	File createSkeletonWorkspace(WorkspaceContext wsCtx) throws WorkspaceManagementException {
