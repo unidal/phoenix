@@ -86,22 +86,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
                 printContent(String.format("Workspace folder(%s) created...", context.getBaseDir()), out);
             }
 
-            for (String project : context.getProjects()) {
-                Repository repository = repositoryManager.find(project);
-                if (repository == null) {
-                    printContent(String.format("Project(%s) not found...", project), out);
-                }
-
-                CodeRetrieveConfig codeRetrieveConfig = toCodeRetrieveConfig(repository, new File(context.getBaseDir(),
-                        project).getAbsolutePath(), out);
-                if (codeRetrieveConfig != null) {
-                    printContent(
-                            String.format("Checking out project %s(repo:%s)...", project, repository.getRepoUrl()), out);
-                    codeRetrieverManager.getCodeRetriever(codeRetrieveConfig).retrieveCode();
-                } else {
-                    printContent(String.format("Project repository(%s) unknown...", project), out);
-                }
-            }
+            checkoutSource(context, out);
 
             printContent("Generating phoenix-container...", out);
 
@@ -133,6 +118,33 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
         } else {
             throw new WorkspaceManagementException("projects/basedir can not be null");
+        }
+    }
+
+    private void checkoutSource(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException {
+        for (String project : context.getProjects()) {
+            Repository repository = repositoryManager.find(project);
+            if (repository == null) {
+                throw new WorkspaceManagementException(String.format("Project(%s) not found...", project));
+            }
+
+            File sourceDir = new File(context.getBaseDir(), project);
+
+            if (!sourceDir.exists()) {
+                CodeRetrieveConfig codeRetrieveConfig = toCodeRetrieveConfig(repository, sourceDir.getAbsolutePath(),
+                        out);
+                if (codeRetrieveConfig != null) {
+                    printContent(
+                            String.format("Checking out project %s(repo:%s)...", project, repository.getRepoUrl()), out);
+                    codeRetrieverManager.getCodeRetriever(codeRetrieveConfig).retrieveCode();
+                } else {
+                    printContent(String.format("Project repository(%s) unknown...", project), out);
+                }
+            } else {
+                printContent(
+                        String.format("Dir already exists(%s), skip project(%s) source checkout!",
+                                sourceDir.getAbsolutePath(), project), out);
+            }
         }
     }
 
@@ -194,8 +206,8 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
             // BizServer.java
             ContainerBizServerGenerator containerBizServerGenerator = new ContainerBizServerGenerator();
-            containerBizServerGenerator.generate(
-                    new File(sourceFolder, "com/dianping/phoenix/container/PhoenixServer.java"), null);
+            containerBizServerGenerator.generate(new File(sourceFolder,
+                    "com/dianping/phoenix/container/PhoenixServer.java"), null);
 
         } catch (Exception e) {
             throw new WorkspaceManagementException(e);
@@ -203,11 +215,11 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     }
 
     private void copyFile(String fileName, File resourceFolder) throws FileNotFoundException, IOException {
-        InputStream byteManStream = this.getClass().getResourceAsStream("/" + fileName);
-        FileOutputStream byteManJar = new FileOutputStream(new File(resourceFolder, fileName));
-        IOUtils.copy(byteManStream, byteManJar);
-        IOUtils.closeQuietly(byteManStream);
-        IOUtils.closeQuietly(byteManJar);
+        InputStream source = this.getClass().getResourceAsStream("/" + fileName);
+        FileOutputStream dest = new FileOutputStream(new File(resourceFolder, fileName));
+        IOUtils.copy(source, dest);
+        IOUtils.closeQuietly(source);
+        IOUtils.closeQuietly(dest);
     }
 
     private void printContent(String content, OutputStream out) {
@@ -245,11 +257,30 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
         projects.add("shoplist-web");
         projects.add("user-web");
         projects.add("user-service");
-        projects.add("user-base-service");
+        // projects.add("user-base-service");
         context.setProjects(projects);
         context.setBaseDir(new File("/Users/leoleung/test"));
         context.setGitConfigRepositoryBranch("master");
         context.setGitConfigRepositoryUrl("http://code.dianpingoa.com/arch/phoenix-maven-config.git");
-        wms.create(context, System.out);
+        wms.modify(context, System.out);
+    }
+
+    @Override
+    public File modify(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException {
+        if (context.getProjects() != null && context.getBaseDir() != null && out != null) {
+
+            printContent("Modifying phoenix workspace...", out);
+
+            checkoutSource(context, out);
+
+            printContent("Regenerating phoenix-workspace pom...", out);
+
+            generateWorkspacePom(context);
+
+            return new File(context.getBaseDir(), CONTAINER_FOLDER);
+
+        } else {
+            throw new WorkspaceManagementException("projects/basedir can not be null");
+        }
     }
 }
