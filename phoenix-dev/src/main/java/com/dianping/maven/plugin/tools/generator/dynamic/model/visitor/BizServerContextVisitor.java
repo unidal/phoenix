@@ -51,11 +51,15 @@ public class BizServerContextVisitor extends AbstractVisitor<BizServerContext> {
 		}
 		
 		if (webProjectDirFound != null) {
-			result.addWebContext("/_" + projectName, webProjectDirFound);
+			result.addWebContext("/_" + projectName, propertiesEscape(webProjectDirFound.getAbsolutePath()));
 		}
 		super.visitBizProject(bizProject);
 	}
 
+	private String propertiesEscape(String propertyValue) {
+		return propertyValue.replaceAll("\\\\", "/");
+	}
+	
 	@Override
 	public void visitWorkspace(Workspace workspace) {
 		wsDir = new File(workspace.getDir());
