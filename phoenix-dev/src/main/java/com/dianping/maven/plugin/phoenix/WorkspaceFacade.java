@@ -2,12 +2,14 @@ package com.dianping.maven.plugin.phoenix;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
 import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
+import com.dianping.maven.plugin.tools.generator.BytemanScriptGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.BizServerContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.F5Manager;
@@ -22,6 +24,7 @@ import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.LaunchFil
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.RouterRuleContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.ServiceLionContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.WorkspaceContextVisitor;
+import com.dianping.maven.plugin.tools.vcs.RepositoryService;
 import com.dianping.maven.plugin.tools.wms.WorkspaceContext;
 import com.dianping.maven.plugin.tools.wms.WorkspaceManagementException;
 import com.dianping.maven.plugin.tools.wms.WorkspaceManagementService;
@@ -40,9 +43,14 @@ public class WorkspaceFacade {
     private RouterRuleGenerator            routerGenerator;
     @Inject
     private F5Manager                      f5Mgr;
+    @Inject
+    private RepositoryService              repositoryService;
+    @Inject
+    private BytemanScriptGenerator         bytemanGenerator;
 
-    private static final String            WORKSPACE_META_FILENAME = "phoenix.meta";
-    private static final String            REINIT_SIG_FILENAME     = "phoenix.new";
+    private static final String            PHOENIX_ROOT_FOLDER     = "phoenix/";
+    private static final String            WORKSPACE_META_FILENAME = PHOENIX_ROOT_FOLDER + "meta/phoenix.meta";
+    private static final String            REINIT_SIG_FILENAME     = PHOENIX_ROOT_FOLDER + "meta/phoenix.new";
 
     public void create(Workspace model) throws Exception {
         workspaceChange(model, false);
@@ -63,14 +71,31 @@ public class WorkspaceFacade {
     private void workspaceChange(Workspace model, boolean modify) throws Exception {
         WorkspaceContextVisitor workspaceCtxVisitor = new WorkspaceContextVisitor();
         model.accept(workspaceCtxVisitor);
+
+        FileUtils.forceMkdir(new File(model.getDir(), PHOENIX_ROOT_FOLDER));
+
+        pullConfig(model);
+
         if (modify) {
             modifySkeletonWorkspace(workspaceCtxVisitor.getVisitResult());
         } else {
             createSkeletonWorkspace(workspaceCtxVisitor.getVisitResult());
         }
-        createResources(model);
+        createRuntimeResources(model);
         saveMeta(model);
         FileUtils.touch(new File(model.getDir(), REINIT_SIG_FILENAME));
+    }
+
+    private void pullConfig(Workspace model) {
+        File configFolder = new File(model.getDir(), PHOENIX_ROOT_FOLDER + "config");
+        if (configFolder.exists()) {
+            FileUtils.deleteQuietly(configFolder);
+        }
+        try {
+            repositoryService.checkout("phoenix-maven-config", configFolder, System.out);
+        } catch (Exception e) {
+            System.out.println("Pull phoenix-maven-config failed, plugin will use config file embedded.");
+        }
     }
 
     private void saveMeta(Workspace model) throws Exception {
@@ -78,10 +103,10 @@ public class WorkspaceFacade {
     }
 
     private File resourceFileFor(File rootDir, String fileName) {
-        return new File(rootDir, "phoenix-container/src/main/resources/" + fileName);
+        return new File(rootDir, PHOENIX_ROOT_FOLDER + "phoenix-container/src/main/resources/" + fileName);
     }
 
-    void createResources(Workspace model) throws Exception {
+    void createRuntimeResources(Workspace model) throws Exception {
         File projectDir = new File(model.getDir());
 
         RouterRuleContextVisitor routerRuleCtxVisitor = new RouterRuleContextVisitor(f5Mgr);
@@ -97,8 +122,9 @@ public class WorkspaceFacade {
         createRouterRuleXml(resourceFileFor(projectDir, "router-rules.xml"), routerRuleCtxVisitor.getVisitResult());
         createBizServerProperties(resourceFileFor(projectDir, "bizServer.properties"),
                 bizServerCtxVisitor.getVisitResult());
-        createLionProperties(resourceFileFor(projectDir, "service-lion.btm"), serviceLionCtxVisitor.getVisitResult());
+        createLionProperties(resourceFileFor(projectDir, "servicelion-system.properties"), serviceLionCtxVisitor.getVisitResult());
         createEcliseLaunchFile(resourceFileFor(projectDir, "phoenix.launch"), launchFileContextVisitor.getVisitResult());
+        createBytemanFile(resourceFileFor(projectDir, "service-lion.btm"));
     }
 
     File createSkeletonWorkspace(WorkspaceContext wsCtx) throws WorkspaceManagementException {
@@ -125,4 +151,7 @@ public class WorkspaceFacade {
         launchGenerator.generate(launchFile, ctx);
     }
 
+    void createBytemanFile(File bytemanFile) throws Exception {
+        bytemanGenerator.generate(bytemanFile, new HashMap<String, String>());
+    }
 }
