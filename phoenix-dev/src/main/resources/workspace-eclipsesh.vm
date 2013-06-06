@@ -2,9 +2,9 @@
 
 cd `dirname "$0"`
 WORKSPACE_HOME=`pwd`
-if [ -f phoenix.new -o x$1 = xrefresh ];then
-	if [ -f phoenix.new ];then
-		rm -rf phoenix.new
+if [ -f phoenix/meta/phoenix.new -o x$1 = xrefresh ];then
+	if [ -f phoenix/meta/phoenix.new ];then
+		rm -rf phoenix/meta/phoenix.new
 	fi
 	mvn -Denv=qa eclipse:eclipse
 fi

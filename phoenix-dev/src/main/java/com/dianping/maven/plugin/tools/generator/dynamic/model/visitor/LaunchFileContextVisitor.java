@@ -14,7 +14,7 @@ public class LaunchFileContextVisitor extends AbstractVisitor<LaunchFileContext>
 
 	@Override
 	public void visitWorkspace(Workspace workspace) {
-		result.setBtmFile(new File(new File(workspace.getDir()), "phoenix-container/src/main/resources/service-lion.btm"));
+		result.setBtmFile(new File(new File(workspace.getDir()), "phoenix/phoenix-container/src/main/resources/service-lion.btm"));
 		super.visitWorkspace(workspace);
 	}
 

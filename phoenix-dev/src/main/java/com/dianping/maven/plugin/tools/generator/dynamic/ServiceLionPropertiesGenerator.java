@@ -16,15 +16,18 @@
 package com.dianping.maven.plugin.tools.generator.dynamic;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 
-import com.dianping.maven.plugin.tools.generator.BytemanScriptGenerator;
 import com.dianping.maven.plugin.tools.scanner.Scanner;
 import com.dianping.maven.plugin.tools.scanner.ServiceMetaScanner;
 import com.dianping.maven.plugin.tools.scanner.ServicePortEntry;
@@ -45,7 +48,7 @@ public class ServiceLionPropertiesGenerator {
             servicePortMapping.put(entry.getService(), entry.getPort());
         }
 
-        Map<String, String> serviceLionContents = new HashMap<String, String>();
+        Properties prop = new Properties();
 
         Scanner<String> serviceScanner = new ServiceScanner();
         for (Map.Entry<String, File> entry : context.getProjectBaseDirMapping().entrySet()) {
@@ -58,15 +61,25 @@ public class ServiceLionPropertiesGenerator {
             }
 
             for (String serviceKey : serviceKeys) {
-                serviceLionContents
-                        .put(serviceKey, context.getServiceHost() + ":" + servicePortMapping.get(serviceKey));
+                prop.put(serviceKey, context.getServiceHost() + ":" + servicePortMapping.get(serviceKey));
             }
 
         }
 
-        BytemanScriptGenerator bytemanScriptGenerator = new BytemanScriptGenerator();
-        bytemanScriptGenerator.generate(file, serviceLionContents);
+        OutputStream os = null;
+
+        try {
+            os = new FileOutputStream(file);
+            prop.store(os, "");
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+
+                }
+            }
+        }
 
     }
-
 }

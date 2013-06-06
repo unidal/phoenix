@@ -23,7 +23,7 @@ public class ServiceLionContextVisitor extends AbstractVisitor<ServiceLionContex
         }
         result.setProjectBaseDirMapping(projectBaseDirMapping);
         result.setServiceMetaConfig(new File(workspace.getDir(),
-                "phoenix-container/src/main/resources/gitconf/service-meta.xml"));
+                "phoenix/config/service-meta.xml"));
         super.visitWorkspace(workspace);
     }
 

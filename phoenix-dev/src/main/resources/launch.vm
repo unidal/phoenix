@@ -2,5 +2,5 @@
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="${args.get("mainClass")}"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="phoenix-container"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024m -Xms1024m -XX:MaxPermSize=256m -javaagent:src/main/resources/instrumentation-util-0.0.1.jar -javaagent:src/main/resources/byteman-2.1.2.jar=script:${args.get("btmFile")}"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024m -Xms1024m -XX:MaxPermSize=256m -javaagent:../lib/instrumentation-util-0.0.1.jar -javaagent:../lib/byteman-2.1.2.jar=script:${args.get("btmFile")}"/>
 </launchConfiguration>

@@ -6,7 +6,7 @@
        <version>1.0.0</version>
        <packaging>pom</packaging>
        <modules>
-       	   <module>phoenix-container</module>
+       	   <module>phoenix/phoenix-container</module>
            #foreach($project in $args)
    		   <module>$project</module>
    		   #end
