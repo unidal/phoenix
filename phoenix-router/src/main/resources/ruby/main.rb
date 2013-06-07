@@ -9,7 +9,7 @@ url_rewrite_buf = StringIO.new
 parse_f5 f5_buf, default_pool
 parse_url_rewrite url_rewrite_buf
 
-rules_xml = File.new("router-rules.xml","w")
+rules_xml = File.new("url-rules.xml","w")
 
 rules_xml << "<router-rules>\n"
 rules_xml << f5_buf.string

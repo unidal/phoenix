@@ -25,8 +25,12 @@ public class GitRepository extends Repository {
     public GitRepository() {
     }
 
-    public GitRepository(String repoUrl, String user, String pwd, String branch) {
-        super(repoUrl, user, pwd);
+    public GitRepository(String repoUrl) {
+    	this(repoUrl, "master");
+    }
+    
+    public GitRepository(String repoUrl, String branch) {
+        super(repoUrl, "-", "-");
         this.branch = branch;
     }
 

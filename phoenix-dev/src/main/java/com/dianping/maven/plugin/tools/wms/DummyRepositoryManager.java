@@ -15,6 +15,10 @@
  */
 package com.dianping.maven.plugin.tools.wms;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Leo Liang
  * 
@@ -81,10 +85,23 @@ public class DummyRepositoryManager implements RepositoryManager {
                     "http://192.168.8.45:81/svn/dianping/platform/middleware/trunk/phoenix/groupbackservice/", "-",
                     "-", -1l);
         } else if ("phoenix-maven-config".equals(project)) {
-            return new GitRepository("http://code.dianpingoa.com/arch/phoenix-maven-config.git", "-", "-", "master");
+            return new GitRepository("http://code.dianpingoa.com/arch/phoenix-maven-config.git");
         } else {
             return null;
         }
     }
+
+	@Override
+	public void init(File wsDir) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<String> getProjectList() {
+		ArrayList<String> projectList = new ArrayList<String>();
+		projectList.add("user-web");
+		return projectList;
+	}
 
 }

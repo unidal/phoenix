@@ -13,7 +13,7 @@ import com.dianping.phoenix.router.model.transform.DefaultSaxParser;
 public class ConfigManager implements Initializable {
 
 	private final static Logger log = Logger.getLogger(ConfigManager.class);
-	private final static String classpathRouterConfigFile = "/router-rules.xml";
+	private final static String classpathRouterConfigFile = "/url-rules.xml";
 	private RouterRules routerRules;
 
 	@Override
@@ -25,7 +25,7 @@ public class ConfigManager implements Initializable {
 		InputStream in = this.getClass().getResourceAsStream(classpathRouterConfigFile);
 		try {
 			if (in != null) {
-				log.info(String.format("reading router-rules.xml from classpath %s", classpathRouterConfigFile));
+				log.info(String.format("reading url-rules.xml from classpath %s", classpathRouterConfigFile));
 				String content = Files.forIO().readFrom(in, "utf-8");
 				routerRules = DefaultSaxParser.parse(content);
 			} else {

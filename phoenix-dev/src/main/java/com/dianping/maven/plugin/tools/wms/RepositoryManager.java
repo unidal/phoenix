@@ -15,6 +15,9 @@
  */
 package com.dianping.maven.plugin.tools.wms;
 
+import java.io.File;
+import java.util.List;
+
 /**
  * @author Leo Liang
  * 
@@ -22,5 +25,7 @@ package com.dianping.maven.plugin.tools.wms;
 public interface RepositoryManager {
 
     Repository find(String project);
+    List<String> getProjectList();
+    void init(File wsDir);
 
 }

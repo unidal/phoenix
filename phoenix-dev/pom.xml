@@ -95,7 +95,7 @@
                      <goal>dal-model</goal>
                   </goals>
                   <configuration>
-                     <manifest><![CDATA[${basedir}/src/main/resources/META-INF/dal/model/workspace-manifest.xml,]]></manifest>
+                     <manifest><![CDATA[${basedir}/src/main/resources/META-INF/dal/model/workspace-manifest.xml,${basedir}/src/main/resources/META-INF/dal/model/phoenix-manifest.xml]]></manifest>
                   </configuration>
                </execution>
             </executions>

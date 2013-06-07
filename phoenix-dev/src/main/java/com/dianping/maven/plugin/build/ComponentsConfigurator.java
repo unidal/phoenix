@@ -7,6 +7,7 @@ import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
 import com.dianping.maven.plugin.phoenix.WorkspaceFacade;
+import com.dianping.maven.plugin.phoenix.phoenix.entity.Phoenix;
 import com.dianping.maven.plugin.tools.generator.BytemanScriptGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.DefaultF5Manager;
@@ -21,7 +22,7 @@ import com.dianping.maven.plugin.tools.vcs.GitCodeRetriever;
 import com.dianping.maven.plugin.tools.vcs.ICodeRetriever;
 import com.dianping.maven.plugin.tools.vcs.RepositoryService;
 import com.dianping.maven.plugin.tools.vcs.SVNCodeRetriever;
-import com.dianping.maven.plugin.tools.wms.DummyRepositoryManager;
+import com.dianping.maven.plugin.tools.wms.DefaultRepositoryManager;
 import com.dianping.maven.plugin.tools.wms.RepositoryManager;
 import com.dianping.maven.plugin.tools.wms.WorkspaceManagementService;
 import com.dianping.maven.plugin.tools.wms.WorkspaceManagementServiceImpl;
@@ -35,7 +36,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
         all.add(C(ICodeRetriever.class, CodeRetrieverContext.GIT, GitCodeRetriever.class));
         all.add(C(ICodeRetriever.class, CodeRetrieverContext.SVN, SVNCodeRetriever.class));
 
-        all.add(C(RepositoryManager.class, DummyRepositoryManager.class));
+        all.add(C(Phoenix.class));
+        
+        all.add(C(RepositoryManager.class, DefaultRepositoryManager.class) //
+        		.req(Phoenix.class));
         all.add(C(RepositoryService.class, DefaultRepositoryServiceImpl.class)//
                 .req(RepositoryManager.class) //
                 .req(CodeRetrieverManager.class));
@@ -59,7 +63,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
                 .req(RouterRuleGenerator.class) //
                 .req(F5Manager.class)//
                 .req(RepositoryService.class)//
-                .req(BytemanScriptGenerator.class));
+                .req(BytemanScriptGenerator.class) //
+                .req(RepositoryManager.class));
 
         return all;
     }

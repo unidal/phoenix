@@ -159,7 +159,7 @@ public class PhoenixServer {
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {
-			input = PhoenixServer.class.getResourceAsStream("/bizServer.properties");
+			input = PhoenixServer.class.getResourceAsStream("/phoenix.properties");
 			if (input != null) {
 				prop.load(input);
 			}

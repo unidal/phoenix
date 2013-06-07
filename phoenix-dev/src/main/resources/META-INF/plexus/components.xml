@@ -15,8 +15,17 @@
 			<implementation>com.dianping.maven.plugin.tools.vcs.SVNCodeRetriever</implementation>
 		</component>
 		<component>
+			<role>com.dianping.maven.plugin.phoenix.phoenix.entity.Phoenix</role>
+			<implementation>com.dianping.maven.plugin.phoenix.phoenix.entity.Phoenix</implementation>
+		</component>
+		<component>
 			<role>com.dianping.maven.plugin.tools.wms.RepositoryManager</role>
-			<implementation>com.dianping.maven.plugin.tools.wms.DummyRepositoryManager</implementation>
+			<implementation>com.dianping.maven.plugin.tools.wms.DefaultRepositoryManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.maven.plugin.phoenix.phoenix.entity.Phoenix</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.maven.plugin.tools.vcs.RepositoryService</role>
@@ -91,6 +100,9 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.maven.plugin.tools.generator.BytemanScriptGenerator</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.maven.plugin.tools.wms.RepositoryManager</role>
 				</requirement>
 			</requirements>
 		</component>
