@@ -2,9 +2,12 @@ package com.dianping.maven.plugin.phoenix;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
@@ -25,11 +28,15 @@ import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.RouterRul
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.ServiceLionContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.WorkspaceContextVisitor;
 import com.dianping.maven.plugin.tools.vcs.RepositoryService;
+import com.dianping.maven.plugin.tools.wms.RepositoryManager;
+import com.dianping.maven.plugin.tools.wms.WorkspaceConstants;
 import com.dianping.maven.plugin.tools.wms.WorkspaceContext;
 import com.dianping.maven.plugin.tools.wms.WorkspaceManagementException;
 import com.dianping.maven.plugin.tools.wms.WorkspaceManagementService;
 
 public class WorkspaceFacade {
+	
+	private static Logger log = Logger.getLogger(WorkspaceFacade.class);
 
     @Inject
     private WorkspaceManagementService     wms;
@@ -47,17 +54,34 @@ public class WorkspaceFacade {
     private RepositoryService              repositoryService;
     @Inject
     private BytemanScriptGenerator         bytemanGenerator;
-
-    private static final String            PHOENIX_ROOT_FOLDER     = "phoenix/";
-    private static final String            WORKSPACE_META_FILENAME = PHOENIX_ROOT_FOLDER + "meta/phoenix.meta";
-    private static final String            REINIT_SIG_FILENAME     = PHOENIX_ROOT_FOLDER + "meta/phoenix.new";
+    @Inject
+    private RepositoryManager repoMgr;
+    
+    public void init(File wsDir) {
+    	pullConfig(wsDir);
+        repoMgr.init(wsDir);
+    }
+    
+    public List<String> getProjectList() {
+//    	return repoMgr.getProjectList().subList(0, 20);
+    	ArrayList<String> projectList = new ArrayList<String>();
+    	projectList.add("dpindex-web");
+    	projectList.add("shop-web");
+    	projectList.add("shoplist-web");
+    	projectList.add("user-web");
+    	projectList.add("user-service");
+    	projectList.add("user-base-service");
+    	projectList.add("shop-event-web");
+    	projectList.add("tuangou-web");
+    	return projectList;
+    }
 
     public void create(Workspace model) throws Exception {
         workspaceChange(model, false);
     }
 
     public Workspace current(File dir) throws Exception {
-        File metaFile = new File(dir, WORKSPACE_META_FILENAME);
+        File metaFile = new File(dir, WorkspaceConstants.WORKSPACE_META_FILENAME);
         if (metaFile.exists() && metaFile.isFile()) {
             return DefaultSaxParser.parse(FileUtils.readFileToString(metaFile));
         }
@@ -72,9 +96,7 @@ public class WorkspaceFacade {
         WorkspaceContextVisitor workspaceCtxVisitor = new WorkspaceContextVisitor();
         model.accept(workspaceCtxVisitor);
 
-        FileUtils.forceMkdir(new File(model.getDir(), PHOENIX_ROOT_FOLDER));
-
-        pullConfig(model);
+        FileUtils.forceMkdir(new File(model.getDir(), WorkspaceConstants.PHOENIX_ROOT_FOLDER));
 
         if (modify) {
             modifySkeletonWorkspace(workspaceCtxVisitor.getVisitResult());
@@ -83,31 +105,37 @@ public class WorkspaceFacade {
         }
         createRuntimeResources(model);
         saveMeta(model);
-        FileUtils.touch(new File(model.getDir(), REINIT_SIG_FILENAME));
+        FileUtils.touch(new File(model.getDir(), WorkspaceConstants.REINIT_SIG_FILENAME));
     }
 
-    private void pullConfig(Workspace model) {
-        File configFolder = new File(model.getDir(), PHOENIX_ROOT_FOLDER + "config");
+    public void pullConfig(File wsDir) {
+        File configFolder = new File(wsDir, WorkspaceConstants.PHOENIX_ROOT_FOLDER + "config");
         if (configFolder.exists()) {
             FileUtils.deleteQuietly(configFolder);
         }
+        
+        log.info("try to update phoenix config from remote git repository");
         try {
             repositoryService.checkout("phoenix-maven-config", configFolder, System.out);
         } catch (Exception e) {
-            System.out.println("Pull phoenix-maven-config failed, plugin will use config file embedded.");
+            log.warn("error update phoenix config from remote git repository, plugin will use config file embedded.", e);
         }
     }
 
     private void saveMeta(Workspace model) throws Exception {
-        FileUtils.writeStringToFile(new File(model.getDir(), WORKSPACE_META_FILENAME), model.toString(), "utf-8");
+        FileUtils.writeStringToFile(new File(model.getDir(), WorkspaceConstants.WORKSPACE_META_FILENAME), model.toString(), "utf-8");
     }
 
     private File resourceFileFor(File rootDir, String fileName) {
-        return new File(rootDir, PHOENIX_ROOT_FOLDER + "phoenix-container/src/main/resources/" + fileName);
+        return new File(rootDir, WorkspaceConstants.PHOENIX_ROOT_FOLDER + "phoenix-container/src/main/resources/" + fileName);
     }
     
     private File rootFileFor(File rootDir, String fileName) {
-		return new File(rootDir, PHOENIX_ROOT_FOLDER + "phoenix-container/" + fileName);
+		return new File(rootDir, WorkspaceConstants.PHOENIX_CONTAINER_FOLDER + fileName);
+	}
+    
+    private File metaFileFor(File rootDir, String fileName) {
+		return new File(rootDir, WorkspaceConstants.PHOENIX_META_FOLDER + fileName);
 	}
 
     void createRuntimeResources(Workspace model) throws Exception {
@@ -123,12 +151,12 @@ public class WorkspaceFacade {
         model.accept(serviceLionCtxVisitor);
         model.accept(launchFileContextVisitor);
 
-        createRouterRuleXml(resourceFileFor(projectDir, "router-rules.xml"), routerRuleCtxVisitor.getVisitResult());
-        createBizServerProperties(resourceFileFor(projectDir, "bizServer.properties"),
+        createRouterRuleXml(resourceFileFor(projectDir, "url-rules.xml"), routerRuleCtxVisitor.getVisitResult());
+        createBizServerProperties(resourceFileFor(projectDir, "phoenix.properties"),
                 bizServerCtxVisitor.getVisitResult());
-        createLionProperties(resourceFileFor(projectDir, "servicelion-system.properties"), serviceLionCtxVisitor.getVisitResult());
+        createLionProperties(resourceFileFor(projectDir, "router-service.properties"), serviceLionCtxVisitor.getVisitResult());
         createEcliseLaunchFile(rootFileFor(projectDir, "phoenix.launch"), launchFileContextVisitor.getVisitResult());
-        createBytemanFile(resourceFileFor(projectDir, "service-lion.btm"));
+        createBytemanFile(metaFileFor(projectDir, "service-lion.btm"));
     }
 
     File createSkeletonWorkspace(WorkspaceContext wsCtx) throws WorkspaceManagementException {

@@ -15,7 +15,7 @@ public class MockConfigManager extends ConfigManager {
 
 	@Override
 	public void initialize() throws InitializationException {
-		String mockConfigPath = "model/router-rules.xml";
+		String mockConfigPath = "model/url-rules.xml";
 		try {
 
 			InputStream in = this.getClass().getResourceAsStream(mockConfigPath);

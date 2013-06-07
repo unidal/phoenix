@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="phoenix" root="true">
+    <element name="url-of-config" value-type="String" />
+  </entity>
+</model>
+

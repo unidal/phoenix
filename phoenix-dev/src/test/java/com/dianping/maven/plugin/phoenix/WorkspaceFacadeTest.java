@@ -74,7 +74,7 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         File bizServerFile = new File(tmpDir, "bizServer.properties");
         BizServerContext ctx = new BizServerContext();
-        ctx.addWebContext("/_user-web", new File("/a/b/c"));
+        ctx.addWebContext("/_user-web", "/a/b/c");
         facade.createBizServerProperties(bizServerFile, ctx);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         IOUtils.copy(new FileInputStream(bizServerFile), out);
