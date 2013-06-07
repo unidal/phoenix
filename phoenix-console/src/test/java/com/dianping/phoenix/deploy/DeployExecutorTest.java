@@ -249,5 +249,23 @@ public class DeployExecutorTest extends ComponentTestCase {
 		public void onHostEnd(int deployId, String host) throws Exception {
 			log("onHostEnd(%s, %s)", deployId, host);
 		}
+
+		@Override
+		public void onDeployPause(int deployId) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onDeployCancel(int deployId) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onDeployContinue(int deployId) throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +37,7 @@ import com.dianping.phoenix.deploy.DeployConstant;
 import com.dianping.phoenix.deploy.DeployExecutor;
 import com.dianping.phoenix.deploy.DeployListener;
 import com.dianping.phoenix.deploy.DeployPolicy;
+import com.dianping.phoenix.deploy.DeployStatus;
 import com.dianping.phoenix.deploy.agent.AgentContext;
 import com.dianping.phoenix.deploy.agent.AgentListener;
 import com.dianping.phoenix.deploy.agent.AgentProgress;
@@ -61,6 +63,23 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 	private Logger m_logger;
 
+	private ConcurrentHashMap<Integer, Object> m_deployPauseControl = new ConcurrentHashMap<Integer, Object>();
+
+	@Override
+	public void continueDeploy(int deployId) {
+		if (isDeploying(deployId)) {
+			Object waitObj = m_deployPauseControl.get(deployId);
+			synchronized (waitObj) {
+				waitObj.notifyAll();
+			}
+		}
+	}
+
+	@Override
+	public boolean isDeploying(int deployId) {
+		return m_deployPauseControl.containsKey(deployId);
+	}
+
 	@Override
 	public void enableLogging(Logger logger) {
 		m_logger = logger;
@@ -78,13 +97,17 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 	@Override
 	public synchronized void submit(DeployModel model, List<String> hosts, String warType, String logUri)
 			throws Exception {
-		ControllerTask task = new ControllerTask(m_agentListener, model, hosts, warType, logUri);
+		Object waitObj = new Object();
+		ControllerTask task = new ControllerTask(m_agentListener, model, hosts, warType, logUri, waitObj);
 
+		m_deployPauseControl.put(model.getId(), waitObj);
 		m_deployListener.onDeployStart(model.getId());
 		Threads.forGroup("Phoenix").start(task);
 	}
 
 	class ControllerTask implements Task {
+		public static final int MAX_INTERVAL = Integer.MAX_VALUE;
+
 		private List<String> m_hosts;
 
 		private int m_hostIndex;
@@ -99,13 +122,28 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private String m_logUri;
 
+		private int m_interval;
+
+		private Object m_waitObj;
+
 		public ControllerTask(AgentListener listener, DeployModel model, List<String> hosts, String warType,
-				String logUri) {
+				String logUri, Object object) {
 			m_listener = listener;
 			m_model = model;
 			m_hosts = hosts;
 			m_warType = warType;
 			m_logUri = logUri;
+			m_waitObj = object;
+
+			if (m_model.getPlan().isAutoContinue()) {
+				m_interval = m_model.getPlan().getDeployInterval();
+			} else {
+				m_interval = MAX_INTERVAL;
+			}
+		}
+
+		public void setInterval(int interval) {
+			m_interval = interval;
 		}
 
 		private void cancelResetTasks() {
@@ -204,14 +242,44 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 												m_model.getId()), e);
 							}
 						}
-
-						if (shouldStop()) {
+						if (shouldStop() || DeployStatus.CANCELLING.getName().equals(m_model.getStatus())) {
 							cancelResetTasks();
 							break;
 						} else {
-							int batchSize = m_policy.getBatchSize();
-
-							pair = submitNextRolloutTask(t, batchSize);
+							if (m_hostIndex < m_hosts.size()) {
+								if (DeployStatus.PAUSING.getName().equals(m_model.getStatus())
+										|| !m_model.getPlan().isAutoContinue()) {
+									try {
+										System.out.println(String.format(
+												"Status= %s, AutoContinue= %s, I will be paused.", m_model.getStatus(),
+												m_model.getPlan().isAutoContinue()));
+										synchronized (m_waitObj) {
+											m_waitObj.wait();
+										}
+									} catch (Exception e) {
+										// ignore it;
+										e.printStackTrace();
+									}
+									System.out.println("Some one clicked continue, I will be continue.");
+									if (DeployStatus.CANCELLING.getName().equals(m_model.getStatus())) {
+										System.out.println("Some one clicked cancel, I will cancel rest tasks.");
+										cancelResetTasks();
+										System.out.println("Canceled success!");
+										break;
+									}
+								} else {
+									System.out.println("In auto mode, I will sleep for a while: " + m_interval);
+									if (m_interval > 0) {
+										TimeUnit.SECONDS.sleep(m_interval);
+									}
+								}
+								int batchSize = m_policy.getBatchSize();
+								System.out.println("I will submit next roolout task now!");
+								pair = submitNextRolloutTask(t, batchSize);
+								System.out.println("Submitted Success!");
+							} else {
+								pair = null;
+							}
 						}
 					}
 				}
@@ -226,6 +294,8 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				} catch (Exception e) {
 					m_logger.warn(String.format("Error when processing onEnd of deploy(%s)!", m_model.getId()), e);
 					t.setStatus(e);
+				} finally {
+					m_deployPauseControl.remove(m_model.getId());
 				}
 
 				t.complete();

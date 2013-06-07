@@ -24,6 +24,7 @@ import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao;
 import com.dianping.phoenix.console.dal.deploy.DeploymentDetailsEntity;
 import com.dianping.phoenix.console.dal.deploy.DeploymentEntity;
 import com.dianping.phoenix.deploy.DeployPlan;
+import com.dianping.phoenix.deploy.DeployStatus;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.project.entity.BussinessLine;
@@ -31,22 +32,21 @@ import com.dianping.phoenix.project.entity.Project;
 import com.dianping.phoenix.project.entity.Root;
 import com.dianping.phoenix.project.transform.DefaultSaxParser;
 
-public class DefaultProjectManager implements ProjectManager, Initializable, LogEnabled{
+public class DefaultProjectManager implements ProjectManager, Initializable, LogEnabled {
 	@Inject
 	private DeploymentDao m_deploymentDao;
 
 	@Inject
 	private DeploymentDetailsDao m_deploymentDetailsDao;
-	
+
 	@Inject
 	private DeviceManager m_deviceManager;
 
 	private Root m_root;
-	
+
 	private Logger m_logger;
 
 	private Map<String, DeployModel> m_models = new HashMap<String, DeployModel>();
-
 
 	@Override
 	public void enableLogging(Logger logger) {
@@ -77,7 +77,7 @@ public class DefaultProjectManager implements ProjectManager, Initializable, Log
 		try {
 			Deployment d = m_deploymentDao.findByPK(deployId, DeploymentEntity.READSET_FULL);
 			List<DeploymentDetails> detailsList = m_deploymentDetailsDao.findAllByDeployId(deployId,
-			      DeploymentDetailsEntity.READSET_FULL);
+					DeploymentDetailsEntity.READSET_FULL);
 			DeployModel model = new DeployModel();
 			DeployPlan plan = new DeployPlan();
 
@@ -90,14 +90,20 @@ public class DefaultProjectManager implements ProjectManager, Initializable, Log
 				}
 			}
 
-			model.setId(deployId);
-			model.setDomain(d.getDomain());
-			model.setPlan(plan);
-
 			plan.setAbortOnError(d.getErrorPolicy() == 1);
 			plan.setPolicy(d.getStrategy());
 			plan.setVersion(d.getWarVersion());
 			plan.setSkipTest(d.getSkipTest() == 1);
+			plan.setAutoContinue(d.getAutoContinue() == 1);
+			plan.setDeployInterval(d.getDeployInterval());
+
+			model.setId(deployId);
+			model.setDomain(d.getDomain());
+			model.setPlan(plan);
+			model.setAbortOnError(plan.isAbortOnError());
+			model.setSkipTest(plan.isSkipTest());
+			model.setVersion(d.getWarVersion());
+			model.setStatus(DeployStatus.getById(d.getStatus(), DeployStatus.UNKNOWN).getName());
 
 			storeModel(model);
 			return model;
@@ -110,19 +116,16 @@ public class DefaultProjectManager implements ProjectManager, Initializable, Log
 		return null;
 	}
 
-
-
 	@Override
 	public void initialize() throws InitializationException {
 		try {
 			m_root = readConfigFromFile();
 		} catch (Exception e) {
-			throw new RuntimeException(
-			      "Unable to load deploy model from resource(project.xml)!", e);
+			throw new RuntimeException("Unable to load deploy model from resource(project.xml)!", e);
 		}
 	}
-	
-	private Root readConfigFromFile() throws SAXException, IOException{
+
+	private Root readConfigFromFile() throws SAXException, IOException {
 		Root root = null;
 		File file = new File("/data/appdatas/phoenix/project.xml");
 		InputStream in = null;
@@ -139,18 +142,18 @@ public class DefaultProjectManager implements ProjectManager, Initializable, Log
 		}
 
 		root = DefaultSaxParser.parse(in);
-		
+
 		return root;
 	}
 
 	@Override
 	public List<BussinessLine> getBussinessLineList() throws Exception {
-		
+
 		Root root;
-		try{
+		try {
 			root = readConfigFromFile();
-		} catch(Exception e) {
-			m_logger.warn("Fail to read project.xml",e);
+		} catch (Exception e) {
+			m_logger.warn("Fail to read project.xml", e);
 			root = m_root;
 		}
 		List<BussinessLine> list = new ArrayList<BussinessLine>();
@@ -158,7 +161,6 @@ public class DefaultProjectManager implements ProjectManager, Initializable, Log
 		list.addAll(root.getBussinessLines().values());
 		return list;
 	}
-	
 
 	@Override
 	public void storeModel(DeployModel model) {

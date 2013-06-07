@@ -65,9 +65,46 @@
 					<span class="label label-failed">failed&nbsp;</span>
 				</p>
 			</div>
-
 			<div id="result" style="display: none"></div>
+			
+			<button id="cancel" class="btn btn-danger pull-right" onclick="ctrl_cancel()">Cancel Rest</button>
+			<button id="continue" class="btn btn-primary pull-right" onclick="ctrl_continue()">Continue</button>
+			<button id="pause" class="btn btn-warning pull-right" onclick="ctrl_pause()">Pause</button>
 		</div>
+		<script type="text/javascript">
+			function ctrl_cancel() {
+				$.ajax("", {
+					data : $.param({
+						"op" : "cancel",
+					}, true),
+					cache : false,
+					success : function(result) {
+					},
+				});
+			}
+	
+			function ctrl_continue() {
+				$.ajax("", {
+					data : $.param({
+						"op" : "continue",
+					}, true),
+					cache : false,
+					success : function(result) {
+					},
+				});
+			}
+
+			function ctrl_pause() {
+				$.ajax("", {
+					data : $.param({
+						"op" : "pause",
+					}, true),
+					cache : false,
+					success : function(result) {
+					},
+				});
+			}
+		</script>
 		<div class="span8">
 			<div class="row-fluid">
 				<div class="page-header">

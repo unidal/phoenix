@@ -49,7 +49,7 @@
 		</component>
 		<component>
 			<role>com.dianping.phoenix.service.DeviceManager</role>
-			<implementation>com.dianping.phoenix.service.DefaultDeviceManager</implementation>
+			<implementation>com.dianping.phoenix.service.MockDeviceManager</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -129,18 +129,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.deploy.DeployManager</role>
-			<implementation>com.dianping.phoenix.deploy.internal.DefaultDeployManager</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.service.ProjectManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.deploy.DeployListener</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
 			<role>com.dianping.phoenix.deploy.DeployListener</role>
 			<implementation>com.dianping.phoenix.deploy.internal.DefaultDeployListener</implementation>
 			<requirements>
@@ -161,6 +149,18 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.deploy.DeployManager</role>
+			<implementation>com.dianping.phoenix.deploy.internal.DefaultDeployManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.service.ProjectManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.DeployListener</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -308,6 +308,9 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.deploy.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.deploy.DeployManager</role>
 				</requirement>
 			</requirements>
 		</component>

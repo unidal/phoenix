@@ -11,7 +11,13 @@ public interface DeployListener {
 
 	public void onDeployStart(int deployId) throws Exception;
 
+	public void onDeployPause(int deployId) throws Exception;
+
+	public void onDeployCancel(int deployId) throws Exception;
+
 	public void onHostCancel(int deployId, String host) throws Exception;
-	
+
 	public void onHostEnd(int deployId, String host) throws Exception;
+
+	public void onDeployContinue(int deployId) throws Exception;
 }

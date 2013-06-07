@@ -72,7 +72,7 @@ public class AgentStatusReporter extends ContainerHolder implements Initializabl
 								}
 								Cat.getProducer().logEvent(
 										domain.getWar().getName() + ":" + toValidVersion(domain.getWar().getVersion()),
-										toValidVersion(kernelWar.getVersion()) + ":" + resp.getIp(), Event.SUCCESS,
+										toValidVersion(kernelWar == null ? null : kernelWar.getVersion()) + ":" + resp.getIp(), Event.SUCCESS,
 										domainLibsKVPair.toString());
 							}
 						}
