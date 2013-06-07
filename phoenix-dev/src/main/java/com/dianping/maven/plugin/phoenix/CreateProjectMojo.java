@@ -16,7 +16,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.unidal.maven.plugin.common.PropertyProviders;
 
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
-import com.dianping.maven.plugin.phoenix.model.entity.GitConf;
 import com.dianping.maven.plugin.phoenix.model.entity.PhoenixProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Router;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
@@ -151,12 +150,6 @@ public class CreateProjectMojo extends AbstractMojo {
         router.setPort(8080);
         router.setVersion("0.1-SNAPSHOT");
         phoenixProject.setRouter(router);
-
-        // git conf
-        GitConf gitConf = new GitConf();
-        gitConf.setBranch("master");
-        gitConf.setRepositoryUrl("http://code.dianpingoa.com/arch/phoenix-maven-config.git");
-        phoenixProject.setGitConf(gitConf);
 
         model.setPhoenixProject(phoenixProject);
         return model;

@@ -4,13 +4,13 @@
 RULE lion change
 CLASS com.dianping.lion.client.InitializeConfig
 METHOD postProcessBeanFactory
+HELPER com.dianping.phoenix.router.byteman.ServiceLionBytemanDataLoader
 AT INVOKE setPts
 IF true
 #set($dollar = "$")
-DO #foreach($kv in $args.entrySet())
-   ${dollar}this.pts.put("${kv.key}", "${kv.value}");
-   #end
-   System.out.println("Phoenix runtime config modification complete...")
+DO    
+	${dollar}this.pts.putAll(loadServices("^servicelion-.*\.properties$"));
+	System.out.println("Phoenix runtime config modification complete...")
 ENDRULE
 
 RULE TemplateUtils

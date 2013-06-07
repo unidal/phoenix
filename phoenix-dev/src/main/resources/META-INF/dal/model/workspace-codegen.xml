@@ -6,12 +6,7 @@
     <entity-ref name="biz-project" type="list" names="biz-projects" />
   </entity>
   <entity name="phoenix-project">
-    <entity-ref name="git-conf" />
     <entity-ref name="router" />
-  </entity>
-  <entity name="git-conf">
-    <element name="repository-url" value-type="String" />
-    <element name="branch" value-type="String" />
   </entity>
   <entity name="router">
     <attribute name="version" value-type="String" />
