@@ -10,4 +10,6 @@ public interface DeployManager {
 	public boolean continueDeploy(int deployId);
 
 	public boolean cancelRestRollout(int deployId);
+
+	public void deployOld(int deployId);
 }

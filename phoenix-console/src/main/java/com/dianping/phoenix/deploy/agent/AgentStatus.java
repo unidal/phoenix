@@ -46,6 +46,10 @@ public enum AgentStatus {
 		return defaultStatus;
 	}
 
+	public static boolean isFinalStatus(AgentStatus status) {
+		return status == SUCCESS || status == FAILED;
+	}
+
 	public int getId() {
 		return m_id;
 	}

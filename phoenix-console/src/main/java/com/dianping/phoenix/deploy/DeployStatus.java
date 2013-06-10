@@ -10,7 +10,7 @@ public enum DeployStatus {
 	CANCELLING(10, "cancelling"),
 
 	PAUSING(11, "pausing"),
-	
+
 	UNKNOWN(999, "unknown");
 
 	private int m_id;
@@ -40,6 +40,10 @@ public enum DeployStatus {
 		}
 
 		return defaultStatus;
+	}
+
+	public static boolean isFinalStatus(DeployStatus status) {
+		return status == SUCCESS || status == WARNING;
 	}
 
 	public int getId() {

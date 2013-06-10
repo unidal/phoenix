@@ -45,6 +45,16 @@ public class DefaultDeployManager extends ContainerHolder implements DeployManag
 		return model.getId();
 	}
 
+	@Override
+	public void deployOld(int deployId) {
+		DeployModel model = m_projectManager.findModel(deployId);
+		DeployStatus status = DeployStatus.getByName(model.getStatus(), null);
+		if (model != null && !DeployStatus.isFinalStatus(status)) {
+			DeployExecutor executor = lookup(DeployExecutor.class, model.getPlan().getPolicy());
+			executor.submitOld(model);
+		}
+	}
+
 	private DeployExecutor getExecutor(int deployId) {
 		for (DeployExecutor e : m_deployExecutors) {
 			if (e.isDeploying(deployId)) {
@@ -101,6 +111,8 @@ public class DefaultDeployManager extends ContainerHolder implements DeployManag
 			}
 			e.continueDeploy(deployId);
 			return true;
+		} else {
+			deployOld(deployId);
 		}
 		return false;
 	}

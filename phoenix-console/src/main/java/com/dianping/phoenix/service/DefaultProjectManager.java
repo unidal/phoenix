@@ -83,9 +83,17 @@ public class DefaultProjectManager implements ProjectManager, Initializable, Log
 
 			for (DeploymentDetails details : detailsList) {
 				String rawLog = details.getRawLog();
-				DeployModel deploy = com.dianping.phoenix.deploy.model.transform.DefaultSaxParser.parse(rawLog);
+				DeployModel deploy;
 
-				for (HostModel host : deploy.getHosts().values()) {
+				if (rawLog != null) {
+					deploy = com.dianping.phoenix.deploy.model.transform.DefaultSaxParser.parse(rawLog);
+					for (HostModel host : deploy.getHosts().values()) {
+						model.addHost(host);
+					}
+				} else {
+					HostModel host = new HostModel();
+					host.setId(details.getId());
+					host.setIp(details.getIpAddress());
 					model.addHost(host);
 				}
 			}

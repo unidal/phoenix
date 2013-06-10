@@ -181,7 +181,7 @@ public class DefaultDeployListener implements DeployListener {
 		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
 		String rawLog = new DeployModel().addHost(hostModel).toString();
 
-		if (status == AgentStatus.SUCCESS || status == AgentStatus.FAILED || status == AgentStatus.DEPLOYING) {
+		if (AgentStatus.isFinalStatus(status) || status == AgentStatus.DEPLOYING) {
 			details.setStatus(status.getId());
 		} else {
 			throw new RuntimeException(String.format("Internal error: unknown status(%s) of host(%s) of deploy(%s)!",

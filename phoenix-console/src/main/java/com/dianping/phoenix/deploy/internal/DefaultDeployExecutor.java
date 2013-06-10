@@ -105,6 +105,15 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		Threads.forGroup("Phoenix").start(task);
 	}
 
+	@Override
+	public synchronized void submitOld(DeployModel model) {
+		Object waitObj = new Object();
+		ControllerTask task = new ControllerTask(m_agentListener, model, waitObj);
+
+		m_deployPauseControl.put(model.getId(), waitObj);
+		Threads.forGroup("Phoenix").start(task);
+	}
+
 	class ControllerTask implements Task {
 		public static final int MAX_INTERVAL = Integer.MAX_VALUE;
 
@@ -126,24 +135,34 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private Object m_waitObj;
 
+		private boolean m_old;
+
 		public ControllerTask(AgentListener listener, DeployModel model, List<String> hosts, String warType,
-				String logUri, Object object) {
+				String logUri, Object waitObject) {
 			m_listener = listener;
 			m_model = model;
 			m_hosts = hosts;
 			m_warType = warType;
 			m_logUri = logUri;
-			m_waitObj = object;
+			m_waitObj = waitObject;
+			m_old = false;
+			setInterval(m_model);
+		}
 
+		public ControllerTask(AgentListener listener, DeployModel model, Object waitObject) {
+			m_listener = listener;
+			m_model = model;
+			m_old = true;
+			m_waitObj = waitObject;
+			setInterval(m_model);
+		}
+
+		private void setInterval(DeployModel model) {
 			if (m_model.getPlan().isAutoContinue()) {
 				m_interval = m_model.getPlan().getDeployInterval();
 			} else {
 				m_interval = MAX_INTERVAL;
 			}
-		}
-
-		public void setInterval(int interval) {
-			m_interval = interval;
 		}
 
 		private void cancelResetTasks() {
@@ -209,16 +228,58 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			host.addSegment(new SegmentModel().setText(text));
 			return this;
 		}
-
+		private Pair<CountDownLatch, List<String>> submitNextBatch(Transaction t, boolean waitObjSwitch) {
+			Pair<CountDownLatch, List<String>> pair = null;
+			if (m_hostIndex < m_hosts.size()) {
+				if (DeployStatus.PAUSING.getName().equals(m_model.getStatus()) || !m_model.getPlan().isAutoContinue()) {
+					try {
+						System.out.println(String.format("Status= %s, AutoContinue= %s, I will be paused.",
+								m_model.getStatus(), m_model.getPlan().isAutoContinue()));
+						if (waitObjSwitch) {
+							synchronized (m_waitObj) {
+								m_waitObj.wait();
+							}
+						}
+					} catch (Exception e) {
+						// ignore it;
+						e.printStackTrace();
+					}
+					System.out.println("Some one clicked continue, I will be continue.");
+					if (DeployStatus.CANCELLING.getName().equals(m_model.getStatus())) {
+						System.out.println("Some one clicked cancel, I will cancel rest tasks.");
+						cancelResetTasks();
+						System.out.println("Canceled success!");
+						return pair;
+					}
+				} else {
+					System.out.println("In auto mode, I will sleep for a while: " + m_interval);
+					if (m_interval > 0) {
+						try {
+							TimeUnit.SECONDS.sleep(m_interval);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				int batchSize = m_policy.getBatchSize();
+				System.out.println("I will submit next roolout task now!");
+				pair = submitNextRolloutTask(t, batchSize);
+				System.out.println("Submitted Success!");
+			}
+			return pair;
+		}
 		@Override
 		public void run() {
+			if (m_old) {
+				loadDeployModel();
+			}
+
 			Transaction t = Cat.newTransaction(m_warType, m_model.getDomain() + ":" + m_model.getId());
 			reportDeployInfosToCat();
 
+			Pair<CountDownLatch, List<String>> pair = m_old ? submitNextBatch(t, false) : submitNextRolloutTask(t, 1);
+
 			m_active = true;
-
-			Pair<CountDownLatch, List<String>> pair = submitNextRolloutTask(t, 1);
-
 			try {
 				while (m_active) {
 					if (pair == null) { // no more hosts
@@ -246,40 +307,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 							cancelResetTasks();
 							break;
 						} else {
-							if (m_hostIndex < m_hosts.size()) {
-								if (DeployStatus.PAUSING.getName().equals(m_model.getStatus())
-										|| !m_model.getPlan().isAutoContinue()) {
-									try {
-										System.out.println(String.format(
-												"Status= %s, AutoContinue= %s, I will be paused.", m_model.getStatus(),
-												m_model.getPlan().isAutoContinue()));
-										synchronized (m_waitObj) {
-											m_waitObj.wait();
-										}
-									} catch (Exception e) {
-										// ignore it;
-										e.printStackTrace();
-									}
-									System.out.println("Some one clicked continue, I will be continue.");
-									if (DeployStatus.CANCELLING.getName().equals(m_model.getStatus())) {
-										System.out.println("Some one clicked cancel, I will cancel rest tasks.");
-										cancelResetTasks();
-										System.out.println("Canceled success!");
-										break;
-									}
-								} else {
-									System.out.println("In auto mode, I will sleep for a while: " + m_interval);
-									if (m_interval > 0) {
-										TimeUnit.SECONDS.sleep(m_interval);
-									}
-								}
-								int batchSize = m_policy.getBatchSize();
-								System.out.println("I will submit next roolout task now!");
-								pair = submitNextRolloutTask(t, batchSize);
-								System.out.println("Submitted Success!");
-							} else {
-								pair = null;
-							}
+							pair = submitNextBatch(t, true);
 						}
 					}
 				}
@@ -300,6 +328,17 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 				t.complete();
 			}
+		}
+		private void loadDeployModel() {
+			m_hosts = new ArrayList<String>();
+			for (HostModel host : m_model.getHosts().values()) {
+				AgentStatus status = AgentStatus.getByName(host.getStatus(), null);
+				if (!AgentStatus.isFinalStatus(status) && !host.getIp().equals(DeployConstant.SUMMARY)) {
+					m_hosts.add(host.getIp());
+				}
+			}
+			m_warType = m_model.getPlan().getWarType();
+			m_logUri = "Unknown URL";
 		}
 
 		private void reportDeployInfosToCat() {
@@ -592,15 +631,15 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 			try {
 				switch (state) {
-				case CREATED:
-					m_listener.onStart(this);
-					break;
-				case SUCCESSFUL:
-					m_listener.onEnd(this, AgentStatus.SUCCESS);
-					break;
-				case FAILED:
-					m_listener.onEnd(this, AgentStatus.FAILED);
-					break;
+					case CREATED :
+						m_listener.onStart(this);
+						break;
+					case SUCCESSFUL :
+						m_listener.onEnd(this, AgentStatus.SUCCESS);
+						break;
+					case FAILED :
+						m_listener.onEnd(this, AgentStatus.FAILED);
+						break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
