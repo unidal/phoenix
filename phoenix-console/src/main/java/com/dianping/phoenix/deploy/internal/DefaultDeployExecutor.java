@@ -233,24 +233,23 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			if (m_hostIndex < m_hosts.size()) {
 				if (DeployStatus.PAUSING.getName().equals(m_model.getStatus()) || !m_model.getPlan().isAutoContinue()) {
 					try {
-						System.out.println(String.format("Status= %s, AutoContinue= %s, I will be paused.",
-								m_model.getStatus(), m_model.getPlan().isAutoContinue()));
 						if (waitObjSwitch) {
+							m_deployListener.onDeployPause(m_model.getId());
+							m_model.setStatus(DeployStatus.PAUSING.getName());
+							System.out.println(String.format("Status= %s, AutoContinue= %s, I will be paused.",
+									m_model.getStatus(), m_model.getPlan().isAutoContinue()));
 							synchronized (m_waitObj) {
 								m_waitObj.wait();
 							}
+						} else {
+							System.out.println(String.format("Status= %s, AutoContinue= %s, I will be paused.",
+									m_model.getStatus(), m_model.getPlan().isAutoContinue()));
 						}
 					} catch (Exception e) {
 						// ignore it;
 						e.printStackTrace();
 					}
 					System.out.println("Some one clicked continue, I will be continue.");
-					if (DeployStatus.CANCELLING.getName().equals(m_model.getStatus())) {
-						System.out.println("Some one clicked cancel, I will cancel rest tasks.");
-						cancelResetTasks();
-						System.out.println("Canceled success!");
-						return pair;
-					}
 				} else {
 					System.out.println("In auto mode, I will sleep for a while: " + m_interval);
 					if (m_interval > 0) {
@@ -261,12 +260,33 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 						}
 					}
 				}
+
+				if (cancelRestIfNeeded()) {
+					return pair;
+				}
+
 				int batchSize = m_policy.getBatchSize();
 				System.out.println("I will submit next roolout task now!");
 				pair = submitNextRolloutTask(t, batchSize);
 				System.out.println("Submitted Success!");
 			}
 			return pair;
+		}
+		private boolean cancelRestIfNeeded() {
+			if (DeployStatus.CANCELLING.getName().equals(m_model.getStatus())) {
+				System.out.println("Some one clicked cancel, I will cancel rest tasks.");
+				cancelResetTasks();
+				System.out.println("Canceled success!");
+				return true;
+			} else {
+				try {
+					m_deployListener.onDeployContinue(m_model.getId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				m_model.setStatus(DeployStatus.DEPLOYING.getName());
+				return false;
+			}
 		}
 		@Override
 		public void run() {

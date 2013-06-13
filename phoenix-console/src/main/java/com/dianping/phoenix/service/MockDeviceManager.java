@@ -12,6 +12,12 @@ public class MockDeviceManager extends DefaultDeviceManager implements DeviceMan
 		p.setOwner("marsqing");
 		p.setDescription("user-web for test");
 
+		Host hosty = new Host();
+		hosty.setIp("192.168.26.48");
+		hosty.setEnv("DEV");
+		hosty.setStatus("在线");
+		p.addHost(hosty);
+		
 		for (int idx = 1; idx <= 5; idx++) {
 			Host host = new Host();
 			host.setIp(String.format("127.0.0.%d", idx));

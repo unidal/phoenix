@@ -101,14 +101,22 @@ public class DefaultDeployListener implements DeployListener {
 				DeploymentDetailsEntity.READSET_FULL);
 		DeployStatus status = DeployStatus.SUCCESS;
 		DeploymentDetails s = null;
+		boolean warn = false;
 
 		for (DeploymentDetails details : list) {
-			if (!DeployConstant.SUMMARY.equals(details.getIpAddress())
-					&& details.getStatus() != AgentStatus.SUCCESS.getId()) {
-				status = DeployStatus.WARNING;
+			if (!DeployConstant.SUMMARY.equals(details.getIpAddress())) {
+				if (details.getStatus() != AgentStatus.SUCCESS.getId()) {
+					status = DeployStatus.FAILED;
+				} else {
+					warn = true;
+				}
 			} else if (DeployConstant.SUMMARY.equals(details.getIpAddress())) {
 				s = details;
 			}
+		}
+
+		if (warn) {
+			status = DeployStatus.WARNING;
 		}
 
 		if (s == null) {
@@ -135,7 +143,6 @@ public class DefaultDeployListener implements DeployListener {
 			model.setStatus(status.getName());
 		}
 	}
-
 	@Override
 	public void onDeployStart(int deployId) throws Exception {
 		DeployModel model = m_projectManager.findModel(deployId);

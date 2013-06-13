@@ -72,6 +72,25 @@
 			<button id="pause" class="btn btn-warning pull-right" onclick="ctrl_pause()">Pause</button>
 		</div>
 		<script type="text/javascript">
+			$(document).ready(setButtonStatus);
+			
+			function setButtonStatus(){
+				var deployStatus = $("#deploy_status").text();
+				if(deployStatus=="successful" || deployStatus=="warning" || deployStatus=="failed") {
+					$("#cancel").hide();
+					$("#continue").hide();
+					$("#pause").hide();
+				} else if(deployStatus == "pausing"){
+					$("#pause").hide();
+					$("#cancel").show();
+					$("#continue").show();
+				} else if(deployStatus == "deploying"){
+					$("#pause").show();
+					$("#continue").hide();
+					$("#cancel").hide();
+				}
+			}
+			
 			function ctrl_cancel() {
 				$.ajax("", {
 					data : $.param({
@@ -79,7 +98,7 @@
 					}, true),
 					cache : false,
 					success : function(result) {
-					},
+					}
 				});
 			}
 	
@@ -90,7 +109,7 @@
 					}, true),
 					cache : false,
 					success : function(result) {
-					},
+					}
 				});
 			}
 
@@ -101,7 +120,7 @@
 					}, true),
 					cache : false,
 					success : function(result) {
-					},
+					}
 				});
 			}
 		</script>

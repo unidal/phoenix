@@ -1,6 +1,8 @@
 package com.dianping.phoenix.deploy;
 
 public enum DeployStatus {
+	FAILED(5, "failed"), // complete with all failed
+
 	SUCCESS(3, "successful"), // completed with all successful
 
 	DEPLOYING(2, "deploying"),
