@@ -1,10 +1,10 @@
-var pathRegex = new RegExp("[^:]+://[^/]+(.*)");
+var pathRegex = new RegExp("[^:]+://(.*)");
 var hostRegex = new RegExp("[^:]+://([^/]+).*");
 var body = document.body; 
 
 function pathOf(href) {
 	var path = href.replace(pathRegex, "$1");
-	return path == "" ? "/" : path;
+	return path;
 }
 
 function shouldReplace(href) {
@@ -22,7 +22,7 @@ function shouldReplace(href) {
 function newHrefFor(oldHref) {
 	var loc = window.location
 	var newHref = loc.protocol + "//" + loc.host;
-	newHref = newHref + pathOf(oldHref);
+	newHref = newHref + "/" + pathOf(oldHref);
 	return newHref;
 }
 
