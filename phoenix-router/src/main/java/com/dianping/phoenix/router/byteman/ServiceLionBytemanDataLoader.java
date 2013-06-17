@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import com.dianping.phoenix.ResourceUtils;
+
 /**
  * @author Leo Liang
  * 
