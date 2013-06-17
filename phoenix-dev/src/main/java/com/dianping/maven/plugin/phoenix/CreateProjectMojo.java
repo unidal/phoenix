@@ -2,6 +2,7 @@ package com.dianping.maven.plugin.phoenix;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,9 +16,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.unidal.maven.plugin.common.PropertyProviders;
 
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
-import com.dianping.maven.plugin.phoenix.model.entity.PhoenixProject;
-import com.dianping.maven.plugin.phoenix.model.entity.Router;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
+import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
 import com.dianping.maven.plugin.tools.console.ConsoleIO;
 import com.dianping.maven.plugin.tools.remedy.PomRemedy;
 
@@ -136,8 +136,15 @@ public class CreateProjectMojo extends AbstractMojo {
 		}
 	}
 
-	private Workspace buildModel(List<String> bizProjects, String wsDir) {
-		Workspace model = new Workspace();
+	private Workspace buildModel(List<String> bizProjects, String wsDir) throws MojoFailureException {
+		InputStream defaultWorkspaceXml = this.getClass().getResourceAsStream("/workspace-default.xml");
+		Workspace model;
+		try {
+			model = DefaultSaxParser.parse(defaultWorkspaceXml);
+		} catch (Exception e) {
+			throw new MojoFailureException("error read workspace-default.xml", e);
+		}
+		
 		model.setDir(wsDir);
 		for (String bizProjectName : bizProjects) {
 			BizProject bizProject = new BizProject();
@@ -145,15 +152,6 @@ public class CreateProjectMojo extends AbstractMojo {
 			model.addBizProject(bizProject);
 		}
 
-		PhoenixProject phoenixProject = new PhoenixProject();
-		// router
-		Router router = new Router();
-		router.setDefaultUrlPattern("http://w.51ping.com%s");
-		router.setPort(8080);
-		router.setVersion("0.1-SNAPSHOT");
-		phoenixProject.setRouter(router);
-
-		model.setPhoenixProject(phoenixProject);
 		return model;
 	}
 }

@@ -1,9 +1,17 @@
-var pathRegex = new RegExp("[^:]+://[^/]+(.*)");
+var pathRegex = new RegExp("[^:]+://([^/]+)(.*)");
 var hostRegex = new RegExp("[^:]+://([^/]+).*");
 var body = document.body; 
 
+function setCookie(name, value) {
+	var exdate=new Date();
+	exdate.setDate(exdate.getDate() + 7);
+	var escapedValue = escape(value) + "; expires=" + exdate.toUTCString();
+	document.cookie = name + "=" + escapedValue;
+}
+
 function pathOf(href) {
-	var path = href.replace(pathRegex, "$1");
+	setCookie("phoenixVirtualServer", href.replace(pathRegex, "$1"));
+	var path = href.replace(pathRegex, "$2");
 	return path == "" ? "/" : path;
 }
 

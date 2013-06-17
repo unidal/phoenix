@@ -11,6 +11,10 @@
   <entity name="router">
     <attribute name="version" value-type="String" />
     <attribute name="port" value-type="int" />
+    <entity-ref name="virtual-server" type="list" names="virtual-servers" />
+  </entity>
+  <entity name="virtual-server">
+    <attribute name="name" value-type="String" />
     <element name="default-url-pattern" value-type="String" />
   </entity>
   <entity name="biz-project">

@@ -13,7 +13,7 @@ import com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGene
 import com.dianping.maven.plugin.tools.generator.dynamic.DefaultF5Manager;
 import com.dianping.maven.plugin.tools.generator.dynamic.F5Manager;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator;
-import com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieverContext;
 import com.dianping.maven.plugin.tools.vcs.CodeRetrieverManager;
@@ -49,7 +49,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
         all.add(C(ServiceLionPropertiesGenerator.class));
         all.add(C(LaunchFileGenerator.class));
         all.add(C(BizServerPropertiesGenerator.class));
-        all.add(C(RouterRuleGenerator.class));
+        all.add(C(UrlRuleGenerator.class));
 
         all.add(C(F5Manager.class, DefaultF5Manager.class));
         all.add(C(BytemanScriptGenerator.class));
@@ -60,7 +60,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
                 .req(ServiceLionPropertiesGenerator.class) //
                 .req(LaunchFileGenerator.class) //
                 .req(BizServerPropertiesGenerator.class) //
-                .req(RouterRuleGenerator.class) //
+                .req(UrlRuleGenerator.class) //
                 .req(F5Manager.class)//
                 .req(RepositoryService.class)//
                 .req(BytemanScriptGenerator.class) //

@@ -11,6 +11,7 @@ import com.dianping.phoenix.router.model.transform.DefaultSaxParser;
 
 public class MockConfigManager extends ConfigManager {
 
+	@SuppressWarnings("unused")
 	private RouterRules routerRules;
 
 	@Override
@@ -29,11 +30,6 @@ public class MockConfigManager extends ConfigManager {
 			throw new InitializationException(String.format("Unable to load configuration file(%s)!", mockConfigPath),
 					e);
 		}
-	}
-
-	@Override
-	public RouterRules getRouterRules() {
-		return routerRules;
 	}
 
 }
