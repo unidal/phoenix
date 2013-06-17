@@ -61,8 +61,8 @@
 			<implementation>com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator</implementation>
 		</component>
 		<component>
-			<role>com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator</role>
-			<implementation>com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator</implementation>
+			<role>com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleGenerator</role>
+			<implementation>com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleGenerator</implementation>
 		</component>
 		<component>
 			<role>com.dianping.maven.plugin.tools.generator.dynamic.F5Manager</role>
@@ -90,7 +90,7 @@
 					<role>com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator</role>
+					<role>com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleGenerator</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.maven.plugin.tools.generator.dynamic.F5Manager</role>
