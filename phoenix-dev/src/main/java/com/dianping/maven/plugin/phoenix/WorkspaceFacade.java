@@ -18,8 +18,8 @@ import com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGene
 import com.dianping.maven.plugin.tools.generator.dynamic.F5Manager;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator;
-import com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleContext;
-import com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleContext;
+import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.BizServerContextVisitor;
@@ -47,7 +47,7 @@ public class WorkspaceFacade {
     @Inject
     private BizServerPropertiesGenerator   bizGenerator;
     @Inject
-    private RouterRuleGenerator            routerGenerator;
+    private UrlRuleGenerator            routerGenerator;
     @Inject
     private F5Manager                      f5Mgr;
     @Inject
@@ -151,7 +151,7 @@ public class WorkspaceFacade {
         model.accept(serviceLionCtxVisitor);
         model.accept(launchFileContextVisitor);
 
-        createRouterRuleXml(resourceFileFor(projectDir, "url-rules.xml"), routerRuleCtxVisitor.getVisitResult());
+        createUrlRuleXml(resourceFileFor(projectDir, ""), routerRuleCtxVisitor.getVisitResult());
         createBizServerProperties(resourceFileFor(projectDir, "phoenix.properties"),
                 bizServerCtxVisitor.getVisitResult());
         createLionProperties(resourceFileFor(projectDir, "router-service.properties"), serviceLionCtxVisitor.getVisitResult());
@@ -167,8 +167,8 @@ public class WorkspaceFacade {
         return wms.modify(wsCtx, System.out);
     }
 
-    void createRouterRuleXml(File routerRulesFile, RouterRuleContext ctx) throws IOException {
-        routerGenerator.generate(routerRulesFile, ctx);
+    void createUrlRuleXml(File resourceDir, UrlRuleContext ctx) throws IOException {
+        routerGenerator.generate(resourceDir, ctx);
     }
 
     void createBizServerProperties(File bizServerFile, BizServerContext ctx) throws IOException {

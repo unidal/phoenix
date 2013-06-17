@@ -1,0 +1,49 @@
+<router-rules>
+<pool name='Default' url-pattern='http://tjava.51ping.com%s' />
+<!--pool name='base_cps-redirect-web' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='tuangou_events' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='tuan_tuangou-event' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='Web.TuanGou' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='Web.TuanGou.Notify' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='Web.TuanGou.New' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<f5-rule target-pool='base_cps-redirect-web'>
+	<pattern>^/p/.*</pattern>
+</f5-rule>
+<f5-rule target-pool='tuangou_events'>
+	<pattern>^/subject/.*</pattern>
+</f5-rule>
+<f5-rule target-pool='tuan_tuangou-event'>
+	<pattern>^/topic/.*</pattern>
+	<pattern>^/topics/.*</pattern>
+</f5-rule>
+<f5-rule target-pool='tuan_tuangou-event'>
+	<pattern>^/event/.*</pattern>
+</f5-rule>
+<f5-rule target-pool='tuangou_events'>
+	<pattern>^/events/.*</pattern>
+</f5-rule>
+<f5-rule target-pool='Web.TuanGou'>
+	<pattern>/sitemap-category-\d+.xml.*</pattern>
+</f5-rule>
+<f5-rule target-pool='Web.TuanGou.Notify'>
+	<pattern>^/notify.*</pattern>
+	<pattern>^/paygate.*</pattern>
+</f5-rule>
+<f5-rule target-pool='Web.TuanGou'>
+	<pattern>^/t/img/icon/sina.png.*</pattern>
+	<pattern>^/t/img/icon/qq.png.*</pattern>
+	<pattern>^/charge.*</pattern>
+	<pattern>^/verification.*</pattern>
+	<pattern>^/return/alipay.*</pattern>
+	<pattern>^/redirect.*</pattern>
+	<pattern>^/deal.v.*</pattern>
+	<pattern>^/order.v.*</pattern>
+	<pattern>^/buy.*</pattern>
+	<pattern>^/3thqueryorder.*</pattern>
+	<pattern>^/pages.deal/dealindex.aspx.*</pattern>
+	<pattern>/\?q=.*</pattern>
+</f5-rule>
+<f5-rule target-pool='Web.TuanGou.New'>
+	<pattern>.*</pattern>
+</f5-rule>
+</router-rules>

@@ -22,7 +22,7 @@ import com.dianping.maven.plugin.tools.generator.dynamic.BizServerContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.F5Pool;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator;
-import com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleContext;
+import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator;
 import com.dianping.maven.plugin.tools.wms.WorkspaceContext;
@@ -86,11 +86,10 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         File routerRulesXml = new File(tmpDir, "router-rules.xml");
 
-        RouterRuleContext ctx = new RouterRuleContext();
-        ctx.setDefaultUrlPattern("http://w.51ping.com%s");
+        UrlRuleContext ctx = new UrlRuleContext();
         ctx.addLocalPool(new F5Pool("", "Web.Web_X_Userweb", "http://127.0.0.1:8080/_user-web%s"));
 
-        facade.createRouterRuleXml(routerRulesXml, ctx);
+        facade.createUrlRuleXml(routerRulesXml, ctx);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         IOUtils.copy(new FileInputStream(routerRulesXml), out);
 

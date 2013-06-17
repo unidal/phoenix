@@ -1,17 +1,17 @@
 package com.dianping.maven.plugin.tools.generator.dynamic.model.visitor;
 
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
-import com.dianping.maven.plugin.phoenix.model.entity.PhoenixProject;
+import com.dianping.maven.plugin.phoenix.model.entity.VirtualServer;
 import com.dianping.maven.plugin.tools.generator.dynamic.F5Manager;
 import com.dianping.maven.plugin.tools.generator.dynamic.F5Pool;
-import com.dianping.maven.plugin.tools.generator.dynamic.RouterRuleContext;
+import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleContext;
 
-public class RouterRuleContextVisitor extends AbstractVisitor<RouterRuleContext> {
+public class RouterRuleContextVisitor extends AbstractVisitor<UrlRuleContext> {
 
 	private F5Manager f5Mgr;
 
 	public RouterRuleContextVisitor(F5Manager f5Mgr) {
-		result = new RouterRuleContext();
+		result = new UrlRuleContext();
 		this.f5Mgr = f5Mgr;
 	}
 
@@ -26,9 +26,9 @@ public class RouterRuleContextVisitor extends AbstractVisitor<RouterRuleContext>
 	}
 
 	@Override
-	public void visitPhoenixProject(PhoenixProject phoenixProject) {
-		result.setDefaultUrlPattern(phoenixProject.getRouter().getDefaultUrlPattern());
-		super.visitPhoenixProject(phoenixProject);
+	public void visitVirtualServer(VirtualServer virtualServer) {
+		result.addVirtualServer(virtualServer);
+		super.visitVirtualServer(virtualServer);
 	}
 
 }

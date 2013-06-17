@@ -1,6 +1,7 @@
 <router-rules>
 
-<pool name='Default' url-pattern='${ctx.defaultUrlPattern}' />
+#set($vs = ${ctx.getVirtualServer("main")})
+<pool name='Default' url-pattern='${vs.defaultUrlPattern}' />
 
 #foreach($f5Pool in $ctx.localPoolList)
 <pool name='${f5Pool.poolName}' url-pattern='${f5Pool.url}' />

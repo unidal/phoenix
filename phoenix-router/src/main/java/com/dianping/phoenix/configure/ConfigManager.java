@@ -17,7 +17,7 @@ import com.dianping.phoenix.router.model.transform.DefaultSaxParser;
 public class ConfigManager implements Initializable {
 
     private final static Logger      log                         = Logger.getLogger(ConfigManager.class);
-    private final static String      virtualServerConfigFileName = "virtualServer.properties";
+    private final static String      virtualServerConfigFileName = "/virtualServer.properties";
     private Map<String, RouterRules> virtualServerRulesMapping   = new HashMap<String, RouterRules>();
 
     @Override
