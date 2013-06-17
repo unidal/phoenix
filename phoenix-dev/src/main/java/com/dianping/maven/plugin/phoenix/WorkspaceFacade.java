@@ -35,8 +35,8 @@ import com.dianping.maven.plugin.tools.wms.WorkspaceManagementException;
 import com.dianping.maven.plugin.tools.wms.WorkspaceManagementService;
 
 public class WorkspaceFacade {
-	
-	private static Logger log = Logger.getLogger(WorkspaceFacade.class);
+
+    private static Logger                  log = Logger.getLogger(WorkspaceFacade.class);
 
     @Inject
     private WorkspaceManagementService     wms;
@@ -47,7 +47,7 @@ public class WorkspaceFacade {
     @Inject
     private BizServerPropertiesGenerator   bizGenerator;
     @Inject
-    private UrlRuleGenerator            routerGenerator;
+    private UrlRuleGenerator               routerGenerator;
     @Inject
     private F5Manager                      f5Mgr;
     @Inject
@@ -55,25 +55,25 @@ public class WorkspaceFacade {
     @Inject
     private BytemanScriptGenerator         bytemanGenerator;
     @Inject
-    private RepositoryManager repoMgr;
-    
+    private RepositoryManager              repoMgr;
+
     public void init(File wsDir) {
-    	pullConfig(wsDir);
+        pullConfig(wsDir);
         repoMgr.init(wsDir);
     }
-    
+
     public List<String> getProjectList() {
-//    	return repoMgr.getProjectList().subList(0, 20);
-    	ArrayList<String> projectList = new ArrayList<String>();
-    	projectList.add("dpindex-web");
-    	projectList.add("shop-web");
-    	projectList.add("shoplist-web");
-    	projectList.add("user-web");
-    	projectList.add("user-service");
-    	projectList.add("user-base-service");
-    	projectList.add("shop-event-web");
-    	projectList.add("tuangou-web");
-    	return projectList;
+        // return repoMgr.getProjectList().subList(0, 20);
+        ArrayList<String> projectList = new ArrayList<String>();
+        projectList.add("dpindex-web");
+        projectList.add("shop-web");
+        projectList.add("shoplist-web");
+        projectList.add("user-web");
+        projectList.add("user-service");
+        projectList.add("user-base-service");
+        projectList.add("shop-event-web");
+        projectList.add("tuangou-web");
+        return projectList;
     }
 
     public void create(Workspace model) throws Exception {
@@ -109,11 +109,11 @@ public class WorkspaceFacade {
     }
 
     public void pullConfig(File wsDir) {
-        File configFolder = new File(wsDir, WorkspaceConstants.PHOENIX_ROOT_FOLDER + "config");
+        File configFolder = new File(wsDir, WorkspaceConstants.PHOENIX_CONFIG_FOLDER);
         if (configFolder.exists()) {
             FileUtils.deleteQuietly(configFolder);
         }
-        
+
         log.info("try to update phoenix config from remote git repository");
         try {
             repositoryService.checkout("phoenix-maven-config", configFolder, System.out);
@@ -123,20 +123,21 @@ public class WorkspaceFacade {
     }
 
     private void saveMeta(Workspace model) throws Exception {
-        FileUtils.writeStringToFile(new File(model.getDir(), WorkspaceConstants.WORKSPACE_META_FILENAME), model.toString(), "utf-8");
+        FileUtils.writeStringToFile(new File(model.getDir(), WorkspaceConstants.WORKSPACE_META_FILENAME),
+                model.toString(), "utf-8");
     }
 
     private File resourceFileFor(File rootDir, String fileName) {
-        return new File(rootDir, WorkspaceConstants.PHOENIX_ROOT_FOLDER + "phoenix-container/src/main/resources/" + fileName);
+        return new File(rootDir, WorkspaceConstants.PHOENIX_RESOURCE_FOLDER + fileName);
     }
-    
+
     private File rootFileFor(File rootDir, String fileName) {
-		return new File(rootDir, WorkspaceConstants.PHOENIX_CONTAINER_FOLDER + fileName);
-	}
-    
+        return new File(rootDir, WorkspaceConstants.PHOENIX_CONTAINER_FOLDER + fileName);
+    }
+
     private File metaFileFor(File rootDir, String fileName) {
-		return new File(rootDir, WorkspaceConstants.PHOENIX_META_FOLDER + fileName);
-	}
+        return new File(rootDir, WorkspaceConstants.PHOENIX_META_FOLDER + fileName);
+    }
 
     void createRuntimeResources(Workspace model) throws Exception {
         File projectDir = new File(model.getDir());
@@ -154,9 +155,17 @@ public class WorkspaceFacade {
         createUrlRuleXml(resourceFileFor(projectDir, ""), routerRuleCtxVisitor.getVisitResult());
         createBizServerProperties(resourceFileFor(projectDir, "phoenix.properties"),
                 bizServerCtxVisitor.getVisitResult());
-        createLionProperties(resourceFileFor(projectDir, "router-service.properties"), serviceLionCtxVisitor.getVisitResult());
+        createLionProperties(resourceFileFor(projectDir, "router-service.properties"),
+                serviceLionCtxVisitor.getVisitResult());
         createEcliseLaunchFile(rootFileFor(projectDir, "phoenix.launch"), launchFileContextVisitor.getVisitResult());
         createBytemanFile(metaFileFor(projectDir, "service-lion.btm"));
+        copyGitFileToClasspath(projectDir);
+    }
+
+    void copyGitFileToClasspath(File wsDir) throws IOException {
+        File srcFile = new File(new File(wsDir, WorkspaceConstants.PHOENIX_CONFIG_FOLDER), "virtualServer.properties");
+        File destDir = new File(wsDir, WorkspaceConstants.PHOENIX_RESOURCE_FOLDER);
+        FileUtils.copyFileToDirectory(srcFile, destDir);
     }
 
     File createSkeletonWorkspace(WorkspaceContext wsCtx) throws WorkspaceManagementException {
