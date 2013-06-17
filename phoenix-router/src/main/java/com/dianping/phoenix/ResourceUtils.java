@@ -13,7 +13,7 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.phoenix.router.byteman;
+package com.dianping.phoenix;
 
 import java.io.File;
 import java.io.IOException;
