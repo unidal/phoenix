@@ -38,13 +38,15 @@ rule when_req
   end
 
   rule if_stmt
-    (space 'if' space '{' condition space '}' space '{' action space '}') {
-        def value
-            condition.value
-        end
-        def pool_target
-            action.pool_target
-        end
+    (space 'if' space '{' condition space '}' space '{' actions:(action+) space '}') {
+		 def value
+			 condition.value
+		 end
+		 def pool_target
+			pool_target = nil
+			 actions.matches.each {|m| pool_target = m.pool_target unless m.pool_target==null}
+			 pool_target
+		 end
     }
   end
 
@@ -55,7 +57,7 @@ rule when_req
              end
              def pool_target
                 pool_target = nil
-                 actions.matches.each {|m| pool_target ||= m.pool_target}
+                 actions.matches.each {|m| pool_target = m.pool_target unless m.pool_target==null}
                  pool_target
              end
          }
@@ -79,28 +81,34 @@ rule when_req
     end
 
   rule action
-    (space pool_or_respond:(pool | http_respond | set_stmt | http_uri | node)) {
+    (space pool_or_respond:(pool | http_respond | set_stmt | http_uri | node | unset_stmt)) {
         def pool_target
             pool_or_respond.value
         end
     }
   end
 
+  rule unset_stmt
+    (space 'unset' [^\n]+) {
+      nil
+    }
+  end
+
   rule node
-      (space 'node' space host:[0-9\.]+ space port:[0-9\.]* [^\n]*) {
-          "#{host}:#{port}"
+      (space 'node' space host:[0-9\.]+ [ \t]* port:[0-9\.]* [^\n]*) {
+		nil
       }
     end
 
   rule http_uri
     (space 'HTTP::uri' [^\n]+) {
-        'HTTP::uri'
+		nil
     }
   end
 
   rule http_respond
     (space 'HTTP::respond' [^\n]+) {
-        'HTTP::respond'
+		nil
     }
   end
 
