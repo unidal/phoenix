@@ -99,6 +99,8 @@ public class CreateProjectMojo extends AbstractMojo {
                     choices.removeAll(ignoreProjects);
                 }
 
+                choices.removeAll(bizProjects);
+
                 bizProjects.addAll(new ConsoleIO().choice(choices, 3, "Which project(s) to add(separate by comma)"));
             } catch (IOException e) {
                 throw new MojoFailureException("error choose projects", e);
@@ -115,8 +117,8 @@ public class CreateProjectMojo extends AbstractMojo {
     private boolean addMore(Scanner cin) {
         boolean addmore = true;
         while (true) {
-            System.out.print("Add more projects?(y/n)  ");
-            String loop = cin.next();
+            System.out.print("Add more projects?(Y/n)  ");
+            String loop = cin.nextLine();
             if (StringUtils.isNotBlank(loop)) {
                 if ("y".equalsIgnoreCase(loop.trim())) {
                     System.out.println();
@@ -125,6 +127,9 @@ public class CreateProjectMojo extends AbstractMojo {
                     addmore = false;
                     break;
                 }
+            } else {
+                System.out.println();
+                break;
             }
         }
         return addmore;
