@@ -81,9 +81,7 @@ public class CreateProjectMojo extends AbstractMojo {
             if (StringUtils.isBlank(prefix)) {
                 System.out.print("No project prefix input.");
 
-                boolean addmore = addMore(cin);
-
-                if (addmore) {
+                if (addMore(cin)) {
                     continue;
                 } else {
                     break;
@@ -106,9 +104,7 @@ public class CreateProjectMojo extends AbstractMojo {
                 throw new MojoFailureException("error choose projects", e);
             }
 
-            boolean addmore = addMore(cin);
-
-            if (!addmore) {
+            if (!addMore(cin)) {
                 break;
             }
         }
