@@ -28,9 +28,13 @@ import com.dianping.maven.plugin.tools.remedy.PomRemedy;
  */
 public class CreateProjectMojo extends AbstractMojo {
     /**
+     * 
+     */
+    private static final int CHOICE_COLUMN = 2;
+    /**
      * @component
      */
-    private WorkspaceFacade m_wsFacade;
+    private WorkspaceFacade  m_wsFacade;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -47,6 +51,7 @@ public class CreateProjectMojo extends AbstractMojo {
     }
 
     private void createWorkspace() throws MojoFailureException {
+        printHead();
 
         // select workspace dir
         String wsDir = PropertyProviders.fromConsole().forString("workspace-dir", "Directory to put code",
@@ -101,7 +106,8 @@ public class CreateProjectMojo extends AbstractMojo {
                     continue;
                 }
 
-                bizProjects.addAll(new ConsoleIO().choice(choices, 3, "Which project(s) to add(separate by comma)"));
+                bizProjects.addAll(new ConsoleIO().choice(choices, CHOICE_COLUMN,
+                        "Which project(s) to add(separate by comma)"));
             } catch (IOException e) {
                 throw new MojoFailureException("error choose projects", e);
             }
@@ -109,6 +115,13 @@ public class CreateProjectMojo extends AbstractMojo {
         }
 
         return bizProjects;
+    }
+
+    private void printHead() {
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
     }
 
     // private boolean addMore(Scanner cin) {
@@ -153,6 +166,7 @@ public class CreateProjectMojo extends AbstractMojo {
 
         m_wsFacade.init(new File(model.getDir()));
 
+        printHead();
         Collection currentBizProjectNames = CollectionUtils.collect(model.getBizProjects(),
                 new BizProjectToStringTransformer());
         System.out.println(String.format("Current project(s) in workspace (%s)",
@@ -162,7 +176,7 @@ public class CreateProjectMojo extends AbstractMojo {
         List<String> projectToRemove = null;
 
         try {
-            projectToRemove = new ConsoleIO().choice(new ArrayList<String>(currentBizProjectNames), 3,
+            projectToRemove = new ConsoleIO().choice(new ArrayList<String>(currentBizProjectNames), CHOICE_COLUMN,
                     "Which project(s) to remove(separate by comma)");
         } catch (IOException e) {
             throw new MojoFailureException("error choose projects", e);
