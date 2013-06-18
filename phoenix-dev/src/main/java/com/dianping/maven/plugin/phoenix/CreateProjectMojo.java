@@ -76,10 +76,18 @@ public class CreateProjectMojo extends AbstractMojo {
         Scanner cin = new Scanner(System.in);
         while (true) {
             System.out.print("Input the project prefix wanna add: ");
-            String prefix = cin.next();
+            String prefix = cin.nextLine();
 
             if (StringUtils.isBlank(prefix)) {
-                continue;
+                System.out.print("No project prefix input.");
+
+                boolean addmore = addMore(cin);
+
+                if (addmore) {
+                    continue;
+                } else {
+                    break;
+                }
             }
 
             try {
@@ -98,22 +106,7 @@ public class CreateProjectMojo extends AbstractMojo {
                 throw new MojoFailureException("error choose projects", e);
             }
 
-            boolean addmore = true;
-
-            while (true) {
-                System.out.print("Add more projects?(y/n)  ");
-                String loop = cin.next();
-                if (StringUtils.isNotBlank(loop)) {
-                    if ("y".equalsIgnoreCase(loop.trim())) {
-                        System.out.println();
-                        break;
-                    } else if ("n".equalsIgnoreCase(loop.trim())) {
-                        addmore = false;
-                        break;
-                    }
-                }
-
-            }
+            boolean addmore = addMore(cin);
 
             if (!addmore) {
                 break;
@@ -121,6 +114,24 @@ public class CreateProjectMojo extends AbstractMojo {
         }
 
         return bizProjects;
+    }
+
+    private boolean addMore(Scanner cin) {
+        boolean addmore = true;
+        while (true) {
+            System.out.print("Add more projects?(y/n)  ");
+            String loop = cin.next();
+            if (StringUtils.isNotBlank(loop)) {
+                if ("y".equalsIgnoreCase(loop.trim())) {
+                    System.out.println();
+                    break;
+                } else if ("n".equalsIgnoreCase(loop.trim())) {
+                    addmore = false;
+                    break;
+                }
+            }
+        }
+        return addmore;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
