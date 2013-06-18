@@ -75,25 +75,20 @@ public class CreateProjectMojo extends AbstractMojo {
         List<String> bizProjects = new ArrayList<String>();
         Scanner cin = new Scanner(System.in);
         while (true) {
-            System.out.print("Input the project prefix wanna add: ");
+            System.out.print("Input the project prefix wanna add(or 'quit' to skip addition): ");
             String prefix = cin.nextLine();
 
             if (StringUtils.isBlank(prefix)) {
-                System.out.print("No project prefix input.");
+                System.out.println("No project prefix input.");
+                continue;
+            }
 
-                if (addMore(cin)) {
-                    continue;
-                } else {
-                    break;
-                }
+            if ("quit".equalsIgnoreCase(prefix)) {
+                break;
             }
 
             try {
                 List<String> choices = m_wsFacade.getProjectListByPrefix(prefix.trim());
-                if (choices == null || choices.isEmpty()) {
-                    System.out.println(String.format("No project matches the prefix(%s)", prefix));
-                    continue;
-                }
 
                 if (ignoreProjects != null && !ignoreProjects.isEmpty()) {
                     choices.removeAll(ignoreProjects);
@@ -101,39 +96,41 @@ public class CreateProjectMojo extends AbstractMojo {
 
                 choices.removeAll(bizProjects);
 
+                if (choices == null || choices.isEmpty()) {
+                    System.out.println(String.format("No project matches the prefix(%s)", prefix));
+                    continue;
+                }
+
                 bizProjects.addAll(new ConsoleIO().choice(choices, 3, "Which project(s) to add(separate by comma)"));
             } catch (IOException e) {
                 throw new MojoFailureException("error choose projects", e);
             }
 
-            if (!addMore(cin)) {
-                break;
-            }
         }
 
         return bizProjects;
     }
 
-    private boolean addMore(Scanner cin) {
-        boolean addmore = true;
-        while (true) {
-            System.out.print("Add more projects?(Y/n)  ");
-            String loop = cin.nextLine();
-            if (StringUtils.isNotBlank(loop)) {
-                if ("y".equalsIgnoreCase(loop.trim())) {
-                    System.out.println();
-                    break;
-                } else if ("n".equalsIgnoreCase(loop.trim())) {
-                    addmore = false;
-                    break;
-                }
-            } else {
-                System.out.println();
-                break;
-            }
-        }
-        return addmore;
-    }
+    // private boolean addMore(Scanner cin) {
+    // boolean addmore = true;
+    // while (true) {
+    // System.out.print("Add more projects?(Y/n)  ");
+    // String loop = cin.nextLine();
+    // if (StringUtils.isNotBlank(loop)) {
+    // if ("y".equalsIgnoreCase(loop.trim())) {
+    // System.out.println();
+    // break;
+    // } else if ("n".equalsIgnoreCase(loop.trim())) {
+    // addmore = false;
+    // break;
+    // }
+    // } else {
+    // System.out.println();
+    // break;
+    // }
+    // }
+    // return addmore;
+    // }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void modifyWorkspace(Workspace model) throws MojoFailureException {
