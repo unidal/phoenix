@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
@@ -14,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.unidal.maven.plugin.common.PropertyProviders;
 
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
@@ -36,6 +34,11 @@ public class CreateProjectMojo extends AbstractMojo {
      */
     private WorkspaceFacade  m_wsFacade;
 
+    /**
+     * @component
+     */
+    private ConsoleIO        consoleIO;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
@@ -53,9 +56,14 @@ public class CreateProjectMojo extends AbstractMojo {
     private void createWorkspace() throws MojoFailureException {
         printHead();
 
-        // select workspace dir
-        String wsDir = PropertyProviders.fromConsole().forString("workspace-dir", "Directory to put code",
-                System.getProperty("user.dir"), null);
+        String wsDir = null;
+        try {
+            String currentDir = System.getProperty("user.dir");
+            consoleIO.message(String.format("Directory to put code(%s)", currentDir), true);
+            wsDir = consoleIO.readInput(currentDir);
+        } catch (IOException e) {
+            throw new MojoFailureException("error printing message", e);
+        }
 
         m_wsFacade.init(new File(wsDir));
 
@@ -78,21 +86,20 @@ public class CreateProjectMojo extends AbstractMojo {
 
     private List<String> addProjectInteractively(List<String> ignoreProjects) throws MojoFailureException {
         List<String> bizProjects = new ArrayList<String>();
-        Scanner cin = new Scanner(System.in);
         while (true) {
-            System.out.print("Input the project prefix wanna add(or 'quit' to skip addition): ");
-            String prefix = cin.nextLine();
-
-            if (StringUtils.isBlank(prefix)) {
-                System.out.println("No project prefix input.");
-                continue;
-            }
-
-            if ("quit".equalsIgnoreCase(prefix)) {
-                break;
-            }
-
             try {
+                consoleIO.message("Input the project prefix wanna add(or 'quit' to skip addition): ");
+                String prefix = consoleIO.readInput();
+
+                if (StringUtils.isBlank(prefix)) {
+                    consoleIO.lineMessage("No project prefix input.");
+                    continue;
+                }
+
+                if ("quit".equalsIgnoreCase(prefix)) {
+                    break;
+                }
+
                 List<String> choices = m_wsFacade.getProjectListByPrefix(prefix.trim());
 
                 if (ignoreProjects != null && !ignoreProjects.isEmpty()) {
@@ -102,7 +109,7 @@ public class CreateProjectMojo extends AbstractMojo {
                 choices.removeAll(bizProjects);
 
                 if (choices == null || choices.isEmpty()) {
-                    System.out.println(String.format("No project matches the prefix(%s)", prefix));
+                    consoleIO.lineMessage(String.format("No project matches the prefix(%s)", prefix));
                     continue;
                 }
 
@@ -117,33 +124,14 @@ public class CreateProjectMojo extends AbstractMojo {
         return bizProjects;
     }
 
-    private void printHead() {
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
+    private void printHead() throws MojoFailureException {
+        try {
+            consoleIO.newLine();
+            consoleIO.newLine();
+        } catch (IOException e) {
+            throw new MojoFailureException("error print head", e);
+        }
     }
-
-    // private boolean addMore(Scanner cin) {
-    // boolean addmore = true;
-    // while (true) {
-    // System.out.print("Add more projects?(Y/n)  ");
-    // String loop = cin.nextLine();
-    // if (StringUtils.isNotBlank(loop)) {
-    // if ("y".equalsIgnoreCase(loop.trim())) {
-    // System.out.println();
-    // break;
-    // } else if ("n".equalsIgnoreCase(loop.trim())) {
-    // addmore = false;
-    // break;
-    // }
-    // } else {
-    // System.out.println();
-    // break;
-    // }
-    // }
-    // return addmore;
-    // }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void modifyWorkspace(Workspace model) throws MojoFailureException {
@@ -167,28 +155,28 @@ public class CreateProjectMojo extends AbstractMojo {
         m_wsFacade.init(new File(model.getDir()));
 
         printHead();
-        Collection currentBizProjectNames = CollectionUtils.collect(model.getBizProjects(),
-                new BizProjectToStringTransformer());
-        System.out.println(String.format("Current project(s) in workspace (%s)",
-                StringUtils.join(currentBizProjectNames, ",")));
-
-        List<String> projectToAdd = addProjectInteractively(new ArrayList<String>(currentBizProjectNames));
-        List<String> projectToRemove = null;
-
         try {
+            Collection currentBizProjectNames = CollectionUtils.collect(model.getBizProjects(),
+                    new BizProjectToStringTransformer());
+            consoleIO.lineMessage(String.format("Current project(s) in workspace (%s)",
+                    StringUtils.join(currentBizProjectNames, ",")), true);
+
+            List<String> projectToAdd = addProjectInteractively(new ArrayList<String>(currentBizProjectNames));
+            List<String> projectToRemove = null;
+
             projectToRemove = new ConsoleIO().choice(new ArrayList<String>(currentBizProjectNames), CHOICE_COLUMN,
                     "Which project(s) to remove(separate by comma)");
+
+            model.getBizProjects().addAll(CollectionUtils.collect(projectToAdd, new BizProjectFromStringTransformer()));
+            Collection<String> bizProjectsRemained = CollectionUtils.collect(model.getBizProjects(),
+                    new BizProjectToStringTransformer());
+            bizProjectsRemained.removeAll(projectToRemove);
+            model.getBizProjects().clear();
+            model.getBizProjects().addAll(
+                    CollectionUtils.collect(bizProjectsRemained, new BizProjectFromStringTransformer()));
         } catch (IOException e) {
             throw new MojoFailureException("error choose projects", e);
         }
-
-        model.getBizProjects().addAll(CollectionUtils.collect(projectToAdd, new BizProjectFromStringTransformer()));
-        Collection<String> bizProjectsRemained = CollectionUtils.collect(model.getBizProjects(),
-                new BizProjectToStringTransformer());
-        bizProjectsRemained.removeAll(projectToRemove);
-        model.getBizProjects().clear();
-        model.getBizProjects().addAll(
-                CollectionUtils.collect(bizProjectsRemained, new BizProjectFromStringTransformer()));
 
         try {
             m_wsFacade.modify(model);

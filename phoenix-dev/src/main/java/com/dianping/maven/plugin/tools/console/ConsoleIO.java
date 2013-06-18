@@ -2,16 +2,19 @@ package com.dianping.maven.plugin.tools.console;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.apache.commons.lang.StringUtils;
 
 public class ConsoleIO {
 
-    private final static int DEFAULT_COLUMN_WIDTH = 30;
+    private static final String ENCODING             = "utf-8";
+    private final static int    DEFAULT_COLUMN_WIDTH = 30;
+    private final static String ICON                 = "\uD83C\uDF7A   ";
 
     private String format(List<String> values, int column, int columnWidth) {
         StringBuilder sb = new StringBuilder();
@@ -29,16 +32,15 @@ public class ConsoleIO {
         return sb.toString();
     }
 
-    public List<String> choose(List<String> availableValues, int column, String prompt, PrintWriter out, Reader in)
+    public List<String> choose(List<String> availableValues, int column, String prompt, PrintStream out, Reader in)
             throws IOException {
         return choose(availableValues, column, prompt, out, in, DEFAULT_COLUMN_WIDTH);
     }
 
-    public List<String> choose(List<String> availableValues, int column, String prompt, PrintWriter out, Reader in,
+    public List<String> choose(List<String> availableValues, int column, String prompt, PrintStream out, Reader in,
             int columnWidth) throws IOException {
-        out.println(prompt);
-        out.println(format(availableValues, column, columnWidth).trim());
-        out.flush();
+        lineMessage(prompt, true);
+        lineMessage(format(availableValues, column, columnWidth).trim(), false);
 
         List<String> choosedValues = new ArrayList<String>();
 
@@ -72,8 +74,53 @@ public class ConsoleIO {
 
     public List<String> choice(List<String> availableValues, int column, String prompt, int columnWidth)
             throws IOException {
-        return choose(availableValues, column, prompt, new PrintWriter(System.out), new InputStreamReader(System.in),
-                columnWidth);
+        return choose(availableValues, column, prompt, new PrintStream(System.out, true, ENCODING),
+                new InputStreamReader(System.in), columnWidth);
     }
 
+    public void message(String msg) throws IOException {
+        message(msg, false);
+    }
+
+    public void message(String msg, boolean withIcon) throws IOException {
+        PrintStream ps = new PrintStream(System.out, true, ENCODING);
+        if (withIcon) {
+            ps.print(ICON + msg);
+        } else {
+            ps.print(msg);
+        }
+    }
+
+    public void lineMessage(String msg) throws IOException {
+        lineMessage(msg, false);
+    }
+
+    public void lineMessage(String msg, boolean withIcon) throws IOException {
+        PrintStream ps = new PrintStream(System.out, true, ENCODING);
+        message(msg, withIcon);
+        ps.println();
+    }
+
+    public void newLine() throws IOException {
+        PrintStream ps = new PrintStream(System.out, true, ENCODING);
+        ps.println();
+    }
+
+    public String readInput(String defaultValue) {
+        Scanner cin = new Scanner(System.in);
+        String input = cin.nextLine();
+        if (defaultValue == null) {
+            return input;
+        } else {
+            if (StringUtils.isBlank(input)) {
+                return defaultValue;
+            } else {
+                return input;
+            }
+        }
+    }
+
+    public String readInput() {
+        return readInput(null);
+    }
 }

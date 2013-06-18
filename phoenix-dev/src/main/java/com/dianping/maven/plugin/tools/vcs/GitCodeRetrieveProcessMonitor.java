@@ -2,58 +2,39 @@ package com.dianping.maven.plugin.tools.vcs;
 
 import org.eclipse.jgit.lib.BatchingProgressMonitor;
 
-class GitCodeRetrieveProcessMonitor extends BatchingProgressMonitor{
-	
-	private LogService logService;
-	
-	public GitCodeRetrieveProcessMonitor(LogService logService) {
-		super();
-		this.logService = logService;
-	}
+class GitCodeRetrieveProcessMonitor extends BatchingProgressMonitor {
 
-	@Override
-	protected void onUpdate(String taskName, int workCurr) {
-		onUpdate(taskName, workCurr, -1, -1);
-	}
+    private LogService logService;
+    private String     tips;
 
-	@Override
-	protected void onEndTask(String taskName, int workCurr) {
-		onEndTask(taskName, workCurr, -1,-1);
-	}
+    public GitCodeRetrieveProcessMonitor(LogService logService, String tips) {
+        super();
+        this.logService = logService;
+        this.tips = tips;
+    }
 
-	@Override
-	protected void onUpdate(String taskName, int workCurr, int workTotal,
-			int percentDone) {
-		logToOutputStream(taskName, workCurr, workTotal, percentDone);
-	}
+    @Override
+    protected void onUpdate(String taskName, int workCurr) {
+        onUpdate(taskName, workCurr, -1, -1);
+    }
 
-	@Override
-	protected void onEndTask(String taskName, int workCurr, int workTotal,
-			int percentDone) {
-		logToOutputStream(taskName, workCurr, workTotal, percentDone);
-	}
-	
-	private void logToOutputStream(String taskName, int workCurr, int workTotal, int pcnt){
-		StringBuilder sb = new StringBuilder(256);
+    @Override
+    protected void onEndTask(String taskName, int workCurr) {
+        onEndTask(taskName, workCurr, -1, -1);
+    }
 
-		sb.append(taskName);
-		sb.append(": ");
+    @Override
+    protected void onUpdate(String taskName, int workCurr, int workTotal, int percentDone) {
+        logToOutputStream(taskName, workCurr, workTotal, percentDone);
+    }
 
-		//add spaces
-		while (sb.length() < 25) {
-			sb.append(' ');
-		}
-		if (pcnt < 10) {
-			sb.append(' ');
-		}
-		if (pcnt < 100) {
-			sb.append(' ');
-		}
+    @Override
+    protected void onEndTask(String taskName, int workCurr, int workTotal, int percentDone) {
+        logToOutputStream(taskName, workCurr, workTotal, percentDone);
+    }
 
-		sb.append(pcnt).append("% (").append(workCurr).
-		   append('/').append(workTotal).append(')');
-		
-		logService.log(sb.toString());
-	}
+    private void logToOutputStream(String taskName, int workCurr, int workTotal, int pcnt) {
+        logService.updateProgressBar(pcnt, tips);
+    }
 
 }
