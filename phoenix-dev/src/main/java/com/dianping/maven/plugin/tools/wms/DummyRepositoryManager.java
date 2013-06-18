@@ -91,17 +91,17 @@ public class DummyRepositoryManager implements RepositoryManager {
         }
     }
 
-	@Override
-	public void init(File wsDir) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void init(File wsDir) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public List<String> getProjectList() {
-		ArrayList<String> projectList = new ArrayList<String>();
-		projectList.add("user-web");
-		return projectList;
-	}
+    }
+
+    @Override
+    public List<String> getProjectListByPrefix(String prefix) {
+        ArrayList<String> projectList = new ArrayList<String>();
+        projectList.add("user-web");
+        return projectList;
+    }
 
 }

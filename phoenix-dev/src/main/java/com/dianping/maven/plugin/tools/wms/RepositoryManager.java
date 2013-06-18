@@ -25,7 +25,9 @@ import java.util.List;
 public interface RepositoryManager {
 
     Repository find(String project);
-    List<String> getProjectList();
+
+    List<String> getProjectListByPrefix(String prefix);
+
     void init(File wsDir);
 
 }
