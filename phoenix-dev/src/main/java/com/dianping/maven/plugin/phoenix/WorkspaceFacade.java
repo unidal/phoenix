@@ -2,7 +2,6 @@ package com.dianping.maven.plugin.phoenix;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,10 +17,10 @@ import com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGene
 import com.dianping.maven.plugin.tools.generator.dynamic.F5Manager;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.LaunchFileGenerator;
-import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleContext;
-import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.ServiceLionPropertiesGenerator;
+import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleContext;
+import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.BizServerContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.LaunchFileContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.RouterRuleContextVisitor;
@@ -62,18 +61,8 @@ public class WorkspaceFacade {
         repoMgr.init(wsDir);
     }
 
-    public List<String> getProjectList() {
-        // return repoMgr.getProjectList().subList(0, 20);
-        ArrayList<String> projectList = new ArrayList<String>();
-        projectList.add("dpindex-web");
-        projectList.add("shop-web");
-        projectList.add("shoplist-web");
-        projectList.add("user-web");
-        projectList.add("user-service");
-        projectList.add("user-base-service");
-        projectList.add("shop-event-web");
-        projectList.add("tuangou-web");
-        return projectList;
+    public List<String> getProjectListByPrefix(String prefix) {
+        return repoMgr.getProjectListByPrefix(prefix);
     }
 
     public void create(Workspace model) throws Exception {
