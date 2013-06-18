@@ -106,5 +106,9 @@
 				</requirement>
 			</requirements>
 		</component>
+		<component>
+			<role>com.dianping.maven.plugin.tools.console.ConsoleIO</role>
+			<implementation>com.dianping.maven.plugin.tools.console.ConsoleIO</implementation>
+		</component>
 	</components>
 </plexus>

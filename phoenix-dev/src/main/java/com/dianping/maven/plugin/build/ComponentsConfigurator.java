@@ -8,6 +8,7 @@ import org.unidal.lookup.configuration.Component;
 
 import com.dianping.maven.plugin.phoenix.WorkspaceFacade;
 import com.dianping.maven.plugin.phoenix.phoenix.entity.Phoenix;
+import com.dianping.maven.plugin.tools.console.ConsoleIO;
 import com.dianping.maven.plugin.tools.generator.BytemanScriptGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.DefaultF5Manager;
@@ -37,9 +38,9 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
         all.add(C(ICodeRetriever.class, CodeRetrieverContext.SVN, SVNCodeRetriever.class));
 
         all.add(C(Phoenix.class));
-        
+
         all.add(C(RepositoryManager.class, DefaultRepositoryManager.class) //
-        		.req(Phoenix.class));
+                .req(Phoenix.class));
         all.add(C(RepositoryService.class, DefaultRepositoryServiceImpl.class)//
                 .req(RepositoryManager.class) //
                 .req(CodeRetrieverManager.class));
@@ -65,6 +66,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
                 .req(RepositoryService.class)//
                 .req(BytemanScriptGenerator.class) //
                 .req(RepositoryManager.class));
+
+        all.add(C(ConsoleIO.class));
 
         return all;
     }
