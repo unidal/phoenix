@@ -15,7 +15,6 @@
  */
 package com.dianping.maven.plugin.tools.wms;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,12 +88,6 @@ public class DummyRepositoryManager implements RepositoryManager {
         } else {
             return null;
         }
-    }
-
-    @Override
-    public void init(File wsDir) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

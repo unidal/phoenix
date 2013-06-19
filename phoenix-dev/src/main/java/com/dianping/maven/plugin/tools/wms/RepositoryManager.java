@@ -15,7 +15,6 @@
  */
 package com.dianping.maven.plugin.tools.wms;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -27,7 +26,5 @@ public interface RepositoryManager {
     Repository find(String project);
 
     List<String> getProjectListByPrefix(String prefix);
-
-    void init(File wsDir);
 
 }

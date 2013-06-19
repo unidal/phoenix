@@ -1,8 +1,6 @@
 package com.dianping.maven.plugin.tools.wms;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +13,11 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.maven.plugin.configure.Whiteboard;
+import com.dianping.maven.plugin.configure.WorkspaceInitializedListener;
 import com.dianping.maven.plugin.phoenix.phoenix.entity.Phoenix;
 
-public class DefaultRepositoryManager implements RepositoryManager, Initializable {
+public class DefaultRepositoryManager implements RepositoryManager, Initializable, WorkspaceInitializedListener {
 
     private static Logger           log                 = Logger.getLogger(DefaultRepositoryManager.class);
 
@@ -33,9 +33,10 @@ public class DefaultRepositoryManager implements RepositoryManager, Initializabl
     }
 
     @Override
-    public void init(File wsDir) {
+    public void onWorkspaceInitialized(File wsDir) {
         try {
-            InputStream svnIn = loadFromGitOrClasspath(wsDir, SVN_CONFIG_FILENAME);
+        	File svnFile = new File(new File(wsDir, WorkspaceConstants.PHOENIX_CONFIG_FOLDER), SVN_CONFIG_FILENAME);
+            InputStream svnIn = ResourceUtil.INSTANCE.loadFromFileOrClasspath(svnFile);
             if (svnIn != null) {
                 Properties props = new Properties();
                 props.load(svnIn);
@@ -46,7 +47,8 @@ public class DefaultRepositoryManager implements RepositoryManager, Initializabl
                 log.warn(String.format("%s not found on file system or classpath", SVN_CONFIG_FILENAME));
             }
 
-            InputStream gitIn = loadFromGitOrClasspath(wsDir, GIT_CONFIG_FILENAME);
+            File gitFile = new File(new File(wsDir, WorkspaceConstants.PHOENIX_CONFIG_FOLDER), GIT_CONFIG_FILENAME);
+            InputStream gitIn = ResourceUtil.INSTANCE.loadFromFileOrClasspath(gitFile);
             if (gitIn != null) {
                 Properties props = new Properties();
                 props.load(gitIn);
@@ -61,19 +63,6 @@ public class DefaultRepositoryManager implements RepositoryManager, Initializabl
         }
     }
 
-    private InputStream loadFromGitOrClasspath(File wsDir, String fileName) throws IOException {
-        File file = new File(new File(wsDir, WorkspaceConstants.PHOENIX_CONFIG_FOLDER), fileName);
-        InputStream in;
-        if (file.exists()) {
-            in = new FileInputStream(file);
-            log.info(String.format("read %s from %s", fileName, file.getAbsolutePath()));
-        } else {
-            log.info(String.format("try to read %s from classpath", fileName));
-            in = this.getClass().getResourceAsStream("/" + fileName);
-        }
-        return in;
-    }
-
     @Override
     public Repository find(String project) {
         return pname2Repo.get(project);
@@ -82,6 +71,7 @@ public class DefaultRepositoryManager implements RepositoryManager, Initializabl
     @Override
     public void initialize() throws InitializationException {
         pname2Repo.put("phoenix-maven-config", new GitRepository(phoenixConfig.getUrlOfConfig()));
+        Whiteboard.INSTANCE.addWorkspaceInitializedListener(this);
     }
 
     @Override
