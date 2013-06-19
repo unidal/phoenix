@@ -119,6 +119,8 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
                 printContent("Phoenix workspace generated...", out);
             }
+            
+            printContent("All done. Cheers~", out);
 
             return new File(context.getBaseDir(), CONTAINER_FOLDER);
 
@@ -222,9 +224,9 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     private void printContent(String content, OutputStream out) {
 
         try {
-            out.write(("---------------------------------------------" + LINE_SEPARATOR).getBytes());
-            out.write((content + LINE_SEPARATOR).getBytes());
-            out.write(("---------------------------------------------" + LINE_SEPARATOR).getBytes());
+            out.write(("[INFO] ------------------------------------------------------------------------" + LINE_SEPARATOR).getBytes());
+            out.write(("[INFO] " + content + LINE_SEPARATOR).getBytes());
+            out.write(("[INFO] ------------------------------------------------------------------------" + LINE_SEPARATOR).getBytes());
         } catch (IOException e) {
             // ignore
         }

@@ -104,7 +104,7 @@ public class WorkspaceFacade {
             FileUtils.deleteQuietly(configFolder);
         }
 
-        log.info("try to update phoenix config from remote git repository");
+        log.debug("try to update phoenix config from remote git repository");
         try {
             repositoryService.checkout("phoenix-maven-config", configFolder, System.out);
         } catch (Exception e) {

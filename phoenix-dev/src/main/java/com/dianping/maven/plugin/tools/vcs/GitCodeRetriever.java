@@ -15,15 +15,11 @@ public class GitCodeRetriever implements ICodeRetriever {
         ProgressMonitor pm = new GitCodeRetrieveProcessMonitor(logService, String.format("Cloning %s",
                 gitConfig.getRepoUrl()));
         try {
-            logService.log("Repository clone start");
-            logService.log(System.getProperty("line.separator"));
+//            logService.log(System.getProperty("line.separator"));
             Git git = Git.cloneRepository().setDirectory(new File(localPath)).setURI(gitConfig.getRepoUrl())
                     .setProgressMonitor(pm).call();
-            logService.log("Repository clone end");
             String branch = gitConfig.getBranchName();
-            logService.log("Repository checkout start");
             git.checkout().setName(branch).call();
-            logService.log("Repository checkout end");
             logService.log(System.getProperty("line.separator"));
         } catch (Exception e) {
             throw new RetrieveException(e);

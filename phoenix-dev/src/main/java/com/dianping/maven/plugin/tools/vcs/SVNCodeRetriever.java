@@ -1,7 +1,11 @@
 package com.dianping.maven.plugin.tools.vcs;
 
 import java.io.File;
+import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import org.tmatesoft.svn.core.ISVNDirEntryHandler;
 import org.tmatesoft.svn.core.SVNDepth;
@@ -23,6 +27,10 @@ public class SVNCodeRetriever implements ICodeRetriever {
     @SuppressWarnings("deprecation")
     @Override
     public void retrieveCode() {
+    	// disable svn log output
+    	Logger svn = Logger.getLogger("svnkit-cli");
+    	svn.setLevel(Level.SEVERE);
+    	
         LogService logService = new LogService(svnConfig.getLogOutput());
 
         try {
@@ -56,11 +64,8 @@ public class SVNCodeRetriever implements ICodeRetriever {
             updateClient.setEventHandler(eventHandler);
             updateClient.setIgnoreExternals(false);
             // checkout the latest version if version is null
-            logService.log("Repository checkout start");
-            logService.log(String.format("checkout to %s", exportDir.getAbsolutePath()));
-            logService.log(System.getProperty("line.separator"));
+//            logService.log(System.getProperty("line.separator"));
             updateClient.doCheckout(url, exportDir, version, version, true);
-            logService.log("Repository checkout end");
             logService.log(System.getProperty("line.separator"));
         } catch (Exception e) {
             throw new RetrieveException(e);
@@ -74,10 +79,24 @@ public class SVNCodeRetriever implements ICodeRetriever {
     }
 
     public static void main(String[] args) {
+//    	System.setProperty("java.util.logging.config.file", "/Users/marsqing/Projects/tmp/logging.properties");
+    	Enumeration<String> enu = LogManager.getLogManager().getLoggerNames();
+    	while(enu.hasMoreElements()) {
+    		System.out.println(enu.nextElement());
+    	}
+    	
+    	Logger svn = Logger.getLogger("svnkit-cli");
+    	svn.setLevel(Level.SEVERE);
+    	
         SVNCodeRetriever svnCodeRetriever = new SVNCodeRetriever();
         svnCodeRetriever.setConfig(new SVNCodeRetrieveConfig(
-                "http://192.168.8.45:81/svn/dianping/dianping/shop/trunk/shop-web/", "/Users/leoleung/test",
+                "http://192.168.8.45:81/svn/dianping/dianping/shop/trunk/shop-web/", "/Users/marsqing/Projects/tmp/test",
                 System.out, -1L));
         svnCodeRetriever.retrieveCode();
+        
+        enu = LogManager.getLogManager().getLoggerNames();
+    	while(enu.hasMoreElements()) {
+    		System.out.println(enu.nextElement());
+    	}
     }
 }
