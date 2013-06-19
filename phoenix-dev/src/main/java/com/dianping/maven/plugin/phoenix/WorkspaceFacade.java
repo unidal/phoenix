@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.maven.plugin.configure.Whiteboard;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
 import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
 import com.dianping.maven.plugin.tools.generator.BytemanScriptGenerator;
@@ -58,7 +59,7 @@ public class WorkspaceFacade {
 
     public void init(File wsDir) {
         pullConfig(wsDir);
-        repoMgr.init(wsDir);
+        Whiteboard.INSTANCE.workspaceInitialized(wsDir);
     }
 
     public List<String> getProjectListByPrefix(String prefix) {
