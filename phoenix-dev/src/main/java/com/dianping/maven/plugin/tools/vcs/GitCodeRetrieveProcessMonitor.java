@@ -1,11 +1,33 @@
 package com.dianping.maven.plugin.tools.vcs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jgit.lib.BatchingProgressMonitor;
 
 class GitCodeRetrieveProcessMonitor extends BatchingProgressMonitor {
 
-    private LogService logService;
-    private String     tips;
+    private LogService                       logService;
+    private String                           tips;
+    private static Map<String, ProgressMeta> taskWeightMapping = new HashMap<String, ProgressMeta>();
+
+    private static class ProgressMeta {
+        int start;
+        int weight;
+
+        public ProgressMeta(int start, int weight) {
+            this.start = start;
+            this.weight = weight;
+        }
+
+    }
+
+    static {
+        taskWeightMapping.put("remote: Compressing objects", new ProgressMeta(0, 2));
+        taskWeightMapping.put("Receiving objects", new ProgressMeta(2, 5));
+        taskWeightMapping.put("Resolving deltas", new ProgressMeta(7, 2));
+        taskWeightMapping.put("Updating references", new ProgressMeta(9, 1));
+    }
 
     public GitCodeRetrieveProcessMonitor(LogService logService, String tips) {
         super();
@@ -34,7 +56,11 @@ class GitCodeRetrieveProcessMonitor extends BatchingProgressMonitor {
     }
 
     private void logToOutputStream(String taskName, int workCurr, int workTotal, int pcnt) {
-        logService.updateProgressBar(pcnt, tips);
+        if (taskWeightMapping.containsKey(taskName)) {
+            ProgressMeta progressMeta = taskWeightMapping.get(taskName);
+            double progress = 100.0d * (progressMeta.start + pcnt * progressMeta.weight / 100.0d) / 10.0d;
+            logService.updateProgressBar(progress, tips);
+        }
     }
 
 }

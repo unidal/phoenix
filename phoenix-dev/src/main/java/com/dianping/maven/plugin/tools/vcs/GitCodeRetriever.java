@@ -35,4 +35,12 @@ public class GitCodeRetriever implements ICodeRetriever {
         gitConfig = (GitCodeRetrieveConfig) config;
         gitConfig.validate();
     }
+
+    public static void main(String[] args) {
+        GitCodeRetriever gitCodeRetriever = new GitCodeRetriever();
+        GitCodeRetrieveConfig config = new GitCodeRetrieveConfig("http://code.dianpingoa.com/tuangou/tuangou-web.git",
+                "/Users/leoleung/test", System.out, "master");
+        gitCodeRetriever.setConfig(config);
+        gitCodeRetriever.retrieveCode();
+    }
 }
