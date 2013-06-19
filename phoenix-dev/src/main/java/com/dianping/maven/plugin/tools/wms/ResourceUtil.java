@@ -18,9 +18,9 @@ public enum ResourceUtil {
 		InputStream in;
 		if (file.exists()) {
 			in = new FileInputStream(file);
-			log.info(String.format("read %s from %s", fileName, file.getAbsolutePath()));
+			log.debug(String.format("read %s from %s", fileName, file.getAbsolutePath()));
 		} else {
-			log.info(String.format("try to read %s from classpath", fileName));
+			log.debug(String.format("try to read %s from classpath", fileName));
 			in = this.getClass().getResourceAsStream("/" + fileName);
 		}
 		return in;

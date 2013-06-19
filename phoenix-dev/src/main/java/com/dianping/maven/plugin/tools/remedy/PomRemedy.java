@@ -33,7 +33,7 @@ public enum PomRemedy {
 
 	public void remedyPomIn(final File dirToScan) throws Exception {
 
-		log.info(String.format("scanning %s for all pom.xml under top 2 level directory",
+		log.debug(String.format("scanning %s for all pom.xml under top 2 level directory",
 				dirToScan.getAbsolutePath()));
 		IOFileFilter fileFilter = new NameFileFilter("pom.xml");
 		IOFileFilter dirFilter = new IOFileFilter() {
@@ -51,7 +51,7 @@ public enum PomRemedy {
 
 		Collection<File> poms = FileUtils.listFiles(dirToScan, fileFilter, dirFilter);
 		for (File pom : poms) {
-			log.info("scanning " + pom.getAbsolutePath());
+			log.debug("scanning " + pom.getAbsolutePath());
 			Document doc = remedy(pom);
 			writeDocument(new FileOutputStream(pom), doc);
 		}
@@ -65,7 +65,7 @@ public enum PomRemedy {
 		XPathExpression pluginExpr = xpath.compile("/project/build/plugins/plugin[artifactId='maven-eclipse-plugin']");
 		Element pluginEle = (Element) pluginExpr.evaluate(doc, XPathConstants.NODE);
 		if (pluginEle == null) {
-			log.info("no maven-eclipse-plugin found, add it");
+			log.debug("no maven-eclipse-plugin found, add it");
 			pluginEle = createPluginElement(doc);
 		}
 
@@ -73,7 +73,7 @@ public enum PomRemedy {
 			Node versionEle = pluginEle.getElementsByTagName("version").item(0);
 			Float version = Float.parseFloat(versionEle.getTextContent().trim());
 			if (version < 2.9) {
-				log.info("bump maven-eclipse-plugin's version to 2.9");
+				log.debug("bump maven-eclipse-plugin's version to 2.9");
 				versionEle.setTextContent("2.9");
 			}
 		} catch (Exception e) {
@@ -88,10 +88,10 @@ public enum PomRemedy {
 			ajdtEle = doc.createElement("ajdtVersion");
 			ajdtEle.setTextContent("none");
 			pluginEle.getElementsByTagName("configuration").item(0).appendChild(ajdtEle);
-			log.info("add <ajdtVersion> to <configuration>");
+			log.debug("add <ajdtVersion> to <configuration>");
 		} else {
 			ajdtEle.setTextContent("none");
-			log.info("change value of <ajdtVersion> to none");
+			log.debug("change value of <ajdtVersion> to none");
 		}
 		
 		return doc;
