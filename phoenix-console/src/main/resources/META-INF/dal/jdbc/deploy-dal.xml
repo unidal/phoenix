@@ -60,7 +60,9 @@
         FROM <TABLE/> 
         WHERE <FIELD name='war-type'/> = ${war-type}
         	AND <FIELD name='domain'/> = ${domain}
-        	AND <FIELD name='status'/> = 2
+        	AND <FIELD name='status'/> != 4
+        	AND <FIELD name='status'/> != 3
+        	AND <FIELD name='status'/> != 5
         ]]></statement>
       </query>
       <query name="delete-by-PK" type="DELETE" enabled="false"/>

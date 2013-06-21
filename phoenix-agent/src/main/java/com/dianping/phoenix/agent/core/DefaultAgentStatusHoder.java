@@ -3,6 +3,7 @@ package com.dianping.phoenix.agent.core;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -17,13 +18,15 @@ import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.entity.War;
 import com.dianping.phoenix.configure.ConfigManager;
 
-public class AgentStatusReporter extends ContainerHolder implements Initializable {
-	Logger logger = Logger.getLogger(AgentStatusReporter.class);
+public class DefaultAgentStatusHoder extends ContainerHolder implements Initializable, AgentStatusHolder {
+	Logger logger = Logger.getLogger(DefaultAgentStatusHoder.class);
 
 	@Inject
 	private ContainerManager m_containerManager;
 	@Inject
 	private ConfigManager m_configManager;
+
+	private static AtomicReference<Response> m_agentStatus = new AtomicReference<Response>();
 
 	private class AgentHeartbeat implements Runnable {
 		@Override
@@ -31,6 +34,7 @@ public class AgentStatusReporter extends ContainerHolder implements Initializabl
 			Response resp;
 			try {
 				resp = m_containerManager.reportContainerStatus();
+				m_agentStatus.set(resp);
 				if (resp != null) {
 					// cat agent infos
 					Cat.getProducer().logEvent(
@@ -72,8 +76,8 @@ public class AgentStatusReporter extends ContainerHolder implements Initializabl
 								}
 								Cat.getProducer().logEvent(
 										domain.getWar().getName() + ":" + toValidVersion(domain.getWar().getVersion()),
-										toValidVersion(kernelWar == null ? null : kernelWar.getVersion()) + ":" + resp.getIp(), Event.SUCCESS,
-										domainLibsKVPair.toString());
+										toValidVersion(kernelWar == null ? null : kernelWar.getVersion()) + ":"
+												+ resp.getIp(), Event.SUCCESS, domainLibsKVPair.toString());
 							}
 						}
 					} else {
@@ -112,5 +116,26 @@ public class AgentStatusReporter extends ContainerHolder implements Initializabl
 				return t;
 			}
 		}).scheduleWithFixedDelay(new AgentHeartbeat(), 0, m_configManager.getAgentHeartbeatFreq(), TimeUnit.MINUTES);
+	}
+
+	@Override
+	public Response getAgentStatusResponse() {
+		Response resp = m_agentStatus.get();
+		if (resp != null) {
+			return resp;
+		} else {
+			onAgentStatusChanged();
+			return m_agentStatus.get();
+		}
+	}
+
+	@Override
+	public void onAgentStatusChanged() {
+		try {
+			Response resp = m_containerManager.reportContainerStatus();
+			m_agentStatus.set(resp);
+		} catch (Exception e) {
+			logger.error("Can not get agent status.", e);
+		}
 	}
 }

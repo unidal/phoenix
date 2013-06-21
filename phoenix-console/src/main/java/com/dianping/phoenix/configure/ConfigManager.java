@@ -33,12 +33,12 @@ public class ConfigManager implements Initializable {
 
 		return m_config.getConsole().getDeployConnectTimeout();
 	}
-	
-	public int getDeployGetlogRetrycount(){
+
+	public int getDeployGetlogRetrycount() {
 		check();
 		return m_config.getConsole().getDeployGetlogRetrycount();
 	}
-	
+
 	public String getDeployLogUrl(String host, int deployId) {
 		check();
 
@@ -50,7 +50,8 @@ public class ConfigManager implements Initializable {
 	public long getDeployRetryInterval() {
 		check();
 
-		int interval = m_config.getConsole().getDeployRetryInterval(); // in second
+		int interval = m_config.getConsole().getDeployRetryInterval(); // in
+																		// second
 
 		return interval;
 	}
@@ -78,7 +79,7 @@ public class ConfigManager implements Initializable {
 			long testServiceTimeout = m_config.getConsole().getTestServiceTimeout();
 
 			return String.format(pattern, host, deployId, name, version, type, gitUrl, testServiceUrlPrefix,
-			      testServiceTimeout);
+					testServiceTimeout);
 		}
 	}
 
@@ -117,11 +118,11 @@ public class ConfigManager implements Initializable {
 				if (m_config.getAgent() == null) {
 					m_config.setAgent(new AgentConfig());
 				}
-				
+
 				if (m_config.getConsole() == null) {
 					m_config.setConsole(new ConsoleConfig());
 				}
-				
+
 				if (m_config.getConsole().getCmdb() == null) {
 					m_config.getConsole().setCmdb(new Cmdb());
 				}
@@ -148,30 +149,40 @@ public class ConfigManager implements Initializable {
 	public void setDeployRetryInterval(int retryInterval) {
 		check();
 
-		m_config.getConsole().setDeployRetryInterval(retryInterval); // in second
+		m_config.getConsole().setDeployRetryInterval(retryInterval); // in
+																		// second
 	}
-	
-	private String getCmdbBaseUrl(){
+
+	private String getCmdbBaseUrl() {
 		return m_config.getConsole().getCmdb().getBaseUrlPattern();
 	}
-	public String getCmdbCatalogUrl(){
+	public String getCmdbCatalogUrl() {
 		check();
 		String baseUrlPattern = getCmdbBaseUrl();
 		String catalogUrlPart = m_config.getConsole().getCmdb().getCatalogUrlPart();
 		return String.format(baseUrlPattern, catalogUrlPart);
 	}
-	
-	public String getCmdbDomainUrlPattern(){
+
+	public String getCmdbDomainUrlPattern() {
 		check();
 		String baseUrlPattern = getCmdbBaseUrl();
 		String domainUrlPattern = m_config.getConsole().getCmdb().getDomainUrlPatternPart();
 		return String.format(baseUrlPattern, domainUrlPattern);
 	}
-	
-	public String getCmdbIpUrlPattern(){
+
+	public String getCmdbIpUrlPattern() {
 		check();
 		String baseUrlPattern = getCmdbBaseUrl();
 		String ipUrlPattern = m_config.getConsole().getCmdb().getIpUrlPatternPart();
 		return String.format(baseUrlPattern, ipUrlPattern);
 	}
+	
+	public String getAgentStatusUrl(String host) {
+		check();
+
+		String pattern = m_config.getConsole().getAgentStatusUrlPattern();
+
+		return String.format(pattern, host);
+	}
+
 }

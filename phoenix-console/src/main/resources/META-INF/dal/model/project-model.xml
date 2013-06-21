@@ -11,9 +11,13 @@
 	</entity>
 	<entity name="project">
 		<attribute name="name" value-type="String" key="true" />
+		<entity-ref name="host" type="list" names="hosts" xml-indent="true" />
 	</entity>
-	<entity name="war">
-		<attribute name="name" value-type="String" key="true" />
-	</entity>
+	<entity name="host">
+		<element name="agentStatus" value-type="String" render="false"/>
+		<element name="agentVersion" value-type="String" render="false"/>
+		<element name="container" value-type="com.dianping.phoenix.agent.response.entity.Container" render="false"/>
+		<element name="domain" names="domains" value-type="com.dianping.phoenix.agent.response.entity.Domain" type="list" render="false"/>
+  	</entity>
 </model>
 

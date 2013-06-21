@@ -26,6 +26,8 @@ CREATE TABLE `deployment` (
   `end_date` datetime NULL COMMENT '部署结束时间',
   `creation_date` datetime NOT NULL COMMENT '创建时间',
   `last_modified_date` datetime NOT NULL COMMENT '修改时间',
+  `auto_continue` int(1) NOT NULL COMMENT '是否自动继续下一个Rollout，可选值: 1 - auto continue, 2 - mannul continue',
+  `deploy_interval` int(1) NOT NULL COMMENT '自动deploy的间隔时间，单位:分钟',
   PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='业务部署主表';
 

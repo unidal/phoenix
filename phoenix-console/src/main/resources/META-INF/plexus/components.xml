@@ -165,6 +165,15 @@
 			</requirements>
 		</component>
 		<component>
+			<role>com.dianping.phoenix.service.netty.AgentStatusFetcher</role>
+			<implementation>com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</role>
 			<implementation>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</implementation>
 			<configuration>

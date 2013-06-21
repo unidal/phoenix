@@ -26,6 +26,7 @@ import com.dianping.phoenix.deploy.internal.DefaultAgentListener;
 import com.dianping.phoenix.deploy.internal.DefaultDeployExecutor;
 import com.dianping.phoenix.deploy.internal.DefaultDeployListener;
 import com.dianping.phoenix.deploy.internal.DefaultDeployManager;
+import com.dianping.phoenix.service.DefaultDeviceManager;
 import com.dianping.phoenix.service.DefaultGitService;
 import com.dianping.phoenix.service.DefaultProjectManager;
 import com.dianping.phoenix.service.DefaultWarService;
@@ -35,6 +36,8 @@ import com.dianping.phoenix.service.LogService;
 import com.dianping.phoenix.service.MockDeviceManager;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.WarService;
+import com.dianping.phoenix.service.netty.AgentStatusFetcher;
+import com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public static void main(String[] args) {
@@ -90,6 +93,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(DeploymentDetailsDao.class));
 		all.add(C(DeployManager.class, DefaultDeployManager.class) //
 				.req(ProjectManager.class, DeployListener.class));
+		all.add(C(AgentStatusFetcher.class, DefaultAgentStatusFetcher.class).req(ConfigManager.class));
 	}
 
 	private void defineWebComponents(List<Component> all) {
