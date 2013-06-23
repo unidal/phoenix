@@ -27,4 +27,6 @@ public interface RepositoryManager {
 
     List<String> getProjectListByPrefix(String prefix);
 
+    List<String> getProjectList();
+
 }
