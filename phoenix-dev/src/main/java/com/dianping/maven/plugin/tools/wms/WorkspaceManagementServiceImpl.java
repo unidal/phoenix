@@ -119,7 +119,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
                 printContent("Phoenix workspace generated...", out);
             }
-            
+
             printContent("All done. Cheers~", out);
 
             return new File(context.getBaseDir(), CONTAINER_FOLDER);
@@ -224,9 +224,11 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     private void printContent(String content, OutputStream out) {
 
         try {
-            out.write(("[INFO] ------------------------------------------------------------------------" + LINE_SEPARATOR).getBytes());
+            out.write(("[INFO] ------------------------------------------------------------------------" + LINE_SEPARATOR)
+                    .getBytes());
             out.write(("[INFO] " + content + LINE_SEPARATOR).getBytes());
-            out.write(("[INFO] ------------------------------------------------------------------------" + LINE_SEPARATOR).getBytes());
+            out.write(("[INFO] ------------------------------------------------------------------------" + LINE_SEPARATOR)
+                    .getBytes());
         } catch (IOException e) {
             // ignore
         }
@@ -235,7 +237,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     public static void main(String[] args) throws Exception {
         PlexusContainer plexusContainer = new DefaultPlexusContainer();
         WorkspaceManagementServiceImpl wms = new WorkspaceManagementServiceImpl();
-        wms.setRepositoryService(plexusContainer.lookup(RepositoryService.class));
+        wms.setRepositoryService((RepositoryService) plexusContainer.lookup(RepositoryService.class));
         WorkspaceContext context = new WorkspaceContext();
         List<String> projects = new ArrayList<String>();
         projects.add("shop-web");
