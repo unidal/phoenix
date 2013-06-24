@@ -61,7 +61,6 @@ public class PhoenixServer {
 
 		server.start();
 		System.in.read();
-		server.stop();
 		System.exit(0);
 	}
 
