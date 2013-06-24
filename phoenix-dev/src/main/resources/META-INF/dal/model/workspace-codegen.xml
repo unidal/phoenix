@@ -19,6 +19,10 @@
   </entity>
   <entity name="biz-project">
     <attribute name="name" value-type="String" />
+    <entity-ref name="sub-project" type="list" names="sub-projects" />
+  </entity>
+  <entity name="sub-project">
+    <attribute name="name" value-type="String" />
   </entity>
 </model>
 
