@@ -2,12 +2,17 @@ package com.dianping.maven.plugin.tools.generator.dynamic.model.visitor;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
 import com.dianping.maven.plugin.tools.generator.dynamic.BizServerContext;
+import com.dianping.maven.plugin.tools.utils.PomParser;
+import com.dianping.maven.plugin.tools.utils.WebProjectFileFilter;
 
 public class BizServerContextVisitor extends AbstractVisitor<BizServerContext> {
 
@@ -19,47 +24,41 @@ public class BizServerContextVisitor extends AbstractVisitor<BizServerContext> {
 		result = new BizServerContext();
 	}
 
-	private boolean hasWebProjectIn(File dir) {
-		return new File(dir, "src/main/webapp/WEB-INF/web.xml").exists();
-	}
-
 	@Override
 	public void visitBizProject(BizProject bizProject) {
-		String projectName = bizProject.getName();
-		File projectDir = new File(wsDir, projectName);
-		
-		File webProjectDirFound = null;
-		if (hasWebProjectIn(projectDir)) {
-			// top level is web project
-			webProjectDirFound = projectDir;
-		} else {
-			// second level is web project
-			File[] webProjectSubDirs = projectDir.listFiles(new FileFilter() {
-				
-				@Override
-				public boolean accept(File pathname) {
-					return pathname.isDirectory() && hasWebProjectIn(pathname);
-				}
-			});
-			if(webProjectSubDirs.length == 0) {
-				log.warn(String.format("no web project found in %s", projectDir.getAbsolutePath()));
-			} else if(webProjectSubDirs.length == 1) {
-				webProjectDirFound = webProjectSubDirs[0];
-			} else {
-				log.warn(String.format("more than one web project found in %s", projectDir.getAbsolutePath()));
+		File parentProjectDir = new File(wsDir, bizProject.getName());
+
+		FileFilter webFilter = new WebProjectFileFilter();
+		List<File> webProjectSubDirs = new ArrayList<File>(Arrays.asList(parentProjectDir.listFiles(webFilter)));
+		if(webFilter.accept(parentProjectDir)) {
+			webProjectSubDirs.add(parentProjectDir);
+		}
+
+		if (webProjectSubDirs != null) {
+			for (File webProjectDir : webProjectSubDirs) {
+				String projectName = parseProjectName(webProjectDir);
+				log.info(String.format("found web project in %s", webProjectDir.getAbsolutePath()));
+				result.addWebContext("/_" + projectName, propertiesEscape(webProjectDir.getAbsolutePath()));
 			}
 		}
-		
-		if (webProjectDirFound != null) {
-			result.addWebContext("/_" + projectName, propertiesEscape(webProjectDirFound.getAbsolutePath()));
-		}
+
 		super.visitBizProject(bizProject);
+	}
+
+	/**
+	 * pom.xml have the "most correct" name, use directory name for simplicity
+	 * 
+	 * @param file
+	 * @return
+	 */
+	private String parseProjectName(File file) {
+		return new PomParser().getArtifactId(file);
 	}
 
 	private String propertiesEscape(String propertyValue) {
 		return propertyValue.replaceAll("\\\\", "/");
 	}
-	
+
 	@Override
 	public void visitWorkspace(Workspace workspace) {
 		wsDir = new File(workspace.getDir());

@@ -24,7 +24,7 @@ import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.BizServerContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.LaunchFileContextVisitor;
-import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.RouterRuleContextVisitor;
+import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.UrlRuleContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.ServiceLionContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.WorkspaceContextVisitor;
 import com.dianping.maven.plugin.tools.vcs.RepositoryService;
@@ -132,7 +132,7 @@ public class WorkspaceFacade {
     void createRuntimeResources(Workspace model) throws Exception {
         File projectDir = new File(model.getDir());
 
-        RouterRuleContextVisitor routerRuleCtxVisitor = new RouterRuleContextVisitor(f5Mgr);
+        UrlRuleContextVisitor routerRuleCtxVisitor = new UrlRuleContextVisitor(f5Mgr);
         BizServerContextVisitor bizServerCtxVisitor = new BizServerContextVisitor();
         ServiceLionContextVisitor serviceLionCtxVisitor = new ServiceLionContextVisitor();
         LaunchFileContextVisitor launchFileContextVisitor = new LaunchFileContextVisitor();
