@@ -1,0 +1,74 @@
+# usage:
+# -javaagent:{BYTEMAN_HOME}/lib/byteman.jar=script:{BTM_HOME}/{BTM_NAME},boot:{BYTEMAN_HOME}/lib/byteman.jar -Dorg.jboss.byteman.transform.all
+#
+RULE lion change
+CLASS com.dianping.lion.client.InitializeConfig
+METHOD postProcessBeanFactory
+HELPER com.dianping.phoenix.router.byteman.ServiceLionBytemanDataLoader
+AT INVOKE setPts
+IF true
+DO    
+	$this.pts.putAll(loadServices("^router-.*\.properties$"));
+	System.out.println("Phoenix runtime config modification complete...")
+ENDRULE
+
+RULE TemplateUtils
+CLASS com.dianping.w3c.pagelet.template.freemarker.TemplateUtils
+METHOD freemarker(Template ,String, Map)
+HELPER com.dianping.phoenix.router.remedy.TemplateUtilsRemedy
+AT ENTRY
+IF true
+DO
+	$2=getWebappDir($1);
+ENDRULE
+
+RULE set timer
+CLASS org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory
+METHOD <init>
+AT ENTRY
+IF true
+DO    
+	createTimer($this);
+ENDRULE
+
+RULE start construct timer
+CLASS org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory
+METHOD createBeanInstance
+HELPER com.dianping.phoenix.utils.byteman.PhoenixHelper
+AT ENTRY
+IF true
+DO    
+	#log("--------------------construct: " + $1 + "--------------------");
+	resetTimer($this);
+ENDRULE
+
+RULE end construct timer
+CLASS org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory
+METHOD createBeanInstance
+HELPER com.dianping.phoenix.utils.byteman.PhoenixHelper
+AT EXIT
+IF true
+DO    
+	log("construct\t" + $1 + "\t" + getElapsedTimeFromTimer($this), true);
+ENDRULE
+
+RULE start init timer
+CLASS org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory
+METHOD initializeBean
+HELPER com.dianping.phoenix.utils.byteman.PhoenixHelper
+AT ENTRY
+IF true
+DO    
+	#log("--------------------initialize: " + $2 + "--------------------");
+	resetTimer($this);
+ENDRULE
+
+RULE end init timer
+CLASS org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory
+METHOD initializeBean
+HELPER com.dianping.phoenix.utils.byteman.PhoenixHelper
+AT EXIT
+IF true
+DO    
+	log("initialize\t" + $1 + "\t" + getElapsedTimeFromTimer($this), true);
+ENDRULE
