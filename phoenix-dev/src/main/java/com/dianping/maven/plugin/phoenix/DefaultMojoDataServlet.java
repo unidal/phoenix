@@ -17,6 +17,7 @@ package com.dianping.maven.plugin.phoenix;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,17 +39,18 @@ import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
  * 
  */
 public class DefaultMojoDataServlet extends BaseMojoDataServlet<Workspace, Workspace> {
-    private static final long   serialVersionUID      = -4489369742174754185L;
+    private static final long   serialVersionUID          = -4489369742174754185L;
 
-    private static final String PARAM_PROJECTS_REMOVE = "projectsRemove";
-    private static final String PARAM_PROJECTS_ADD    = "projectsAdd";
+    private static final String PARAM_PROJECTS_REMOVE     = "projectsRemove";
+    private static final String PARAM_PROJECTS_ADD        = "projectsAdd";
+    private static final String PARAM_PROJECTNAME_PATTERN = "projectNamePattern";
 
-    private static final String URI_CREATE_WORKSPACE  = "createWorkspace";
-    private static final String URI_MODIFY_WORKSPACE  = "modifyWorkspace";
-    private static final String URI_LIST_PROJECTS     = "listProjects";
-    private static final String URI_WORKSPACE_META    = "workspaceMeta";
+    private static final String URI_CREATE_WORKSPACE      = "createWorkspace";
+    private static final String URI_MODIFY_WORKSPACE      = "modifyWorkspace";
+    private static final String URI_LIST_PROJECTS         = "listProjects";
+    private static final String URI_WORKSPACE_META        = "workspaceMeta";
 
-    private static final String SPLITOR               = ",";
+    private static final String SPLITOR                   = ",";
     private WorkspaceFacade     workspaceFacade;
     private String              baseUri;
 
@@ -72,7 +74,12 @@ public class DefaultMojoDataServlet extends BaseMojoDataServlet<Workspace, Works
                 String newUri = uri.substring(baseUri.length());
                 Map<String, Object> resData = new HashMap<String, Object>();
                 if (URI_LIST_PROJECTS.equals(newUri)) {
-                    resData.put("projects", workspaceFacade.listProjects());
+                    String pattern = req.getParameter(PARAM_PROJECTNAME_PATTERN);
+                    if (StringUtils.isNotBlank(pattern)) {
+                        resData.put("projects", workspaceFacade.getProjectListByPattern(pattern.trim()));
+                    } else {
+                        resData.put("projects", Collections.EMPTY_LIST);
+                    }
                     respSuccess(resp, resData);
                 } else if (URI_CREATE_WORKSPACE.equals(newUri)) {
                     createWorkspace(req, resp);

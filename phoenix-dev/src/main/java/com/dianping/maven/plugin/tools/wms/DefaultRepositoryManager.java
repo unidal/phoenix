@@ -3,6 +3,7 @@ package com.dianping.maven.plugin.tools.wms;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,28 +76,28 @@ public class DefaultRepositoryManager implements RepositoryManager, Initializabl
     }
 
     @Override
-    public List<String> getProjectListByPrefix(String prefix) {
-        ArrayList<String> projectList = new ArrayList<String>();
+    public List<String> getProjectListByPattern(String pattern) {
+        List<String> equalList = new ArrayList<String>();
+        List<String> startWithList = new ArrayList<String>();
+        List<String> indexOfList = new ArrayList<String>();
         for (String pname : pname2Repo.keySet()) {
-            if (pname.startsWith(prefix)) {
-                projectList.add(pname);
+            if (pname.equalsIgnoreCase(pattern)) {
+                equalList.add(pname);
+            } else if (pname.startsWith(pattern.toLowerCase())) {
+                startWithList.add(pname);
+            } else if (pname.indexOf(pattern.toLowerCase()) >= 0) {
+                indexOfList.add(pname);
             }
         }
-        return projectList;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.dianping.maven.plugin.tools.wms.RepositoryManager#getProjectList()
-     */
-    @Override
-    public List<String> getProjectList() {
-        ArrayList<String> projectList = new ArrayList<String>();
-        for (String pname : pname2Repo.keySet()) {
-            projectList.add(pname);
-        }
+        Collections.sort(equalList);
+        Collections.sort(startWithList);
+        Collections.sort(indexOfList);
+        List<String> projectList = new ArrayList<String>();
+        projectList.addAll(equalList);
+        projectList.addAll(startWithList);
+        projectList.addAll(indexOfList);
+
         return projectList;
     }
 

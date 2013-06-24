@@ -91,22 +91,10 @@ public class DummyRepositoryManager implements RepositoryManager {
     }
 
     @Override
-    public List<String> getProjectListByPrefix(String prefix) {
+    public List<String> getProjectListByPattern(String pattern) {
         ArrayList<String> projectList = new ArrayList<String>();
         projectList.add("user-web");
         return projectList;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.dianping.maven.plugin.tools.wms.RepositoryManager#getProjectList()
-     */
-    @Override
-    public List<String> getProjectList() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

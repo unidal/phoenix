@@ -88,19 +88,19 @@ public class CreateProjectMojo extends AbstractMojo {
         List<String> bizProjects = new ArrayList<String>();
         while (true) {
             try {
-                consoleIO.message("Input the project prefix wanna add(or 'quit' to skip addition): ");
-                String prefix = consoleIO.readInput();
+                consoleIO.message("Input the pattern of project name wanna add(or 'quit' to skip addition): ");
+                String pattern = consoleIO.readInput();
 
-                if (StringUtils.isBlank(prefix)) {
-                    consoleIO.lineMessage("No project prefix input.");
+                if (StringUtils.isBlank(pattern)) {
+                    consoleIO.lineMessage("No project pattern input.");
                     continue;
                 }
 
-                if ("quit".equalsIgnoreCase(prefix)) {
+                if ("quit".equalsIgnoreCase(pattern)) {
                     break;
                 }
 
-                List<String> choices = m_wsFacade.getProjectListByPrefix(prefix.trim());
+                List<String> choices = m_wsFacade.getProjectListByPattern(pattern.trim());
 
                 if (ignoreProjects != null && !ignoreProjects.isEmpty()) {
                     choices.removeAll(ignoreProjects);
@@ -109,7 +109,7 @@ public class CreateProjectMojo extends AbstractMojo {
                 choices.removeAll(bizProjects);
 
                 if (choices == null || choices.isEmpty()) {
-                    consoleIO.lineMessage(String.format("No project matches the prefix(%s)", prefix));
+                    consoleIO.lineMessage(String.format("No project matches the pattern(%s)", pattern));
                     continue;
                 }
 

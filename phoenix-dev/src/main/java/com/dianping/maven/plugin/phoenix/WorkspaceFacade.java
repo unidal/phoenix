@@ -62,8 +62,8 @@ public class WorkspaceFacade {
         Whiteboard.INSTANCE.workspaceInitialized(wsDir);
     }
 
-    public List<String> getProjectListByPrefix(String prefix) {
-        return repoMgr.getProjectListByPrefix(prefix);
+    public List<String> getProjectListByPattern(String pattern) {
+        return repoMgr.getProjectListByPattern(pattern);
     }
 
     public void create(Workspace model) throws Exception {
@@ -184,9 +184,5 @@ public class WorkspaceFacade {
 
     void createBytemanFile(File bytemanFile) throws Exception {
         bytemanGenerator.generate(bytemanFile, new HashMap<String, String>());
-    }
-
-    public List<String> listProjects() {
-        return repoMgr.getProjectList();
     }
 }
