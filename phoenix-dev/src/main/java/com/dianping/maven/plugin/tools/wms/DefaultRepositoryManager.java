@@ -35,7 +35,7 @@ public class DefaultRepositoryManager implements RepositoryManager, Initializabl
     @Override
     public void onWorkspaceInitialized(File wsDir) {
         try {
-        	File svnFile = new File(new File(wsDir, WorkspaceConstants.PHOENIX_CONFIG_FOLDER), SVN_CONFIG_FILENAME);
+            File svnFile = new File(new File(wsDir, WorkspaceConstants.PHOENIX_CONFIG_FOLDER), SVN_CONFIG_FILENAME);
             InputStream svnIn = ResourceUtil.INSTANCE.loadFromFileOrClasspath(svnFile);
             if (svnIn != null) {
                 Properties props = new Properties();
@@ -81,6 +81,21 @@ public class DefaultRepositoryManager implements RepositoryManager, Initializabl
             if (pname.startsWith(prefix)) {
                 projectList.add(pname);
             }
+        }
+        return projectList;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.dianping.maven.plugin.tools.wms.RepositoryManager#getProjectList()
+     */
+    @Override
+    public List<String> getProjectList() {
+        ArrayList<String> projectList = new ArrayList<String>();
+        for (String pname : pname2Repo.keySet()) {
+            projectList.add(pname);
         }
         return projectList;
     }

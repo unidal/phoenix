@@ -97,4 +97,16 @@ public class DummyRepositoryManager implements RepositoryManager {
         return projectList;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.dianping.maven.plugin.tools.wms.RepositoryManager#getProjectList()
+     */
+    @Override
+    public List<String> getProjectList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

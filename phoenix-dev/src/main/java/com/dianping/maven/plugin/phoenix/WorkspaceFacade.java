@@ -185,4 +185,8 @@ public class WorkspaceFacade {
     void createBytemanFile(File bytemanFile) throws Exception {
         bytemanGenerator.generate(bytemanFile, new HashMap<String, String>());
     }
+
+    public List<String> listProjects() {
+        return repoMgr.getProjectList();
+    }
 }
