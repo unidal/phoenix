@@ -162,6 +162,10 @@ rule when_req
             value = "^#{rhe.value}.*"
         when 'matches_regex'
             value = rhe.value[-1] == '$' ? rhe.value : "#{rhe.value}.*"
+	    when 'contains'
+			value = ".*#{rhe.value}.*"
+		when 'ends_with'
+			value = ".*#{rhe.value}$"
         end
     }
   end
