@@ -29,10 +29,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.plexus.util.StringUtils;
+import org.xml.sax.SAXException;
 
 import com.dianping.maven.plugin.phoenix.MojoDataWebUI.DataTransmitter;
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
+import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
 
 /**
  * @author Leo Liang
@@ -99,7 +101,7 @@ public class DefaultMojoDataServlet extends BaseMojoDataServlet<Workspace, Works
         }
     }
 
-    private void createWorkspace(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void createWorkspace(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String projectsAddStr = req.getParameter(PARAM_PROJECTS_ADD);
 
         if (StringUtils.isNotBlank(projectsAddStr)) {
@@ -109,7 +111,7 @@ public class DefaultMojoDataServlet extends BaseMojoDataServlet<Workspace, Works
         }
     }
 
-    private void modifyWorkspace(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void modifyWorkspace(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String projectsAddStr = req.getParameter(PARAM_PROJECTS_ADD);
         String projectsRemoveStr = req.getParameter(PARAM_PROJECTS_REMOVE);
 
@@ -118,11 +120,11 @@ public class DefaultMojoDataServlet extends BaseMojoDataServlet<Workspace, Works
                 StringUtils.isNotBlank(projectsRemoveStr) ? Arrays.asList(projectsRemoveStr.split(SPLITOR)) : null));
     }
 
-    private Workspace buildWorkSpace(List<String> projectsAdd, List<String> projectsRemove) {
+    private Workspace buildWorkSpace(List<String> projectsAdd, List<String> projectsRemove) throws Exception {
         Workspace rawWorkspace = dataTransmitter.getInitData();
-        Workspace newWorkspace = new Workspace();
-        newWorkspace.setPhoenixProject(rawWorkspace.getPhoenixProject());
-        newWorkspace.setDir(rawWorkspace.getDir());
+        Workspace newWorkspace = cloneWorkspace(rawWorkspace);
+        
+        newWorkspace.getBizProjects().clear();
 
         Set<String> projectNames = new HashSet<String>();
 
@@ -152,4 +154,9 @@ public class DefaultMojoDataServlet extends BaseMojoDataServlet<Workspace, Works
 
         return newWorkspace;
     }
+
+	private Workspace cloneWorkspace(Workspace rawWorkspace) throws SAXException, IOException {
+		Workspace newWorkspace = DefaultSaxParser.parse(rawWorkspace.toString());
+		return newWorkspace;
+	}
 }
