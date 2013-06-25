@@ -1,7 +1,6 @@
 package com.dianping.maven.plugin.phoenix;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +15,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import com.dianping.maven.plugin.phoenix.MojoDataWebUI.DataTransmitter;
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
-import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
 import com.dianping.maven.plugin.tools.console.ConsoleIO;
-import com.dianping.maven.plugin.tools.remedy.PomRemedy;
 
 /**
  * @goal projectEx
@@ -59,8 +56,7 @@ public class CreateProjectMojoEx extends AbstractMojo {
 
             m_wsFacade.init(new File(wsDir));
 
-            Workspace model = null;
-            model = buildDefaultWorkspace();
+            Workspace model = m_wsFacade.buildDefaultSkeletoModel();
             model.setDir(wsDir);
 
             DataTransmitter<Workspace, Workspace> dataTransmitter = createUI(model, "/createWs.html");
@@ -114,17 +110,6 @@ public class CreateProjectMojoEx extends AbstractMojo {
             throw new MojoFailureException("error", e);
         }
 
-    }
-
-    private Workspace buildDefaultWorkspace() throws MojoFailureException {
-        InputStream defaultWorkspaceXml = this.getClass().getResourceAsStream("/workspace-default.xml");
-        Workspace model;
-        try {
-            model = DefaultSaxParser.parse(defaultWorkspaceXml);
-            return model;
-        } catch (Exception e) {
-            throw new MojoFailureException("error read workspace-default.xml", e);
-        }
     }
 
     private static class BizProjectToStringTransformer implements Transformer {
