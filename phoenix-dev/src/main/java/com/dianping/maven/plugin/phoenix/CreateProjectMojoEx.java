@@ -1,9 +1,6 @@
 package com.dianping.maven.plugin.phoenix;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
@@ -30,6 +27,10 @@ public class CreateProjectMojoEx extends AbstractMojo {
      * @component
      */
     private ConsoleIO       consoleIO;
+    /**
+     * @component
+     */
+    private UICreator uiCreator;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -59,7 +60,7 @@ public class CreateProjectMojoEx extends AbstractMojo {
             Workspace model = m_wsFacade.buildDefaultSkeletoModel();
             model.setDir(wsDir);
 
-            DataTransmitter<Workspace, Workspace> dataTransmitter = createUI(model, "/createWs.html");
+            DataTransmitter<Workspace, Workspace> dataTransmitter = uiCreator.createUI(model, "/createWs.html");
 
             model = dataTransmitter.awaitResult();
 
@@ -77,24 +78,12 @@ public class CreateProjectMojoEx extends AbstractMojo {
 
     }
 
-    public DataTransmitter<Workspace, Workspace> createUI(Workspace model, String displayUri) throws Exception,
-            MalformedURLException {
-        DataTransmitter<Workspace, Workspace> dataTransmitter = new DataTransmitter<Workspace, Workspace>(model);
-        Map<String, BaseMojoDataServlet<Workspace, Workspace>> servletMapping = new HashMap<String, BaseMojoDataServlet<Workspace, Workspace>>();
-        servletMapping.put("/req/*", new DefaultMojoDataServlet(dataTransmitter, m_wsFacade, "/req/"));
-
-        MojoDataWebUI<Workspace, Workspace> webUI = new MojoDataWebUI<Workspace, Workspace>(servletMapping);
-        webUI.start();
-        webUI.display(displayUri);
-        return dataTransmitter;
-    }
-
     private void modifyWorkspace(Workspace model) throws MojoFailureException {
 
         try {
             m_wsFacade.init(new File(model.getDir()));
 
-            DataTransmitter<Workspace, Workspace> dataTransmitter = createUI(model, "/modifyWs.html");
+            DataTransmitter<Workspace, Workspace> dataTransmitter = uiCreator.createUI(model, "/modifyWs.html");
 
             model = dataTransmitter.awaitResult();
 
