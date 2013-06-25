@@ -18,7 +18,6 @@ import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
 import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
 import com.dianping.maven.plugin.tools.console.ConsoleIO;
-import com.dianping.maven.plugin.tools.remedy.PomRemedy;
 
 /**
  * @goal project
@@ -77,11 +76,6 @@ public class CreateProjectMojo extends AbstractMojo {
             throw new MojoFailureException("error create phoenix workspace", e);
         }
 
-        try {
-            PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
-        } catch (Exception e) {
-            throw new MojoFailureException("error remedy pom", e);
-        }
     }
 
     private List<String> addProjectInteractively(List<String> ignoreProjects) throws MojoFailureException {
@@ -184,11 +178,6 @@ public class CreateProjectMojo extends AbstractMojo {
             throw new MojoFailureException("error modify phoenix workspace", e);
         }
 
-        try {
-            PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
-        } catch (Exception e) {
-            throw new MojoFailureException("error remedy pom", e);
-        }
     }
 
     private Workspace buildModel(List<String> bizProjects, String wsDir) throws MojoFailureException {

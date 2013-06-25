@@ -75,14 +75,13 @@ public class CreateProjectMojoEx extends AbstractMojo {
 
             m_wsFacade.create(model);
 
-            PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
         } catch (Exception e) {
             throw new MojoFailureException("error", e);
         }
 
     }
 
-    private DataTransmitter<Workspace, Workspace> createUI(Workspace model, String displayUri) throws Exception,
+    public DataTransmitter<Workspace, Workspace> createUI(Workspace model, String displayUri) throws Exception,
             MalformedURLException {
         DataTransmitter<Workspace, Workspace> dataTransmitter = new DataTransmitter<Workspace, Workspace>(model);
         Map<String, BaseMojoDataServlet<Workspace, Workspace>> servletMapping = new HashMap<String, BaseMojoDataServlet<Workspace, Workspace>>();
@@ -111,7 +110,6 @@ public class CreateProjectMojoEx extends AbstractMojo {
 
             m_wsFacade.modify(model);
 
-            PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
         } catch (Exception e) {
             throw new MojoFailureException("error", e);
         }

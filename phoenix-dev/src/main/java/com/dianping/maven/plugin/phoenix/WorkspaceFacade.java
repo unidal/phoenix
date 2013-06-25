@@ -27,6 +27,7 @@ import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.LaunchFil
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.UrlRuleContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.ServiceLionContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.WorkspaceContextVisitor;
+import com.dianping.maven.plugin.tools.remedy.PomRemedy;
 import com.dianping.maven.plugin.tools.vcs.RepositoryService;
 import com.dianping.maven.plugin.tools.wms.RepositoryManager;
 import com.dianping.maven.plugin.tools.wms.WorkspaceConstants;
@@ -93,6 +94,7 @@ public class WorkspaceFacade {
         } else {
             createSkeletonWorkspace(workspaceCtxVisitor.getVisitResult());
         }
+        PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
         createRuntimeResources(model);
         saveMeta(model);
         FileUtils.touch(new File(model.getDir(), WorkspaceConstants.REINIT_SIG_FILENAME));
