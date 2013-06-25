@@ -25,8 +25,6 @@ public interface RepositoryManager {
 
     Repository find(String project);
 
-    List<String> getProjectListByPrefix(String prefix);
-
-    List<String> getProjectList();
+    List<String> getProjectListByPattern(String pattern);
 
 }
