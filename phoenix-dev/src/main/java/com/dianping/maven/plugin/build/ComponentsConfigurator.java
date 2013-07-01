@@ -69,7 +69,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
                 .req(RepositoryManager.class));
 
         all.add(C(ConsoleIO.class));
-        all.add(C(UICreator.class));
+        all.add(C(UICreator.class) //
+        		.req(WorkspaceFacade.class));
 
         return all;
     }

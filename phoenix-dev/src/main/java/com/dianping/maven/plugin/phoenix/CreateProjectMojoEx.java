@@ -19,7 +19,8 @@ import com.dianping.maven.plugin.tools.console.ConsoleIO;
  * @requiresProject false
  */
 public class CreateProjectMojoEx extends AbstractMojo {
-    /**
+    private static final String WORKSPACE_HTML = "/workspace.html";
+	/**
      * @component
      */
     private WorkspaceFacade m_wsFacade;
@@ -60,7 +61,7 @@ public class CreateProjectMojoEx extends AbstractMojo {
             Workspace model = m_wsFacade.buildDefaultSkeletoModel();
             model.setDir(wsDir);
 
-            DataTransmitter<Workspace, Workspace> dataTransmitter = uiCreator.createUI(model, "/createWs.html");
+            DataTransmitter<Workspace, Workspace> dataTransmitter = uiCreator.createUI(model, WORKSPACE_HTML);
 
             model = dataTransmitter.awaitResult();
 
@@ -83,7 +84,7 @@ public class CreateProjectMojoEx extends AbstractMojo {
         try {
             m_wsFacade.init(new File(model.getDir()));
 
-            DataTransmitter<Workspace, Workspace> dataTransmitter = uiCreator.createUI(model, "/modifyWs.html");
+            DataTransmitter<Workspace, Workspace> dataTransmitter = uiCreator.createUI(model, WORKSPACE_HTML);
 
             model = dataTransmitter.awaitResult();
 

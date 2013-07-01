@@ -77,7 +77,24 @@ public class DefaultRepositoryManager implements RepositoryManager, Initializabl
 
     @Override
     public List<String> getProjectListByPattern(String pattern) {
-        List<String> equalList = new ArrayList<String>();
+    	if("*".equals(pattern)) {
+    		return allProject();
+    	} else {
+    		return intelligentRank(pattern);
+    	}
+    }
+    
+	private List<String> allProject() {
+		List<String> projectList = new ArrayList<String>();
+		for (String pname : pname2Repo.keySet()) {
+			projectList.add(pname);
+		}
+		Collections.sort(projectList);
+		return projectList;
+	}
+
+	private List<String> intelligentRank(String pattern) {
+		List<String> equalList = new ArrayList<String>();
         List<String> startWithList = new ArrayList<String>();
         List<String> indexOfList = new ArrayList<String>();
         for (String pname : pname2Repo.keySet()) {
@@ -99,6 +116,6 @@ public class DefaultRepositoryManager implements RepositoryManager, Initializabl
         projectList.addAll(indexOfList);
 
         return projectList;
-    }
+	}
 
 }
