@@ -110,5 +110,14 @@
 			<role>com.dianping.maven.plugin.tools.console.ConsoleIO</role>
 			<implementation>com.dianping.maven.plugin.tools.console.ConsoleIO</implementation>
 		</component>
+		<component>
+			<role>com.dianping.maven.plugin.phoenix.UICreator</role>
+			<implementation>com.dianping.maven.plugin.phoenix.UICreator</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.maven.plugin.phoenix.WorkspaceFacade</role>
+				</requirement>
+			</requirements>
+		</component>
 	</components>
 </plexus>

@@ -6,6 +6,7 @@ import java.util.List;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
+import com.dianping.maven.plugin.phoenix.UICreator;
 import com.dianping.maven.plugin.phoenix.WorkspaceFacade;
 import com.dianping.maven.plugin.phoenix.phoenix.entity.Phoenix;
 import com.dianping.maven.plugin.tools.console.ConsoleIO;
@@ -68,6 +69,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
                 .req(RepositoryManager.class));
 
         all.add(C(ConsoleIO.class));
+        all.add(C(UICreator.class) //
+        		.req(WorkspaceFacade.class));
 
         return all;
     }

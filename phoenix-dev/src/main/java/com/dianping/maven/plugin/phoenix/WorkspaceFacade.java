@@ -2,6 +2,7 @@ package com.dianping.maven.plugin.phoenix;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.maven.plugin.configure.Whiteboard;
+import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
 import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
 import com.dianping.maven.plugin.tools.generator.BytemanScriptGenerator;
@@ -24,9 +26,10 @@ import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleContext;
 import com.dianping.maven.plugin.tools.generator.dynamic.UrlRuleGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.BizServerContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.LaunchFileContextVisitor;
-import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.UrlRuleContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.ServiceLionContextVisitor;
+import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.UrlRuleContextVisitor;
 import com.dianping.maven.plugin.tools.generator.dynamic.model.visitor.WorkspaceContextVisitor;
+import com.dianping.maven.plugin.tools.remedy.PomRemedy;
 import com.dianping.maven.plugin.tools.vcs.RepositoryService;
 import com.dianping.maven.plugin.tools.wms.RepositoryManager;
 import com.dianping.maven.plugin.tools.wms.WorkspaceConstants;
@@ -93,6 +96,7 @@ public class WorkspaceFacade {
         } else {
             createSkeletonWorkspace(workspaceCtxVisitor.getVisitResult());
         }
+        PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
         createRuntimeResources(model);
         saveMeta(model);
         FileUtils.touch(new File(model.getDir(), WorkspaceConstants.REINIT_SIG_FILENAME));
@@ -185,4 +189,33 @@ public class WorkspaceFacade {
     void createBytemanFile(File bytemanFile) throws Exception {
         bytemanGenerator.generate(bytemanFile, new HashMap<String, String>());
     }
+    
+    private Workspace buildModel(List<String> bizProjects, String wsDir) throws Exception {
+        Workspace model = buildDefaultSkeletoModel();
+
+        model.setDir(wsDir);
+        for (String bizProjectName : bizProjects) {
+            BizProject bizProject = new BizProject();
+            bizProject.setName(bizProjectName);
+            model.addBizProject(bizProject);
+        }
+
+        return model;
+    }
+
+	public Workspace buildDefaultSkeletoModel() {
+		InputStream defaultWorkspaceXml = this.getClass().getResourceAsStream("/workspace-default.xml");
+        Workspace model;
+        try {
+            model = DefaultSaxParser.parse(defaultWorkspaceXml);
+        } catch (Exception e) {
+            throw new RuntimeException("error read workspace-default.xml", e);
+        }
+		return model;
+	}
+
+	public void create(List<String> bizProjects, String wsDir) throws Exception {
+		Workspace model = buildModel(bizProjects, wsDir);
+		create(model);
+	}
 }

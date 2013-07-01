@@ -1,10 +1,6 @@
 package com.dianping.maven.plugin.phoenix;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
@@ -16,16 +12,15 @@ import org.apache.maven.plugin.MojoFailureException;
 import com.dianping.maven.plugin.phoenix.MojoDataWebUI.DataTransmitter;
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
-import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
 import com.dianping.maven.plugin.tools.console.ConsoleIO;
-import com.dianping.maven.plugin.tools.remedy.PomRemedy;
 
 /**
  * @goal projectEx
  * @requiresProject false
  */
 public class CreateProjectMojoEx extends AbstractMojo {
-    /**
+    private static final String WORKSPACE_HTML = "/workspace.html";
+	/**
      * @component
      */
     private WorkspaceFacade m_wsFacade;
@@ -33,6 +28,10 @@ public class CreateProjectMojoEx extends AbstractMojo {
      * @component
      */
     private ConsoleIO       consoleIO;
+    /**
+     * @component
+     */
+    private UICreator uiCreator;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -59,11 +58,10 @@ public class CreateProjectMojoEx extends AbstractMojo {
 
             m_wsFacade.init(new File(wsDir));
 
-            Workspace model = null;
-            model = buildDefaultWorkspace();
+            Workspace model = m_wsFacade.buildDefaultSkeletoModel();
             model.setDir(wsDir);
 
-            DataTransmitter<Workspace, Workspace> dataTransmitter = createUI(model, "/createWs.html");
+            DataTransmitter<Workspace, Workspace> dataTransmitter = uiCreator.createUI(model, WORKSPACE_HTML);
 
             model = dataTransmitter.awaitResult();
 
@@ -75,23 +73,10 @@ public class CreateProjectMojoEx extends AbstractMojo {
 
             m_wsFacade.create(model);
 
-            PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
         } catch (Exception e) {
             throw new MojoFailureException("error", e);
         }
 
-    }
-
-    private DataTransmitter<Workspace, Workspace> createUI(Workspace model, String displayUri) throws Exception,
-            MalformedURLException {
-        DataTransmitter<Workspace, Workspace> dataTransmitter = new DataTransmitter<Workspace, Workspace>(model);
-        Map<String, BaseMojoDataServlet<Workspace, Workspace>> servletMapping = new HashMap<String, BaseMojoDataServlet<Workspace, Workspace>>();
-        servletMapping.put("/req/*", new DefaultMojoDataServlet(dataTransmitter, m_wsFacade, "/req/"));
-
-        MojoDataWebUI<Workspace, Workspace> webUI = new MojoDataWebUI<Workspace, Workspace>(servletMapping);
-        webUI.start();
-        webUI.display(displayUri);
-        return dataTransmitter;
     }
 
     private void modifyWorkspace(Workspace model) throws MojoFailureException {
@@ -99,7 +84,7 @@ public class CreateProjectMojoEx extends AbstractMojo {
         try {
             m_wsFacade.init(new File(model.getDir()));
 
-            DataTransmitter<Workspace, Workspace> dataTransmitter = createUI(model, "/modifyWs.html");
+            DataTransmitter<Workspace, Workspace> dataTransmitter = uiCreator.createUI(model, WORKSPACE_HTML);
 
             model = dataTransmitter.awaitResult();
 
@@ -111,22 +96,10 @@ public class CreateProjectMojoEx extends AbstractMojo {
 
             m_wsFacade.modify(model);
 
-            PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
         } catch (Exception e) {
             throw new MojoFailureException("error", e);
         }
 
-    }
-
-    private Workspace buildDefaultWorkspace() throws MojoFailureException {
-        InputStream defaultWorkspaceXml = this.getClass().getResourceAsStream("/workspace-default.xml");
-        Workspace model;
-        try {
-            model = DefaultSaxParser.parse(defaultWorkspaceXml);
-            return model;
-        } catch (Exception e) {
-            throw new MojoFailureException("error read workspace-default.xml", e);
-        }
     }
 
     private static class BizProjectToStringTransformer implements Transformer {
