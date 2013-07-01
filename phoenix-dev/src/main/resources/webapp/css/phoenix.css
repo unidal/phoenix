@@ -14,7 +14,7 @@
   color: #333 !important;
   /*text-shadow: 0 1px 1px rgba(255, 255, 255, 0.69);*/
   -webkit-font-smoothing: antialiased;
-  width: 200px;
+  /*width: 200px;*/
   text-align:left;
 }
 
@@ -33,7 +33,7 @@
 	color: #333 !important;
 	/*text-shadow: 0 1px 1px rgba(255, 255, 255, 0.33);*/
 	-webkit-font-smoothing: antialiased;
-	width: 200px;
+	/*width: 200px;*/
   text-align:left;
 }
 
