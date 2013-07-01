@@ -7,6 +7,7 @@ Version:	0.1
 Release:	1
 Summary:	phoenix-agent-tomcat
 Requires:	git
+Requires(pre): /usr/sbin/useradd, /usr/bin/getent, /usr/sbin/usermod
 
 Group:		Development/Tools
 License:	GPL
@@ -17,6 +18,10 @@ BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-XXXXXXXXXX)
 %description
 A powerful customized J2EE web container (JBoss, Jetty, Tomcat)
 
+%pre
+# add user phoenix
+/usr/bin/getent passwd phoenix || /usr/sbin/useradd -u 2200 phoenix
+/usr/sbin/usermod -a -G nobody phoenix || true
 
 %prep
 %setup -q
@@ -26,11 +31,6 @@ A powerful customized J2EE web container (JBoss, Jetty, Tomcat)
 
 
 %install
-
-# add user phoenix
-useradd phoenix 2>/dev/null || true
-usermod -a -G nobody phoenix
-
 [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT/*
 
 # where to install agent files

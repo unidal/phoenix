@@ -9,8 +9,6 @@ source ./util.sh
 log "PID is $$"
 log "CMD is $0 $@"
 
-OP_SCRIPT=/etc/init.d/jboss
-
 while getopts ":o:b:c:" option;do
 	case $option in
 			o)      op=$OPTARG;;
@@ -18,6 +16,8 @@ while getopts ":o:b:c:" option;do
 			c)		container_type=`echo $OPTARG | tr '[A-Z]' '[a-z]'`;;
 	esac
 done
+
+OP_SCRIPT=/etc/init.d/$container_type
 
 # stop container and make offline in dpsf and f5
 function stop_all {
