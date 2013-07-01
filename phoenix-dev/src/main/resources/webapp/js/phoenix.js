@@ -85,25 +85,26 @@ function chosenProjects() {
 							console.log(totalTime);
 						}
 						
+						// select existing projects
+						$.ajax({
+							async: false,
+							url: "/req/workspaceMeta",
+							dataType: 'json'
+						}).done(function(data){
+							var existingProjects = data["workspace"]["m_bizProjects"];
+							if(existingProjects.length == 0) {
+								$("#submit").html("Create");
+							} else {
+								$("#submit").html("Modify");
+								for(var i = 0; i < existingProjects.length; i++) {
+									var project = existingProjects[i]["m_name"];
+									onProjectChosen(project);
+								}
+							}
+						});
+						
 					});
 					
-					// select existing projects
-					$.ajax({
-						async: false,
-						url: "/req/workspaceMeta",
-						dataType: 'json'
-					}).done(function(data){
-						var existingProjects = data["workspace"]["m_bizProjects"];
-						if(existingProjects.length == 0) {
-							$("#submit").html("Create");
-						} else {
-							$("#submit").html("Modify");
-							for(var i = 0; i < existingProjects.length; i++) {
-								var project = existingProjects[i]["m_name"];
-								onProjectChosen(project);
-							}
-						}
-					});
 				});
 				
 				function loadProjects() {
