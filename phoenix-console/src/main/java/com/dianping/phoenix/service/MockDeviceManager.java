@@ -6,10 +6,10 @@ import com.dianping.phoenix.project.entity.Project;
 public class MockDeviceManager extends DefaultDeviceManager implements DeviceManager {
 
 	@Override
-	public Project findProjectBy(String name) throws Exception {
+	public Project getProjectByName(String name) {
 		Project p = new Project();
 		p.setName("user-web");
-		p.setOwner("marsqing");
+		p.addOwner("marsqing");
 		p.setDescription("user-web for test");
 
 		Host hosty = new Host();
@@ -17,7 +17,7 @@ public class MockDeviceManager extends DefaultDeviceManager implements DeviceMan
 		hosty.setEnv("DEV");
 		hosty.setStatus("在线");
 		p.addHost(hosty);
-		
+
 		for (int idx = 1; idx <= 5; idx++) {
 			Host host = new Host();
 			host.setIp(String.format("127.0.0.%d", idx));

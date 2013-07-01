@@ -1,39 +1,46 @@
 package com.dianping.phoenix.service;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.collections.map.LRUMap;
+import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.phoenix.agent.response.entity.Domain;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.device.entity.Attribute;
 import com.dianping.phoenix.device.entity.Device;
-import com.dianping.phoenix.device.entity.Facet;
 import com.dianping.phoenix.device.entity.Responce;
-import com.dianping.phoenix.device.entity.Value;
 import com.dianping.phoenix.device.transform.DefaultSaxParser;
+import com.dianping.phoenix.project.entity.BussinessLine;
 import com.dianping.phoenix.project.entity.Host;
 import com.dianping.phoenix.project.entity.Project;
+import com.dianping.phoenix.project.entity.Root;
+import com.dianping.phoenix.service.netty.AgentStatusFetcher;
 
-public class DefaultDeviceManager implements DeviceManager, Initializable {
+public class DefaultDeviceManager implements DeviceManager, Initializable, LogEnabled {
 
 	@Inject
 	private ConfigManager m_configManager;
 
-	private List<String> m_bussinessLineList = new ArrayList<String>();
+	@Inject
+	private AgentStatusFetcher m_agentStatusFetcher;
 
-	private Map<String, List<String>> m_bussinessLineToDomainListMap = new HashMap<String, List<String>>();
+	private Logger m_logger;
 
 	private static final String KEY_OWNER = "rd_duty";
 
@@ -43,12 +50,14 @@ public class DefaultDeviceManager implements DeviceManager, Initializable {
 
 	private static final String KEY_ENV = "env";
 
-	@Override
-	public Project findProjectBy(String name) throws Exception {
+	private AtomicReference<List<BussinessLine>> m_bizLinesInfo = new AtomicReference<List<BussinessLine>>();
+
+	private AtomicReference<List<BussinessLine>> m_bizLines = new AtomicReference<List<BussinessLine>>();
+
+	private Project findProjectBy(String name) throws Exception {
 		String ipUrlPattern = m_configManager.getCmdbIpUrlPattern();
 		Responce root = readCmdb(String.format(ipUrlPattern, name));
 		Project project = new Project(name);
-		// TODO:set description
 		project.setDescription("");
 		if (root != null && root.getDevices() != null) {
 			for (Device device : root.getDevices()) {
@@ -60,8 +69,8 @@ public class DefaultDeviceManager implements DeviceManager, Initializable {
 				Attribute ip = attributeMap.get(KEY_IP);
 				Attribute env = attributeMap.get(KEY_ENV);
 				Attribute status = attributeMap.get(KEY_STATUS);
-				if (owner != null && project.getOwner() != null) {
-					project.setOwner(owner.getText());
+				if (owner != null && owner.getText() != null && owner.getText().length() > 0) {
+					project.addOwner(owner.getText());
 				}
 				Host host = new Host();
 				if (ip != null) {
@@ -74,16 +83,41 @@ public class DefaultDeviceManager implements DeviceManager, Initializable {
 						host.setStatus(status.getText());
 					}
 				}
-				// TODO:set war info
 			}
 			if (project.getHosts() != null) {
 				Collections.sort(project.getHosts(), new IPComparator());
 			}
 
 		}
+		if (project.getHosts() != null) {
+			m_logger.info("Fetching Status of Agent.");
+			m_agentStatusFetcher.fetchPhoenixAgentStatus(project.getHosts());
+			analysisProject(project);
+			m_logger.info("Status fetching finished.");
+		}
 		return project;
 	}
 
+	private void analysisProject(Project project) {
+		for (Host host : project.getHosts()) {
+			if ("ok".equals(host.getAgentStatus())) {
+				project.setActiveCount(project.getActiveCount() + 1);
+			} else {
+				project.setInactiveCount(project.getInactiveCount() + 1);
+			}
+
+			for (Domain domain : host.getDomains()) {
+				if (domain.getWar() != null) {
+					String v = domain.getWar().getVersion();
+					project.getAppVersions().add(v == null || v.length() == 0 ? "Unknow" : v);
+				}
+				if (domain.getKernel() != null && domain.getKernel().getWar() != null) {
+					String v = domain.getKernel().getWar().getVersion();
+					project.getKernelVersions().add(v == null || v.length() == 0 ? "Unknow" : v);
+				}
+			}
+		}
+	}
 	protected static class IPComparator implements Comparator<Host> {
 
 		@Override
@@ -108,27 +142,12 @@ public class DefaultDeviceManager implements DeviceManager, Initializable {
 
 	@Override
 	public void initialize() throws InitializationException {
-
-	}
-
-	@Override
-	public List<Project> searchProjects(String keyword) throws Exception {
-		List<Project> list = new ArrayList<Project>();
-		List<String> nameList = getDomainListByBussinessLine("信息线");
-
-		if (keyword == null || keyword.trim().length() == 0) {
-			for (String name : nameList) {
-				list.add(new Project(name));
-			}
-		} else {
-			for (String name : nameList) {
-				if (name.contains(keyword)) {
-					list.add(new Project(name));
-				}
-			}
-		}
-
-		return list;
+		m_logger.info("Initializing ConfigFileWatchDog thread.");
+		new ConfigFileWatchdog().setDelay(30).start();// check changes 1/10MINs
+		m_logger.info("ConfigFileWatchDog thread started.");
+		m_logger.info("Initializing AgentStatusWatchdog thread.");
+		new AgentStatusWatchdog().setDelay(5).start();// refresh status 1/5MINs
+		m_logger.info("AgentStatusWatchdog thread started.");
 	}
 
 	private Responce readCmdb(String url) {
@@ -142,56 +161,165 @@ public class DefaultDeviceManager implements DeviceManager, Initializable {
 		}
 	}
 
-	private List<String> getAttributeList(String url, String attName) {
-		Responce root = readCmdb(url);
-		List<String> result = null;
-		if (root != null) {
-			result = new ArrayList<String>();
-			for (Facet facet : root.getFacets()) {
-				if (facet.getAttribute().equals(attName)) {
-					for (Value value : facet.getValues()) {
-						result.add(value.getName());
-					}
-					break;
+	@Override
+	public List<BussinessLine> getBussinessLineList() {
+		return m_bizLines.get();
+	}
+
+	private class ConfigFileWatchdog extends Thread {
+
+		public static final long DEFAULT_DELAY = 1;
+
+		private long m_delay = DEFAULT_DELAY;
+
+		private long m_lastRefresh = 0;
+
+		public ConfigFileWatchdog() {
+			setDaemon(true);
+			checkAndConfigure();
+		}
+
+		public ConfigFileWatchdog setDelay(int minutes) {
+			m_delay = minutes;
+			return this;
+		}
+
+		private void checkAndConfigure() {
+			String path1 = "/data/appdatas/phoenix/project.xml";
+			String path2 = "/com/dianping/phoenix/deploy/project.xml";
+
+			File f = new File(path1);
+			if (!f.exists() || !f.isFile()) {
+				f = new File(getClass().getResource(path2).getFile());
+			}
+			if (!f.exists() || !f.isFile()) {
+				throw new RuntimeException(String.format("Can't find project.xml at [%s] nor classpath.", path1));
+			}
+
+			if (f.lastModified() > m_lastRefresh) {
+				m_lastRefresh = System.currentTimeMillis();
+
+				Root r = null;
+				try {
+					r = com.dianping.phoenix.project.transform.DefaultSaxParser.parse(new FileInputStream(f));
+				} catch (Exception e) {
+					throw new RuntimeException("Can't parse project.xml.", e);
+				}
+
+				List<BussinessLine> l = new ArrayList<BussinessLine>();
+				l.addAll(r.getBussinessLines().values());
+
+				m_bizLinesInfo.set(l);
+			}
+		}
+
+		@Override
+		public void run() {
+			while (true) {
+				try {
+					TimeUnit.MINUTES.sleep(m_delay);
+					checkAndConfigure();
+				} catch (Exception e) {
+					m_logger.warn("Refresh config failed.", e);
 				}
 			}
 		}
-		return result;
+	}
+
+	private class AgentStatusWatchdog extends Thread {
+		public static final long DEFAULT_DELAY = 5;
+
+		private long m_delay = DEFAULT_DELAY;
+
+		public AgentStatusWatchdog setDelay(int minutes) {
+			m_delay = minutes;
+			return this;
+		}
+
+		public AgentStatusWatchdog() {
+			setDaemon(true);
+			refreshAgentStatus(false);
+		}
+
+		private void refreshAgentStatus(boolean needInteval) {
+			List<BussinessLine> bizInfos = m_bizLinesInfo.get();
+
+			List<BussinessLine> newBizLines = new ArrayList<BussinessLine>();
+			for (BussinessLine bizInfo : bizInfos) {
+				BussinessLine bizLine = new BussinessLine(bizInfo.getName());
+				for (Entry<String, Project> entry : bizInfo.getProjects().entrySet()) {
+					String name = entry.getKey();
+					try {
+						m_logger.info("Finding project: " + name);
+						Project project = findProjectBy(name);
+						m_logger.info("Project: " + name + " finished");
+						bizLine.addProject(project);
+						if (needInteval) {
+							TimeUnit.SECONDS.sleep(m_delay * 60 / bizInfos.size() / bizInfo.getProjects().size());
+						}
+					} catch (InterruptedException e) {
+						// ignore it
+					} catch (Exception e) {
+						m_logger.warn(String.format("Can not fetch agents status of project [%s]", name), e);
+						e.printStackTrace();
+					}
+				}
+				newBizLines.add(bizLine);
+			}
+			m_bizLines.set(newBizLines);
+		}
+
+		@Override
+		public void run() {
+			try {
+				TimeUnit.MINUTES.sleep(m_delay);
+			} catch (InterruptedException e) {
+				// ignore it
+			}
+			while (true) {
+				try {
+					refreshAgentStatus(true);
+				} catch (Exception e) {
+					m_logger.warn("Refresh agent status failed.", e);
+				}
+			}
+		}
 	}
 
 	@Override
-	public List<String> getBussinessLineList() {
-		String catalogUrl = m_configManager.getCmdbCatalogUrl();
-		List<String> result = getAttributeList(catalogUrl, "catalog");
-		if (result != null) {
-			m_bussinessLineList = result;
-		}
-		return m_bussinessLineList;
+	public void enableLogging(Logger logger) {
+		m_logger = logger;
 	}
 
 	@Override
-	public List<String> getDomainListByBussinessLine(String bussinessLine) {
-		String domainUrlPattern = m_configManager.getCmdbDomainUrlPattern();
-		List<String> result = getAttributeList(String.format(domainUrlPattern, bussinessLine), "app");
-		if (result == null && m_bussinessLineToDomainListMap.containsKey(bussinessLine)) {
-			return m_bussinessLineToDomainListMap.get(bussinessLine);
-		} else if (result == null && !m_bussinessLineToDomainListMap.containsKey(bussinessLine)) {
-			m_bussinessLineToDomainListMap.put(bussinessLine, new ArrayList<String>());
-			return m_bussinessLineToDomainListMap.get(bussinessLine);
-		} else {
-			m_bussinessLineToDomainListMap.put(bussinessLine, result);
-			return result;
+	public Project getProjectByName(String name) {
+		List<BussinessLine> bizs = m_bizLines.get();
+		for (BussinessLine biz : bizs) {
+			Map<String, Project> projects = biz.getProjects();
+			if (projects.containsKey(name)) {
+				return projects.get(name);
+			}
 		}
+		return new Project(name);
 	}
 
-	@SuppressWarnings("unchecked")
-	public static void main(String[] args) {
-		LRUMap lruMap = new LRUMap();
-		for (int idx = 0; idx < 100; idx++) {
-			lruMap.put(idx, idx);
+	@Override
+	public Project refreshProjectMannully(String name) {
+		Project p = new Project(name);
+
+		try {
+			p = findProjectBy(name);
+		} catch (Exception e) {
+			throw new RuntimeException("Refresh project status failed.", e);
 		}
-		for (Entry<Integer, Integer> entry : (Set<Entry<Integer, Integer>>) lruMap.entrySet()) {
-			System.out.println(String.format("%d : %d", entry.getKey(), entry.getValue()));
+
+		List<BussinessLine> bizs = m_bizLines.get();
+		for (BussinessLine biz : bizs) {
+			if (biz.getProjects().containsKey(name)) {
+				biz.getProjects().put(name, p);
+				break;
+			}
 		}
+		return p;
 	}
 }

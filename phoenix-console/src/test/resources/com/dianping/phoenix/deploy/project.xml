@@ -2,7 +2,7 @@
 
 <root>
 	<bussinessLine name="信息线">
-		<project name="user-web" owner="qing.gu">
+		<project name="user-web">
 			<description>Sample Application</description>
 			<hosts>
 				<host ip="127.0.0.1" status="up" env="product">
@@ -23,7 +23,7 @@
 				</host>
 			</hosts>
 		</project>
-		<project name="shop-web" owner="jianbing.xu">
+		<project name="shop-web">
 			<description>商户前台web应用</description>
 			<hosts>
 				<host ip="192.168.66.113" status="up" env="product">

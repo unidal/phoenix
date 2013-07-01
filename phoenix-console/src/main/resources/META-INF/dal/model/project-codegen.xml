@@ -9,7 +9,6 @@
   </entity>
   <entity name="project">
     <attribute name="name" value-type="String" />
-    <attribute name="owner" value-type="String" />
     <element name="description" value-type="String" />
     <entity-ref name="host" type="list" names="hosts" xml-indent="true" />
   </entity>

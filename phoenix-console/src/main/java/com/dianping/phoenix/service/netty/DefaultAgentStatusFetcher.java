@@ -22,11 +22,13 @@ import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpVersion;
+import org.jboss.netty.handler.timeout.ReadTimeoutHandler;
+import org.jboss.netty.util.HashedWheelTimer;
+import org.jboss.netty.util.Timer;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.project.entity.Host;
-import com.site.lookup.util.StringUtils;
 
 public class DefaultAgentStatusFetcher implements AgentStatusFetcher {
 
@@ -43,19 +45,19 @@ public class DefaultAgentStatusFetcher implements AgentStatusFetcher {
 			final CountDownLatch latch = new CountDownLatch(hosts.size());
 			final ClientBootstrap bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(
 					Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
-
+			final Timer timer = new HashedWheelTimer();
 			bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
 				public ChannelPipeline getPipeline() throws Exception {
 					ChannelPipeline pipeline = Channels.pipeline();
+					pipeline.addFirst("timeout", new ReadTimeoutHandler(timer, 50, TimeUnit.MILLISECONDS));
 					pipeline.addLast("codec", new HttpClientCodec());
 					pipeline.addLast("inflater", new HttpContentDecompressor());
 					pipeline.addLast("handler", new AgentStatusFetcherHandler(latch, hosts));
 					return pipeline;
 				}
 			});
-
-			bootstrap.setOption("keepAlive", true);
 			bootstrap.setOption("connectTimeoutMillis", 50);
+			bootstrap.setOption("keepAlive", true);
 
 			for (Host host : hosts) {
 				final URI uri = validateUri(m_config.getAgentStatusUrl(host.getIp()));
@@ -69,8 +71,8 @@ public class DefaultAgentStatusFetcher implements AgentStatusFetcher {
 					@Override
 					public void operationComplete(final ChannelFuture future) throws Exception {
 						if (future.isSuccess()) {
-							HttpRequest request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET,
-									StringUtils.isEmpty(uri.getRawPath()) ? "/" : uri.getRawPath());
+							HttpRequest request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, uri
+									.getRawPath() == null || uri.getRawPath().length() == 0 ? "/" : uri.getRawPath());
 							request.setHeader(HttpHeaders.Names.HOST, uri.getHost());
 							request.setHeader(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
 							request.setHeader(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);

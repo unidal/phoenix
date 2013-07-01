@@ -70,14 +70,16 @@ public class AgentStatusFetcherHandler extends SimpleChannelUpstreamHandler {
 	private void fillHostWithResponse() {
 		try {
 			Response res = DefaultJsonParser.parse(m_response.toString());
-			String ip = res.getIp();
-			Host host = m_hosts.get(ip);
-			if (host != null) {
-				host.setAgentStatus(res.getStatus());
-				host.setAgentVersion(res.getVersion());
-				host.setContainer(res.getContainer());
-				for (Domain domain : res.getDomains()) {
-					host.addDomain(domain);
+			if (res != null) {
+				String ip = res.getIp();
+				Host host = m_hosts.get(ip);
+				if (host != null) {
+					host.setAgentStatus(res.getStatus());
+					host.setAgentVersion(res.getVersion());
+					host.setContainer(res.getContainer());
+					for (Domain domain : res.getDomains()) {
+						host.addDomain(domain);
+					}
 				}
 			}
 		} catch (IOException e) {

@@ -23,11 +23,15 @@ import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.DeployPolicy;
 import com.dianping.phoenix.project.entity.BussinessLine;
 import com.dianping.phoenix.project.entity.Project;
+import com.dianping.phoenix.service.DeviceManager;
 import com.dianping.phoenix.service.ProjectManager;
 
 public class Handler implements PageHandler<Context>, LogEnabled {
 	@Inject
 	private ProjectManager m_projectManager;
+	
+	@Inject
+	private DeviceManager m_deviceManager;
 
 	@Inject
 	private DeliverableManager m_deliverableManager;
@@ -104,7 +108,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 		switch (action) {
 		case HOME:
 			try {
-				List<BussinessLine> bussinessLineList = m_projectManager.getBussinessLineList();
+				List<BussinessLine> bussinessLineList = m_deviceManager.getBussinessLineList();
 				model.setBussinessLines(bussinessLineList);
 			} catch (Exception e) {
 				m_logger.warn(String.format("Error when searching projects with keyword(%s)!", payload.getKeyword()), e);
@@ -117,7 +121,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 
 			try {
 				String warType = plan.getWarType();
-				Project project = m_projectManager.findProjectBy(name);
+				Project project = m_deviceManager.getProjectByName(name);
 				List<Deliverable> versions = m_deliverableManager.getAllDeliverables(warType, DeliverableStatus.ACTIVE);
 				Deployment activeDeployment = m_projectManager.findActiveDeploy(warType, name);
 

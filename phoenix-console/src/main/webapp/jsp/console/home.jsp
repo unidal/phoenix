@@ -2,6 +2,7 @@
 
 <%@ taglib prefix="a" uri="http://www.dianping.com/phoenix/console"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"  %>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 
 <jsp:useBean id="ctx" type="com.dianping.phoenix.console.page.home.Context" scope="request" />
@@ -65,10 +66,37 @@
 									<tr>									
 										<td><img src="${model.webapp}/img/green.gif"></td>
 										<td><a href="?op=project&type=${payload.plan.warType}&project=${project.value.name}">${project.value.name}</a></td>
-										<td>owner</td>
-										<td>host</td>
-										<td>1.2, 1.5, 1.6</td>
-										<td>2.0.0, 2.0.1</td>									
+										<td>
+											<c:choose>
+												<c:when test="${fn:length(project.value.owners) eq 0}">N/A</c:when>
+												<c:otherwise>
+													<c:forEach var="owner" items="${project.value.owners}">
+													${owner}&nbsp;
+													</c:forEach>
+												</c:otherwise>
+											</c:choose>
+										</td>
+										<td>${project.value.activeCount}/${project.value.inactiveCount}</td>
+										<td>
+											<c:choose>
+												<c:when test="${fn:length(project.value.kernelVersions) eq 0}">N/A</c:when>
+												<c:otherwise>
+													<c:forEach var="kerVersion" items="${project.value.kernelVersions}">
+													${kerVersion}&nbsp;
+													</c:forEach>
+												</c:otherwise>
+											</c:choose>
+										</td>
+										<td>
+											<c:choose>
+												<c:when test="${fn:length(project.value.appVersions) eq 0}">N/A</c:when>
+												<c:otherwise>
+													<c:forEach var="appVersion" items="${project.value.appVersions}">
+													${appVersion}&nbsp;
+													</c:forEach>
+												</c:otherwise>
+											</c:choose>
+										</td>									
 									</tr>
 								</c:forEach>		
 						</tbody>

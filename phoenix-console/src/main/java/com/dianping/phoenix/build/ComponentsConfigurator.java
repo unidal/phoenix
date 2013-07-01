@@ -33,7 +33,6 @@ import com.dianping.phoenix.service.DefaultWarService;
 import com.dianping.phoenix.service.DeviceManager;
 import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.LogService;
-import com.dianping.phoenix.service.MockDeviceManager;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.WarService;
 import com.dianping.phoenix.service.netty.AgentStatusFetcher;
@@ -76,10 +75,11 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(DeliverableManager.class, DefaultDeliverableManager.class) //
 				.req(WarService.class, GitService.class, DeliverableDao.class, LogService.class));
 
-		all.add(C(DeviceManager.class, MockDeviceManager.class) //
-				.req(ConfigManager.class));
+		all.add(C(AgentStatusFetcher.class, DefaultAgentStatusFetcher.class).req(ConfigManager.class));
+		all.add(C(DeviceManager.class, DefaultDeviceManager.class) //
+				.req(ConfigManager.class, AgentStatusFetcher.class));
 		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
-				.req(DeploymentDao.class, DeploymentDetailsDao.class, DeviceManager.class));
+				.req(DeploymentDao.class, DeploymentDetailsDao.class));
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
@@ -93,7 +93,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(DeploymentDetailsDao.class));
 		all.add(C(DeployManager.class, DefaultDeployManager.class) //
 				.req(ProjectManager.class, DeployListener.class));
-		all.add(C(AgentStatusFetcher.class, DefaultAgentStatusFetcher.class).req(ConfigManager.class));
 	}
 
 	private void defineWebComponents(List<Component> all) {

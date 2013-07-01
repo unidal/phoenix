@@ -12,18 +12,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.helper.Files;
 import org.unidal.helper.Formats;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
+import org.unidal.helper.Urls;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.tuple.Pair;
 
@@ -528,22 +523,19 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				Transaction t = Cat.newTransaction("HTTP", url.substring(0, url.indexOf('?')));
 
 				try {
-					HttpParams hp = new BasicHttpParams();
-					DefaultHttpClient dhc = new DefaultHttpClient(hp);
-					HttpRequestBase hrb = new HttpGet(url);
-
-					HttpConnectionParams.setConnectionTimeout(hp, timeout);
-
 					String id = Cat.getProducer().createMessageId();
 
-					Cat.getProducer().logEvent("RemoteCall", url, Message.SUCCESS, id);
-
-					hrb.addHeader("X-Cat-Id", id);
-					hrb.addHeader("X-Cat-Parent-Id", Cat.getManager().getThreadLocalMessageTree().getParentMessageId());
-					hrb.addHeader("X-Cat-Root-Id", Cat.getManager().getThreadLocalMessageTree().getRootMessageId());
-
-					InputStream hr = dhc.execute(hrb).getEntity().getContent();
+					InputStream hr = Urls
+							.forIO()
+							.connectTimeout(timeout)
+							.header("X-Cat-Id", id)
+							.header("X-Cat-Parent-Id",
+									Cat.getManager().getThreadLocalMessageTree().getParentMessageId())
+							.header("X-Cat-Root-Id", Cat.getManager().getThreadLocalMessageTree().getRootMessageId())
+							.openStream(url);
 					String content = Files.forIO().readFrom(hr, "utf-8");
+
+					Cat.getProducer().logEvent("RemoteCall", url, Message.SUCCESS, id);
 
 					t.setStatus(Message.SUCCESS);
 					return content;
@@ -597,7 +589,6 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				throw new IllegalStateException(String.format("Not implemented yet(%s)!", url));
 			}
 		}
-
 		@Override
 		public AgentContext print(String pattern, Object... args) {
 			if (m_log.length() == 0 && m_controller.getConfigManager().isShowLogTimestamp()) {

@@ -48,11 +48,23 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.service.DeviceManager</role>
-			<implementation>com.dianping.phoenix.service.MockDeviceManager</implementation>
+			<role>com.dianping.phoenix.service.netty.AgentStatusFetcher</role>
+			<implementation>com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.service.DeviceManager</role>
+			<implementation>com.dianping.phoenix.service.DefaultDeviceManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.netty.AgentStatusFetcher</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -65,9 +77,6 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.service.DeviceManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -161,15 +170,6 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.deploy.DeployListener</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.service.netty.AgentStatusFetcher</role>
-			<implementation>com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.phoenix.configure.ConfigManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -294,6 +294,9 @@
 					<role>com.dianping.phoenix.service.ProjectManager</role>
 				</requirement>
 				<requirement>
+					<role>com.dianping.phoenix.service.DeviceManager</role>
+				</requirement>
+				<requirement>
 					<role>com.dianping.phoenix.deliverable.DeliverableManager</role>
 				</requirement>
 				<requirement>
@@ -307,6 +310,11 @@
 		<component>
 			<role>com.dianping.phoenix.console.page.home.JspViewer</role>
 			<implementation>com.dianping.phoenix.console.page.home.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.console.page.deploy.Handler</role>
@@ -326,6 +334,11 @@
 		<component>
 			<role>com.dianping.phoenix.console.page.deploy.JspViewer</role>
 			<implementation>com.dianping.phoenix.console.page.deploy.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.console.page.version.Handler</role>
@@ -349,6 +362,11 @@
 		<component>
 			<role>com.dianping.phoenix.console.page.version.JspViewer</role>
 			<implementation>com.dianping.phoenix.console.page.version.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
 		</component>
 	</components>
 </plexus>
