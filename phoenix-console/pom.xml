@@ -15,7 +15,7 @@
       <dependency>
          <groupId>org.unidal.framework</groupId>
          <artifactId>web-framework</artifactId>
-         <version>2.0.2-SNAPSHOT</version>
+         <version>2.0.3-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>org.unidal.framework</groupId>
@@ -89,6 +89,16 @@
 		 <artifactId>httpclient</artifactId>
 		 <version>4.2.3</version>
 	</dependency>
+      <dependency>
+      	<groupId>commons-collections</groupId>
+      	<artifactId>commons-collections</artifactId>
+      	<version>3.2</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.jboss.netty</groupId>
+      	<artifactId>netty</artifactId>
+      	<version>3.2.4.Final</version>
+      </dependency>
    </dependencies>
    <build>
       <plugins>

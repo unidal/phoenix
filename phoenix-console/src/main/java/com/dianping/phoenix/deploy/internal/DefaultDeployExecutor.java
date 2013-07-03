@@ -8,21 +8,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.helper.Files;
 import org.unidal.helper.Formats;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
+import org.unidal.helper.Urls;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.tuple.Pair;
 
@@ -36,6 +32,7 @@ import com.dianping.phoenix.deploy.DeployConstant;
 import com.dianping.phoenix.deploy.DeployExecutor;
 import com.dianping.phoenix.deploy.DeployListener;
 import com.dianping.phoenix.deploy.DeployPolicy;
+import com.dianping.phoenix.deploy.DeployStatus;
 import com.dianping.phoenix.deploy.agent.AgentContext;
 import com.dianping.phoenix.deploy.agent.AgentListener;
 import com.dianping.phoenix.deploy.agent.AgentProgress;
@@ -61,6 +58,23 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 	private Logger m_logger;
 
+	private ConcurrentHashMap<Integer, Object> m_deployPauseControl = new ConcurrentHashMap<Integer, Object>();
+
+	@Override
+	public void continueDeploy(int deployId) {
+		if (isDeploying(deployId)) {
+			Object waitObj = m_deployPauseControl.get(deployId);
+			synchronized (waitObj) {
+				waitObj.notifyAll();
+			}
+		}
+	}
+
+	@Override
+	public boolean isDeploying(int deployId) {
+		return m_deployPauseControl.containsKey(deployId);
+	}
+
 	@Override
 	public void enableLogging(Logger logger) {
 		m_logger = logger;
@@ -78,13 +92,26 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 	@Override
 	public synchronized void submit(DeployModel model, List<String> hosts, String warType, String logUri)
 			throws Exception {
-		ControllerTask task = new ControllerTask(m_agentListener, model, hosts, warType, logUri);
+		Object waitObj = new Object();
+		ControllerTask task = new ControllerTask(m_agentListener, model, hosts, warType, logUri, waitObj);
 
+		m_deployPauseControl.put(model.getId(), waitObj);
 		m_deployListener.onDeployStart(model.getId());
 		Threads.forGroup("Phoenix").start(task);
 	}
 
+	@Override
+	public synchronized void submitOld(DeployModel model) {
+		Object waitObj = new Object();
+		ControllerTask task = new ControllerTask(m_agentListener, model, waitObj);
+
+		m_deployPauseControl.put(model.getId(), waitObj);
+		Threads.forGroup("Phoenix").start(task);
+	}
+
 	class ControllerTask implements Task {
+		public static final int MAX_INTERVAL = Integer.MAX_VALUE;
+
 		private List<String> m_hosts;
 
 		private int m_hostIndex;
@@ -99,13 +126,38 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 		private String m_logUri;
 
+		private int m_interval;
+
+		private Object m_waitObj;
+
+		private boolean m_old;
+
 		public ControllerTask(AgentListener listener, DeployModel model, List<String> hosts, String warType,
-				String logUri) {
+				String logUri, Object waitObject) {
 			m_listener = listener;
 			m_model = model;
 			m_hosts = hosts;
 			m_warType = warType;
 			m_logUri = logUri;
+			m_waitObj = waitObject;
+			m_old = false;
+			setInterval(m_model);
+		}
+
+		public ControllerTask(AgentListener listener, DeployModel model, Object waitObject) {
+			m_listener = listener;
+			m_model = model;
+			m_old = true;
+			m_waitObj = waitObject;
+			setInterval(m_model);
+		}
+
+		private void setInterval(DeployModel model) {
+			if (m_model.getPlan().isAutoContinue()) {
+				m_interval = m_model.getPlan().getDeployInterval();
+			} else {
+				m_interval = MAX_INTERVAL;
+			}
 		}
 
 		private void cancelResetTasks() {
@@ -171,16 +223,78 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 			host.addSegment(new SegmentModel().setText(text));
 			return this;
 		}
+		private Pair<CountDownLatch, List<String>> submitNextBatch(Transaction t, boolean waitObjSwitch) {
+			Pair<CountDownLatch, List<String>> pair = null;
+			if (m_hostIndex < m_hosts.size()) {
+				if (DeployStatus.PAUSING.getName().equals(m_model.getStatus()) || !m_model.getPlan().isAutoContinue()) {
+					try {
+						if (waitObjSwitch) {
+							m_deployListener.onDeployPause(m_model.getId());
+							m_model.setStatus(DeployStatus.PAUSING.getName());
+							System.out.println(String.format("Status= %s, AutoContinue= %s, I will be paused.",
+									m_model.getStatus(), m_model.getPlan().isAutoContinue()));
+							synchronized (m_waitObj) {
+								m_waitObj.wait();
+							}
+						} else {
+							System.out.println(String.format("Status= %s, AutoContinue= %s, I will be paused.",
+									m_model.getStatus(), m_model.getPlan().isAutoContinue()));
+						}
+					} catch (Exception e) {
+						// ignore it;
+						e.printStackTrace();
+					}
+					System.out.println("Some one clicked continue, I will be continue.");
+				} else {
+					System.out.println("In auto mode, I will sleep for a while: " + m_interval);
+					if (m_interval > 0) {
+						try {
+							TimeUnit.SECONDS.sleep(m_interval);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
 
+				if (cancelRestIfNeeded()) {
+					return pair;
+				}
+
+				int batchSize = m_policy.getBatchSize();
+				System.out.println("I will submit next roolout task now!");
+				pair = submitNextRolloutTask(t, batchSize);
+				System.out.println("Submitted Success!");
+			}
+			return pair;
+		}
+		private boolean cancelRestIfNeeded() {
+			if (DeployStatus.CANCELLING.getName().equals(m_model.getStatus())) {
+				System.out.println("Some one clicked cancel, I will cancel rest tasks.");
+				cancelResetTasks();
+				System.out.println("Canceled success!");
+				return true;
+			} else {
+				try {
+					m_deployListener.onDeployContinue(m_model.getId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				m_model.setStatus(DeployStatus.DEPLOYING.getName());
+				return false;
+			}
+		}
 		@Override
 		public void run() {
+			if (m_old) {
+				loadDeployModel();
+			}
+
 			Transaction t = Cat.newTransaction(m_warType, m_model.getDomain() + ":" + m_model.getId());
 			reportDeployInfosToCat();
 
+			Pair<CountDownLatch, List<String>> pair = m_old ? submitNextBatch(t, false) : submitNextRolloutTask(t, 1);
+
 			m_active = true;
-
-			Pair<CountDownLatch, List<String>> pair = submitNextRolloutTask(t, 1);
-
 			try {
 				while (m_active) {
 					if (pair == null) { // no more hosts
@@ -204,14 +318,11 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 												m_model.getId()), e);
 							}
 						}
-
-						if (shouldStop()) {
+						if (shouldStop() || DeployStatus.CANCELLING.getName().equals(m_model.getStatus())) {
 							cancelResetTasks();
 							break;
 						} else {
-							int batchSize = m_policy.getBatchSize();
-
-							pair = submitNextRolloutTask(t, batchSize);
+							pair = submitNextBatch(t, true);
 						}
 					}
 				}
@@ -226,10 +337,23 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				} catch (Exception e) {
 					m_logger.warn(String.format("Error when processing onEnd of deploy(%s)!", m_model.getId()), e);
 					t.setStatus(e);
+				} finally {
+					m_deployPauseControl.remove(m_model.getId());
 				}
 
 				t.complete();
 			}
+		}
+		private void loadDeployModel() {
+			m_hosts = new ArrayList<String>();
+			for (HostModel host : m_model.getHosts().values()) {
+				AgentStatus status = AgentStatus.getByName(host.getStatus(), null);
+				if (!AgentStatus.isFinalStatus(status) && !host.getIp().equals(DeployConstant.SUMMARY)) {
+					m_hosts.add(host.getIp());
+				}
+			}
+			m_warType = m_model.getPlan().getWarType();
+			m_logUri = "Unknown URL";
 		}
 
 		private void reportDeployInfosToCat() {
@@ -399,22 +523,19 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				Transaction t = Cat.newTransaction("HTTP", url.substring(0, url.indexOf('?')));
 
 				try {
-					HttpParams hp = new BasicHttpParams();
-					DefaultHttpClient dhc = new DefaultHttpClient(hp);
-					HttpRequestBase hrb = new HttpGet(url);
-
-					HttpConnectionParams.setConnectionTimeout(hp, timeout);
-
 					String id = Cat.getProducer().createMessageId();
 
-					Cat.getProducer().logEvent("RemoteCall", url, Message.SUCCESS, id);
-
-					hrb.addHeader("X-Cat-Id", id);
-					hrb.addHeader("X-Cat-Parent-Id", Cat.getManager().getThreadLocalMessageTree().getParentMessageId());
-					hrb.addHeader("X-Cat-Root-Id", Cat.getManager().getThreadLocalMessageTree().getRootMessageId());
-
-					InputStream hr = dhc.execute(hrb).getEntity().getContent();
+					InputStream hr = Urls
+							.forIO()
+							.connectTimeout(timeout)
+							.header("X-Cat-Id", id)
+							.header("X-Cat-Parent-Id",
+									Cat.getManager().getThreadLocalMessageTree().getParentMessageId())
+							.header("X-Cat-Root-Id", Cat.getManager().getThreadLocalMessageTree().getRootMessageId())
+							.openStream(url);
 					String content = Files.forIO().readFrom(hr, "utf-8");
+
+					Cat.getProducer().logEvent("RemoteCall", url, Message.SUCCESS, id);
 
 					t.setStatus(Message.SUCCESS);
 					return content;
@@ -468,7 +589,6 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 				throw new IllegalStateException(String.format("Not implemented yet(%s)!", url));
 			}
 		}
-
 		@Override
 		public AgentContext print(String pattern, Object... args) {
 			if (m_log.length() == 0 && m_controller.getConfigManager().isShowLogTimestamp()) {
@@ -522,15 +642,15 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 			try {
 				switch (state) {
-				case CREATED:
-					m_listener.onStart(this);
-					break;
-				case SUCCESSFUL:
-					m_listener.onEnd(this, AgentStatus.SUCCESS);
-					break;
-				case FAILED:
-					m_listener.onEnd(this, AgentStatus.FAILED);
-					break;
+					case CREATED :
+						m_listener.onStart(this);
+						break;
+					case SUCCESSFUL :
+						m_listener.onEnd(this, AgentStatus.SUCCESS);
+						break;
+					case FAILED :
+						m_listener.onEnd(this, AgentStatus.FAILED);
+						break;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

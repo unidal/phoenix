@@ -56,7 +56,7 @@ public class DefaultAgentListener implements AgentListener {
 		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
 
 		details.setKeyId(ctx.getId());
-		details.setStatus(2); // 2 - deploying
+		details.setStatus(AgentStatus.DEPLOYING.getId());
 		details.setBeginDate(new Date());
 		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
 	}

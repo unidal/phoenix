@@ -3,17 +3,14 @@ package com.dianping.phoenix.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.unidal.initialization.DefaultModuleManager;
-import org.unidal.initialization.Module;
-import org.unidal.initialization.ModuleManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
-import com.dianping.phoenix.agent.StatusReportModule;
 import com.dianping.phoenix.agent.core.Agent;
-import com.dianping.phoenix.agent.core.AgentStatusReporter;
+import com.dianping.phoenix.agent.core.AgentStatusHolder;
 import com.dianping.phoenix.agent.core.ContainerManager;
 import com.dianping.phoenix.agent.core.DefaultAgent;
+import com.dianping.phoenix.agent.core.DefaultAgentStatusHoder;
 import com.dianping.phoenix.agent.core.DefaultContainerManager;
 import com.dianping.phoenix.agent.core.shell.DefaultScriptExecutor;
 import com.dianping.phoenix.agent.core.shell.ScriptExecutor;
@@ -54,7 +51,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(ScriptExecutor.class, DefaultScriptExecutor.class).is(PER_LOOKUP));
 		all.add(C(ConfigManager.class));
 		all.add(C(ContainerManager.class, DefaultContainerManager.class).req(ConfigManager.class));
-		all.add(C(AgentStatusReporter.class).req(ConfigManager.class, ContainerManager.class));
+		all.add(C(AgentStatusHolder.class, DefaultAgentStatusHoder.class).req(ConfigManager.class,
+				ContainerManager.class));
 		all.add(C(Agent.class, DefaultAgent.class).req(TransactionManager.class) //
 				.req(TaskProcessorFactory.class));
 		all.add(C(TaskProcessor.class, "deploy", DeployTaskProcessor.class) //
@@ -85,9 +83,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	}
 
 	private void defineWebComponents(List<Component> all) {
-		all.add(C(Module.class, StatusReportModule.ID, StatusReportModule.class));
-		all.add(C(ModuleManager.class, DefaultModuleManager.class) //
-				.config(E("topLevelModules").value(StatusReportModule.ID)));
 
 		// Please keep it as last
 		all.addAll(new WebComponentConfigurator().defineComponents());

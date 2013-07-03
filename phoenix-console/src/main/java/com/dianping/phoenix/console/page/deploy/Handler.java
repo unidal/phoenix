@@ -12,6 +12,7 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.console.ConsolePage;
+import com.dianping.phoenix.deploy.DeployManager;
 import com.dianping.phoenix.deploy.DeployPolicy;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.service.ProjectManager;
@@ -22,6 +23,9 @@ public class Handler implements PageHandler<Context> {
 
 	@Inject
 	private JspViewer m_jspViewer;
+
+	@Inject
+	private DeployManager m_deployManager;
 
 	@Override
 	@PayloadMeta(Payload.class)
@@ -47,9 +51,30 @@ public class Handler implements PageHandler<Context> {
 		case STATUS:
 			showStatus(ctx, model, payload);
 			break;
+		case PAUSE:
+			pauseDeploy(payload.getId());
+			break;
+		case CONTINUE:
+			continueDeploy(payload.getId());
+			break;
+		case CANCEL:
+			cancelRestDeploy(payload.getId());
+			break;
 		}
 
 		m_jspViewer.view(ctx, model);
+	}
+
+	private void pauseDeploy(int deployId) {
+		m_deployManager.pauseDeploy(deployId);
+	}
+
+	private void continueDeploy(int deployId) {
+		m_deployManager.continueDeploy(deployId);
+	}
+
+	private void cancelRestDeploy(int deployId) {
+		m_deployManager.cancelRestRollout(deployId);
 	}
 
 	private void showStatus(Context ctx, Model model, Payload payload) {

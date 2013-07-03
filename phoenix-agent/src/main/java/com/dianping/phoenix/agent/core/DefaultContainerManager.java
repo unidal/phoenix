@@ -19,6 +19,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.unidal.lookup.ContainerHolder;
+import org.unidal.lookup.annotation.Inject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -34,7 +35,6 @@ import com.dianping.phoenix.agent.response.entity.War;
 import com.dianping.phoenix.agent.util.Artifact;
 import com.dianping.phoenix.agent.util.ArtifactResolver;
 import com.dianping.phoenix.configure.ConfigManager;
-import com.site.lookup.annotation.Inject;
 
 public class DefaultContainerManager extends ContainerHolder implements ContainerManager {
 	public final static Logger logger = Logger.getLogger(DefaultContainerManager.class);

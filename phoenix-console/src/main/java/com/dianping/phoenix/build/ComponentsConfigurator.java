@@ -28,13 +28,15 @@ import com.dianping.phoenix.deploy.internal.DefaultDeployListener;
 import com.dianping.phoenix.deploy.internal.DefaultDeployManager;
 import com.dianping.phoenix.service.DefaultDeviceManager;
 import com.dianping.phoenix.service.DefaultGitService;
+import com.dianping.phoenix.service.DefaultProjectManager;
 import com.dianping.phoenix.service.DefaultWarService;
 import com.dianping.phoenix.service.DeviceManager;
-import com.dianping.phoenix.service.DefaultProjectManager;
 import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.LogService;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.WarService;
+import com.dianping.phoenix.service.netty.AgentStatusFetcher;
+import com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public static void main(String[] args) {
@@ -57,7 +59,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	private void defineDatabaseComponents(List<Component> all) {
 		// setup datasource configuration manager
 		all.add(C(JdbcDataSourceConfigurationManager.class) //
-		      .config(E("datasourceFile").value("/data/appdatas/phoenix/datasources.xml")));
+				.config(E("datasourceFile").value("/data/appdatas/phoenix/datasources.xml")));
 
 		// Phoenix database
 		all.addAll(new PhoenixDatabaseConfigurator().defineComponents());
@@ -65,37 +67,38 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 	private void defineServiceComponents(List<Component> all) {
 		all.add(C(WarService.class, DefaultWarService.class) //
-		      .req(ConfigManager.class));
+				.req(ConfigManager.class));
 		all.add(C(GitService.class, DefaultGitService.class) //
-		      .req(ConfigManager.class, LogService.class));
+				.req(ConfigManager.class, LogService.class));
 
 		all.add(C(LogService.class));
 		all.add(C(DeliverableManager.class, DefaultDeliverableManager.class) //
-		      .req(WarService.class, GitService.class, DeliverableDao.class, LogService.class));
+				.req(WarService.class, GitService.class, DeliverableDao.class, LogService.class));
 
+		all.add(C(AgentStatusFetcher.class, DefaultAgentStatusFetcher.class).req(ConfigManager.class));
 		all.add(C(DeviceManager.class, DefaultDeviceManager.class) //
-				  .req(ConfigManager.class));
+				.req(ConfigManager.class, AgentStatusFetcher.class));
 		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
-			      .req(DeploymentDao.class, DeploymentDetailsDao.class, DeviceManager.class));
+				.req(DeploymentDao.class, DeploymentDetailsDao.class));
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
-			      .req(ConfigManager.class, DeployListener.class, AgentListener.class) //
-			      .config(E("policy").value(policy.name())));
+					.req(ConfigManager.class, DeployListener.class, AgentListener.class) //
+					.config(E("policy").value(policy.name())));
 		}
 
-		all.add(C(DeployManager.class, DefaultDeployManager.class) //
-		      .req(ProjectManager.class, DeployListener.class));
 		all.add(C(DeployListener.class, DefaultDeployListener.class) //
-		      .req(DeploymentDao.class, DeploymentDetailsDao.class, ProjectManager.class));
+				.req(DeploymentDao.class, DeploymentDetailsDao.class, ProjectManager.class));
 		all.add(C(AgentListener.class, DefaultAgentListener.class) //
-		      .req(DeploymentDetailsDao.class));
+				.req(DeploymentDetailsDao.class));
+		all.add(C(DeployManager.class, DefaultDeployManager.class) //
+				.req(ProjectManager.class, DeployListener.class));
 	}
 
 	private void defineWebComponents(List<Component> all) {
 		all.add(C(Module.class, PhoenixConsoleModule.ID, PhoenixConsoleModule.class));
 		all.add(C(ModuleManager.class, DefaultModuleManager.class) //
-		      .config(E("topLevelModules").value(PhoenixConsoleModule.ID)));
+				.config(E("topLevelModules").value(PhoenixConsoleModule.ID)));
 
 		// Please keep it as last
 		all.addAll(new WebComponentConfigurator().defineComponents());

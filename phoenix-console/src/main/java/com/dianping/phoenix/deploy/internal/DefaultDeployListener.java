@@ -14,6 +14,7 @@ import com.dianping.phoenix.console.dal.deploy.DeploymentEntity;
 import com.dianping.phoenix.deploy.DeployConstant;
 import com.dianping.phoenix.deploy.DeployListener;
 import com.dianping.phoenix.deploy.DeployPlan;
+import com.dianping.phoenix.deploy.DeployStatus;
 import com.dianping.phoenix.deploy.agent.AgentStatus;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
@@ -36,7 +37,9 @@ public class DefaultDeployListener implements DeployListener {
 		d.setDomain(domain);
 		d.setStrategy(plan.getPolicy());
 		d.setErrorPolicy(plan.isAbortOnError() ? 1 : 2);
-		d.setSkipTest(plan.isSkipTest() ? 1: 2);
+		d.setSkipTest(plan.isSkipTest() ? 1 : 2);
+		d.setAutoContinue(plan.isAutoContinue() ? 1 : 2);
+		d.setDeployInterval(plan.getDeployInterval());
 		d.setBeginDate(new Date());
 		d.setStatus(1); // 1 - created
 		d.setDeployedBy("phoenix"); // TODO use real user name
@@ -95,49 +98,64 @@ public class DefaultDeployListener implements DeployListener {
 	public void onDeployEnd(int deployId) throws Exception {
 		Deployment d = m_deploymentDao.createLocal();
 		List<DeploymentDetails> list = m_deploymentDetailsDao.findAllByDeployId(deployId,
-		      DeploymentDetailsEntity.READSET_FULL);
-		int status = 3; // 3 - completed with all successful, 4 - completed with partial failures
+				DeploymentDetailsEntity.READSET_FULL);
+		DeployStatus status = DeployStatus.SUCCESS;
 		DeploymentDetails s = null;
+		boolean warn = false;
 
 		for (DeploymentDetails details : list) {
-			if (details.getStatus() != 3) {
-				status = 4;
-				break;
+			if (!DeployConstant.SUMMARY.equals(details.getIpAddress())) {
+				if (details.getStatus() != AgentStatus.SUCCESS.getId()) {
+					status = DeployStatus.FAILED;
+				} else {
+					warn = true;
+				}
+			} else if (DeployConstant.SUMMARY.equals(details.getIpAddress())) {
+				s = details;
 			}
 		}
 
-		for (DeploymentDetails details : list) {
-			if (DeployConstant.SUMMARY.equals(details.getIpAddress())) {
-				s = details;
-				break;
-			}
+		if (warn) {
+			status = DeployStatus.WARNING;
 		}
 
 		if (s == null) {
-			throw new RuntimeException(String.format("Internal error: no summary record found for deploy(%s)!", deployId));
+			throw new RuntimeException(String.format("Internal error: no summary record found for deploy(%s)!",
+					deployId));
 		}
 
 		HostModel summaryHost = m_projectManager.findModel(deployId).findHost(DeployConstant.SUMMARY);
 		String rawLog = new DeployModel().addHost(summaryHost).toString();
 
 		s.setEndDate(new Date());
-		s.setStatus(status);
+		s.setStatus(status.getId());
 		s.setRawLog(rawLog);
 
 		d.setKeyId(deployId);
-		d.setStatus(status);
+		d.setStatus(status.getId());
 		d.setEndDate(new Date());
 
 		m_deploymentDetailsDao.updateByPK(s, DeploymentDetailsEntity.UPDATESET_STATUS);
 		m_deploymentDao.updateByPK(d, DeploymentEntity.UPDATESET_STATUS);
-	}
 
+		DeployModel model = m_projectManager.findModel(deployId);
+		if (model != null) {
+			model.setStatus(status.getName());
+		}
+	}
 	@Override
 	public void onDeployStart(int deployId) throws Exception {
+		DeployModel model = m_projectManager.findModel(deployId);
+		if (model != null) {
+			model.setStatus(DeployStatus.DEPLOYING.getName());
+		} else {
+			throw new RuntimeException(String.format("Can not find deploy model for deployId: %d", deployId));
+		}
+
 		Deployment d = m_deploymentDao.createLocal();
 
 		d.setKeyId(deployId);
-		d.setStatus(2); // 2 - deploying
+		d.setStatus(DeployStatus.DEPLOYING.getId());
 
 		m_deploymentDao.updateByPK(d, DeploymentEntity.UPDATESET_STATUS);
 	}
@@ -148,12 +166,12 @@ public class DefaultDeployListener implements DeployListener {
 		HostModel hostModel = deployModel.findHost(host);
 
 		hostModel.addSegment(new SegmentModel().setCurrentTicks(100).setTotalTicks(100) //
-		      .setStatus(AgentStatus.CANCELLED.getName()).setStep(AgentStatus.CANCELLED.getTitle()));
+				.setStatus(AgentStatus.CANCELLED.getName()).setStep(AgentStatus.CANCELLED.getTitle()));
 
 		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
 		String rawLog = new DeployModel().addHost(hostModel).toString();
 
-		details.setStatus(9); // 9 - cancelled
+		details.setStatus(AgentStatus.CANCELLED.getId()); // 9 - cancelled
 		details.setKeyId(hostModel.getId());
 		details.setEndDate(new Date());
 		details.setRawLog(rawLog);
@@ -170,16 +188,46 @@ public class DefaultDeployListener implements DeployListener {
 		DeploymentDetails details = m_deploymentDetailsDao.createLocal();
 		String rawLog = new DeployModel().addHost(hostModel).toString();
 
-		if (status == AgentStatus.SUCCESS || status == AgentStatus.FAILED || status == AgentStatus.DEPLOYING) {
+		if (AgentStatus.isFinalStatus(status) || status == AgentStatus.DEPLOYING) {
 			details.setStatus(status.getId());
 		} else {
 			throw new RuntimeException(String.format("Internal error: unknown status(%s) of host(%s) of deploy(%s)!",
-			      status, host, deployId));
+					status, host, deployId));
 		}
 
 		details.setKeyId(hostModel.getId());
 		details.setEndDate(new Date());
 		details.setRawLog(rawLog);
 		m_deploymentDetailsDao.updateByPK(details, DeploymentDetailsEntity.UPDATESET_STATUS);
+	}
+
+	@Override
+	public void onDeployPause(int deployId) throws Exception {
+		Deployment d = m_deploymentDao.createLocal();
+
+		d.setKeyId(deployId);
+		d.setStatus(DeployStatus.PAUSING.getId());
+
+		m_deploymentDao.updateByPK(d, DeploymentEntity.UPDATESET_STATUS);
+	}
+
+	@Override
+	public void onDeployContinue(int deployId) throws Exception {
+		Deployment d = m_deploymentDao.createLocal();
+
+		d.setKeyId(deployId);
+		d.setStatus(DeployStatus.DEPLOYING.getId());
+
+		m_deploymentDao.updateByPK(d, DeploymentEntity.UPDATESET_STATUS);
+	}
+
+	@Override
+	public void onDeployCancel(int deployId) throws Exception {
+		Deployment d = m_deploymentDao.createLocal();
+
+		d.setKeyId(deployId);
+		d.setStatus(DeployStatus.CANCELLING.getId());
+
+		m_deploymentDao.updateByPK(d, DeploymentEntity.UPDATESET_STATUS);
 	}
 }

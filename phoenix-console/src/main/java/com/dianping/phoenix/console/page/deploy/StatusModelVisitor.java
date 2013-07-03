@@ -1,10 +1,8 @@
 package com.dianping.phoenix.console.page.deploy;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.dianping.phoenix.deploy.DeployConstant;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
@@ -58,7 +56,6 @@ class StatusModelVisitor extends BaseVisitor {
 		super.visitDeploy(other);
 
 		HostModel summary = m_model.findHost(DeployConstant.SUMMARY);
-		Set<String> set = new HashSet<String>();
 		int size = other.getHosts().size();
 		int progress = 0;
 
@@ -73,50 +70,20 @@ class StatusModelVisitor extends BaseVisitor {
 		for (HostModel host : other.getHosts().values()) {
 			if (!host.getIp().equals(DeployConstant.SUMMARY)) {
 				int p = 0;
-				String status = null;
 
 				for (SegmentModel segment : host.getSegments()) {
 					if (segment.getTotalTicks() > 0) {
 						p = segment.getCurrentTicks() * 100 / segment.getTotalTicks();
 					}
-
-					if (segment.getStatus() != null) {
-						status = segment.getStatus();
-					}
-
 				}
 
 				progress += p;
-
-				if (status == null) {
-					set.add("deploying");
-				} else {
-					set.add(status);
-				}
 			}
-		}
-
-		String status = null;
-
-		if (set.contains("deploying")) {
-			status = "deploying";
-		} else if (set.contains("failed")) {
-			if (set.contains("successful")) {
-				status = "warning";
-			} else {
-				status = "failed";
-			}
-		} else if (set.contains("cancelled")) {
-			status = "cancelled";
-		} else if (set.contains("successful")) {
-			status = "successful";
-		} else {
-			status = "deploying";
 		}
 
 		summary.setProgress(progress / (size > 1 ? size - 1 : 1));
-		summary.setStatus(status);
-		m_model.setStatus(status);
+		summary.setStatus(other.getStatus());
+		m_model.setStatus(other.getStatus());
 		m_model.setPlan(other.getPlan());
 	}
 

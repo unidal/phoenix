@@ -50,8 +50,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.agent.core.AgentStatusReporter</role>
-			<implementation>com.dianping.phoenix.agent.core.AgentStatusReporter</implementation>
+			<role>com.dianping.phoenix.agent.core.AgentStatusHolder</role>
+			<implementation>com.dianping.phoenix.agent.core.DefaultAgentStatusHoder</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -200,18 +200,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.initialization.Module</role>
-			<role-hint>status-report</role-hint>
-			<implementation>com.dianping.phoenix.agent.StatusReportModule</implementation>
-		</component>
-		<component>
-			<role>org.unidal.initialization.ModuleManager</role>
-			<implementation>org.unidal.initialization.DefaultModuleManager</implementation>
-			<configuration>
-				<topLevelModules>status-report</topLevelModules>
-			</configuration>
-		</component>
-		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
@@ -251,7 +239,7 @@
 					<role>com.dianping.phoenix.agent.core.tx.TransactionManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.agent.core.ContainerManager</role>
+					<role>com.dianping.phoenix.agent.core.AgentStatusHolder</role>
 				</requirement>
 			</requirements>
 		</component>

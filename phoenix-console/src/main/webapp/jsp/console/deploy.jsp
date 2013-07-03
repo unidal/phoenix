@@ -65,14 +65,79 @@
 					<span class="label label-failed">failed&nbsp;</span>
 				</p>
 			</div>
-
 			<div id="result" style="display: none"></div>
+			
+			<button id="cancel" class="btn btn-danger pull-right" onclick="ctrl_cancel()">Cancel Rest</button>
+			<button id="continue" class="btn btn-primary pull-right" onclick="ctrl_continue()">Continue</button>
+			<button id="pause" class="btn btn-warning pull-right" onclick="ctrl_pause()">Pause</button>
 		</div>
+		<script type="text/javascript">
+			$(document).ready(setButtonStatus);
+			
+			function setButtonStatus(){
+				var deployStatus = $("#deploy_status").text();
+				if(deployStatus=="successful" || deployStatus=="warning" || deployStatus=="failed") {
+					$("#cancel").hide();
+					$("#continue").hide();
+					$("#pause").hide();
+				} else if(deployStatus == "pausing"){
+					$("#pause").hide();
+					$("#cancel").show();
+					$("#continue").show();
+				} else if(deployStatus == "deploying"){
+					$("#pause").show();
+					$("#continue").hide();
+					$("#cancel").hide();
+				}
+			}
+			
+			function ctrl_cancel() {
+				$.ajax("", {
+					data : $.param({
+						"op" : "cancel",
+					}, true),
+					cache : false,
+					success : function(result) {
+					}
+				});
+			}
+	
+			function ctrl_continue() {
+				$.ajax("", {
+					data : $.param({
+						"op" : "continue",
+					}, true),
+					cache : false,
+					success : function(result) {
+					}
+				});
+			}
+
+			function ctrl_pause() {
+				$.ajax("", {
+					data : $.param({
+						"op" : "pause",
+					}, true),
+					cache : false,
+					success : function(result) {
+					}
+				});
+			}
+		</script>
 		<div class="span8">
 			<div class="row-fluid">
 				<div class="page-header">
 					<strong style="color:#08C;">部署方式</strong>：${w:showResult(model.policies, deploy.plan.policy, 'id', 'description')}&nbsp;&nbsp;&nbsp;&nbsp;
                     <strong style="color:#08C;">错误处理</strong>：${w:translate(deploy.plan.abortOnError, 'true|false', '中断后续发布|继续后续发布', '')}&nbsp;&nbsp;&nbsp;&nbsp;
+                    <strong style="color:#08C;">发布控制</strong>：
+                    <c:choose>
+	                    <c:when test="${deploy.plan.autoContinue}">
+	                    	自动(${deploy.plan.deployInterval}秒)
+	                    </c:when>
+	                    <c:otherwise>
+	                    	手动
+	                    </c:otherwise>
+                    </c:choose>&nbsp;&nbsp;&nbsp;&nbsp;
                     <strong style="color:#08C;">冒烟测试服务</strong>：${w:translate(deploy.plan.skipTest, 'false|true', '打开|关闭', '')}
 				</div>
 				<c:forEach var="entry" items="${deploy.hosts}" varStatus="status">
