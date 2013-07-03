@@ -26,7 +26,7 @@ public class DefaultAgentStatusHoder extends ContainerHolder implements Initiali
 	@Inject
 	private ConfigManager m_configManager;
 
-	private static AtomicReference<Response> m_agentStatus = new AtomicReference<Response>();
+	private static AtomicReference<Response> m_agentStatus = new AtomicReference<Response>(new Response());
 
 	private class AgentHeartbeat implements Runnable {
 		@Override
