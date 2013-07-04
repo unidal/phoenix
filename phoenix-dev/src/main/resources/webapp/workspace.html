@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Create Phoenix Project</title>
+		<title>Create/Modify Phoenix Project</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8">
 		<!-- Bootstrap -->
 		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 		<link href="tagmanager/bootstrap-tagmanager.css" rel="stylesheet" media="screen">
@@ -11,23 +12,38 @@
 	<body>
 		<div class="container-fluid">
 			<div class="row-fluid">
-				<div class="span2">Sidebar content</div>
+				<div class="span2"><!--Sidebar content--></div>
 				<div class="span10"></div>
 			</div>
 			<div class="container-fluid">
 				<div class="row-fluid">
-					<div class="span2">Projects:</div>
+					<div class="span2"><!--Projects:--></div>
 					<div class="span10">
 						<div class="span12">
+							<div class="alert alert-info">
+								已选项目(点击删除)
+							</div>
+							<div class="span12" id="projectsChosen">
+							</div>	
+						</div>
+						<div class="span12">
+							<br/><br/>
+							<div class="alert alert-info">
+								项目查询(支持部分匹配)
+							</div>
 							<form id="foo">
 								<input type="text" data-provide="typeahead" id="typeahead"><br/>
 								<button id="submit" type="submit" class="btn">Create</button>
+								<div id="submitError">
+								</div>
 								<!--input type="hidden" name="projectsAdd" id="projectsChosen" /-->
 							</form>
 						</div>
-						<div class="span12" id="projectsChosen">
-						</div>
 						<div class="span12">
+							<br/><br/>
+							<div class="alert alert-info">
+								项目列表(点击选择)
+							</div>
 							<ul class="nav nav-tabs" id="projectTab">
   								<li><a href="#projectTab0" data-toggle="tab">A-C</a></li>
   								<li><a href="#projectTab1" data-toggle="tab">D-F</a></li>

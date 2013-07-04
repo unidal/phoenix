@@ -190,6 +190,15 @@ function chosenProjects() {
 				var request;
 				// bind to the submit event of our form
 				$("#foo").submit(function(event){
+					if(projectsChosen.length == 0) {
+						$("#submitError").html("Select at least one project");
+						$("#submitError").addClass("alert alert-error");
+						$("#submitError").show();
+						event.preventDefault();
+						return;
+					}
+					$("#submitError").hide();
+				
 				    // abort any pending request
 				    if (request) {
 				        request.abort();
