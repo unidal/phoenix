@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model model-package="com.dianping.phoenix.agent.resource"
+	enable-sax-parser="true" enable-json-builder="true" enable-json-parser="true">
+	<entity name="product">
+		<entity-ref name="domain" type="map" names="domains" />
+	</entity>
+	<entity name="domain">
+		<attribute name="name" value-type="String" key="true" />
+		<entity-ref name="host" type="map" names="hosts" />
+		
+		<!-- Added statistic information at below  -->
+		<element name="kernelVersion" names="kernelVersions" value-type="String" type="set" ></element>
+	  	<element name="appVersion" names="appVersions" value-type="String" type="set"></element>
+	  	<element name="owner" names="owners" value-type="String" type="set"></element>
+	  	<attribute name="activeCount" value-type="int" default-value="0"></attribute>
+	  	<attribute name="inactiveCount" value-type="int" default-value="0"></attribute>
+	  	
+	</entity>
+	<entity name="host">
+		<attribute name="ip" value-type="String" key="true" />
+	</entity>
+</model>
+

@@ -57,14 +57,11 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.service.DeviceManager</role>
-			<implementation>com.dianping.phoenix.service.DefaultDeviceManager</implementation>
+			<role>com.dianping.phoenix.service.cmdb.DeviceManager</role>
+			<implementation>com.dianping.phoenix.service.cmdb.DefaultDeviceManager</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.service.netty.AgentStatusFetcher</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -77,6 +74,18 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.dal.deploy.DeploymentDetailsDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.service.resource.ResourceManager</role>
+			<implementation>com.dianping.phoenix.service.resource.DefaultResourceManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.service.netty.AgentStatusFetcher</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.cmdb.DeviceManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -294,9 +303,6 @@
 					<role>com.dianping.phoenix.service.ProjectManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.phoenix.service.DeviceManager</role>
-				</requirement>
-				<requirement>
 					<role>com.dianping.phoenix.deliverable.DeliverableManager</role>
 				</requirement>
 				<requirement>
@@ -304,6 +310,9 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.console.page.home.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.resource.ResourceManager</role>
 				</requirement>
 			</requirements>
 		</component>

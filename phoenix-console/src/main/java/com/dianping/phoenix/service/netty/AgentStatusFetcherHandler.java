@@ -15,10 +15,10 @@ import org.jboss.netty.handler.codec.http.HttpChunk;
 import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.util.CharsetUtil;
 
-import com.dianping.phoenix.agent.response.entity.Domain;
+import com.dianping.phoenix.agent.resource.entity.Host;
 import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.transform.DefaultJsonParser;
-import com.dianping.phoenix.project.entity.Host;
+import com.dianping.phoenix.service.visitor.AgentResponseVisitor;
 
 public class AgentStatusFetcherHandler extends SimpleChannelUpstreamHandler {
 	private CountDownLatch m_latch;
@@ -71,15 +71,9 @@ public class AgentStatusFetcherHandler extends SimpleChannelUpstreamHandler {
 		try {
 			Response res = DefaultJsonParser.parse(m_response.toString());
 			if (res != null) {
-				String ip = res.getIp();
-				Host host = m_hosts.get(ip);
+				Host host = m_hosts.get(res.getIp());
 				if (host != null) {
-					host.setAgentStatus(res.getStatus());
-					host.setAgentVersion(res.getVersion());
-					host.setContainer(res.getContainer());
-					for (Domain domain : res.getDomains()) {
-						host.addDomain(domain);
-					}
+					res.accept(new AgentResponseVisitor(host));
 				}
 			}
 		} catch (IOException e) {
