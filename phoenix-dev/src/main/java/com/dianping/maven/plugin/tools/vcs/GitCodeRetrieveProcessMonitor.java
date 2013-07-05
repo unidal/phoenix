@@ -1,59 +1,66 @@
 package com.dianping.maven.plugin.tools.vcs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jgit.lib.BatchingProgressMonitor;
 
-class GitCodeRetrieveProcessMonitor extends BatchingProgressMonitor{
-	
-	private LogService logService;
-	
-	public GitCodeRetrieveProcessMonitor(LogService logService) {
-		super();
-		this.logService = logService;
-	}
+class GitCodeRetrieveProcessMonitor extends BatchingProgressMonitor {
 
-	@Override
-	protected void onUpdate(String taskName, int workCurr) {
-		onUpdate(taskName, workCurr, -1, -1);
-	}
+    private LogService                       logService;
+    private String                           tips;
+    private static Map<String, ProgressMeta> taskWeightMapping = new HashMap<String, ProgressMeta>();
 
-	@Override
-	protected void onEndTask(String taskName, int workCurr) {
-		onEndTask(taskName, workCurr, -1,-1);
-	}
+    private static class ProgressMeta {
+        int start;
+        int weight;
 
-	@Override
-	protected void onUpdate(String taskName, int workCurr, int workTotal,
-			int percentDone) {
-		logToOutputStream(taskName, workCurr, workTotal, percentDone);
-	}
+        public ProgressMeta(int start, int weight) {
+            this.start = start;
+            this.weight = weight;
+        }
 
-	@Override
-	protected void onEndTask(String taskName, int workCurr, int workTotal,
-			int percentDone) {
-		logToOutputStream(taskName, workCurr, workTotal, percentDone);
-	}
-	
-	private void logToOutputStream(String taskName, int workCurr, int workTotal, int pcnt){
-		StringBuilder sb = new StringBuilder(256);
+    }
 
-		sb.append(taskName);
-		sb.append(": ");
+    static {
+        taskWeightMapping.put("remote: Compressing objects", new ProgressMeta(0, 2));
+        taskWeightMapping.put("Receiving objects", new ProgressMeta(2, 5));
+        taskWeightMapping.put("Resolving deltas", new ProgressMeta(7, 2));
+        taskWeightMapping.put("Updating references", new ProgressMeta(9, 1));
+    }
 
-		//add spaces
-		while (sb.length() < 25) {
-			sb.append(' ');
-		}
-		if (pcnt < 10) {
-			sb.append(' ');
-		}
-		if (pcnt < 100) {
-			sb.append(' ');
-		}
+    public GitCodeRetrieveProcessMonitor(LogService logService, String tips) {
+        super();
+        this.logService = logService;
+        this.tips = tips;
+    }
 
-		sb.append(pcnt).append("% (").append(workCurr).
-		   append('/').append(workTotal).append(')');
-		
-		logService.log(sb.toString());
-	}
+    @Override
+    protected void onUpdate(String taskName, int workCurr) {
+        onUpdate(taskName, workCurr, -1, -1);
+    }
+
+    @Override
+    protected void onEndTask(String taskName, int workCurr) {
+        onEndTask(taskName, workCurr, -1, -1);
+    }
+
+    @Override
+    protected void onUpdate(String taskName, int workCurr, int workTotal, int percentDone) {
+        logToOutputStream(taskName, workCurr, workTotal, percentDone);
+    }
+
+    @Override
+    protected void onEndTask(String taskName, int workCurr, int workTotal, int percentDone) {
+        logToOutputStream(taskName, workCurr, workTotal, percentDone);
+    }
+
+    private void logToOutputStream(String taskName, int workCurr, int workTotal, int pcnt) {
+        if (taskWeightMapping.containsKey(taskName)) {
+            ProgressMeta progressMeta = taskWeightMapping.get(taskName);
+            double progress = 100.0d * (progressMeta.start + pcnt * progressMeta.weight / 100.0d) / 10.0d;
+            logService.updateProgressBar(progress, tips);
+        }
+    }
 
 }

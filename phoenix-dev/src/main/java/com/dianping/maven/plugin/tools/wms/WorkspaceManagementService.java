@@ -25,4 +25,6 @@ import java.io.OutputStream;
 public interface WorkspaceManagementService {
 
     public File create(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException;
+
+    public File modify(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException;
 }

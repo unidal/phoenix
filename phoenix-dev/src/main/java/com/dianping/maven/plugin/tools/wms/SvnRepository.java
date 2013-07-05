@@ -32,7 +32,11 @@ public class SvnRepository extends Repository {
         this.revision = revision;
     }
 
-    public long getRevision() {
+    public SvnRepository(String repoUrl) {
+    	this(repoUrl, "-", "-", -1);
+	}
+
+	public long getRevision() {
         return revision;
     }
 

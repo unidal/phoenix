@@ -22,6 +22,18 @@ package com.dianping.maven.plugin.tools.wms;
 public class GitRepository extends Repository {
     private String branch;
 
+    public GitRepository() {
+    }
+
+    public GitRepository(String repoUrl) {
+    	this(repoUrl, "master");
+    }
+    
+    public GitRepository(String repoUrl, String branch) {
+        super(repoUrl, "-", "-");
+        this.branch = branch;
+    }
+
     public String getBranch() {
         return branch;
     }

@@ -34,4 +34,4 @@ if [ ! -x $java ];then
 fi
 
 echo "Starting phoenix-agent $agent_class $port `pwd`"
-$java -classpath classes:"lib/*" $agent_class $port /phoenix `pwd` >/dev/null 2>&1
+$java -Xmx512m -classpath classes:"lib/*" $agent_class $port /phoenix `pwd` >/dev/null 2>&1

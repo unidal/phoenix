@@ -1,0 +1,79 @@
+
+.btn-phoenix {
+  background-color: #fff !important;
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff", endColorstr="#ffffff");
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#ffffff), to(#ffffff));
+  background-image: -moz-linear-gradient(top, #ffffff, #ffffff);
+  background-image: -ms-linear-gradient(top, #ffffff, #ffffff);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #ffffff));
+  background-image: -webkit-linear-gradient(top, #ffffff, #ffffff);
+  background-image: -o-linear-gradient(top, #ffffff, #ffffff);
+  background-image: linear-gradient(#ffffff, #ffffff);
+  border-color: #ffffff;
+  color: #333 !important;
+  /*text-shadow: 0 1px 1px rgba(255, 255, 255, 0.69);*/
+  -webkit-font-smoothing: antialiased;
+  /*width: 200px;*/
+  text-align:left;
+}
+
+.btn-phoenix.active {
+	background-color: #D8F4AB !important;
+	background-repeat: repeat-x;
+	filter: none;
+	background-image: none;
+	background-image: none;
+	background-image: none;
+	background-image: none;
+	background-image: none;
+	background-image: none;
+	background-image: none;
+	border-color: #ffffff;
+	color: #333 !important;
+	/*text-shadow: 0 1px 1px rgba(255, 255, 255, 0.33);*/
+	-webkit-font-smoothing: antialiased;
+	/*width: 200px;*/
+  text-align:left;
+}
+
+/* Start by setting display:none to make this hidden.
+   Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak
+   speak for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating */
+.ajaxload {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('http://i.stack.imgur.com/FhHRx.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .ajaxload {
+    display: block;
+}
+
+.auto-width {
+	width: auto;
+	display: inline-block;
+}
+
+.phoenix-title {
+	font-weight: bold;
+	font-size: 150%;
+}

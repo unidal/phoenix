@@ -2,8 +2,11 @@
 
 cd `dirname "$0"`
 WORKSPACE_HOME=`pwd`
-if [ ! -d ws/.metadata -o x$1 = xrefresh ];then
-	mvn -Denv=qa eclipse:eclipse
+if [ -f phoenix/meta/phoenix.new -o x$1 = xrefresh ];then
+	if [ -f phoenix/meta/phoenix.new ];then
+		rm -rf phoenix/meta/phoenix.new
+	fi
+	mvn -Denv=dev eclipse:eclipse
 fi
 
 if [[ -z $ECLIPSE_HOME ]];then

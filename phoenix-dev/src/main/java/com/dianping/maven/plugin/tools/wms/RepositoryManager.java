@@ -15,6 +15,8 @@
  */
 package com.dianping.maven.plugin.tools.wms;
 
+import java.util.List;
+
 /**
  * @author Leo Liang
  * 
@@ -22,5 +24,7 @@ package com.dianping.maven.plugin.tools.wms;
 public interface RepositoryManager {
 
     Repository find(String project);
+
+    List<String> getProjectListByPattern(String pattern);
 
 }

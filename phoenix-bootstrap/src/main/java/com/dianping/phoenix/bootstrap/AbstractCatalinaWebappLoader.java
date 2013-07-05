@@ -26,6 +26,7 @@ import org.apache.catalina.loader.WebappLoader;
 import com.dianping.phoenix.spi.ClasspathBuilder;
 import com.dianping.phoenix.spi.WebappProvider;
 import com.dianping.phoenix.spi.internal.DefaultClasspathBuilder;
+import com.dianping.phoenix.spi.internal.OrderingReservedWepappProvider;
 import com.dianping.phoenix.spi.internal.StandardWebappProvider;
 
 public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
@@ -46,6 +47,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	private File m_webXml;
 
 	private boolean m_debug = true;
+	
+	private String m_appDocBase;
 
 	public AbstractCatalinaWebappLoader() {
 	}
@@ -57,6 +60,13 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	protected WebappClassLoader adjustWebappClassloader(
 			WebappClassLoader classloader) {
 		try {
+			if (m_debug) {
+				getLog().info(
+						String.format("Webapp classpath before adjust: %s.",
+								Arrays.asList(classloader.getURLs())));
+			}
+			m_appProvider = new OrderingReservedWepappProvider(m_appDocBase, classloader);
+			
 			clearLoadedJars(classloader);
 
 			ClasspathBuilder builder = new DefaultClasspathBuilder();
@@ -176,7 +186,11 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 	public abstract StandardContext getStandardContext();
 
 	public File getWarRoot() {
-		return m_appProvider.getWarRoot();
+		try {
+			return new File(m_appDocBase).getCanonicalFile();
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("%s is not a valid directory", m_appDocBase), e);
+		}
 	}
 
 	/**
@@ -245,11 +259,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 				m_kernelProvider = new StandardWebappProvider(m_kernelDocBase);
 			}
 
-			if (m_appProvider == null) {
-				String appDocBase = ctx.getDocBase();
-
-				m_appProvider = new StandardWebappProvider(appDocBase);
-			}
+			m_appDocBase = ctx.getDocBase();
 		} catch (IOException e) {
 			throw new RuntimeException("Error when preparing webapp provider!",
 					e);

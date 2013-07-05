@@ -1,18 +1,17 @@
 package com.dianping.maven.plugin.tools.generator.dynamic;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BizServerContext {
 
-	private Map<String, File> ctxMap = new HashMap<String, File>();
+	private Map<String, String> ctxMap = new HashMap<String, String>();
 
-	public Map<String, File> getCtxMap() {
+	public Map<String, String> getCtxMap() {
 		return ctxMap;
 	}
 	
-	public void addWebContext(String ctxPath, File webRoot) {
+	public void addWebContext(String ctxPath, String webRoot) {
 		ctxMap.put(ctxPath, webRoot);
 	}
 	

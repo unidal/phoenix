@@ -11,11 +11,12 @@ import com.dianping.phoenix.router.model.transform.DefaultSaxParser;
 
 public class MockConfigManager extends ConfigManager {
 
+	@SuppressWarnings("unused")
 	private RouterRules routerRules;
 
 	@Override
 	public void initialize() throws InitializationException {
-		String mockConfigPath = "model/router-rules.xml";
+		String mockConfigPath = "model/url-rules.xml";
 		try {
 
 			InputStream in = this.getClass().getResourceAsStream(mockConfigPath);
@@ -29,11 +30,6 @@ public class MockConfigManager extends ConfigManager {
 			throw new InitializationException(String.format("Unable to load configuration file(%s)!", mockConfigPath),
 					e);
 		}
-	}
-
-	@Override
-	public RouterRules getRouterRules() {
-		return routerRules;
 	}
 
 }

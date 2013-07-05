@@ -24,6 +24,16 @@
       </repository>
    </repositories>
    <dependencies>
+   <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.2.2</version>
+      </dependency>
+   	  <dependency>
+			<groupId>com.site.common</groupId>
+			<artifactId>test-framework</artifactId>
+			<version>1.0.1</version>
+		</dependency>
       <dependency>
          <groupId>org.unidal.maven.plugins</groupId>
          <artifactId>common</artifactId>
@@ -32,7 +42,7 @@
       <dependency>
          <groupId>org.eclipse.jgit</groupId>
          <artifactId>org.eclipse.jgit</artifactId>
-         <version>2.3.1.201302201838-r</version>
+         <version>3.0.0.201306101825-r</version>
       </dependency>
       <dependency>
          <groupId>org.tmatesoft.svnkit</groupId>
@@ -95,7 +105,7 @@
                      <goal>dal-model</goal>
                   </goals>
                   <configuration>
-                     <manifest><![CDATA[${basedir}/src/main/resources/META-INF/dal/model/workspace-manifest.xml,]]></manifest>
+                     <manifest><![CDATA[${basedir}/src/main/resources/META-INF/dal/model/workspace-manifest.xml,${basedir}/src/main/resources/META-INF/dal/model/phoenix-manifest.xml]]></manifest>
                   </configuration>
                </execution>
             </executions>

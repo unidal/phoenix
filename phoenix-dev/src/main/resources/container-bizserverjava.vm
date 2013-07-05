@@ -40,7 +40,7 @@ public class PhoenixServer {
 		Properties prop = loadProperties();
 		Server server = new Server(Integer.valueOf(prop.getProperty(PORT_KEY, "8080")));
 
-		Map<String, String> projectPathMapping = listProjectPathMapping(new File("").getAbsoluteFile().getParentFile());
+		Map<String, String> projectPathMapping = listProjectPathMapping(new File("").getAbsoluteFile().getParentFile().getParentFile());
 
 		Map<String, List<String>> projectDenpendencies = listProjectDependencies(prop, projectPathMapping);
 
@@ -61,7 +61,6 @@ public class PhoenixServer {
 
 		server.start();
 		System.in.read();
-		server.stop();
 		System.exit(0);
 	}
 
@@ -159,7 +158,7 @@ public class PhoenixServer {
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {
-			input = PhoenixServer.class.getResourceAsStream("/bizServer.properties");
+			input = PhoenixServer.class.getResourceAsStream("/phoenix.properties");
 			if (input != null) {
 				prop.load(input);
 			}

@@ -1,6 +1,7 @@
 <router-rules>
 
-<pool name='Default' url-pattern='${ctx.defaultUrlPattern}' />
+#set($vs = ${ctx.getVirtualServer("main")})
+<pool name='Default' url-pattern='${vs.defaultUrlPattern}' />
 
 #foreach($f5Pool in $ctx.localPoolList)
 <pool name='${f5Pool.poolName}' url-pattern='${f5Pool.url}' />
@@ -176,6 +177,11 @@
 <f5-rule target-pool='Web.Web_X'>
 	<pattern>.*</pattern>
 </f5-rule>
+	  <url-rewrite-rule>
+          <mask-url><![CDATA[/citylist]]></mask-url>
+          <real-url><![CDATA[/citylist/citylist.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/shop/(\d{1,})/photos]]></mask-url>
           <real-url><![CDATA[/shoppic/shoppiclist.action?shopId=$1]]></real-url>

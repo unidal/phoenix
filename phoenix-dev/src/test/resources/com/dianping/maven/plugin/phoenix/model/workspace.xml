@@ -1,17 +1,20 @@
 <workspace dir="/Users/marsqing/Projects/tmp/phoenix-maven-tmp">
 
 	<phoenix-project>
-		<git-conf>
-			<repository-url>http://code.dianpingoa.com/arch/phoenix-maven-config.git</repository-url>
-			<branch>master</branch>
-		</git-conf>
 		<router version="0.1-SNAPSHOT" port="8080">
-			<default-url-pattern>http://www.51ping.com%s</default-url-pattern>
+			<virtual-server name="main">
+				<default-url-pattern>http://www.51ping.com%s</default-url-pattern>
+			</virtual-server>
+			<virtual-server name="tuangou">
+				<default-url-pattern>http://tjava.51ping.com%s</default-url-pattern>
+			</virtual-server>
 		</router>
 	</phoenix-project>
 	
-	<biz-project name="user-web" />
+	<biz-project name="tuangou-web">
+		<sub-project name="tuangou-web-api" />
+		<sub-project name="tuangou-web-site" />
+	</biz-project>
 	<biz-project name="user-service" />
-	<biz-project name="user-base-service" />
 	
 </workspace>

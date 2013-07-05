@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Create/Modify Phoenix Project</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8">
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="tagmanager/bootstrap-tagmanager.css" rel="stylesheet" media="screen">
+		<link href="css/phoenix.css" rel="stylesheet" media="screen">
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span2"><!--Sidebar content--></div>
+				<div class="span10"></div>
+			</div>
+			<div class="container-fluid">
+				<div class="row-fluid">
+					<div class="span2"><!--Projects:--></div>
+					<div class="span10">
+						<div class="span12">
+							<div class="alert alert-success phoenix-title">
+								已选项目(点击删除)
+							</div>
+							<div class="span12" id="projectsChosen">
+							</div>	
+						</div>
+						<div class="span12">
+							<br/><br/>
+							<div class="alert alert-success phoenix-title">
+								项目查询(支持部分匹配，回车选择)
+							</div>
+							<form id="foo">
+								<input type="text" data-provide="typeahead" id="typeahead"><br/>
+								<button id="submit" type="submit" class="btn">Create</button>
+								<div id="submitInfo" class="auto-width">
+								</div>
+								<!--input type="hidden" name="projectsAdd" id="projectsChosen" /-->
+							</form>
+						</div>
+						<div class="span12">
+							<br/><br/>
+							<div class="alert alert-success phoenix-title">
+								项目列表(点击选择)
+							</div>
+							<ul class="nav nav-tabs" id="projectTab">
+  								<li><a href="#projectTab0" data-toggle="tab">A-C</a></li>
+  								<li><a href="#projectTab1" data-toggle="tab">D-F</a></li>
+  								<li><a href="#projectTab2" data-toggle="tab">G-I</a></li>
+  								<li><a href="#projectTab3" data-toggle="tab">J-L</a></li>
+  								<li><a href="#projectTab4" data-toggle="tab">M-O</a></li>
+  								<li><a href="#projectTab5" data-toggle="tab">P-R</a></li>
+  								<li><a href="#projectTab6" data-toggle="tab">S-U</a></li>
+  								<li><a href="#projectTab7" data-toggle="tab">V-X</a></li>
+  								<li><a href="#projectTab8" data-toggle="tab">Y-Z</a></li>
+  							</ul>
+  							<div class="tab-content">
+								<div class="tab-pane btn-group" id="projectTab0"></div>
+								<div class="tab-pane btn-group" id="projectTab1"></div>
+								<div class="tab-pane btn-group" id="projectTab2"></div>
+								<div class="tab-pane btn-group" id="projectTab3"></div>
+								<div class="tab-pane btn-group" id="projectTab4"></div>
+								<div class="tab-pane btn-group" id="projectTab5"></div>
+								<div class="tab-pane btn-group" id="projectTab6"></div>
+								<div class="tab-pane btn-group" id="projectTab7"></div>
+								<div class="tab-pane btn-group" id="projectTab8"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+		<script src="js/jquery.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/phoenix.js"></script>
+		<script src="js/sprintf.min.js"></script>
+		<!--script src="tagmanager/bootstrap-tagmanager.js"></script-->
+		<div class="ajaxload"><!-- Place at bottom of page --></div>
+	</body>
+
+</html>

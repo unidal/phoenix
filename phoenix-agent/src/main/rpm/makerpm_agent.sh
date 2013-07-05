@@ -59,6 +59,9 @@ EOF
 
 
 # prepare bootstrap
+cd $PHOENIX_DIR/phoenix-bootstrap
+mvn -Dmaven.test.skip clean package
+cd -
 cp $PHOENIX_DIR/phoenix-bootstrap/target/phoenix-bootstrap.jar $RPM_SOURCE_NAME/
 
 tar czf $RPM_SOURCE_NAME.tar.gz $RPM_SOURCE_NAME
