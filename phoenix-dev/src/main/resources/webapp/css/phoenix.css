@@ -67,3 +67,13 @@ body.loading {
 body.loading .ajaxload {
     display: block;
 }
+
+.auto-width {
+	width: auto;
+	display: inline-block;
+}
+
+.phoenix-title {
+	font-weight: bold;
+	font-size: 150%;
+}

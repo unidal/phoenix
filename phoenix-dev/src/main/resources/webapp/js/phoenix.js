@@ -189,18 +189,34 @@ function chosenProjects() {
 					updater: onProjectChosen
 				});
 				
+				function showSubmitInfo(msg, type) {
+					var infoDiv = $("#submitInfo"); 
+					infoDiv.html(msg);
+					var clazz = "alert alert-error";
+					if(type == "info") {
+						clazz = "alert alert-info";
+					}
+					infoDiv.addClass(clazz);
+					infoDiv.show();
+				}
+				
+				function hideSubmitInfo() {
+					infoDiv.hide();
+				}
+				
 				// variable to hold request
 				var request;
 				// bind to the submit event of our form
 				$("#foo").submit(function(event){
 					if(projectsChosen.length == 0) {
-						$("#submitError").html("Select at least one project");
-						$("#submitError").addClass("alert alert-error");
-						$("#submitError").show();
+						showSubmitInfo("请至少选择一个项目", "error");
 						event.preventDefault();
 						return;
 					}
-					$("#submitError").hide();
+					
+					// disabel submit button and show success msg
+					$("#submit").attr('disabled', true);
+					showSubmitInfo("请切回到命令行看结果，这个页面可以关闭了", "info");
 				
 				    // abort any pending request
 				    if (request) {
@@ -245,7 +261,7 @@ function chosenProjects() {
 				    // if the request failed or succeeded
 				    request.always(function () {
 				        // reenable the inputs
-				        $inputs.prop("disabled", false);
+				        //$inputs.prop("disabled", false);
 				    });
 				
 				    // prevent default posting of form
