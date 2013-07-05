@@ -28,7 +28,7 @@ function chosenProjects() {
 		
 				function projectBtnClicked(btn) {
 					var project = $(btn).attr("name");
-					$(btn).toggleClass('active')
+					$(btn).toggleClass('active');
 					if($(btn).hasClass('active')) {
 						onProjectChosen(project);
 					} else {
@@ -154,6 +154,7 @@ function chosenProjects() {
 				}
 				
 				function onProjectChosen(selectedProject) {
+					console.log(selectedProject + " choosed");
 					var projectBtn = $("#btn-" + normalizeProject(selectedProject));
 					projectBtn.addClass("active");
 					projectsChosen.push(selectedProject);
@@ -161,10 +162,12 @@ function chosenProjects() {
 				}
 				
 				function onProjectUnChosen(selectedProject) {
-					var projectBtn = $("#btn-" + normalizeProject(selectedProject));
+					var selectedProjectNormalized = normalizeProject(selectedProject);
+					console.log(selectedProject + " unchoosed");
+					var projectBtn = $("#btn-" + selectedProjectNormalized);
 					projectBtn.removeClass("active");
 					removeElementFromArr(projectsChosen, selectedProject);
-					$("#td-" + normalizeProject(selectedProject)).append(projectBtn);
+					$("#td-" + selectedProjectNormalized).append(projectBtn);
 				}
 				
 				/*$(".tm-input").tagsManager({
