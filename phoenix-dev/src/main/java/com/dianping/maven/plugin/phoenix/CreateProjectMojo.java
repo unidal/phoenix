@@ -155,7 +155,7 @@ public class CreateProjectMojo extends AbstractMojo {
             List<String> projectToRemove = null;
 
             projectToRemove = new ConsoleIO().choice(new ArrayList<String>(currentBizProjectNames), CHOICE_COLUMN,
-                    "Which project(s) to remove(separate by comma)");
+                    "Which project(s) to remove(separate by comma, or press Enter to skip)");
 
             model.getBizProjects().addAll(CollectionUtils.collect(projectToAdd, new BizProjectFromStringTransformer()));
             Collection<String> bizProjectsRemained = CollectionUtils.collect(model.getBizProjects(),
