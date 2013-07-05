@@ -32,6 +32,7 @@ import com.dianping.maven.plugin.tools.scanner.Scanner;
 import com.dianping.maven.plugin.tools.scanner.ServiceMetaScanner;
 import com.dianping.maven.plugin.tools.scanner.ServicePortEntry;
 import com.dianping.maven.plugin.tools.scanner.ServiceScanner;
+import com.dianping.maven.plugin.tools.utils.SortedProperties;
 
 /**
  * @author Leo Liang
@@ -48,7 +49,7 @@ public class ServiceLionPropertiesGenerator {
             servicePortMapping.put(entry.getService(), entry.getPort());
         }
 
-        Properties prop = new Properties();
+        Properties prop = new SortedProperties();
 
         Scanner<String> serviceScanner = new ServiceScanner();
         for (Map.Entry<String, File> entry : context.getProjectBaseDirMapping().entrySet()) {
