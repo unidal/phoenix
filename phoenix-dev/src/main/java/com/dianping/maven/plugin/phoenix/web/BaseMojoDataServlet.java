@@ -13,7 +13,7 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.maven.plugin.phoenix;
+package com.dianping.maven.plugin.phoenix.web;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 
-import com.dianping.maven.plugin.phoenix.MojoDataWebUI.DataTransmitter;
+import com.dianping.maven.plugin.phoenix.web.MojoDataWebUI.DataTransmitter;
 import com.google.gson.Gson;
 
 /**

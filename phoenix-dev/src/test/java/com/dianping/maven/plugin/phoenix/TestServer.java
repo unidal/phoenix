@@ -7,9 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.maven.plugin.phoenix.MojoDataWebUI.DataTransmitter;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
 import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
+import com.dianping.maven.plugin.phoenix.web.UICreator;
+import com.dianping.maven.plugin.phoenix.web.MojoDataWebUI.DataTransmitter;
 
 public class TestServer extends ComponentTestCase {
 	

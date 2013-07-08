@@ -6,9 +6,9 @@ import java.util.List;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
-import com.dianping.maven.plugin.phoenix.UICreator;
 import com.dianping.maven.plugin.phoenix.WorkspaceFacade;
 import com.dianping.maven.plugin.phoenix.phoenix.entity.Phoenix;
+import com.dianping.maven.plugin.phoenix.web.UICreator;
 import com.dianping.maven.plugin.tools.console.ConsoleIO;
 import com.dianping.maven.plugin.tools.generator.BytemanScriptGenerator;
 import com.dianping.maven.plugin.tools.generator.dynamic.BizServerPropertiesGenerator;
