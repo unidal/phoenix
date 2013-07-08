@@ -21,7 +21,7 @@ import com.dianping.maven.plugin.tools.console.ConsoleIO;
  * @goal project
  * @requiresProject false
  */
-public class CreateProjectMojo extends AbstractMojo {
+public class ProjectMojo extends AbstractMojo {
     /**
      * 
      */

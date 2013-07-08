@@ -9,16 +9,17 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-import com.dianping.maven.plugin.phoenix.MojoDataWebUI.DataTransmitter;
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
+import com.dianping.maven.plugin.phoenix.web.UICreator;
+import com.dianping.maven.plugin.phoenix.web.MojoDataWebUI.DataTransmitter;
 import com.dianping.maven.plugin.tools.console.ConsoleIO;
 
 /**
  * @goal projectEx
  * @requiresProject false
  */
-public class CreateProjectMojoEx extends AbstractMojo {
+public class ProjectMojoEx extends AbstractMojo {
     private static final String WORKSPACE_HTML = "/workspace.html";
 	/**
      * @component
