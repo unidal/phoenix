@@ -138,6 +138,9 @@ function git_rollback {
 function rollback {
 	stop_all
 	
+	# temporary disable set -e to ensure container will start
+	set +e
+	
 	# rollback kernel
 	log "rolling back kernel"
 	git_rollback $domain_kernel_base
@@ -157,6 +160,9 @@ function rollback {
 	done
 	log "All server xml rolled back"
 
+	# enable set -e again
+	set -e
+	
 	start_container
 	log "put container online"
 	./op_${env}.sh -o put_container_online -b $container_install_path -c $container_type
