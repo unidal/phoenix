@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.phoenix.dev.core.configure.Whiteboard;
-import com.dianping.phoenix.dev.core.model.workspace.entity.BizProject;
 import com.dianping.phoenix.dev.core.model.workspace.entity.Workspace;
 import com.dianping.phoenix.dev.core.model.workspace.transform.DefaultSaxParser;
 import com.dianping.phoenix.dev.core.tools.generator.BytemanScriptGenerator;
@@ -189,33 +188,15 @@ public class WorkspaceFacade {
     void createBytemanFile(File bytemanFile) throws Exception {
         bytemanGenerator.generate(bytemanFile, new HashMap<String, String>());
     }
-    
-    private Workspace buildModel(List<String> bizProjects, String wsDir) throws Exception {
-        Workspace model = buildDefaultSkeletoModel();
 
-        model.setDir(wsDir);
-        for (String bizProjectName : bizProjects) {
-            BizProject bizProject = new BizProject();
-            bizProject.setName(bizProjectName);
-            model.addBizProject(bizProject);
-        }
-
-        return model;
-    }
-
-	public Workspace buildDefaultSkeletoModel() {
-		InputStream defaultWorkspaceXml = this.getClass().getResourceAsStream("/workspace-default.xml");
+    public Workspace buildDefaultSkeletoModel() {
+        InputStream defaultWorkspaceXml = this.getClass().getResourceAsStream("/workspace-default.xml");
         Workspace model;
         try {
             model = DefaultSaxParser.parse(defaultWorkspaceXml);
         } catch (Exception e) {
             throw new RuntimeException("error read workspace-default.xml", e);
         }
-		return model;
-	}
-
-	public void create(List<String> bizProjects, String wsDir) throws Exception {
-		Workspace model = buildModel(bizProjects, wsDir);
-		create(model);
-	}
+        return model;
+    }
 }

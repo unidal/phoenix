@@ -15,7 +15,7 @@ public class WorkspaceContextVisitor extends AbstractVisitor<WorkspaceContext> {
 
     @Override
     public void visitBizProject(BizProject bizProject) {
-        result.addProject(bizProject.getName());
+        result.addProject(bizProject);
         super.visitBizProject(bizProject);
     }
 

@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.unidal.lookup.ComponentTestCase;
 
+import com.dianping.phoenix.dev.core.model.workspace.entity.BizProject;
 import com.dianping.phoenix.dev.core.model.workspace.entity.Workspace;
 import com.dianping.phoenix.dev.core.model.workspace.transform.DefaultSaxParser;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.BizServerContext;
@@ -47,13 +49,24 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
         workspaceCtx.setBaseDir(workSpaceDir);
         workspaceCtx.setPhoenixRouterVersion("0.1-SNAPSHOT");
         List<String> projectNameList = Arrays.asList(new String[] { "user-web", "user-service", "user-base-service" });
-        workspaceCtx.setProjects(projectNameList);
+        workspaceCtx.setProjects(convertToBizProjects(projectNameList));
 
         facade.createSkeletonWorkspace(workspaceCtx);
 
         assertTrue(new File(workSpaceDir, "user-web").exists());
         assertTrue(new File(workSpaceDir, "user-service").exists());
         assertTrue(new File(workSpaceDir, "user-base-service").exists());
+    }
+
+    private List<BizProject> convertToBizProjects(List<String> projectNames) {
+        List<BizProject> res = new ArrayList<BizProject>();
+        for (String name : projectNames) {
+            BizProject p = new BizProject();
+            p.setFrom("vcs");
+            p.setName(name);
+            res.add(p);
+        }
+        return res;
     }
 
     public void testCreateAll() throws Exception {

@@ -26,16 +26,18 @@ public class ProjectMojo extends AbstractMojo {
     /**
      * 
      */
-    private static final int CHOICE_COLUMN = 2;
+    private static final int    CHOICE_COLUMN = 2;
     /**
      * @component
      */
-    private WorkspaceFacade  m_wsFacade;
+    private WorkspaceFacade     m_wsFacade;
 
     /**
      * @component
      */
-    private ConsoleIO        consoleIO;
+    private ConsoleIO           consoleIO;
+
+    private static final String PROJECT_FROM  = "vcs";
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -68,11 +70,25 @@ public class ProjectMojo extends AbstractMojo {
         List<String> bizProjects = addProjectInteractively(null);
 
         try {
-            m_wsFacade.create(bizProjects, wsDir);
+            m_wsFacade.create(buildModel(bizProjects, wsDir));
         } catch (Exception e) {
             throw new MojoFailureException("error create phoenix workspace", e);
         }
 
+    }
+
+    private Workspace buildModel(List<String> bizProjects, String wsDir) throws Exception {
+        Workspace model = m_wsFacade.buildDefaultSkeletoModel();
+
+        model.setDir(wsDir);
+        for (String bizProjectName : bizProjects) {
+            BizProject bizProject = new BizProject();
+            bizProject.setName(bizProjectName);
+            bizProject.setFrom(PROJECT_FROM);
+            model.addBizProject(bizProject);
+        }
+
+        return model;
     }
 
     private List<String> addProjectInteractively(List<String> ignoreProjects) throws MojoFailureException {
@@ -139,6 +155,7 @@ public class ProjectMojo extends AbstractMojo {
             public Object transform(Object input) {
                 BizProject bizProject = new BizProject();
                 bizProject.setName((String) input);
+                bizProject.setFrom(PROJECT_FROM);
                 return bizProject;
             }
         }
