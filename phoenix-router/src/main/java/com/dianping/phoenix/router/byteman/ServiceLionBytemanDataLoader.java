@@ -41,7 +41,7 @@ public class ServiceLionBytemanDataLoader {
                 input = this.getClass().getResourceAsStream("/" + resource);
                 if (input != null) {
                     Properties prop = new Properties();
-                    prop.load(input);
+                    prop.loadFromXML(input);
                     for (String key : prop.stringPropertyNames()) {
                         res.put(key, prop.getProperty(key));
                         System.out.println(String.format("[ServiceLion] add %s = %s", key, prop.getProperty(key)));

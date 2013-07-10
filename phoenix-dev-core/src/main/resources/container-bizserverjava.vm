@@ -158,9 +158,9 @@ public class PhoenixServer {
 		Properties prop = new Properties();
 		InputStream input = null;
 		try {
-			input = PhoenixServer.class.getResourceAsStream("/phoenix.properties");
+			input = PhoenixServer.class.getResourceAsStream("/phoenix.xml");
 			if (input != null) {
-				prop.load(input);
+				prop.loadFromXML(input);
 			}
 			return prop;
 		} finally {
