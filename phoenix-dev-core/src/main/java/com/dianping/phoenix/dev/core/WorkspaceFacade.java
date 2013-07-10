@@ -147,9 +147,9 @@ public class WorkspaceFacade {
         model.accept(launchFileContextVisitor);
 
         createUrlRuleXml(resourceFileFor(projectDir, ""), routerRuleCtxVisitor.getVisitResult());
-        createBizServerProperties(resourceFileFor(projectDir, "phoenix.properties"),
+        createBizServerProperties(resourceFileFor(projectDir, "phoenix.xml"),
                 bizServerCtxVisitor.getVisitResult());
-        createLionProperties(resourceFileFor(projectDir, "router-service.properties"),
+        createLionProperties(resourceFileFor(projectDir, "router-service.xml"),
                 serviceLionCtxVisitor.getVisitResult());
         createEcliseLaunchFile(rootFileFor(projectDir, "phoenix.launch"), launchFileContextVisitor.getVisitResult());
         createBytemanFile(metaFileFor(projectDir, "service-lion.btm"));

@@ -38,7 +38,7 @@ public class BizServerContextVisitor extends AbstractVisitor<BizServerContext> {
 			for (File webProjectDir : webProjectSubDirs) {
 				String projectName = parseProjectName(webProjectDir);
 				log.info(String.format("found web project in %s", webProjectDir.getAbsolutePath()));
-				result.addWebContext("/_" + projectName, propertiesEscape(webProjectDir.getAbsolutePath()));
+				result.addWebContext("/_" + projectName, webProjectDir.getAbsolutePath());
 			}
 		}
 
@@ -53,10 +53,6 @@ public class BizServerContextVisitor extends AbstractVisitor<BizServerContext> {
 	 */
 	private String parseProjectName(File file) {
 		return new PomParser().getArtifactId(file);
-	}
-
-	private String propertiesEscape(String propertyValue) {
-		return propertyValue.replaceAll("\\\\", "/");
 	}
 
 	@Override
