@@ -13,7 +13,7 @@
  * accordance with the terms of the license agreement you entered into
  * with dianping.com.
  */
-package com.dianping.maven.plugin.phoenix;
+package com.dianping.maven.plugin.phoenix.web;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -30,10 +30,11 @@ import org.apache.log4j.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.xml.sax.SAXException;
 
-import com.dianping.maven.plugin.phoenix.MojoDataWebUI.DataTransmitter;
+import com.dianping.maven.plugin.phoenix.WorkspaceFacade;
 import com.dianping.maven.plugin.phoenix.model.entity.BizProject;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
 import com.dianping.maven.plugin.phoenix.model.transform.DefaultSaxParser;
+import com.dianping.maven.plugin.phoenix.web.MojoDataWebUI.DataTransmitter;
 
 /**
  * @author Leo Liang

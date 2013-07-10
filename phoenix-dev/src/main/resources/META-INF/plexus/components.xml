@@ -111,8 +111,8 @@
 			<implementation>com.dianping.maven.plugin.tools.console.ConsoleIO</implementation>
 		</component>
 		<component>
-			<role>com.dianping.maven.plugin.phoenix.UICreator</role>
-			<implementation>com.dianping.maven.plugin.phoenix.UICreator</implementation>
+			<role>com.dianping.maven.plugin.phoenix.web.UICreator</role>
+			<implementation>com.dianping.maven.plugin.phoenix.web.UICreator</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.maven.plugin.phoenix.WorkspaceFacade</role>

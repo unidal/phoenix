@@ -1,4 +1,4 @@
-package com.dianping.maven.plugin.phoenix;
+package com.dianping.maven.plugin.phoenix.web;
 
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -6,8 +6,9 @@ import java.util.Map;
 
 import org.unidal.lookup.annotation.Inject;
 
-import com.dianping.maven.plugin.phoenix.MojoDataWebUI.DataTransmitter;
+import com.dianping.maven.plugin.phoenix.WorkspaceFacade;
 import com.dianping.maven.plugin.phoenix.model.entity.Workspace;
+import com.dianping.maven.plugin.phoenix.web.MojoDataWebUI.DataTransmitter;
 
 public class UICreator {
 	
