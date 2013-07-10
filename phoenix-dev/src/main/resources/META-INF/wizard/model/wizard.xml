@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<wizard package="com.dianping.maven.plugin.phoenix">
-   <model package="com.dianping.maven.plugin.phoenix.model" name="workspace">
-      <sample-model>src/test/resources/com/dianping/maven/plugin/phoenix/model/workspace.xml</sample-model>
-   </model>
-   <model package="com.dianping.maven.plugin.phoenix.phoenix" name="phoenix">
-      <sample-model>src/test/resources/com/dianping/maven/plugin/phoenix/model/phoenix.xml</sample-model>
-   </model>
-</wizard>
