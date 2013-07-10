@@ -71,7 +71,7 @@ public class ServiceLionPropertiesGenerator {
 
         try {
             os = new FileOutputStream(file);
-            prop.store(os, "");
+            prop.storeToXML(os, "", "utf-8");
         } finally {
             if (os != null) {
                 try {

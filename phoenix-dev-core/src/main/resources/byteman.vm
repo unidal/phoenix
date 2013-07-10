@@ -9,7 +9,7 @@ AT INVOKE setPts
 IF true
 #set($dollar = "$")
 DO    
-    ${dollar}this.pts.putAll(loadServices("^router-.*\.properties$"));
+    ${dollar}this.pts.putAll(loadServices("^router-.*\.xml$"));
     System.out.println("Phoenix runtime config modification complete...")
 ENDRULE
 
