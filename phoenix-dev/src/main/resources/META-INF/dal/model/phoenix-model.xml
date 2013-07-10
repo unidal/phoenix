@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model model-package="com.dianping.maven.plugin.phoenix.phoenix" enable-sax-parser="true">
-  <entity name="phoenix" root="true">
-    <element name="url-of-config" value-type="String" default-value="http://code.dianpingoa.com/arch/phoenix-maven-config.git" />
-  </entity>
-</model>
-

@@ -16,7 +16,9 @@
 		<module>phoenix-agent</module>
 		<module>phoenix-service-container</module>
 		<module>phoenix-router</module>
-		<module>phoenix-dev</module>
+		<module>phoenix-dev-core</module>
+		<module>phoenix-dev-agent</module>
+		<module>phoenix-dev-plugin</module>
 	</modules>
         <build>
                 <pluginManagement>
