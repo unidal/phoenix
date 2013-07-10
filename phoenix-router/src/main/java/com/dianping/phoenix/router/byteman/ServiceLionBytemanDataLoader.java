@@ -30,6 +30,8 @@ import com.dianping.phoenix.ResourceUtils;
  * 
  */
 public class ServiceLionBytemanDataLoader {
+    private static final String DEFAULT_RESOURCE = "router-service.xml";
+
     public Map<String, String> loadServices(String p) {
         Pattern pattern = Pattern.compile(p);
         Collection<String> resources = ResourceUtils.getResources(pattern);
@@ -43,6 +45,11 @@ public class ServiceLionBytemanDataLoader {
                     Properties prop = new Properties();
                     prop.loadFromXML(input);
                     for (String key : prop.stringPropertyNames()) {
+                        if (DEFAULT_RESOURCE.equals(resource) && res.containsKey(key)) {
+                            System.out
+                                    .println(String.format("[ServiceLion] ignore %s = %s", key, prop.getProperty(key)));
+                            continue;
+                        }
                         res.put(key, prop.getProperty(key));
                         System.out.println(String.format("[ServiceLion] add %s = %s", key, prop.getProperty(key)));
                     }

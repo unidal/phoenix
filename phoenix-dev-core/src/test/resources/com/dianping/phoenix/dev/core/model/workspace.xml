@@ -11,10 +11,10 @@
 		</router>
 	</phoenix-project>
 	
-	<biz-project name="tuangou-web">
+	<biz-project name="tuangou-web" from="vcs">
 		<sub-project name="tuangou-web-api" />
 		<sub-project name="tuangou-web-site" />
 	</biz-project>
-	<biz-project name="user-service" />
+	<biz-project name="user-service" from="url"/>
 	
 </workspace>

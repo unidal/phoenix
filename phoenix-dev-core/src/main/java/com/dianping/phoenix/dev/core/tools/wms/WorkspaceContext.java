@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dianping.phoenix.dev.core.model.workspace.entity.BizProject;
+
 /**
  * @author Leo Liang
  * 
@@ -27,7 +29,7 @@ import java.util.List;
 public class WorkspaceContext implements Serializable {
     private static final long serialVersionUID     = -7734656051647733810L;
     private File              baseDir;
-    private List<String>      projects             = new ArrayList<String>();
+    private List<BizProject>  projects             = new ArrayList<BizProject>();
     private String            phoenixRouterVersion = "0.1-SNAPSHOT";
     private boolean           cleanFolder;
 
@@ -79,7 +81,7 @@ public class WorkspaceContext implements Serializable {
     /**
      * @return the projects
      */
-    public List<String> getProjects() {
+    public List<BizProject> getProjects() {
         return projects;
     }
 
@@ -87,11 +89,11 @@ public class WorkspaceContext implements Serializable {
      * @param projects
      *            the projects to set
      */
-    public void setProjects(List<String> projects) {
+    public void setProjects(List<BizProject> projects) {
         this.projects = projects;
     }
 
-    public void addProject(String project) {
+    public void addProject(BizProject project) {
         projects.add(project);
     }
 

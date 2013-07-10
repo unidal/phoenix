@@ -33,6 +33,7 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.phoenix.dev.core.model.workspace.entity.BizProject;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.ContainerBizServerGenerator;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.ContainerPomXMLGenerator;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.ContainerWebXMLGenerator;
@@ -52,6 +53,8 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     private final static String LINE_SEPARATOR      = System.getProperty("line.separator");
     private final static String PHOENIX_BASE_FOLDER = "phoenix/";
     private final static String CONTAINER_FOLDER    = PHOENIX_BASE_FOLDER + "phoenix-container";
+    private final static String FROM_VCS            = "vcs";
+    private final static String FROM_URL            = "url";
 
     @Inject
     private RepositoryService   repositoryService;
@@ -142,11 +145,16 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     }
 
     private void checkoutSource(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException {
-        for (String project : context.getProjects()) {
-            try {
-                repositoryService.checkout(project, new File(context.getBaseDir(), project), out);
-            } catch (RepositoryNotFoundException e) {
-                throw new WorkspaceManagementException(e);
+        for (BizProject project : context.getProjects()) {
+            if (FROM_VCS.equalsIgnoreCase(project.getFrom())) {
+                try {
+                    repositoryService.checkout(project.getName(), new File(context.getBaseDir(), project.getName()),
+                            out);
+                } catch (RepositoryNotFoundException e) {
+                    throw new WorkspaceManagementException(e);
+                }
+            } else if (FROM_URL.equalsIgnoreCase(project.getFrom())) {
+                // TODO
             }
 
         }
@@ -171,9 +179,14 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
     }
 
     private void generateWorkspacePom(WorkspaceContext context) throws WorkspaceManagementException {
+        List<String> projectNames = new ArrayList<String>();
+        for (BizProject project : context.getProjects()) {
+            projectNames.add(project.getName());
+        }
+
         WorkspacePomXMLGenerator generator = new WorkspacePomXMLGenerator();
         try {
-            generator.generate(new File(context.getBaseDir(), "pom.xml"), context.getProjects());
+            generator.generate(new File(context.getBaseDir(), "pom.xml"), projectNames);
         } catch (Exception e) {
             throw new WorkspaceManagementException(e);
         }
@@ -239,12 +252,15 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
         WorkspaceManagementServiceImpl wms = new WorkspaceManagementServiceImpl();
         wms.setRepositoryService((RepositoryService) plexusContainer.lookup(RepositoryService.class));
         WorkspaceContext context = new WorkspaceContext();
-        List<String> projects = new ArrayList<String>();
-        projects.add("shop-web");
-        projects.add("shoplist-web");
-        projects.add("user-web");
-        projects.add("user-service");
-        // projects.add("user-base-service");
+        List<BizProject> projects = new ArrayList<BizProject>();
+        BizProject p1 = new BizProject();
+        p1.setFrom("vcs");
+        p1.setName("shop-web");
+        projects.add(p1);
+        BizProject p2 = new BizProject();
+        p2.setFrom("vcs");
+        p2.setName("shoplist-web");
+        projects.add(p2);
         context.setProjects(projects);
         context.setBaseDir(new File("/Users/leoleung/test"));
         wms.modify(context, System.out);
@@ -268,4 +284,5 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
             throw new WorkspaceManagementException("projects/basedir can not be null");
         }
     }
+
 }
