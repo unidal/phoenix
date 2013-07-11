@@ -32,22 +32,22 @@ import com.dianping.phoenix.service.netty.AgentStatusFetcher;
 import com.dianping.phoenix.service.visitor.DeviceVisitor;
 
 public class DefaultResourceManager implements ResourceManager, Initializable, LogEnabled {
-	private Logger m_logger;
-
-	private AtomicReference<Resource> m_resource = new AtomicReference<Resource>();
-	private AtomicReference<Map<String, List<String>>> m_resourceInfo = new AtomicReference<Map<String, List<String>>>();
-	private DefaultXmlBuilder m_xmlBuilder = new DefaultXmlBuilder();
-
 	@Inject
 	private AgentStatusFetcher m_agentStatusFetcher;
 
 	@Inject
 	private DeviceManager m_deviceManager;
 
+	private Logger m_logger;
+	private DefaultXmlBuilder m_xmlBuilder = new DefaultXmlBuilder();
+
+	private AtomicReference<Resource> m_resource = new AtomicReference<Resource>();
+	private AtomicReference<Map<String, List<String>>> m_resourceInfo = new AtomicReference<Map<String, List<String>>>();
+
 	@Override
 	public void initialize() throws InitializationException {
 		new ConfigFileWatchdog().setDelay(30).start();
-		new AgentStatusWatchdog().setDelay(5).start();
+		new AgentStatusWatchdog().setDelay(10).start();
 	}
 
 	private class ConfigFileWatchdog extends Thread {
