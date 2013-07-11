@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -27,6 +26,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.dianping.phoenix.router.hotdeploy.ClassRedefiner;
+import com.dianping.phoenix.utils.version.VersionParser;
 
 public class PhoenixClassLoader extends WebAppClassLoader {
 	private static final Logger LOGGER = Logger.getLogger(PhoenixClassLoader.class);
@@ -42,6 +42,8 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 	private ClassRedefiner m_deployer = new ClassRedefiner(this);
 
 	private File m_projectDir;
+
+	private VersionParser m_versionParser = new VersionParser();
 
 	public PhoenixClassLoader(File projectDir, int checkFreq, WebAppContext ctx, ClassLoader parent,
 			List<String> sequence) throws IOException {
@@ -174,19 +176,11 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 	}
 
 	private boolean isMatch(Pattern pattern, URL url, String str) {
+
 		try {
 			String name = new File(url.toURI()).getName();
 			if (name.endsWith(".jar")) {
-				Matcher matcher = pattern.matcher(name);
-				if (matcher.find()) {
-					name = name.substring(0, matcher.start());
-					char lastch = name.charAt(name.length() - 1);
-					if (lastch == '-' || lastch == '.') {
-						name = name.substring(0, name.length() - 1);
-					}
-				} else {
-					name = name.substring(0, name.length() - ".jar".length());
-				}
+				name = m_versionParser.parse(name.substring(0, name.length() - ".jar".length()))[0];
 				return name.equals(str);
 			}
 		} catch (URISyntaxException e) {
