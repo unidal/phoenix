@@ -2,6 +2,7 @@
 <model>
   <entity name="workspace" root="true">
     <attribute name="dir" value-type="String" />
+    <attribute name="from" value-type="String" />
     <entity-ref name="phoenix-project" />
     <entity-ref name="biz-project" type="list" names="biz-projects" />
   </entity>
@@ -19,7 +20,6 @@
   </entity>
   <entity name="biz-project">
     <attribute name="name" value-type="String" />
-    <attribute name="from" value-type="String" />
     <entity-ref name="sub-project" type="list" names="sub-projects" />
   </entity>
   <entity name="sub-project">

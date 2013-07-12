@@ -38,7 +38,10 @@ import com.dianping.phoenix.dev.core.tools.wms.WorkspaceManagementService;
 
 public class WorkspaceFacade {
 
-    private static Logger                  log = Logger.getLogger(WorkspaceFacade.class);
+    private static final String            FROM_PLUGIN = "plugin";
+    private static final String            FROM_AGENT  = "agent";
+
+    private static Logger                  log         = Logger.getLogger(WorkspaceFacade.class);
 
     @Inject
     private WorkspaceManagementService     wms;
@@ -95,7 +98,9 @@ public class WorkspaceFacade {
         } else {
             createSkeletonWorkspace(workspaceCtxVisitor.getVisitResult());
         }
-        PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
+        if (FROM_PLUGIN.equalsIgnoreCase(model.getFrom())) {
+            PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
+        }
         createRuntimeResources(model);
         saveMeta(model);
         FileUtils.touch(new File(model.getDir(), WorkspaceConstants.REINIT_SIG_FILENAME));
@@ -120,8 +125,12 @@ public class WorkspaceFacade {
                 model.toString(), "utf-8");
     }
 
-    private File resourceFileFor(File rootDir, String fileName) {
-        return new File(rootDir, WorkspaceConstants.PHOENIX_RESOURCE_FOLDER + fileName);
+    private File resourceFileFor(File rootDir, String fileName, boolean isWar) {
+        if (!isWar) {
+            return new File(rootDir, WorkspaceConstants.PHOENIX_RESOURCE_FOLDER + fileName);
+        } else {
+            return new File(rootDir, WorkspaceConstants.PHOENIX_CONTAINER_WAR_CLASSES_FOLDER + fileName);
+        }
     }
 
     private File rootFileFor(File rootDir, String fileName) {
@@ -145,19 +154,24 @@ public class WorkspaceFacade {
         model.accept(serviceLionCtxVisitor);
         model.accept(launchFileContextVisitor);
 
-        createUrlRuleXml(resourceFileFor(projectDir, ""), routerRuleCtxVisitor.getVisitResult());
-        createBizServerProperties(resourceFileFor(projectDir, "phoenix.xml"),
+        createUrlRuleXml(resourceFileFor(projectDir, "", FROM_AGENT.equalsIgnoreCase(model.getFrom())),
+                routerRuleCtxVisitor.getVisitResult());
+        createBizServerProperties(
+                resourceFileFor(projectDir, "phoenix.xml", FROM_AGENT.equalsIgnoreCase(model.getFrom())),
                 bizServerCtxVisitor.getVisitResult());
-        createLionProperties(resourceFileFor(projectDir, "router-service.xml"),
+        createLionProperties(
+                resourceFileFor(projectDir, "router-service.xml", FROM_AGENT.equalsIgnoreCase(model.getFrom())),
                 serviceLionCtxVisitor.getVisitResult());
-        createEcliseLaunchFile(rootFileFor(projectDir, "phoenix.launch"), launchFileContextVisitor.getVisitResult());
+        if (WorkspaceConstants.FROM_PLUGIN.equalsIgnoreCase(model.getFrom())) {
+            createEcliseLaunchFile(rootFileFor(projectDir, "phoenix.launch"), launchFileContextVisitor.getVisitResult());
+        }
         createBytemanFile(metaFileFor(projectDir, "service-lion.btm"));
-        copyGitFileToClasspath(projectDir);
+        copyGitFileToClasspath(projectDir, FROM_AGENT.equalsIgnoreCase(model.getFrom()));
     }
 
-    void copyGitFileToClasspath(File wsDir) throws IOException {
+    void copyGitFileToClasspath(File wsDir, boolean isWar) throws IOException {
         File srcFile = new File(new File(wsDir, WorkspaceConstants.PHOENIX_CONFIG_FOLDER), "virtualServer.properties");
-        File destDir = new File(wsDir, WorkspaceConstants.PHOENIX_RESOURCE_FOLDER);
+        File destDir = isWar ? new File(wsDir, WorkspaceConstants.PHOENIX_CONTAINER_WAR_CLASSES_FOLDER): new File(wsDir, WorkspaceConstants.PHOENIX_RESOURCE_FOLDER);
         FileUtils.copyFileToDirectory(srcFile, destDir);
     }
 

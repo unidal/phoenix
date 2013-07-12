@@ -32,6 +32,22 @@ public class WorkspaceContext implements Serializable {
     private List<BizProject>  projects             = new ArrayList<BizProject>();
     private String            phoenixRouterVersion = "0.1-SNAPSHOT";
     private boolean           cleanFolder;
+    private String            from;
+
+    /**
+     * @return the from
+     */
+    public String getFrom() {
+        return from;
+    }
+
+    /**
+     * @param from
+     *            the from to set
+     */
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
     /**
      * @return the cleanFolder

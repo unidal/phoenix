@@ -13,52 +13,54 @@ import com.dianping.phoenix.dev.core.model.workspace.entity.Workspace;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.BizServerContext;
 import com.dianping.phoenix.dev.core.tools.utils.PomParser;
 import com.dianping.phoenix.dev.core.tools.utils.WebProjectFileFilter;
+import com.dianping.phoenix.dev.core.tools.wms.WorkspaceConstants;
 
 public class BizServerContextVisitor extends AbstractVisitor<BizServerContext> {
 
-	private static Logger log = Logger.getLogger(BizServerContextVisitor.class);
+    private static Logger log = Logger.getLogger(BizServerContextVisitor.class);
 
-	private File wsDir;
+    private File          wsDir;
 
-	public BizServerContextVisitor() {
-		result = new BizServerContext();
-	}
+    public BizServerContextVisitor() {
+        result = new BizServerContext();
+    }
 
-	@Override
-	public void visitBizProject(BizProject bizProject) {
-		File parentProjectDir = new File(wsDir, bizProject.getName());
+    @Override
+    public void visitBizProject(BizProject bizProject) {
+        File parentProjectDir = new File(wsDir, bizProject.getName());
 
-		FileFilter webFilter = new WebProjectFileFilter();
-		List<File> webProjectSubDirs = new ArrayList<File>(Arrays.asList(parentProjectDir.listFiles(webFilter)));
-		if(webFilter.accept(parentProjectDir)) {
-			webProjectSubDirs.add(parentProjectDir);
-		}
+        FileFilter webFilter = new WebProjectFileFilter();
+        List<File> webProjectSubDirs = new ArrayList<File>(Arrays.asList(parentProjectDir.listFiles(webFilter)));
+        if (webFilter.accept(parentProjectDir)) {
+            webProjectSubDirs.add(parentProjectDir);
+        }
 
-		if (webProjectSubDirs != null) {
-			for (File webProjectDir : webProjectSubDirs) {
-				String projectName = parseProjectName(webProjectDir);
-				log.info(String.format("found web project in %s", webProjectDir.getAbsolutePath()));
-				result.addWebContext("/_" + projectName, webProjectDir.getAbsolutePath());
-			}
-		}
+        if (webProjectSubDirs != null) {
+            for (File webProjectDir : webProjectSubDirs) {
+                String projectName = parseProjectName(webProjectDir);
+                log.info(String.format("found web project in %s", webProjectDir.getAbsolutePath()));
+                result.addWebContext("/_" + projectName, webProjectDir.getAbsolutePath());
+            }
+        }
 
-		super.visitBizProject(bizProject);
-	}
+        super.visitBizProject(bizProject);
+    }
 
-	/**
-	 * pom.xml have the "most correct" name, use directory name for simplicity
-	 * 
-	 * @param file
-	 * @return
-	 */
-	private String parseProjectName(File file) {
-		return new PomParser().getArtifactId(file);
-	}
+    /**
+     * pom.xml have the "most correct" name, use directory name for simplicity
+     * 
+     * @param file
+     * @return
+     */
+    private String parseProjectName(File file) {
+        return WorkspaceConstants.FROM_PLUGIN.equalsIgnoreCase(from) ? new PomParser().getArtifactId(file) : file
+                .getName();
+    }
 
-	@Override
-	public void visitWorkspace(Workspace workspace) {
-		wsDir = new File(workspace.getDir());
-		super.visitWorkspace(workspace);
-	}
+    @Override
+    public void visitWorkspace(Workspace workspace) {
+        wsDir = new File(workspace.getDir());
+        super.visitWorkspace(workspace);
+    }
 
 }

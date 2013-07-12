@@ -28,14 +28,14 @@
 			<version>2.2.2</version>
 		</dependency>
 		<dependency>
-			<groupId>com.site.common</groupId>
-			<artifactId>test-framework</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.unidal.maven.plugins</groupId>
 			<artifactId>common</artifactId>
 			<version>2.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.site.common</groupId>
+			<artifactId>test-framework</artifactId>
+			<version>1.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jgit</groupId>
@@ -46,6 +46,12 @@
 			<groupId>org.tmatesoft.svnkit</groupId>
 			<artifactId>svnkit</artifactId>
 			<version>1.7.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.zeroturnaround</groupId>
+			<artifactId>zt-zip</artifactId>
+			<version>1.6</version>
+			<type>jar</type>
 		</dependency>
 		<!-- for unit test -->
 		<dependency>

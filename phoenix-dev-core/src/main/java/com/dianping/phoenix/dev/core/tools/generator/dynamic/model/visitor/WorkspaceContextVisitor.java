@@ -28,6 +28,7 @@ public class WorkspaceContextVisitor extends AbstractVisitor<WorkspaceContext> {
     @Override
     public void visitWorkspace(Workspace workspace) {
         result.setBaseDir(new File(workspace.getDir()));
+        result.setFrom(workspace.getFrom());
         super.visitWorkspace(workspace);
     }
 

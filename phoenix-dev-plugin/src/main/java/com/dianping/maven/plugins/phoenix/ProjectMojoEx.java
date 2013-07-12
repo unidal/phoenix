@@ -22,18 +22,19 @@ import com.dianping.phoenix.dev.core.tools.console.ConsoleIO;
  */
 public class ProjectMojoEx extends AbstractMojo {
     private static final String WORKSPACE_HTML = "/workspace.html";
-	/**
-     * @component
-     */
-    private WorkspaceFacade m_wsFacade;
+    private static final String WORKSPACE_FROM = "plugin";
     /**
      * @component
      */
-    private ConsoleIO       consoleIO;
+    private WorkspaceFacade     m_wsFacade;
     /**
      * @component
      */
-    private UICreator uiCreator;
+    private ConsoleIO           consoleIO;
+    /**
+     * @component
+     */
+    private UICreator           uiCreator;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -62,6 +63,7 @@ public class ProjectMojoEx extends AbstractMojo {
 
             Workspace model = m_wsFacade.buildDefaultSkeletoModel();
             model.setDir(wsDir);
+            model.setFrom(WORKSPACE_FROM);
 
             DataTransmitter<Workspace, Workspace> dataTransmitter = uiCreator.createUI(model, WORKSPACE_HTML);
 
