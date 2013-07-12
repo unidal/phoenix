@@ -8,4 +8,7 @@ public class WorkspaceConstants {
     public static final String PHOENIX_RESOURCE_FOLDER  = PHOENIX_ROOT_FOLDER + "phoenix-container/src/main/resources/";
     public static final String WORKSPACE_META_FILENAME  = PHOENIX_META_FOLDER + "workspace.xml";
     public static final String REINIT_SIG_FILENAME      = PHOENIX_META_FOLDER + "phoenix.new";
+
+    public static final String FROM_PLUGIN              = "plugin";
+    public static final String FROM_AGENT               = "agent";
 }

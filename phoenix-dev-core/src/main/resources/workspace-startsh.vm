@@ -1,0 +1,16 @@
+#!/bin/sh
+
+cd `dirname "$0"`
+HOME=`pwd`
+CONTAINER_HOME=$HOME/phoenix/phoenix-container
+
+JAVA_OPTS="-server -Xms1024m -Xmx1024m -Xmn256m -Xss256k"
+
+cd $HOME
+
+RUN_CMD="java -classpath \"$CONTAINER_HOME/*\""
+RUN_CMD="$RUN_CMD $JAVA_OPTS"
+RUN_CMD="$RUN_CMD com.dianping.phoenix.container.PhoenixServer >boot.log 2>&1 &"
+echo $RUN_CMD
+eval $RUN_CMD
+#==========================================================================

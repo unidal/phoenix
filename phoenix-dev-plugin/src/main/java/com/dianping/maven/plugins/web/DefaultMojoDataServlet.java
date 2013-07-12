@@ -56,7 +56,6 @@ public class DefaultMojoDataServlet extends BaseMojoDataServlet<Workspace, Works
     private static final String SPLITOR                   = ",";
     private WorkspaceFacade     workspaceFacade;
     private String              baseUri;
-    private static final String PROJECT_FROM              = "vcs";
 
     public DefaultMojoDataServlet(DataTransmitter<Workspace, Workspace> dataTransmitter,
             WorkspaceFacade workspaceFacade, String baseUri) {
@@ -125,7 +124,6 @@ public class DefaultMojoDataServlet extends BaseMojoDataServlet<Workspace, Works
         for (String name : projects) {
             BizProject bizProject = new BizProject();
             bizProject.setName(name);
-            bizProject.setFrom(PROJECT_FROM);
             newWorkspace.addBizProject(bizProject);
         }
 

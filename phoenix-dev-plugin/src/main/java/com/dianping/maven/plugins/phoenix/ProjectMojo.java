@@ -26,7 +26,7 @@ public class ProjectMojo extends AbstractMojo {
     /**
      * 
      */
-    private static final int    CHOICE_COLUMN = 2;
+    private static final int    CHOICE_COLUMN  = 2;
     /**
      * @component
      */
@@ -37,7 +37,7 @@ public class ProjectMojo extends AbstractMojo {
      */
     private ConsoleIO           consoleIO;
 
-    private static final String PROJECT_FROM  = "vcs";
+    private static final String WORKSPACE_FROM = "plugin";
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -79,12 +79,12 @@ public class ProjectMojo extends AbstractMojo {
 
     private Workspace buildModel(List<String> bizProjects, String wsDir) throws Exception {
         Workspace model = m_wsFacade.buildDefaultSkeletoModel();
+        model.setFrom(WORKSPACE_FROM);
 
         model.setDir(wsDir);
         for (String bizProjectName : bizProjects) {
             BizProject bizProject = new BizProject();
             bizProject.setName(bizProjectName);
-            bizProject.setFrom(PROJECT_FROM);
             model.addBizProject(bizProject);
         }
 
@@ -155,7 +155,6 @@ public class ProjectMojo extends AbstractMojo {
             public Object transform(Object input) {
                 BizProject bizProject = new BizProject();
                 bizProject.setName((String) input);
-                bizProject.setFrom(PROJECT_FROM);
                 return bizProject;
             }
         }

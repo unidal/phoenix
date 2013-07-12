@@ -1,12 +1,17 @@
 package com.dianping.phoenix.dev.core;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.unidal.lookup.annotation.Inject;
 
@@ -23,6 +28,7 @@ import com.dianping.phoenix.dev.core.tools.generator.dynamic.ServiceLionContext;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.ServiceLionPropertiesGenerator;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.UrlRuleContext;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.UrlRuleGenerator;
+import com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspaceStartSHGenerator;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.model.visitor.BizServerContextVisitor;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.model.visitor.LaunchFileContextVisitor;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.model.visitor.ServiceLionContextVisitor;
@@ -38,7 +44,9 @@ import com.dianping.phoenix.dev.core.tools.wms.WorkspaceManagementService;
 
 public class WorkspaceFacade {
 
-    private static Logger                  log = Logger.getLogger(WorkspaceFacade.class);
+    private static final String            FROM_PLUGIN = "plugin";
+
+    private static Logger                  log         = Logger.getLogger(WorkspaceFacade.class);
 
     @Inject
     private WorkspaceManagementService     wms;
@@ -58,6 +66,8 @@ public class WorkspaceFacade {
     private BytemanScriptGenerator         bytemanGenerator;
     @Inject
     private RepositoryManager              repoMgr;
+    @Inject
+    private WorkspaceStartSHGenerator      startShGenerator;
 
     public void init(File wsDir) {
         pullConfig(wsDir);
@@ -95,10 +105,31 @@ public class WorkspaceFacade {
         } else {
             createSkeletonWorkspace(workspaceCtxVisitor.getVisitResult());
         }
-        PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
+        if (FROM_PLUGIN.equalsIgnoreCase(model.getFrom())) {
+            PomRemedy.INSTANCE.remedyPomIn(new File(model.getDir()));
+        }
         createRuntimeResources(model);
+        if (WorkspaceConstants.FROM_AGENT.equalsIgnoreCase(model.getFrom())) {
+            createStartSh(model);
+            copyContainerJar(model);
+        }
         saveMeta(model);
         FileUtils.touch(new File(model.getDir(), WorkspaceConstants.REINIT_SIG_FILENAME));
+    }
+
+    private void copyContainerJar(Workspace model) throws Exception {
+        String fileName ="phoenix-container-0.1-SNAPSHOT-jar-with-dependencies.jar";
+        InputStream src = this.getClass().getResourceAsStream("/" + fileName);
+        OutputStream dest = new FileOutputStream(new File(new File(model.getDir(), WorkspaceConstants.PHOENIX_CONTAINER_FOLDER), fileName));
+        IOUtils.copy(src, dest);
+        src.close();
+        dest.close();
+    }
+
+    private void createStartSh(Workspace model) throws Exception {
+        File startSh = new File(model.getDir(), "start.sh");
+        startShGenerator.generate(startSh, new ArrayList<String>());
+        startSh.setExecutable(true);
     }
 
     public void pullConfig(File wsDir) {
@@ -146,11 +177,11 @@ public class WorkspaceFacade {
         model.accept(launchFileContextVisitor);
 
         createUrlRuleXml(resourceFileFor(projectDir, ""), routerRuleCtxVisitor.getVisitResult());
-        createBizServerProperties(resourceFileFor(projectDir, "phoenix.xml"),
-                bizServerCtxVisitor.getVisitResult());
-        createLionProperties(resourceFileFor(projectDir, "router-service.xml"),
-                serviceLionCtxVisitor.getVisitResult());
-        createEcliseLaunchFile(rootFileFor(projectDir, "phoenix.launch"), launchFileContextVisitor.getVisitResult());
+        createBizServerProperties(resourceFileFor(projectDir, "phoenix.xml"), bizServerCtxVisitor.getVisitResult());
+        createLionProperties(resourceFileFor(projectDir, "router-service.xml"), serviceLionCtxVisitor.getVisitResult());
+        if (WorkspaceConstants.FROM_PLUGIN.equalsIgnoreCase(model.getFrom())) {
+            createEcliseLaunchFile(rootFileFor(projectDir, "phoenix.launch"), launchFileContextVisitor.getVisitResult());
+        }
         createBytemanFile(metaFileFor(projectDir, "service-lion.btm"));
         copyGitFileToClasspath(projectDir);
     }

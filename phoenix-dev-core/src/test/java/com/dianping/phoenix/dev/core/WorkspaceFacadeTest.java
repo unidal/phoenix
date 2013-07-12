@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.phoenix.dev.core.model.workspace.entity.BizProject;
@@ -43,6 +44,20 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
         lauchFileGenerator = lookup(LaunchFileGenerator.class);
     }
 
+    @Test
+    public void testAgentCreate() throws Exception {
+        String samplePath = "/com/dianping/phoenix/dev/core/model/workspace.xml";
+        String workspaceXml = IOUtils.toString(this.getClass().getResourceAsStream(samplePath));
+        Workspace model = DefaultSaxParser.parse(workspaceXml);
+        model.setFrom("agent");
+        model.getBizProjects().clear();
+        BizProject bizProject = new BizProject();
+        bizProject.setName("http://192.168.22.71/user-web-qa-0.0.3.war");
+        model.addBizProject(bizProject);
+        facade.init(new File("/Users/leoleung/test"));
+        facade.create(model);
+    }
+
     public void testCreateSkeletonWorkspace() throws Exception {
         WorkspaceContext workspaceCtx = new WorkspaceContext();
         File workSpaceDir = new File("/Users/leoleung/test");
@@ -62,7 +77,6 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
         List<BizProject> res = new ArrayList<BizProject>();
         for (String name : projectNames) {
             BizProject p = new BizProject();
-            p.setFrom("vcs");
             p.setName(name);
             res.add(p);
         }
