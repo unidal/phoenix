@@ -44,6 +44,7 @@ import com.dianping.phoenix.dev.core.tools.generator.dynamic.ContainerWebXMLGene
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspaceEclipseBatGenerator;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspaceEclipseSHGenerator;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspacePomXMLGenerator;
+import com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspaceStartSHGenerator;
 import com.dianping.phoenix.dev.core.tools.vcs.RepositoryNotFoundException;
 import com.dianping.phoenix.dev.core.tools.vcs.RepositoryService;
 
@@ -97,7 +98,11 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
             printContent("Generating phoenix-container...", out);
 
-            generateContainerProject(context, out);
+            if (WorkspaceConstants.FROM_PLUGIN.equalsIgnoreCase(context.getFrom())) {
+                generateContainerProject(context, out);
+            } else {
+                generateContainerWar(context, out);
+            }
 
             printContent("Generating phoenix-lib...", out);
 
@@ -125,6 +130,10 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
                     printContent("Phoenix workspace generated...", out);
                 }
+            }
+
+            if (WorkspaceConstants.FROM_AGENT.equalsIgnoreCase(context.getFrom())) {
+                generateAgentStartScript(context);
             }
 
             printContent("All done. Cheers~", out);
@@ -188,7 +197,7 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
 
                 }
             }
-            if (os != null) {   
+            if (os != null) {
                 try {
                     os.close();
                 } catch (Exception e) {
@@ -208,21 +217,32 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
         if (pos >= 0) {
             name = name.substring(pos + 1);
         }
-        pos = name.indexOf("-qa-");
-        if (pos >= 0) {
-            name = name.substring(0, pos);
-        }else {
-            pos = name.indexOf("-dev-");
+
+        pos = -1;
+
+        String[] envPatterns = new String[] { "-qa-", "-dev-", "-alpha-", "-product-" };
+
+        for (String pat : envPatterns) {
+            pos = name.indexOf(pat);
             if (pos >= 0) {
                 name = name.substring(0, pos);
-            }else{
-                pos = name.indexOf("-alpha-");
-                if (pos >= 0) {
-                    name = name.substring(0, pos);
-                }
+                break;
             }
         }
+
         return name;
+    }
+
+    private void generateAgentStartScript(WorkspaceContext context) throws WorkspaceManagementException {
+
+        WorkspaceStartSHGenerator workspaceStartSHGenerator = new WorkspaceStartSHGenerator();
+        File startSh = new File(context.getBaseDir(), "start.sh");
+        try {
+            workspaceStartSHGenerator.generate(startSh, new ArrayList<String>());
+        } catch (Exception e) {
+            throw new WorkspaceManagementException(e);
+        }
+        startSh.setExecutable(true);
     }
 
     private void generateWorkspaceScript(WorkspaceContext context) throws WorkspaceManagementException {
@@ -294,6 +314,32 @@ public class WorkspaceManagementServiceImpl implements WorkspaceManagementServic
                 containerBizServerForAgentGenerator.generate(new File(sourceFolder,
                         "com/dianping/phoenix/container/PhoenixServer.java"), null);
             }
+
+        } catch (Exception e) {
+            throw new WorkspaceManagementException(e);
+        }
+    }
+
+    private void generateContainerWar(WorkspaceContext context, OutputStream out) throws WorkspaceManagementException {
+        File warBase = new File(context.getBaseDir(), CONTAINER_FOLDER);
+        File webInfFolder = new File(warBase, "WEB-INF");
+        File phoenixServerFolder = new File(webInfFolder, "classes/com/dianping/phoenix/container/");
+        try {
+            FileUtils.forceMkdir(webInfFolder);
+            FileUtils.forceMkdir(phoenixServerFolder);
+
+            String libZipName = "lib.zip";
+            copyFile(libZipName, webInfFolder);
+            ZipUtil.unpack(new File(webInfFolder, libZipName), webInfFolder);
+            FileUtils.deleteQuietly(new File(webInfFolder, libZipName));
+
+            ContainerWebXMLGenerator containerWebXMLGenerator = new ContainerWebXMLGenerator();
+            containerWebXMLGenerator.generate(new File(webInfFolder, "web.xml"), null);
+
+            String serverClassFileName = "AgentPhoenixServer.classfile";
+            copyFile(serverClassFileName, phoenixServerFolder);
+            FileUtils.moveFile(new File(phoenixServerFolder, serverClassFileName), new File(phoenixServerFolder,
+                    "PhoenixServer.class"));
 
         } catch (Exception e) {
             throw new WorkspaceManagementException(e);

@@ -15,7 +15,6 @@ import com.dianping.phoenix.dev.core.tools.generator.dynamic.F5Manager;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.LaunchFileGenerator;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.ServiceLionPropertiesGenerator;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.UrlRuleGenerator;
-import com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspaceStartSHGenerator;
 import com.dianping.phoenix.dev.core.tools.vcs.CodeRetrieverContext;
 import com.dianping.phoenix.dev.core.tools.vcs.CodeRetrieverManager;
 import com.dianping.phoenix.dev.core.tools.vcs.DefaultRepositoryServiceImpl;
@@ -54,7 +53,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
         all.add(C(F5Manager.class, DefaultF5Manager.class));
         all.add(C(BytemanScriptGenerator.class));
-        all.add(C(WorkspaceStartSHGenerator.class));
 
         all.add(C(WorkspaceFacade.class) //
                 .is(PER_LOOKUP) //
@@ -66,8 +64,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
                 .req(F5Manager.class)//
                 .req(RepositoryService.class)//
                 .req(BytemanScriptGenerator.class) //
-                .req(RepositoryManager.class)//
-                .req(WorkspaceStartSHGenerator.class));
+                .req(RepositoryManager.class));
 
 
         return all;

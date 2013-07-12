@@ -73,10 +73,6 @@
 			<implementation>com.dianping.phoenix.dev.core.tools.generator.BytemanScriptGenerator</implementation>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspaceStartSHGenerator</role>
-			<implementation>com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspaceStartSHGenerator</implementation>
-		</component>
-		<component>
 			<role>com.dianping.phoenix.dev.core.WorkspaceFacade</role>
 			<implementation>com.dianping.phoenix.dev.core.WorkspaceFacade</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
@@ -107,9 +103,6 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.dev.core.tools.wms.RepositoryManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspaceStartSHGenerator</role>
 				</requirement>
 			</requirements>
 		</component>
