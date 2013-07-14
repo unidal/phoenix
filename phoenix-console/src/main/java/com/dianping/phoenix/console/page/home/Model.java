@@ -22,6 +22,8 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	private Deployment m_activeDeployment;
 
+	private List<String> m_libs;
+
 	public Model(Context ctx) {
 		super(ctx);
 	}
@@ -69,5 +71,13 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	public void setDomain(Domain domain) {
 		m_domain = domain;
+	}
+
+	public void setLibs(List<String> libs) {
+		m_libs = libs;
+	}
+
+	public List<String> getLibs() {
+		return m_libs;
 	}
 }

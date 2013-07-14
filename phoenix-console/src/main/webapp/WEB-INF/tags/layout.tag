@@ -32,7 +32,7 @@
 				</a> 
 				
 				<div class="pull-right">
-					<img style="height: 39px" alt="Phoenix" src="${model.webapp}/img/phoenix21.png">
+					<img style="height: 39px" alt="Phoenix" src="${model.webapp}/img/phoenix.png">
 				</div>
 				<div class="nav-collapse collapse">
 					<ul class="nav nav-pills">
@@ -56,6 +56,7 @@
                            <li><a href="${model.moduleUri}/version?type=phoenix-agent">Version</a></li>
                          </ul>
                        </li>
+					   <li><a href="${model.moduleUri}/home?op=search">Search</a></li>
 					   <li><a href="${model.moduleUri}/home?op=about">About</a></li>
 					</ul>
 				</div>

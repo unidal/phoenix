@@ -38,6 +38,7 @@ import com.dianping.phoenix.service.cmdb.DeviceManager;
 import com.dianping.phoenix.service.netty.AgentStatusFetcher;
 import com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher;
 import com.dianping.phoenix.service.resource.DefaultResourceManager;
+import com.dianping.phoenix.service.resource.MockResourceManager;
 import com.dianping.phoenix.service.resource.ResourceManager;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
@@ -82,8 +83,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(ConfigManager.class));
 		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
 				.req(DeploymentDao.class, DeploymentDetailsDao.class));
-		all.add(C(ResourceManager.class, DefaultResourceManager.class)//
-				.req(AgentStatusFetcher.class, DeviceManager.class));
+		all.add(C(ResourceManager.class, MockResourceManager.class)//
+				.req(AgentStatusFetcher.class, DeviceManager.class, ConfigManager.class));
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //

@@ -2,7 +2,12 @@ package com.dianping.phoenix.console.page.home;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 
@@ -138,6 +143,18 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 					ctx.addError("project.view", e);
 				}
 
+				break;
+
+			case SEARCH :
+
+				Map<String, Set<String>> libMap = m_resourceManager.getLibSet();
+				Set<String> libs = new HashSet<String>();
+				for (Entry<String, Set<String>> entry : libMap.entrySet()) {
+					libs.addAll(entry.getValue());
+				}
+				List<String> list = new ArrayList<String>(libs);
+				Collections.sort(list);
+				model.setLibs(list);
 				break;
 			default :
 				break;

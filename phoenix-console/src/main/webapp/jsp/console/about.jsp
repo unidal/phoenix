@@ -34,7 +34,7 @@
 					</p>
 				</div>
 				<div class="span3">
-					<img height="180" src="${model.webapp}/img/phoenix25.png">
+					<img width="200px" src="${model.webapp}/img/phoenix2.png">
 				</div>
 			</div>
 		</div>

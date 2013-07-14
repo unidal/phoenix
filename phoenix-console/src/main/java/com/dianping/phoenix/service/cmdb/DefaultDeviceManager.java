@@ -1,7 +1,8 @@
 package com.dianping.phoenix.service.cmdb;
 
-import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +28,17 @@ public class DefaultDeviceManager implements DeviceManager, Initializable, LogEn
 	public void initialize() throws InitializationException {
 	}
 
-	private Responce readCmdb(String url) {
+	private Responce readCmdb(String url) throws ConnectException {
 		try {
 			URL cmdbUrl = new URL(url);
-			InputStream in = null;
-			in = cmdbUrl.openStream();
-			return DefaultSaxParser.parse(in);
+			URLConnection conn = cmdbUrl.openConnection();
+			conn.setConnectTimeout(1000);
+			conn.setReadTimeout(1000);
+			conn.connect();
+			return DefaultSaxParser.parse(conn.getInputStream());
 		} catch (Exception e) {
 			m_logger.warn(String.format("Read cmdb failed [%s]", url), e);
-			return null;
+			throw new ConnectException(String.format("Read cmdb failed [%s]", url));
 		}
 	}
 
@@ -45,7 +48,7 @@ public class DefaultDeviceManager implements DeviceManager, Initializable, LogEn
 	}
 
 	@Override
-	public List<Device> getDevices(String name) {
+	public List<Device> getDevices(String name) throws ConnectException {
 		List<Device> devices = new ArrayList<Device>();
 		if (name != null && name.trim().length() > 0) {
 			String cmdbQuery = String.format(m_configManager.getCmdbBaseUrl(),

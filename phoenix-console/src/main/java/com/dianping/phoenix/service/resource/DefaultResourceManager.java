@@ -5,10 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,10 +25,12 @@ import com.dianping.phoenix.agent.resource.entity.App;
 import com.dianping.phoenix.agent.resource.entity.Domain;
 import com.dianping.phoenix.agent.resource.entity.Host;
 import com.dianping.phoenix.agent.resource.entity.Kernel;
+import com.dianping.phoenix.agent.resource.entity.Lib;
 import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
 import com.dianping.phoenix.agent.resource.transform.DefaultSaxParser;
 import com.dianping.phoenix.agent.resource.transform.DefaultXmlBuilder;
+import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.device.entity.Device;
 import com.dianping.phoenix.service.cmdb.DeviceManager;
 import com.dianping.phoenix.service.netty.AgentStatusFetcher;
@@ -33,19 +38,29 @@ import com.dianping.phoenix.service.visitor.DeviceVisitor;
 
 public class DefaultResourceManager implements ResourceManager, Initializable, LogEnabled {
 	@Inject
-	private AgentStatusFetcher m_agentStatusFetcher;
+	protected AgentStatusFetcher m_agentStatusFetcher;
 
 	@Inject
 	private DeviceManager m_deviceManager;
+
+	@Inject
+	protected ConfigManager m_configManager;
 
 	private Logger m_logger;
 	private DefaultXmlBuilder m_xmlBuilder = new DefaultXmlBuilder();
 
 	private AtomicReference<Resource> m_resource = new AtomicReference<Resource>();
+	private AtomicReference<Map<String, Domain>> m_domains = new AtomicReference<Map<String, Domain>>();
+	private AtomicReference<Map<String, Set<String>>> m_libs = new AtomicReference<Map<String, Set<String>>>();
 	private AtomicReference<Map<String, List<String>>> m_resourceInfo = new AtomicReference<Map<String, List<String>>>();
+
+	private Resource m_resourceCache;
+	protected String m_cachePath;
 
 	@Override
 	public void initialize() throws InitializationException {
+		m_cachePath = m_configManager.getResourceCachePath();
+
 		new ConfigFileWatchdog().setDelay(30).start();
 		new AgentStatusWatchdog().setDelay(10).start();
 	}
@@ -92,7 +107,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 
 				Map<String, List<String>> m = new LinkedHashMap<String, List<String>>();
 				if (r != null) {
-					for (Product p : r.getProducts()) {
+					for (Product p : r.getProducts().values()) {
 						String name = p.getName();
 						List<String> list = new ArrayList<String>();
 						for (Domain d : p.getDomains().values()) {
@@ -136,6 +151,8 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 		private void refreshAgentStatus(boolean needInteval) {
 			Map<String, List<String>> m = m_resourceInfo.get();
 			Resource resource = new Resource();
+			Map<String, Domain> domains = new HashMap<String, Domain>();
+
 			for (Entry<String, List<String>> entry : m.entrySet()) {
 				Product product = new Product();
 				product.setName(entry.getKey());
@@ -144,6 +161,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 					Domain domain = getDomainFromName(domainName);
 					if (domain != null) {
 						product.addDomain(domain);
+						domains.put(domainName, domain);
 						if (needInteval) {
 							try {
 								TimeUnit.SECONDS.sleep(m_delay * 60 / m.size() / entry.getValue().size());
@@ -155,15 +173,21 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 				}
 				resource.addProduct(product);
 			}
+
 			analysisResource(resource);
+
+			m_resourceCache = resource;
 			m_resource.set(resource);
+			m_domains.set(domains);
 		}
 
 		private void analysisResource(Resource resource) {
-			for (Product product : resource.getProducts()) {
+			Map<String, Set<String>> libs = new HashMap<String, Set<String>>();
+			for (Product product : resource.getProducts().values()) {
 				for (Domain domain : product.getDomains().values()) {
 					int activeCount = 0;
 					int inactiveCount = 0;
+					Set<String> domainLibs = new HashSet<String>();
 					for (Host host : domain.getHosts().values()) {
 						domain.addOwner(getUnknowIfBlank(host.getOwner()));
 						if (host.getPhoenixAgent() != null && "ok".equals(host.getPhoenixAgent().getStatus())) {
@@ -177,13 +201,24 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 								Kernel kernel = app.getKernel();
 								domain.addKernelVersion(kernel == null ? "NONE" : getUnknowIfBlank(kernel.getVersion()));
 								domain.addAppVersion(getUnknowIfBlank(app.getVersion()));
+								for (Lib lib : app.getLibs()) {
+									domainLibs.add(lib.getArtifactId());
+								}
+								if (kernel != null) {
+									for (Lib lib : kernel.getLibs()) {
+										domainLibs.add(lib.getArtifactId());
+									}
+								}
 							}
 						}
 					}
 					domain.setActiveCount(activeCount);
 					domain.setInactiveCount(inactiveCount);
+					libs.put(domain.getName(), domainLibs);
 				}
 			}
+
+			m_libs.set(libs);
 		}
 
 		private String getUnknowIfBlank(String str) {
@@ -219,7 +254,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 	}
 
 	private void cacheResource() {
-		File cache = new File("/data/appdatas/phoenix/resource-cache.xml");
+		File cache = new File(m_cachePath, "resource-cache.xml");
 		if (!cache.exists()) {
 			try {
 				cache.getParentFile().mkdirs();
@@ -255,14 +290,51 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 			domain.setName(name);
 			domain.setDescription("N/A");
 
-			List<Device> devices = m_deviceManager.getDevices(name);
-			for (Device device : devices) {
-				Host host = new Host();
-				device.accept(new DeviceVisitor(host));
-				domain.addHost(host);
+			List<Device> devices;
+			try {
+				devices = m_deviceManager.getDevices(name);
+				for (Device device : devices) {
+					Host host = new Host();
+					device.accept(new DeviceVisitor(host));
+					domain.addHost(host);
+				}
+				m_agentStatusFetcher.fetchPhoenixAgentStatus(new ArrayList<Host>(domain.getHosts().values()));
+			} catch (Exception e) {
+				domain = getDomainFromCache(name);
 			}
-			m_agentStatusFetcher.fetchPhoenixAgentStatus(new ArrayList<Host>(domain.getHosts().values()));
 			return domain;
+		}
+		return null;
+	}
+
+	private Domain getDomainFromCache(String domainName) {
+		if (m_resourceCache == null) {
+			m_resourceCache = getResourceFromCacheFile();
+		}
+		if (m_resourceCache != null) {
+			for (Product product : m_resourceCache.getProducts().values()) {
+				if (product.getDomains() != null && product.getDomains().containsKey(domainName)) {
+					return product.getDomains().get(domainName);
+				}
+			}
+		}
+		return null;
+	}
+
+	protected Resource getResourceFromCacheFile() {
+		m_logger.warn("Fetch agent status from real host failed, attempt to load resource from cache file.");
+
+		File cache = new File(m_cachePath, "resource-cache.xml");
+		if (cache.exists()) {
+			try {
+				System.out.println(cache.getAbsolutePath());
+				Resource res = DefaultSaxParser.parse(new FileInputStream(cache));
+				return res;
+			} catch (Exception e) {
+				m_logger.warn("Can not parse resource cache file.");
+			}
+		} else {
+			m_logger.warn("Can not find resource cache file.");
 		}
 		return null;
 	}
@@ -272,9 +344,10 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 		Domain domain = getDomainFromName(name);
 		if (domain != null) {
 			Resource resource = m_resource.get();
-			for (Product product : resource.getProducts()) {
+			for (Product product : resource.getProducts().values()) {
 				if (product.getDomains().containsKey(name)) {
 					product.getDomains().put(name, domain);
+					m_domains.get().put(name, domain);
 					break;
 				}
 			}
@@ -284,17 +357,20 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 
 	@Override
 	public Domain getDomain(String name) {
-		Resource resource = m_resource.get();
-		for (Product product : resource.getProducts()) {
-			if (product.getDomains().containsKey(name)) {
-				return product.getDomains().get(name);
-			}
+		Map<String, Domain> domains = m_domains.get();
+		if (domains != null && domains.containsKey(name)) {
+			return domains.get(name);
 		}
 		return null;
 	}
 
 	@Override
 	public List<Product> getProducts() {
-		return new ArrayList<Product>(m_resource.get().getProducts());
+		return new ArrayList<Product>(m_resource.get().getProducts().values());
+	}
+
+	@Override
+	public Map<String, Set<String>> getLibSet() {
+		return m_libs.get();
 	}
 }

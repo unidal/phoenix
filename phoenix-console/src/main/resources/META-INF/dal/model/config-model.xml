@@ -21,6 +21,7 @@
     <element name="deploy-url-skip-test-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=deploy&amp;deployId=%s&amp;domain=%s&amp;version=%s&amp;warType=%s&amp;gitUrl=%s" />
     <element name="deploy-status-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=status&amp;deployId=%s" />
     <element name="deploy-log-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy?op=log&amp;deployId=%s" />
+    <element name="resource-cache-path" value-type="String" default-value="/data/appdatas/phoenix/" />
     <element name="agent-status-url-pattern" value-type="String" default-value="http://%s:3473/phoenix/agent/deploy" />
     <element name="deploy-connect-timeout" value-type="int" default-value="1000" primitive="true"/>
     <element name="deploy-read-timeout" value-type="int" default-value="360000" primitive="true"/>

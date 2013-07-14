@@ -186,5 +186,9 @@ public class ConfigManager implements Initializable {
 
 		return String.format(pattern, host);
 	}
-
+	
+	public String getResourceCachePath() {
+		check();
+		return m_config.getConsole().getResourceCachePath();
+	}
 }
