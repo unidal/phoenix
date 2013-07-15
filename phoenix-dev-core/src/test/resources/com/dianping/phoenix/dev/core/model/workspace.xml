@@ -4,7 +4,7 @@
 	<phoenix-project>
 		<router version="0.1-SNAPSHOT" port="8080">
 			<virtual-server name="main">
-				<default-url-pattern>http://www.51ping.com%s</default-url-pattern>
+				<default-url-pattern>http://w.51ping.com%s</default-url-pattern>
 			</virtual-server>
 			<virtual-server name="tuangou">
 				<default-url-pattern>http://tjava.51ping.com%s</default-url-pattern>
