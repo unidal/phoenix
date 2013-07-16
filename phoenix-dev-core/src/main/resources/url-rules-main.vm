@@ -8,179 +8,884 @@
 #end
 
 <f5-rule target-pool='Web.Web_X_Dpindex'>
-	<pattern>/</pattern>
-	<pattern>/citylist</pattern>
-	<pattern>/shanghai</pattern>
-	<pattern>/beijing</pattern>
-	<pattern>/guangzhou</pattern>
+  <pattern>/</pattern>
+  <pattern>/citylist</pattern>
+  <pattern>/shanghai</pattern>
+  <pattern>/beijing</pattern>
+  <pattern>/guangzhou</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Shopsearch'>
-	<pattern>^/search/.*</pattern>
-	<pattern>^/ajax/json/shopremote/search.*</pattern>
+  <pattern>^/search/.*</pattern>
+  <pattern>^/ajax/json/shopremote/search.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Shop'>
-	<pattern>^/shop/(\d+)(/{0,1})$</pattern>
+  <pattern>^/shop/(\d+)(/{0,1})$</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Adwords'>
-	<pattern>^/adwords/.*</pattern>
-	<pattern>^/mkt/.*</pattern>
+  <pattern>^/adwords/.*</pattern>
+  <pattern>^/mkt/.*</pattern>
 </f5-rule>
 <f5-rule target-pool='arch_alpaca-survey'>
-	<pattern>^/alpacasurvey.*</pattern>
-	<pattern>^/blocksurvey.*</pattern>
+  <pattern>^/alpacasurvey.*</pattern>
+  <pattern>^/blocksurvey.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Admin'>
-	<pattern>^/bussiness.*</pattern>
-	<pattern>^/business.*</pattern>
+  <pattern>^/bussiness.*</pattern>
+  <pattern>^/business.*</pattern>
+</f5-rule>
+<f5-rule target-pool='Web.Admin'>
+  <pattern>^/events/.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Service-promo'>
-	<pattern>^/promoserver/follownote.*</pattern>
+  <pattern>^/promoserver/follownote.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Promo'>
-	<pattern>^/promo.*</pattern>
-	<pattern>^/info.*</pattern>
-	<pattern>^/(\w+)/(promo|info).*</pattern>
+  <pattern>^/promo.*</pattern>
+  <pattern>^/info.*</pattern>
+  <pattern>^/(\w+)/(promo|info).*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X'>
-	<pattern>^/regioncategory.v.*</pattern>
+  <pattern>^/regioncategory.v.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Account'>
-	<pattern>^/login.*</pattern>
-	<pattern>^/logout.*</pattern>
-	<pattern>^/reg.*</pattern>
-	<pattern>^/resetpassword.*</pattern>
-	<pattern>^/tlogin.*</pattern>
-	<pattern>^/thirdconnect.*</pattern>
-	<pattern>^/authlogin.*</pattern>
-	<pattern>^/bind.*</pattern>
-	<pattern>^/mailverify.*</pattern>
-	<pattern>^/account/loginqplus.*</pattern>
-	<pattern>^/createandbind.*</pattern>
-	<pattern>^/ajax/json/account.*</pattern>
-	<pattern>^/ajax/json/thirdpart.*</pattern>
-	<pattern>^/jvalidatecode.jpg.*</pattern>
+  <pattern>^/login.*</pattern>
+  <pattern>^/logout.*</pattern>
+  <pattern>^/reg.*</pattern>
+  <pattern>^/resetpassword.*</pattern>
+  <pattern>^/tlogin.*</pattern>
+  <pattern>^/thirdconnect.*</pattern>
+  <pattern>^/authlogin.*</pattern>
+  <pattern>^/bind.*</pattern>
+  <pattern>^/mailverify.*</pattern>
+  <pattern>^/account/loginqplus.*</pattern>
+  <pattern>^/createandbind.*</pattern>
+  <pattern>^/ajax/json/account.*</pattern>
+  <pattern>^/ajax/json/thirdpart.*</pattern>
+  <pattern>^/jvalidatecode.jpg.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Userweb'>
-	<pattern>^/ajax/member.*</pattern>
-	<pattern>^/member/.*</pattern>
-	<pattern>^/mysetup/.*</pattern>
-	<pattern>^/msearch/sname/.*</pattern>
-	<pattern>^/upload/photocenter.*</pattern>
-	<pattern>^/memberlist/.*</pattern>
-	<pattern>^/photos/(\d+)/photocenter/edit*.*</pattern>
+  <pattern>^/ajax/member.*</pattern>
+  <pattern>^/member/.*</pattern>
+  <pattern>^/mysetup/.*</pattern>
+  <pattern>^/msearch/sname/.*</pattern>
+  <pattern>^/upload/photocenter.*</pattern>
+  <pattern>^/memberlist/.*</pattern>
+  <pattern>^/photos/(\d+)/photocenter/edit*.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Piccenter'>
-	<pattern>^/ajax/json/piccenterweb/.*</pattern>
-	<pattern>^/photos/(\d+)/photocenter*.*</pattern>
+  <pattern>^/ajax/json/piccenterweb/.*</pattern>
+  <pattern>^/photos/(\d+)/photocenter*.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Shoppic'>
-	<pattern>^/ajax/json/shop/pic.*</pattern>
-	<pattern>^/ajax/json/shoppic/.*</pattern>
-	<pattern>^/ajax/json/product.*</pattern>
-	<pattern>^/ajax/json/user.*</pattern>
-	<pattern>^/ajax/json/pic.*</pattern>
-	<pattern>^/ajax/json/upload.*</pattern>
-	<pattern>^/ajax/json/album/.*</pattern>
-	<pattern>^/upload/shop/.*</pattern>
-	<pattern>^/photolist/.*</pattern>
-	<pattern>^/albumframe/.*</pattern>
-	<pattern>^/shoppic/res/.*</pattern>
-	<pattern>^/shop/(\d+)/photos($|/*).*</pattern>
-	<pattern>^/shop/(\d+)/officialphotos($|/*).*</pattern>
-	<pattern>^/photos/(\d+)($|/*).*</pattern>
-	<pattern>^/photo/(\d+)($|/*).*</pattern>
-	<pattern>^/product/(\d+)/detail$</pattern>
+  <pattern>^/ajax/json/shop/pic.*</pattern>
+  <pattern>^/ajax/json/shoppic/.*</pattern>
+  <pattern>^/ajax/json/product.*</pattern>
+  <pattern>^/ajax/json/user.*</pattern>
+  <pattern>^/ajax/json/pic.*</pattern>
+  <pattern>^/ajax/json/upload.*</pattern>
+  <pattern>^/ajax/json/album/.*</pattern>
+  <pattern>^/upload/shop/.*</pattern>
+  <pattern>^/photolist/.*</pattern>
+  <pattern>^/albumframe/.*</pattern>
+  <pattern>^/shoppic/res/.*</pattern>
+  <pattern>^/shop/(\d+)/photos($|/*).*</pattern>
+  <pattern>^/shop/(\d+)/officialphotos($|/*).*</pattern>
+  <pattern>^/photos/(\d+)($|/*).*</pattern>
+  <pattern>^/photo/(\d+)($|/*).*</pattern>
+  <pattern>^/product/(\d+)/detail$</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Shoplist'>
-	<pattern>^/mylist/ipad/.*</pattern>
-	<pattern>^/mylist/.*</pattern>
-	<pattern>^/map/iframe.*</pattern>
+  <pattern>^/mylist/ipad/.*</pattern>
+  <pattern>^/mylist/.*</pattern>
+  <pattern>^/map/iframe.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Shop'>
-	<pattern>/alpaca/captcha.jpg</pattern>
-	<pattern>/addshop</pattern>
-	<pattern>^/addshop/.*</pattern>
-	<pattern>^/shop/data/.*</pattern>
-	<pattern>^/shop/sms.*</pattern>
-	<pattern>^/addreview.*</pattern>
-	<pattern>^/ajax/json/shop/.*</pattern>
-	<pattern>^/mylist/.*</pattern>
-	<pattern>^/shop/smap/.*</pattern>
-	<pattern>^/map/ajax/json.*</pattern>
-	<pattern>^/ajax/json/booking/.*</pattern>
-	<pattern>^/booking/.*</pattern>
-	<pattern>^/shop/(\d{1,})/(good|power|early|rank|all|faq).*</pattern>
-	<pattern>^/shop/(\d{1,})/dishmenu.*</pattern>
-	<pattern>^/shop/(\d{1,})/route.*</pattern>
-	<pattern>^/shop/(\d+)/(sms|review|editmember|edit).*</pattern>
-	<pattern>^/shop/edit/success/(\d+).*</pattern>
-	<pattern>^/shop/(\d+)/dish-(.+).*</pattern>
-	<pattern>^/shop/(\d+)\?.*</pattern>
-	<pattern>^/shop/(\d+)_.*</pattern>
-	<pattern>^/shop/(\d+)$</pattern>
-	<pattern>^/chain/(\d+).*</pattern>
-	<pattern>^/review/(\d+).*</pattern>
+  <pattern>/alpaca/captcha.jpg</pattern>
+  <pattern>/addshop</pattern>
+  <pattern>^/addshop/.*</pattern>
+  <pattern>^/shop/data/.*</pattern>
+  <pattern>^/shop/sms.*</pattern>
+  <pattern>^/addreview.*</pattern>
+  <pattern>^/ajax/json/shop/.*</pattern>
+  <pattern>^/mylist/.*</pattern>
+  <pattern>^/shop/smap/.*</pattern>
+  <pattern>^/map/ajax/json.*</pattern>
+  <pattern>^/ajax/json/booking/.*</pattern>
+  <pattern>^/booking/.*</pattern>
+  <pattern>^/shop/(\d{1,})/(good|power|early|rank|all|faq).*</pattern>
+  <pattern>^/shop/(\d{1,})/dishmenu.*</pattern>
+  <pattern>^/shop/(\d{1,})/route.*</pattern>
+  <pattern>^/shop/(\d+)/(sms|review|editmember|edit).*</pattern>
+  <pattern>^/shop/edit/success/(\d+).*</pattern>
+  <pattern>^/shop/(\d+)/dish-(.+).*</pattern>
+  <pattern>^/shop/(\d+)\?.*</pattern>
+  <pattern>^/shop/(\d+)_.*</pattern>
+  <pattern>^/shop/(\d+)$</pattern>
+  <pattern>^/chain/(\d+).*</pattern>
+  <pattern>^/review/(\d+).*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Message'>
-	<pattern>^/ajax/json/msg/.*</pattern>
-	<pattern>^/msg/private.*</pattern>
-	<pattern>^/msg/subscribe.*</pattern>
-	<pattern>^/msg/send.*</pattern>
-	<pattern>^/msg/flower.*</pattern>
-	<pattern>^/msg/reply.*</pattern>
-	<pattern>^/msg/notice.*</pattern>
+  <pattern>^/ajax/json/msg/.*</pattern>
+  <pattern>^/msg/private.*</pattern>
+  <pattern>^/msg/subscribe.*</pattern>
+  <pattern>^/msg/send.*</pattern>
+  <pattern>^/msg/flower.*</pattern>
+  <pattern>^/msg/reply.*</pattern>
+  <pattern>^/msg/notice.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Usercard'>
-	<pattern>^/card.*</pattern>
-	<pattern>^/myinfo/card/.*</pattern>
-	<pattern>/coopcard</pattern>
-	<pattern>^/coopcard/(\d+)$</pattern>
-	<pattern>^/coopcard/info/(\d+)$</pattern>
+  <pattern>^/card.*</pattern>
+  <pattern>^/myinfo/card/.*</pattern>
+  <pattern>/coopcard</pattern>
+  <pattern>^/coopcard/(\d+)$</pattern>
+  <pattern>^/coopcard/info/(\d+)$</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Exchange'>
-	<pattern>^/ajax/exchange.*</pattern>
-	<pattern>^/exchange.*</pattern>
+  <pattern>^/ajax/exchange.*</pattern>
+  <pattern>^/exchange.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Dpfoot'>
-	<pattern>/help</pattern>
-	<pattern>/help/card</pattern>
-	<pattern>/help/faq</pattern>
-	<pattern>^/help/cache/.*</pattern>
-	<pattern>^/aboutus.*</pattern>
-	<pattern>^/freshshop.*</pattern>
-	<pattern>^/shopall/.*</pattern>
-	<pattern>^/ajax/help/.*</pattern>
-	<pattern>^/ajax/json/dpfoot/faq.*</pattern>
-	<pattern>^/help/search/.*</pattern>
-	<pattern>^/newfeedbackforpoi.*</pattern>
-	<pattern>^/help/faq/(\d+).*</pattern>
+  <pattern>/help</pattern>
+  <pattern>/help/card</pattern>
+  <pattern>/help/faq</pattern>
+  <pattern>^/help/cache/.*</pattern>
+  <pattern>^/aboutus.*</pattern>
+  <pattern>^/freshshop.*</pattern>
+  <pattern>^/shopall/.*</pattern>
+  <pattern>^/ajax/help/.*</pattern>
+  <pattern>^/ajax/json/dpfoot/faq.*</pattern>
+  <pattern>^/help/search/.*</pattern>
+  <pattern>^/newfeedbackforpoi.*</pattern>
+  <pattern>^/help/faq/(\d+).*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Group'>
-	<pattern>^/group/.*</pattern>
+  <pattern>^/group/.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Dpindex'>
-	<pattern>matchclass</pattern>
+  <pattern>/shanghai</pattern>
+  <pattern>/beijing</pattern>
+  <pattern>/hangzhou</pattern>
+  <pattern>/guangzhou</pattern>
+  <pattern>/nanjing</pattern>
+  <pattern>/suzhou</pattern>
+  <pattern>/shenzhen</pattern>
+  <pattern>/chengdu</pattern>
+  <pattern>/chongqing</pattern>
+  <pattern>/tianjin</pattern>
+  <pattern>/ningbo</pattern>
+  <pattern>/yangzhou</pattern>
+  <pattern>/wuxi</pattern>
+  <pattern>/fuzhou</pattern>
+  <pattern>/xiamen</pattern>
+  <pattern>/wuhan</pattern>
+  <pattern>/xian</pattern>
+  <pattern>/shenyang</pattern>
+  <pattern>/dalian</pattern>
+  <pattern>/more</pattern>
+  <pattern>/qingdao</pattern>
+  <pattern>/jinan</pattern>
+  <pattern>/hainan</pattern>
+  <pattern>/shijiazhuang</pattern>
+  <pattern>/tangshan</pattern>
+  <pattern>/qinghuangdao</pattern>
+  <pattern>/handan</pattern>
+  <pattern>/xingtai</pattern>
+  <pattern>/baoding</pattern>
+  <pattern>/zhangjiakou</pattern>
+  <pattern>/chengde</pattern>
+  <pattern>/cangzhou</pattern>
+  <pattern>/langfang</pattern>
+  <pattern>/hengshui</pattern>
+  <pattern>/taiyuan</pattern>
+  <pattern>/datong</pattern>
+  <pattern>/yangquan</pattern>
+  <pattern>/changzhi</pattern>
+  <pattern>/jincheng</pattern>
+  <pattern>/shuozhou</pattern>
+  <pattern>/jinzhong</pattern>
+  <pattern>/yuncheng</pattern>
+  <pattern>/xinzhou</pattern>
+  <pattern>/linfen</pattern>
+  <pattern>/lvliang</pattern>
+  <pattern>/huhehaote</pattern>
+  <pattern>/baotou</pattern>
+  <pattern>/wuhai</pattern>
+  <pattern>/chifeng</pattern>
+  <pattern>/tongliao</pattern>
+  <pattern>/eerduosi</pattern>
+  <pattern>/hulunbeier</pattern>
+  <pattern>/xingan</pattern>
+  <pattern>/xilinguole</pattern>
+  <pattern>/wulanchabu</pattern>
+  <pattern>/bayanzhuoer</pattern>
+  <pattern>/alashan</pattern>
+  <pattern>/anshan</pattern>
+  <pattern>/fushun</pattern>
+  <pattern>/benxi</pattern>
+  <pattern>/dandong</pattern>
+  <pattern>/jinzhou</pattern>
+  <pattern>/yingkou</pattern>
+  <pattern>/fuxin</pattern>
+  <pattern>/liaoyang</pattern>
+  <pattern>/panjin</pattern>
+  <pattern>/tieling</pattern>
+  <pattern>/chaoyang</pattern>
+  <pattern>/huludao</pattern>
+  <pattern>/changchun</pattern>
+  <pattern>/jilin</pattern>
+  <pattern>/siping</pattern>
+  <pattern>/liaoyuan</pattern>
+  <pattern>/tonghua</pattern>
+  <pattern>/baishan</pattern>
+  <pattern>/songyuan</pattern>
+  <pattern>/baicheng</pattern>
+  <pattern>/yanbian</pattern>
+  <pattern>/haerbin</pattern>
+  <pattern>/qiqihaer</pattern>
+  <pattern>/jixi</pattern>
+  <pattern>/hegang</pattern>
+  <pattern>/shuangyashan</pattern>
+  <pattern>/daqing</pattern>
+  <pattern>/yichun</pattern>
+  <pattern>/jiamusi</pattern>
+  <pattern>/qitaihe</pattern>
+  <pattern>/mudanjiang</pattern>
+  <pattern>/heihe</pattern>
+  <pattern>/suihua</pattern>
+  <pattern>/daxinganling</pattern>
+  <pattern>/xuzhou</pattern>
+  <pattern>/changzhou</pattern>
+  <pattern>/nantong</pattern>
+  <pattern>/lianyuangang</pattern>
+  <pattern>/huaian</pattern>
+  <pattern>/yancheng</pattern>
+  <pattern>/zhengjiang</pattern>
+  <pattern>/taizhou</pattern>
+  <pattern>/suqian</pattern>
+  <pattern>/wenzhou</pattern>
+  <pattern>/jiaxing</pattern>
+  <pattern>/huzhou</pattern>
+  <pattern>/shaoxing</pattern>
+  <pattern>/jinhua</pattern>
+  <pattern>/quzhou</pattern>
+  <pattern>/zhoushan</pattern>
+  <pattern>/zhejiangtaizhou</pattern>
+  <pattern>/lishui</pattern>
+  <pattern>/hefei</pattern>
+  <pattern>/wuhu</pattern>
+  <pattern>/bengbu</pattern>
+  <pattern>/huainan</pattern>
+  <pattern>/maanshan</pattern>
+  <pattern>/huaibei</pattern>
+  <pattern>/tongling</pattern>
+  <pattern>/anqing</pattern>
+  <pattern>/huangshan</pattern>
+  <pattern>/chuzhou</pattern>
+  <pattern>/fuyang</pattern>
+  <pattern>/anhuisuzhou</pattern>
+  <pattern>/chaohu</pattern>
+  <pattern>/liuan</pattern>
+  <pattern>/bozhou</pattern>
+  <pattern>/chizhou</pattern>
+  <pattern>/xuancheng</pattern>
+  <pattern>/putian</pattern>
+  <pattern>/sanming</pattern>
+  <pattern>/quanzhou</pattern>
+  <pattern>/zhangzhou</pattern>
+  <pattern>/nanping</pattern>
+  <pattern>/longyan</pattern>
+  <pattern>/ningde</pattern>
+  <pattern>/nanchang</pattern>
+  <pattern>/jingdezhen</pattern>
+  <pattern>/pingxiang</pattern>
+  <pattern>/jiujiang</pattern>
+  <pattern>/xinyu</pattern>
+  <pattern>/yingtan</pattern>
+  <pattern>/ganzhou</pattern>
+  <pattern>/jian</pattern>
+  <pattern>/jiangxiyichun</pattern>
+  <pattern>/jiangxifuzhou</pattern>
+  <pattern>/shangrao</pattern>
+  <pattern>/zibo</pattern>
+  <pattern>/zaozhuang</pattern>
+  <pattern>/dongying</pattern>
+  <pattern>/yantai</pattern>
+  <pattern>/weifang</pattern>
+  <pattern>/jining</pattern>
+  <pattern>/taian</pattern>
+  <pattern>/weihai</pattern>
+  <pattern>/rizhao</pattern>
+  <pattern>/laiwu</pattern>
+  <pattern>/linyi</pattern>
+  <pattern>/dezhou</pattern>
+  <pattern>/liaocheng</pattern>
+  <pattern>/binzhou</pattern>
+  <pattern>/heze</pattern>
+  <pattern>/zhengzhou</pattern>
+  <pattern>/kaifeng</pattern>
+  <pattern>/luoyang</pattern>
+  <pattern>/pingdingshan</pattern>
+  <pattern>/anyang</pattern>
+  <pattern>/hebi</pattern>
+  <pattern>/xinxiang</pattern>
+  <pattern>/jiaozuo</pattern>
+  <pattern>/puyang</pattern>
+  <pattern>/xuchang</pattern>
+  <pattern>/luohe</pattern>
+  <pattern>/sanmenxia</pattern>
+  <pattern>/nanyang</pattern>
+  <pattern>/shangqiu</pattern>
+  <pattern>/xinyang</pattern>
+  <pattern>/zhoukou</pattern>
+  <pattern>/zhumadian</pattern>
+  <pattern>/huangshi</pattern>
+  <pattern>/shiyan</pattern>
+  <pattern>/yichang</pattern>
+  <pattern>/xiangfan</pattern>
+  <pattern>/ezhou</pattern>
+  <pattern>/jinmen</pattern>
+  <pattern>/xiaogan</pattern>
+  <pattern>/jingzhou</pattern>
+  <pattern>/huanggang</pattern>
+  <pattern>/xianning</pattern>
+  <pattern>/suizhou</pattern>
+  <pattern>/enshizhou</pattern>
+  <pattern>/xiantao</pattern>
+  <pattern>/qianjiang</pattern>
+  <pattern>/tianmen</pattern>
+  <pattern>/zhuzhou</pattern>
+  <pattern>/xiangtan</pattern>
+  <pattern>/hengyang</pattern>
+  <pattern>/shaoyang</pattern>
+  <pattern>/yueyang</pattern>
+  <pattern>/changde</pattern>
+  <pattern>/zhangjiajie</pattern>
+  <pattern>/yiyang</pattern>
+  <pattern>/chenzhou</pattern>
+  <pattern>/yongzhou</pattern>
+  <pattern>/huaihua</pattern>
+  <pattern>/loudi</pattern>
+  <pattern>/xiangxi</pattern>
+  <pattern>/shaoguan</pattern>
+  <pattern>/zhuhai</pattern>
+  <pattern>/shantou</pattern>
+  <pattern>/foshan</pattern>
+  <pattern>/jiangmen</pattern>
+  <pattern>/zhanjiang</pattern>
+  <pattern>/maoming</pattern>
+  <pattern>/zhaoqing</pattern>
+  <pattern>/huizhou</pattern>
+  <pattern>/meizhou</pattern>
+  <pattern>/shanwei</pattern>
+  <pattern>/heyuan</pattern>
+  <pattern>/yangjiang</pattern>
+  <pattern>/qingyuan</pattern>
+  <pattern>/dongguan</pattern>
+  <pattern>/zhongshan</pattern>
+  <pattern>/chaozhou</pattern>
+  <pattern>/jieyang</pattern>
+  <pattern>/yunfu</pattern>
+  <pattern>/nanning</pattern>
+  <pattern>/liuzhou</pattern>
+  <pattern>/guilin</pattern>
+  <pattern>/wuzhou</pattern>
+  <pattern>/beihai</pattern>
+  <pattern>/fangchenggang</pattern>
+  <pattern>/qinzhou</pattern>
+  <pattern>/guigang</pattern>
+  <pattern>/guangxiyulin</pattern>
+  <pattern>/baise</pattern>
+  <pattern>/hezhou</pattern>
+  <pattern>/hechi</pattern>
+  <pattern>/zigong</pattern>
+  <pattern>/panzhihua</pattern>
+  <pattern>/luzhou</pattern>
+  <pattern>/deyang</pattern>
+  <pattern>/mianyang</pattern>
+  <pattern>/guangyuan</pattern>
+  <pattern>/suining</pattern>
+  <pattern>/neijiang</pattern>
+  <pattern>/leshan</pattern>
+  <pattern>/nanchong</pattern>
+  <pattern>/meishan</pattern>
+  <pattern>/yibin</pattern>
+  <pattern>/guangan</pattern>
+  <pattern>/dazhou</pattern>
+  <pattern>/yaan</pattern>
+  <pattern>/bazhong</pattern>
+  <pattern>/ziyang</pattern>
+  <pattern>/aba</pattern>
+  <pattern>/ganzi</pattern>
+  <pattern>/liangshan</pattern>
+  <pattern>/guiyang</pattern>
+  <pattern>/liupanshui</pattern>
+  <pattern>/zunyi</pattern>
+  <pattern>/anshun</pattern>
+  <pattern>/tongrendiqu</pattern>
+  <pattern>/qianxinan</pattern>
+  <pattern>/bijiediqu</pattern>
+  <pattern>/qiandongnan</pattern>
+  <pattern>/qiannan</pattern>
+  <pattern>/kunming</pattern>
+  <pattern>/qujing</pattern>
+  <pattern>/yuxi</pattern>
+  <pattern>/baoshan</pattern>
+  <pattern>/zhaotong</pattern>
+  <pattern>/chuxiongzhou</pattern>
+  <pattern>/honghe</pattern>
+  <pattern>/wenshan</pattern>
+  <pattern>/simao</pattern>
+  <pattern>/xishuangbanna</pattern>
+  <pattern>/dalizhou</pattern>
+  <pattern>/dehong</pattern>
+  <pattern>/lijiang</pattern>
+  <pattern>/nujiang</pattern>
+  <pattern>/diqing</pattern>
+  <pattern>/linchang</pattern>
+  <pattern>/lasa</pattern>
+  <pattern>/changdudiqu</pattern>
+  <pattern>/shannan</pattern>
+  <pattern>/rikazediqu</pattern>
+  <pattern>/naqu</pattern>
+  <pattern>/ali</pattern>
+  <pattern>/linzhi</pattern>
+  <pattern>/tongchuan</pattern>
+  <pattern>/baoji</pattern>
+  <pattern>/xianyang</pattern>
+  <pattern>/weinan</pattern>
+  <pattern>/yanan</pattern>
+  <pattern>/hanzhong</pattern>
+  <pattern>/yulin</pattern>
+  <pattern>/ankang</pattern>
+  <pattern>/shangluo</pattern>
+  <pattern>/lanzhou</pattern>
+  <pattern>/jiayuguan</pattern>
+  <pattern>/jinchang</pattern>
+  <pattern>/baiyin</pattern>
+  <pattern>/tianshui</pattern>
+  <pattern>/wuwei</pattern>
+  <pattern>/zhangye</pattern>
+  <pattern>/pingliang</pattern>
+  <pattern>/jiuquan</pattern>
+  <pattern>/qingyang</pattern>
+  <pattern>/dingxi</pattern>
+  <pattern>/longnan</pattern>
+  <pattern>/linxiazhou</pattern>
+  <pattern>/gannanzhou</pattern>
+  <pattern>/xining</pattern>
+  <pattern>/haidong</pattern>
+  <pattern>/haibei</pattern>
+  <pattern>/huangnan</pattern>
+  <pattern>/guoluo</pattern>
+  <pattern>/yushu</pattern>
+  <pattern>/haixi</pattern>
+  <pattern>/yinchuan</pattern>
+  <pattern>/shizuishan</pattern>
+  <pattern>/wuzhong</pattern>
+  <pattern>/guyuan</pattern>
+  <pattern>/wulumuqi</pattern>
+  <pattern>/kelamayi</pattern>
+  <pattern>/tulufandiqu</pattern>
+  <pattern>/hamidiqu</pattern>
+  <pattern>/changjizhou</pattern>
+  <pattern>/boertala</pattern>
+  <pattern>/bayinguoleng</pattern>
+  <pattern>/akesudiqu</pattern>
+  <pattern>/kezilesu</pattern>
+  <pattern>/kashidiqu</pattern>
+  <pattern>/hetiandiqu</pattern>
+  <pattern>/yili</pattern>
+  <pattern>/tachengdiqu</pattern>
+  <pattern>/aletaidiqu</pattern>
+  <pattern>/shihezi</pattern>
+  <pattern>/taiwan</pattern>
+  <pattern>/hongkong</pattern>
+  <pattern>/macao</pattern>
+  <pattern>/guowai</pattern>
+  <pattern>/changsha</pattern>
+  <pattern>/beitun</pattern>
+  <pattern>/zhongwei</pattern>
+  <pattern>/alaer</pattern>
+  <pattern>/chongzuo</pattern>
+  <pattern>/jiyuan</pattern>
+  <pattern>/laibin</pattern>
+  <pattern>/shennongjia</pattern>
+  <pattern>/tumushuke</pattern>
+  <pattern>/wujiaqu</pattern>
+  <pattern>/hainanzhou</pattern>
+  <pattern>/haikou</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Dpindex'>
-	<pattern>^/ajax/json/index/.*</pattern>
-	<pattern>^/ajax/citylist/.*</pattern>
-	<pattern>^/\?.*</pattern>
-	<pattern>^/(food|shopping|life|service|sports|beauty|wedding|hotel|car|baby|other)/(\d+)$</pattern>
-	<pattern>^/(\w+)/(food|shopping|life|service|sports|beauty|wedding|hotel|car|baby|other)$</pattern>
+  <pattern>^/ajax/json/index/.*</pattern>
+  <pattern>^/ajax/citylist/.*</pattern>
+  <pattern>^/\?.*</pattern>
+  <pattern>^/(food|shopping|life|service|sports|beauty|wedding|hotel|car|baby|other)/(\d+)$</pattern>
+  <pattern>^/(\w+)/(food|shopping|life|service|sports|beauty|wedding|hotel|car|baby|other)$</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Dpindex'>
-	<pattern>matchclass</pattern>
+  <pattern>/shanghai</pattern>
+  <pattern>/beijing</pattern>
+  <pattern>/hangzhou</pattern>
+  <pattern>/guangzhou</pattern>
+  <pattern>/nanjing</pattern>
+  <pattern>/suzhou</pattern>
+  <pattern>/shenzhen</pattern>
+  <pattern>/chengdu</pattern>
+  <pattern>/chongqing</pattern>
+  <pattern>/tianjin</pattern>
+  <pattern>/ningbo</pattern>
+  <pattern>/yangzhou</pattern>
+  <pattern>/wuxi</pattern>
+  <pattern>/fuzhou</pattern>
+  <pattern>/xiamen</pattern>
+  <pattern>/wuhan</pattern>
+  <pattern>/xian</pattern>
+  <pattern>/shenyang</pattern>
+  <pattern>/dalian</pattern>
+  <pattern>/more</pattern>
+  <pattern>/qingdao</pattern>
+  <pattern>/jinan</pattern>
+  <pattern>/hainan</pattern>
+  <pattern>/shijiazhuang</pattern>
+  <pattern>/tangshan</pattern>
+  <pattern>/qinghuangdao</pattern>
+  <pattern>/handan</pattern>
+  <pattern>/xingtai</pattern>
+  <pattern>/baoding</pattern>
+  <pattern>/zhangjiakou</pattern>
+  <pattern>/chengde</pattern>
+  <pattern>/cangzhou</pattern>
+  <pattern>/langfang</pattern>
+  <pattern>/hengshui</pattern>
+  <pattern>/taiyuan</pattern>
+  <pattern>/datong</pattern>
+  <pattern>/yangquan</pattern>
+  <pattern>/changzhi</pattern>
+  <pattern>/jincheng</pattern>
+  <pattern>/shuozhou</pattern>
+  <pattern>/jinzhong</pattern>
+  <pattern>/yuncheng</pattern>
+  <pattern>/xinzhou</pattern>
+  <pattern>/linfen</pattern>
+  <pattern>/lvliang</pattern>
+  <pattern>/huhehaote</pattern>
+  <pattern>/baotou</pattern>
+  <pattern>/wuhai</pattern>
+  <pattern>/chifeng</pattern>
+  <pattern>/tongliao</pattern>
+  <pattern>/eerduosi</pattern>
+  <pattern>/hulunbeier</pattern>
+  <pattern>/xingan</pattern>
+  <pattern>/xilinguole</pattern>
+  <pattern>/wulanchabu</pattern>
+  <pattern>/bayanzhuoer</pattern>
+  <pattern>/alashan</pattern>
+  <pattern>/anshan</pattern>
+  <pattern>/fushun</pattern>
+  <pattern>/benxi</pattern>
+  <pattern>/dandong</pattern>
+  <pattern>/jinzhou</pattern>
+  <pattern>/yingkou</pattern>
+  <pattern>/fuxin</pattern>
+  <pattern>/liaoyang</pattern>
+  <pattern>/panjin</pattern>
+  <pattern>/tieling</pattern>
+  <pattern>/chaoyang</pattern>
+  <pattern>/huludao</pattern>
+  <pattern>/changchun</pattern>
+  <pattern>/jilin</pattern>
+  <pattern>/siping</pattern>
+  <pattern>/liaoyuan</pattern>
+  <pattern>/tonghua</pattern>
+  <pattern>/baishan</pattern>
+  <pattern>/songyuan</pattern>
+  <pattern>/baicheng</pattern>
+  <pattern>/yanbian</pattern>
+  <pattern>/haerbin</pattern>
+  <pattern>/qiqihaer</pattern>
+  <pattern>/jixi</pattern>
+  <pattern>/hegang</pattern>
+  <pattern>/shuangyashan</pattern>
+  <pattern>/daqing</pattern>
+  <pattern>/yichun</pattern>
+  <pattern>/jiamusi</pattern>
+  <pattern>/qitaihe</pattern>
+  <pattern>/mudanjiang</pattern>
+  <pattern>/heihe</pattern>
+  <pattern>/suihua</pattern>
+  <pattern>/daxinganling</pattern>
+  <pattern>/xuzhou</pattern>
+  <pattern>/changzhou</pattern>
+  <pattern>/nantong</pattern>
+  <pattern>/lianyuangang</pattern>
+  <pattern>/huaian</pattern>
+  <pattern>/yancheng</pattern>
+  <pattern>/zhengjiang</pattern>
+  <pattern>/taizhou</pattern>
+  <pattern>/suqian</pattern>
+  <pattern>/wenzhou</pattern>
+  <pattern>/jiaxing</pattern>
+  <pattern>/huzhou</pattern>
+  <pattern>/shaoxing</pattern>
+  <pattern>/jinhua</pattern>
+  <pattern>/quzhou</pattern>
+  <pattern>/zhoushan</pattern>
+  <pattern>/zhejiangtaizhou</pattern>
+  <pattern>/lishui</pattern>
+  <pattern>/hefei</pattern>
+  <pattern>/wuhu</pattern>
+  <pattern>/bengbu</pattern>
+  <pattern>/huainan</pattern>
+  <pattern>/maanshan</pattern>
+  <pattern>/huaibei</pattern>
+  <pattern>/tongling</pattern>
+  <pattern>/anqing</pattern>
+  <pattern>/huangshan</pattern>
+  <pattern>/chuzhou</pattern>
+  <pattern>/fuyang</pattern>
+  <pattern>/anhuisuzhou</pattern>
+  <pattern>/chaohu</pattern>
+  <pattern>/liuan</pattern>
+  <pattern>/bozhou</pattern>
+  <pattern>/chizhou</pattern>
+  <pattern>/xuancheng</pattern>
+  <pattern>/putian</pattern>
+  <pattern>/sanming</pattern>
+  <pattern>/quanzhou</pattern>
+  <pattern>/zhangzhou</pattern>
+  <pattern>/nanping</pattern>
+  <pattern>/longyan</pattern>
+  <pattern>/ningde</pattern>
+  <pattern>/nanchang</pattern>
+  <pattern>/jingdezhen</pattern>
+  <pattern>/pingxiang</pattern>
+  <pattern>/jiujiang</pattern>
+  <pattern>/xinyu</pattern>
+  <pattern>/yingtan</pattern>
+  <pattern>/ganzhou</pattern>
+  <pattern>/jian</pattern>
+  <pattern>/jiangxiyichun</pattern>
+  <pattern>/jiangxifuzhou</pattern>
+  <pattern>/shangrao</pattern>
+  <pattern>/zibo</pattern>
+  <pattern>/zaozhuang</pattern>
+  <pattern>/dongying</pattern>
+  <pattern>/yantai</pattern>
+  <pattern>/weifang</pattern>
+  <pattern>/jining</pattern>
+  <pattern>/taian</pattern>
+  <pattern>/weihai</pattern>
+  <pattern>/rizhao</pattern>
+  <pattern>/laiwu</pattern>
+  <pattern>/linyi</pattern>
+  <pattern>/dezhou</pattern>
+  <pattern>/liaocheng</pattern>
+  <pattern>/binzhou</pattern>
+  <pattern>/heze</pattern>
+  <pattern>/zhengzhou</pattern>
+  <pattern>/kaifeng</pattern>
+  <pattern>/luoyang</pattern>
+  <pattern>/pingdingshan</pattern>
+  <pattern>/anyang</pattern>
+  <pattern>/hebi</pattern>
+  <pattern>/xinxiang</pattern>
+  <pattern>/jiaozuo</pattern>
+  <pattern>/puyang</pattern>
+  <pattern>/xuchang</pattern>
+  <pattern>/luohe</pattern>
+  <pattern>/sanmenxia</pattern>
+  <pattern>/nanyang</pattern>
+  <pattern>/shangqiu</pattern>
+  <pattern>/xinyang</pattern>
+  <pattern>/zhoukou</pattern>
+  <pattern>/zhumadian</pattern>
+  <pattern>/huangshi</pattern>
+  <pattern>/shiyan</pattern>
+  <pattern>/yichang</pattern>
+  <pattern>/xiangfan</pattern>
+  <pattern>/ezhou</pattern>
+  <pattern>/jinmen</pattern>
+  <pattern>/xiaogan</pattern>
+  <pattern>/jingzhou</pattern>
+  <pattern>/huanggang</pattern>
+  <pattern>/xianning</pattern>
+  <pattern>/suizhou</pattern>
+  <pattern>/enshizhou</pattern>
+  <pattern>/xiantao</pattern>
+  <pattern>/qianjiang</pattern>
+  <pattern>/tianmen</pattern>
+  <pattern>/zhuzhou</pattern>
+  <pattern>/xiangtan</pattern>
+  <pattern>/hengyang</pattern>
+  <pattern>/shaoyang</pattern>
+  <pattern>/yueyang</pattern>
+  <pattern>/changde</pattern>
+  <pattern>/zhangjiajie</pattern>
+  <pattern>/yiyang</pattern>
+  <pattern>/chenzhou</pattern>
+  <pattern>/yongzhou</pattern>
+  <pattern>/huaihua</pattern>
+  <pattern>/loudi</pattern>
+  <pattern>/xiangxi</pattern>
+  <pattern>/shaoguan</pattern>
+  <pattern>/zhuhai</pattern>
+  <pattern>/shantou</pattern>
+  <pattern>/foshan</pattern>
+  <pattern>/jiangmen</pattern>
+  <pattern>/zhanjiang</pattern>
+  <pattern>/maoming</pattern>
+  <pattern>/zhaoqing</pattern>
+  <pattern>/huizhou</pattern>
+  <pattern>/meizhou</pattern>
+  <pattern>/shanwei</pattern>
+  <pattern>/heyuan</pattern>
+  <pattern>/yangjiang</pattern>
+  <pattern>/qingyuan</pattern>
+  <pattern>/dongguan</pattern>
+  <pattern>/zhongshan</pattern>
+  <pattern>/chaozhou</pattern>
+  <pattern>/jieyang</pattern>
+  <pattern>/yunfu</pattern>
+  <pattern>/nanning</pattern>
+  <pattern>/liuzhou</pattern>
+  <pattern>/guilin</pattern>
+  <pattern>/wuzhou</pattern>
+  <pattern>/beihai</pattern>
+  <pattern>/fangchenggang</pattern>
+  <pattern>/qinzhou</pattern>
+  <pattern>/guigang</pattern>
+  <pattern>/guangxiyulin</pattern>
+  <pattern>/baise</pattern>
+  <pattern>/hezhou</pattern>
+  <pattern>/hechi</pattern>
+  <pattern>/zigong</pattern>
+  <pattern>/panzhihua</pattern>
+  <pattern>/luzhou</pattern>
+  <pattern>/deyang</pattern>
+  <pattern>/mianyang</pattern>
+  <pattern>/guangyuan</pattern>
+  <pattern>/suining</pattern>
+  <pattern>/neijiang</pattern>
+  <pattern>/leshan</pattern>
+  <pattern>/nanchong</pattern>
+  <pattern>/meishan</pattern>
+  <pattern>/yibin</pattern>
+  <pattern>/guangan</pattern>
+  <pattern>/dazhou</pattern>
+  <pattern>/yaan</pattern>
+  <pattern>/bazhong</pattern>
+  <pattern>/ziyang</pattern>
+  <pattern>/aba</pattern>
+  <pattern>/ganzi</pattern>
+  <pattern>/liangshan</pattern>
+  <pattern>/guiyang</pattern>
+  <pattern>/liupanshui</pattern>
+  <pattern>/zunyi</pattern>
+  <pattern>/anshun</pattern>
+  <pattern>/tongrendiqu</pattern>
+  <pattern>/qianxinan</pattern>
+  <pattern>/bijiediqu</pattern>
+  <pattern>/qiandongnan</pattern>
+  <pattern>/qiannan</pattern>
+  <pattern>/kunming</pattern>
+  <pattern>/qujing</pattern>
+  <pattern>/yuxi</pattern>
+  <pattern>/baoshan</pattern>
+  <pattern>/zhaotong</pattern>
+  <pattern>/chuxiongzhou</pattern>
+  <pattern>/honghe</pattern>
+  <pattern>/wenshan</pattern>
+  <pattern>/simao</pattern>
+  <pattern>/xishuangbanna</pattern>
+  <pattern>/dalizhou</pattern>
+  <pattern>/dehong</pattern>
+  <pattern>/lijiang</pattern>
+  <pattern>/nujiang</pattern>
+  <pattern>/diqing</pattern>
+  <pattern>/linchang</pattern>
+  <pattern>/lasa</pattern>
+  <pattern>/changdudiqu</pattern>
+  <pattern>/shannan</pattern>
+  <pattern>/rikazediqu</pattern>
+  <pattern>/naqu</pattern>
+  <pattern>/ali</pattern>
+  <pattern>/linzhi</pattern>
+  <pattern>/tongchuan</pattern>
+  <pattern>/baoji</pattern>
+  <pattern>/xianyang</pattern>
+  <pattern>/weinan</pattern>
+  <pattern>/yanan</pattern>
+  <pattern>/hanzhong</pattern>
+  <pattern>/yulin</pattern>
+  <pattern>/ankang</pattern>
+  <pattern>/shangluo</pattern>
+  <pattern>/lanzhou</pattern>
+  <pattern>/jiayuguan</pattern>
+  <pattern>/jinchang</pattern>
+  <pattern>/baiyin</pattern>
+  <pattern>/tianshui</pattern>
+  <pattern>/wuwei</pattern>
+  <pattern>/zhangye</pattern>
+  <pattern>/pingliang</pattern>
+  <pattern>/jiuquan</pattern>
+  <pattern>/qingyang</pattern>
+  <pattern>/dingxi</pattern>
+  <pattern>/longnan</pattern>
+  <pattern>/linxiazhou</pattern>
+  <pattern>/gannanzhou</pattern>
+  <pattern>/xining</pattern>
+  <pattern>/haidong</pattern>
+  <pattern>/haibei</pattern>
+  <pattern>/huangnan</pattern>
+  <pattern>/guoluo</pattern>
+  <pattern>/yushu</pattern>
+  <pattern>/haixi</pattern>
+  <pattern>/yinchuan</pattern>
+  <pattern>/shizuishan</pattern>
+  <pattern>/wuzhong</pattern>
+  <pattern>/guyuan</pattern>
+  <pattern>/wulumuqi</pattern>
+  <pattern>/kelamayi</pattern>
+  <pattern>/tulufandiqu</pattern>
+  <pattern>/hamidiqu</pattern>
+  <pattern>/changjizhou</pattern>
+  <pattern>/boertala</pattern>
+  <pattern>/bayinguoleng</pattern>
+  <pattern>/akesudiqu</pattern>
+  <pattern>/kezilesu</pattern>
+  <pattern>/kashidiqu</pattern>
+  <pattern>/hetiandiqu</pattern>
+  <pattern>/yili</pattern>
+  <pattern>/tachengdiqu</pattern>
+  <pattern>/aletaidiqu</pattern>
+  <pattern>/shihezi</pattern>
+  <pattern>/taiwan</pattern>
+  <pattern>/hongkong</pattern>
+  <pattern>/macao</pattern>
+  <pattern>/guowai</pattern>
+  <pattern>/changsha</pattern>
+  <pattern>/beitun</pattern>
+  <pattern>/zhongwei</pattern>
+  <pattern>/alaer</pattern>
+  <pattern>/chongzuo</pattern>
+  <pattern>/jiyuan</pattern>
+  <pattern>/laibin</pattern>
+  <pattern>/shennongjia</pattern>
+  <pattern>/tumushuke</pattern>
+  <pattern>/wujiaqu</pattern>
+  <pattern>/hainanzhou</pattern>
+  <pattern>/haikou</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X_Dptrack'>
-	<pattern>^/dptrack/.*</pattern>
+  <pattern>^/dptrack/.*</pattern>
 </f5-rule>
 <f5-rule target-pool='Web.Web_X'>
-	<pattern>.*</pattern>
+  <pattern>.*</pattern>
 </f5-rule>
-	  <url-rewrite-rule>
-          <mask-url><![CDATA[/citylist]]></mask-url>
-          <real-url><![CDATA[/citylist/citylist.action]]></real-url>
-          <page-id>0</page-id>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/memberlist/star/(\d{1,})/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/star/list.action?cityID=$2&monthMark=$1]]></real-url>
+          <page-id>68</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/shop/(\d{1,})/photos]]></mask-url>
@@ -254,12 +959,12 @@
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/photos/(\d{1,})/slide/product_(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/album/officialAlbumList.action?shopId=$1]]></real-url>
+          <real-url><![CDATA[/shoppic/slideRedirect.action?shopId=$1]]></real-url>
           <page-id>89</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/photos/(\d{1,})/slide/member_(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/album/albumList.action?shopId=$1]]></real-url>
+          <real-url><![CDATA[/shoppic/slideRedirect.action?shopId=$1]]></real-url>
           <page-id>89</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -269,37 +974,37 @@
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/photos/(\d{1,})/slide/type_(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shoppic/shoppiclist.action?shopId=$1]]></real-url>
+          <real-url><![CDATA[/shoppic/slideRedirect.action?shopId=$1]]></real-url>
           <page-id>89</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/photos/(\d{1,})/slide]]></mask-url>
-          <real-url><![CDATA[/shoppic/shoppiclist.action?shopId=$1]]></real-url>
+          <real-url><![CDATA[/shoppic/slideRedirect.action?shopId=$1]]></real-url>
           <page-id>89</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/photos/(\d{1,})/slide/all_(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shoppic/showpic.action?picId=$2]]></real-url>
+          <real-url><![CDATA[/shoppic/slideRedirect.action?shopId=$1]]></real-url>
           <page-id>89</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/photos/(\d{1,})/slide/product_(\d{1,})_(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shoppic/showpic.action?picId=$3&type=product]]></real-url>
+          <real-url><![CDATA[/shoppic/slideRedirect.action?shopId=$1]]></real-url>
           <page-id>89</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/photos/(\d{1,})/slide/member_(\d{1,})_(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shoppic/showpic.action?picId=$3&type=member]]></real-url>
+          <real-url><![CDATA[/shoppic/slideRedirect.action?shopId=$1]]></real-url>
           <page-id>89</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/photos/(\d{1,})/slide/type_(\d{1,})_(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shoppic/showpic.action?picId=$3]]></real-url>
+          <real-url><![CDATA[/shoppic/slideRedirect.action?shopId=$1]]></real-url>
           <page-id>89</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/upload/shop/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/upload/picChooseFlashNew.action?shopId=$1]]></real-url>
+          <real-url><![CDATA[/upload/picChooseFlash.action?shopId=$1]]></real-url>
           <page-id>28</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -503,12 +1208,17 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d{1,})/photos/tag-([^/-]{1,})]]></mask-url>
+          <real-url><![CDATA[/shoppic/shoppiclist.action?shopId=$1&tagName=$2]]></real-url>
+          <page-id>18</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/shop/(\d{1,})/officialphotos]]></mask-url>
           <real-url><![CDATA[/shoppic/shopofficialpiclist.action?shopId=$1]]></real-url>
           <page-id>146</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/card/gift]]></mask-url>
+          <mask-url><![CDATA[/card/gift/?]]></mask-url>
           <real-url><![CDATA[/card/gift/giftExchange.action]]></real-url>
           <page-id>33</page-id>
       </url-rewrite-rule>
@@ -583,7 +1293,7 @@
           <page-id>35</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/card?]]></mask-url>
+          <mask-url><![CDATA[/card/?]]></mask-url>
           <real-url><![CDATA[/card/cardIndex.action]]></real-url>
           <page-id>30</page-id>
       </url-rewrite-rule>
@@ -593,22 +1303,22 @@
           <page-id>30</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/card/(shanghai|beijing|guangzhou|hangzhou|nanjing|shenzhen|tianjin)]]></mask-url>
+          <mask-url><![CDATA[/card/(shanghai|beijing|guangzhou|hangzhou|nanjing|shenzhen|tianjin|chengdu|wuhan|xian|suzhou|wuxi|shenyang|chongqing|changsha|shijiazhuang)]]></mask-url>
           <real-url><![CDATA[/card/cardIndex.action?cardBean.cityName=$1]]></real-url>
           <page-id>30</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/card/(shanghai|beijing|guangzhou|hangzhou|nanjing|shenzhen|tianjin)/(new|hot)]]></mask-url>
+          <mask-url><![CDATA[/card/(shanghai|beijing|guangzhou|hangzhou|nanjing|shenzhen|tianjin|chengdu|wuhan|xian|suzhou|wuxi|shenyang|chongqing|changsha|shijiazhuang)/(new|hot)]]></mask-url>
           <real-url><![CDATA[/card/cardIndex.action?cardBean.cityName=$1&cardBean.vendorShopOrderRule=$2]]></real-url>
           <page-id>30</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/card/reg]]></mask-url>
+          <mask-url><![CDATA[/card/reg/?]]></mask-url>
           <real-url><![CDATA[/card/cardReg.action]]></real-url>
           <page-id>31</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/card/activate]]></mask-url>
+          <mask-url><![CDATA[/card/activate/?]]></mask-url>
           <real-url><![CDATA[/card/cardActivate.action]]></real-url>
           <page-id>32</page-id>
       </url-rewrite-rule>
@@ -623,7 +1333,7 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/card/myinfo]]></mask-url>
+          <mask-url><![CDATA[/card/myinfo/?]]></mask-url>
           <real-url><![CDATA[/card/cardInfo.action]]></real-url>
           <page-id>90</page-id>
       </url-rewrite-rule>
@@ -638,7 +1348,7 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/card/unioncard]]></mask-url>
+          <mask-url><![CDATA[/card/unioncard/?]]></mask-url>
           <real-url><![CDATA[/card/unionCardList.action?shopType=0]]></real-url>
           <page-id>34</page-id>
       </url-rewrite-rule>
@@ -758,6 +1468,31 @@
           <page-id>92</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/card/ajax/findcardpwmsg]]></mask-url>
+          <real-url><![CDATA[/card/ajax/findcardpwmsg.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/card/ajax/findcardpw]]></mask-url>
+          <real-url><![CDATA[/card/ajax/findcardpw.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/card/ajax/cardreget]]></mask-url>
+          <real-url><![CDATA[/card/ajax/cardreget.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/card/ajax/giftchoosecard]]></mask-url>
+          <real-url><![CDATA[/card/ajax/giftchoosecard.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/card/ajax/gift]]></mask-url>
+          <real-url><![CDATA[/card/ajax/gift.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/myinfo/card]]></mask-url>
           <real-url><![CDATA[/card/cardInfo.action]]></real-url>
           <page-id>0</page-id>
@@ -775,16 +1510,6 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/coopcard/info/(\d{1,})]]></mask-url>
           <real-url><![CDATA[/card/unionCardList.action?shopType=0]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/vendorlist/([a-zA-Z]+)_o(\d+)]]></mask-url>
-          <real-url><![CDATA[/card/vendorShopList.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/vendorlist/([a-zA-Z]+)_o(\d+)_p(\d+)]]></mask-url>
-          <real-url><![CDATA[/card/vendorShopList.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -848,34 +1573,14 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/card/ajax/findcardpwmsg]]></mask-url>
-          <real-url><![CDATA[/card/ajax/findcardpwmsg.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/ajax/findcardpw]]></mask-url>
-          <real-url><![CDATA[/card/ajax/findcardpw.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/ajax/cardreget]]></mask-url>
-          <real-url><![CDATA[/card/ajax/cardreget.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/ajax/giftchoosecard]]></mask-url>
-          <real-url><![CDATA[/card/ajax/giftchoosecard.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/ajax/gift]]></mask-url>
-          <real-url><![CDATA[/card/ajax/gift.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/shop/(\d{1,})/officialphotos/album/(\d{1,})/info]]></mask-url>
           <real-url><![CDATA[/album/officialAlbumDescription.action?shopId=$1&albumId=$2]]></real-url>
           <page-id>150</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/JValidateCode.jpg]]></mask-url>
+          <real-url><![CDATA[/validateCode.action]]></real-url>
+          <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/search/(?:keyword|category)/(\d+)/(\d+)(?:_([^/]+))?(?:/([a-z0-9]*))?(?:/([a-z0-9]*))?]]></mask-url>
@@ -923,39 +1628,34 @@
           <page-id>40</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})]]></mask-url>
-          <real-url><![CDATA[/note/groupNoteMain.action?disp=0&perma=$1]]></real-url>
-          <page-id>42</page-id>
+          <mask-url><![CDATA[/group/(\w{1,})/members]]></mask-url>
+          <real-url><![CDATA[/member/groupMembersMain.action?perma=$1]]></real-url>
+          <page-id>43</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/]]></mask-url>
-          <real-url><![CDATA[/note/groupNoteMain.action?disp=0&perma=$1]]></real-url>
-          <page-id>42</page-id>
+          <mask-url><![CDATA[/group/(\w{1,})/members/all]]></mask-url>
+          <real-url><![CDATA[/member/groupMembersAll.action?perma=$1]]></real-url>
+          <page-id>43</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/(\d{1})]]></mask-url>
-          <real-url><![CDATA[/note/groupNoteMain.action?disp=0&perma=$1&order=$2]]></real-url>
-          <page-id>42</page-id>
+          <mask-url><![CDATA[/group/(\w{1,})/members/all/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/member/groupMembersAll.action?perma=$1&order=$2]]></real-url>
+          <page-id>43</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/good]]></mask-url>
-          <real-url><![CDATA[/note/groupNoteMain.action?disp=1&perma=$1]]></real-url>
-          <page-id>42</page-id>
+          <mask-url><![CDATA[/group/(\w{1,})/members/all/(\d{1,})/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/member/groupMembersAll.action?perma=$1&order=$2&pageno=$3]]></real-url>
+          <page-id>43</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/good/(\d{1})]]></mask-url>
-          <real-url><![CDATA[/note/groupNoteMain.action?disp=1&perma=$1&order=$2]]></real-url>
-          <page-id>42</page-id>
+          <mask-url><![CDATA[/group/(\w{1,})/admin/members]]></mask-url>
+          <real-url><![CDATA[/member/groupUserManageList.action?perma=$1]]></real-url>
+          <page-id>118</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/type_(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/note/groupNoteMain.action?disp=0&perma=$1&typeId=$2]]></real-url>
-          <page-id>42</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/type_(\d{1,})/(\d{1})]]></mask-url>
-          <real-url><![CDATA[/note/groupNoteMain.action?disp=0&perma=$1&typeId=$2&order=$3]]></real-url>
-          <page-id>42</page-id>
+          <mask-url><![CDATA[/group/(\w{1,})/admin/members_([^/_]*)_([^/]*)]]></mask-url>
+          <real-url><![CDATA[/member/groupUserSearch.action?perma=$1&keytype=$2&keyword=$3]]></real-url>
+          <page-id>118</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/group/(\w{1,})/events]]></mask-url>
@@ -963,167 +1663,12 @@
           <page-id>44</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/update]]></mask-url>
-          <real-url><![CDATA[/group/groupUpdate.action?perma=$1]]></real-url>
-          <page-id>112</page-id>
+          <mask-url><![CDATA[/group/(\w{1,})/eventmanage]]></mask-url>
+          <real-url><![CDATA[/event/eventManage.action?groupPermaLink=$1]]></real-url>
+          <page-id>122</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/notetype]]></mask-url>
-          <real-url><![CDATA[/group/groupNoteType.action?perma=$1]]></real-url>
-          <page-id>154</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/friendlink]]></mask-url>
-          <real-url><![CDATA[/group/groupLink.action?perma=$1]]></real-url>
-          <page-id>155</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/logo]]></mask-url>
-          <real-url><![CDATA[/group/groupLogo.action?perma=$1]]></real-url>
-          <page-id>110</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/log]]></mask-url>
-          <real-url><![CDATA[/group/groupLogMgmt.action?perma=$1]]></real-url>
-          <page-id>123</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/member/join]]></mask-url>
-          <real-url><![CDATA[/ajax/joinGroup.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/member/exit]]></mask-url>
-          <real-url><![CDATA[/ajax/exitGroup.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/notetype]]></mask-url>
-          <real-url><![CDATA[/ajax/noteType.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/category/apply]]></mask-url>
-          <real-url><![CDATA[/ajax/applyCategory.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/category/applysubmit]]></mask-url>
-          <real-url><![CDATA[/ajax/applyCategorySubmit.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group]]></mask-url>
-          <real-url><![CDATA[/index/groupIndex.action]]></real-url>
-          <page-id>37</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/]]></mask-url>
-          <real-url><![CDATA[/index/groupIndex.action]]></real-url>
-          <page-id>37</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/(shanghai|beijing|hangzhou|guangzhou|nanjing|suzhou|shenzhen|chengdu|chongqing|tianjin|ningbo|yangzhou|wuxi|fuzhou|xiamen|wuhan|xian|shenyang|dalian|more|qingdao|jinan|hainan|shijiazhuang|tangshan|qinghuangdao|handan|xingtai|baoding|zhangjiakou|chengde|cangzhou|langfang|hengshui|taiyuan|datong|yangquan|changzhi|jincheng|shuozhou|jinzhong|yuncheng|xinzhou|linfen|lvliang|huhehaote|baotou|wuhai|chifeng|tongliao|eerduosi|hulunbeier|xingan|xilinguole|wulanchabu|bayanzhuoer|alashan|anshan|fushun|benxi|dandong|jinzhou|yingkou|fuxin|liaoyang|panjin|tieling|chaoyang|huludao|changchun|jilin|siping|liaoyuan|tonghua|baishan|songyuan|baicheng|yanbian|haerbin|qiqihaer|jixi|hegang|shuangyashan|daqing|yichun|jiamusi|qitaihe|mudanjiang|heihe|suihua|daxinganling|xuzhou|changzhou|nantong|lianyuangang|huaian|yancheng|zhengjiang|taizhou|suqian|wenzhou|jiaxing|huzhou|shaoxing|jinhua|quzhou|zhoushan|zhejiangtaizhou|lishui|hefei|wuhu|bengbu|huainan|maanshan|huaibei|tongling|anqing|huangshan|chuzhou|fuyang|anhuisuzhou|chaohu|liuan|bozhou|chizhou|xuancheng|putian|sanming|quanzhou|zhangzhou|nanping|longyan|ningde|nanchang|jingdezhen|pingxiang|jiujiang|xinyu|yingtan|ganzhou|jian|jiangxiyichun|jiangxifuzhou|shangrao|zibo|zaozhuang|dongying|yantai|weifang|jining|taian|weihai|rizhao|laiwu|linyi|dezhou|liaocheng|binzhou|heze|zhengzhou|kaifeng|luoyang|pingdingshan|anyang|hebi|xinxiang|jiaozuo|puyang|xuchang|luohe|sanmenxia|nanyang|shangqiu|xinyang|zhoukou|zhumadian|huangshi|shiyan|yichang|xiangyang|ezhou|jinmen|xiaogan|jingzhou|huanggang|xianning|suizhou|enshizhou|xiantao|qianjiang|tianmen|zhuzhou|xiangtan|hengyang|shaoyang|yueyang|changde|zhangjiajie|yiyang|chenzhou|yongzhou|huaihua|loudi|xiangxi|shaoguan|zhuhai|shantou|foshan|jiangmen|zhanjiang|maoming|zhaoqing|huizhou|meizhou|shanwei|heyuan|yangjiang|qingyuan|dongguan|zhongshan|chaozhou|jieyang|yunfu|nanning|liuzhou|guilin|wuzhou|beihai|fangchenggang|qinzhou|guigang|guangxiyulin|baise|hezhou|hechi|zigong|panzhihua|luzhou|deyang|mianyang|guangyuan|suining|neijiang|leshan|nanchong|meishan|yibin|guangan|dazhou|yaan|bazhong|ziyang|aba|ganzi|liangshan|guiyang|liupanshui|zunyi|anshun|tongrendiqu|qianxinan|bijiediqu|qiandongnan|qiannan|kunming|qujing|yuxi|baoshan|zhaotong|chuxiongzhou|honghe|wenshan|simao|xishuangbanna|dalizhou|dehong|lijiang|nujiang|diqing|linchang|lasa|changdudiqu|shannan|rikazediqu|naqu|ali|linzhi|tongchuan|baoji|xianyang|weinan|yanan|hanzhong|yulin|ankang|shangluo|lanzhou|jiayuguan|jinchang|baiyin|tianshui|wuwei|zhangye|pingliang|jiuquan|qingyang|dingxi|longnan|linxiazhou|gannanzhou|xining|haidong|haibei|huangnan|guoluo|yushu|haixi|yinchuan|shizuishan|wuzhong|guyuan|wulumuqi|kelamayi|tulufandiqu|hamidiqu|changjizhou|boertala|bayinguoleng|akesudiqu|kezilesu|kashidiqu|hetiandiqu|yili|tachengdiqu|aletaidiqu|shihezi|taiwan|hongkong|macao|guowai|changsha|beitun|zhongwei|alaer|chongzuo|jiyuan|laibin|shennongjia|tumushuke|wujiaqu|hainanzhou|qionghai|wuzhishan|danzhou|wenchang|wanning|dongfang|dingan|tunchang|chengmai|lingao|baisha|changjiang|ledong|lingshui|baoting|qiongzhong|sanya|haikou)/group]]></mask-url>
-          <real-url><![CDATA[/index/groupIndex.action?cityname=$1]]></real-url>
-          <page-id>37</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/members]]></mask-url>
-          <real-url><![CDATA[/member/groupMembersMain.action?perma=$1]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/members/all]]></mask-url>
-          <real-url><![CDATA[/member/groupMembersAll.action?perma=$1]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/members/all/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/member/groupMembersAll.action?perma=$1&order=$2]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/members/all/(\d{1,})/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/member/groupMembersAll.action?perma=$1&order=$2&pageno=$3]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/admin/members]]></mask-url>
-          <real-url><![CDATA[/member/groupUserManageList.action?perma=$1]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/admin/members_([^/_]*)_([^/]*)]]></mask-url>
-          <real-url><![CDATA[/member/groupUserSearch.action?perma=$1&keytype=$2&keyword=$3]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/event/shopSearch]]></mask-url>
-          <real-url><![CDATA[/ajax/eventShopSearch.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/event/eventShowingSet]]></mask-url>
-          <real-url><![CDATA[/ajax/eventShowingSet.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/member/promote]]></mask-url>
-          <real-url><![CDATA[/ajax/promoteElderJsonAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/member/abdicate]]></mask-url>
-          <real-url><![CDATA[/ajax/abdicateHonorAdminJsonAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/member/fireOrBlock]]></mask-url>
-          <real-url><![CDATA[/ajax/fireOrBlockGroupUserJsonAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/member/blackOrRestore]]></mask-url>
-          <real-url><![CDATA[/ajax/blackOrRestoreGroupUserJsonAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/member/approveOrReject]]></mask-url>
-          <real-url><![CDATA[/ajax/approveOrRejectJoinJsonAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/note/addScore]]></mask-url>
-          <real-url><![CDATA[/ajax/noteScoreAdd.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/note/userScoreAddLimit]]></mask-url>
-          <real-url><![CDATA[/ajax/userScoreAddLimit.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/category/(\d{1,})/home]]></mask-url>
-          <real-url><![CDATA[/category/categoryHomePage.action?categoryId=$1]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/category/(\d{1,})/home/public]]></mask-url>
-          <real-url><![CDATA[/category/categoryPublicGroupList.action?categoryId=$1]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/search/(\d{1,})_(.*)]]></mask-url>
-          <real-url><![CDATA[/note/noteSearchAction.action?searchScope=$1&keyword=$2]]></real-url>
-          <page-id>41</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/search/(kw|un)_(.*)]]></mask-url>
-          <real-url><![CDATA[/note/groupNoteSearchAction.action?perma=$1&searchType=$2&keyword=$3]]></real-url>
-          <page-id>41</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/event/(shanghai|beijing|hangzhou|guangzhou|nanjing|suzhou|shenzhen|chengdu|chongqing|tianjin|ningbo|yangzhou|wuxi|fuzhou|xiamen|wuhan|xian|shenyang|dalian|more|qingdao|jinan|hainan|shijiazhuang|tangshan|qinghuangdao|handan|xingtai|baoding|zhangjiakou|chengde|cangzhou|langfang|hengshui|taiyuan|datong|yangquan|changzhi|jincheng|shuozhou|jinzhong|yuncheng|xinzhou|linfen|lvliang|huhehaote|baotou|wuhai|chifeng|tongliao|eerduosi|hulunbeier|xingan|xilinguole|wulanchabu|bayanzhuoer|alashan|anshan|fushun|benxi|dandong|jinzhou|yingkou|fuxin|liaoyang|panjin|tieling|chaoyang|huludao|changchun|jilin|siping|liaoyuan|tonghua|baishan|songyuan|baicheng|yanbian|haerbin|qiqihaer|jixi|hegang|shuangyashan|daqing|yichun|jiamusi|qitaihe|mudanjiang|heihe|suihua|daxinganling|xuzhou|changzhou|nantong|lianyuangang|huaian|yancheng|zhengjiang|taizhou|suqian|wenzhou|jiaxing|huzhou|shaoxing|jinhua|quzhou|zhoushan|zhejiangtaizhou|lishui|hefei|wuhu|bengbu|huainan|maanshan|huaibei|tongling|anqing|huangshan|chuzhou|fuyang|anhuisuzhou|chaohu|liuan|bozhou|chizhou|xuancheng|putian|sanming|quanzhou|zhangzhou|nanping|longyan|ningde|nanchang|jingdezhen|pingxiang|jiujiang|xinyu|yingtan|ganzhou|jian|jiangxiyichun|jiangxifuzhou|shangrao|zibo|zaozhuang|dongying|yantai|weifang|jining|taian|weihai|rizhao|laiwu|linyi|dezhou|liaocheng|binzhou|heze|zhengzhou|kaifeng|luoyang|pingdingshan|anyang|hebi|xinxiang|jiaozuo|puyang|xuchang|luohe|sanmenxia|nanyang|shangqiu|xinyang|zhoukou|zhumadian|huangshi|shiyan|yichang|xiangfan|ezhou|jinmen|xiaogan|jingzhou|huanggang|xianning|suizhou|enshizhou|xiantao|qianjiang|tianmen|zhuzhou|xiangtan|hengyang|shaoyang|yueyang|changde|zhangjiajie|yiyang|chenzhou|yongzhou|huaihua|loudi|xiangxi|shaoguan|zhuhai|shantou|foshan|jiangmen|zhanjiang|maoming|zhaoqing|huizhou|meizhou|shanwei|heyuan|yangjiang|qingyuan|dongguan|zhongshan|chaozhou|jieyang|yunfu|nanning|liuzhou|guilin|wuzhou|beihai|fangchenggang|qinzhou|guigang|guangxiyulin|baise|hezhou|hechi|zigong|panzhihua|luzhou|deyang|mianyang|guangyuan|suining|neijiang|leshan|nanchong|meishan|yibin|guangan|dazhou|yaan|bazhong|ziyang|aba|ganzi|liangshan|guiyang|liupanshui|zunyi|anshun|tongrendiqu|qianxinan|bijiediqu|qiandongnan|qiannan|kunming|qujing|yuxi|baoshan|zhaotong|chuxiongzhou|honghe|wenshan|simao|xishuangbanna|dalizhou|dehong|lijiang|nujiang|diqing|linchang|lasa|changdudiqu|shannan|rikazediqu|naqu|ali|linzhi|tongchuan|baoji|xianyang|weinan|yanan|hanzhong|yulin|ankang|shangluo|lanzhou|jiayuguan|jinchang|baiyin|tianshui|wuwei|zhangye|pingliang|jiuquan|qingyang|dingxi|longnan|linxiazhou|gannanzhou|xining|haidong|haibei|huangnan|guoluo|yushu|haixi|yinchuan|shizuishan|wuzhong|guyuan|wulumuqi|kelamayi|tulufandiqu|hamidiqu|changjizhou|boertala|bayinguoleng|akesudiqu|kezilesu|kashidiqu|hetiandiqu|yili|tachengdiqu|aletaidiqu|shihezi|taiwan|hongkong|macao|guowai|changsha|beitun|zhongwei|alaer|chongzuo|jiyuan|laibin|shennongjia|tumushuke|wujiaqu|hainanzhou|haikou)]]></mask-url>
+          <mask-url><![CDATA[/event/(shanghai|beijing|hangzhou|guangzhou|nanjing|suzhou|shenzhen|chengdu|chongqing|tianjin|ningbo|yangzhou|wuxi|fuzhou|xiamen|wuhan|xian|shenyang|dalian|more|qingdao|jinan|hainan|shijiazhuang|tangshan|qinghuangdao|handan|xingtai|baoding|zhangjiakou|chengde|cangzhou|langfang|hengshui|taiyuan|datong|yangquan|changzhi|jincheng|shuozhou|jinzhong|yuncheng|xinzhou|linfen|lvliang|huhehaote|baotou|wuhai|chifeng|tongliao|eerduosi|hulunbeier|xingan|xilinguole|wulanchabu|bayanzhuoer|alashan|anshan|fushun|benxi|dandong|jinzhou|yingkou|fuxin|liaoyang|panjin|tieling|chaoyang|huludao|changchun|jilin|siping|liaoyuan|tonghua|baishan|songyuan|baicheng|yanbian|haerbin|qiqihaer|jixi|hegang|shuangyashan|daqing|yichun|jiamusi|qitaihe|mudanjiang|heihe|suihua|daxinganling|xuzhou|changzhou|nantong|lianyuangang|huaian|yancheng|zhengjiang|taizhou|suqian|wenzhou|jiaxing|huzhou|shaoxing|jinhua|quzhou|zhoushan|zhejiangtaizhou|lishui|hefei|wuhu|bengbu|huainan|maanshan|huaibei|tongling|anqing|huangshan|chuzhou|fuyang|anhuisuzhou|chaohu|liuan|bozhou|chizhou|xuancheng|putian|sanming|quanzhou|zhangzhou|nanping|longyan|ningde|nanchang|jingdezhen|pingxiang|jiujiang|xinyu|yingtan|ganzhou|jian|jiangxiyichun|jiangxifuzhou|shangrao|zibo|zaozhuang|dongying|yantai|weifang|jining|taian|weihai|rizhao|laiwu|linyi|dezhou|liaocheng|binzhou|heze|zhengzhou|kaifeng|luoyang|pingdingshan|anyang|hebi|xinxiang|jiaozuo|puyang|xuchang|luohe|sanmenxia|nanyang|shangqiu|xinyang|zhoukou|zhumadian|huangshi|shiyan|yichang|xiangfan|ezhou|jinmen|xiaogan|jingzhou|huanggang|xianning|suizhou|enshizhou|xiantao|qianjiang|tianmen|zhuzhou|xiangtan|hengyang|shaoyang|yueyang|changde|zhangjiajie|yiyang|chenzhou|yongzhou|huaihua|loudi|xiangxi|shaoguan|zhuhai|shantou|foshan|jiangmen|zhanjiang|maoming|zhaoqing|huizhou|meizhou|shanwei|heyuan|yangjiang|qingyuan|dongguan|zhongshan|chaozhou|jieyang|yunfu|nanning|liuzhou|guilin|wuzhou|beihai|fangchenggang|qinzhou|guigang|guangxiyulin|baise|hezhou|hechi|zigong|panzhihua|luzhou|deyang|mianyang|guangyuan|suining|neijiang|leshan|nanchong|meishan|yibin|guangan|dazhou|yaan|bazhong|ziyang|aba|ganzi|liangshan|guiyang|liupanshui|zunyi|anshun|tongrendiqu|qianxinan|bijiediqu|qiandongnan|qiannan|kunming|qujing|yuxi|baoshan|zhaotong|chuxiongzhou|honghe|wenshan|simao|xishuangbanna|dalizhou|dehong|lijiang|nujiang|diqing|linchang|lasa|changdudiqu|shannan|rikazediqu|naqu|ali|linzhi|tongchuan|baoji|xianyang|weinan|yanan|hanzhong|yulin|ankang|shangluo|lanzhou|jiayuguan|jinchang|baiyin|tianshui|wuwei|zhangye|pingliang|jiuquan|qingyang|dingxi|longnan|linxiazhou|gannanzhou|xining|haidong|haibei|huangnan|guoluo|yushu|haixi|yinchuan|shizuishan|wuzhong|guyuan|wulumuqi|kelamayi|tulufandiqu|hamidiqu|changjizhou|boertala|bayinguoleng|akesudiqu|kezilesu|kashidiqu|hetiandiqu|yili|tachengdiqu|aletaidiqu|shihezi|taiwan|hongkong|macao|guowai|changsha|beitun|zhongwei|alaer|chongzuo|jiyuan|laibin|shennongjia|tumushuke|wujiaqu|hainanzhou|haikou|puer)]]></mask-url>
           <real-url><![CDATA[/event/gatheringAllEventList.action?cityName=$1]]></real-url>
           <page-id>47</page-id>
       </url-rewrite-rule>
@@ -1218,6 +1763,126 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/event/shopSearch]]></mask-url>
+          <real-url><![CDATA[/ajax/eventShopSearch.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/event/eventShowingSet]]></mask-url>
+          <real-url><![CDATA[/ajax/eventShowingSet.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/update]]></mask-url>
+          <real-url><![CDATA[/group/groupUpdate.action?perma=$1]]></real-url>
+          <page-id>112</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/notetype]]></mask-url>
+          <real-url><![CDATA[/group/groupNoteType.action?perma=$1]]></real-url>
+          <page-id>154</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/friendlink]]></mask-url>
+          <real-url><![CDATA[/group/groupLink.action?perma=$1]]></real-url>
+          <page-id>155</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/logo]]></mask-url>
+          <real-url><![CDATA[/group/groupLogo.action?perma=$1]]></real-url>
+          <page-id>110</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/log]]></mask-url>
+          <real-url><![CDATA[/group/groupLogMgmt.action?perma=$1]]></real-url>
+          <page-id>123</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/member/join]]></mask-url>
+          <real-url><![CDATA[/ajax/joinGroup.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/member/exit]]></mask-url>
+          <real-url><![CDATA[/ajax/exitGroup.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/notetype]]></mask-url>
+          <real-url><![CDATA[/ajax/noteType.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/category/apply]]></mask-url>
+          <real-url><![CDATA[/ajax/applyCategory.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/category/applysubmit]]></mask-url>
+          <real-url><![CDATA[/ajax/applyCategorySubmit.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})]]></mask-url>
+          <real-url><![CDATA[/note/groupNoteMain.action?disp=0&perma=$1]]></real-url>
+          <page-id>42</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/]]></mask-url>
+          <real-url><![CDATA[/note/groupNoteMain.action?disp=0&perma=$1]]></real-url>
+          <page-id>42</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/(\d{1})]]></mask-url>
+          <real-url><![CDATA[/note/groupNoteMain.action?disp=0&perma=$1&order=$2]]></real-url>
+          <page-id>42</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/good]]></mask-url>
+          <real-url><![CDATA[/note/groupNoteMain.action?disp=1&perma=$1]]></real-url>
+          <page-id>42</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/good/(\d{1})]]></mask-url>
+          <real-url><![CDATA[/note/groupNoteMain.action?disp=1&perma=$1&order=$2]]></real-url>
+          <page-id>42</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/type_(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/note/groupNoteMain.action?disp=0&perma=$1&typeId=$2]]></real-url>
+          <page-id>42</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/type_(\d{1,})/(\d{1})]]></mask-url>
+          <real-url><![CDATA[/note/groupNoteMain.action?disp=0&perma=$1&typeId=$2&order=$3]]></real-url>
+          <page-id>42</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/member/promote]]></mask-url>
+          <real-url><![CDATA[/ajax/promoteElderJsonAction.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/member/abdicate]]></mask-url>
+          <real-url><![CDATA[/ajax/abdicateHonorAdminJsonAction.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/member/fireOrBlock]]></mask-url>
+          <real-url><![CDATA[/ajax/fireOrBlockGroupUserJsonAction.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/member/blackOrRestore]]></mask-url>
+          <real-url><![CDATA[/ajax/blackOrRestoreGroupUserJsonAction.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/member/approveOrReject]]></mask-url>
+          <real-url><![CDATA[/ajax/approveOrRejectJoinJsonAction.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/group/(\w{1,})/topic/(\d{1,})]]></mask-url>
           <real-url><![CDATA[/note/noteDetailAdaptAction?groupLink=$1&noteId=$2&viewMode=1]]></real-url>
           <page-id>46</page-id>
@@ -1228,9 +1893,14 @@
           <page-id>46</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/new]]></mask-url>
-          <real-url><![CDATA[/note/addNote.action?groupLink=$1]]></real-url>
-          <page-id>111</page-id>
+          <mask-url><![CDATA[/group/(\w{1,})/topic/(\d{1,})/edit]]></mask-url>
+          <real-url><![CDATA[/note/noteEditAction?groupLink=$1&noteId=$2]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/topic/(\d{1,})/followedit]]></mask-url>
+          <real-url><![CDATA[/note/followNoteEditAction?groupLink=$1&followNoteId=$2]]></real-url>
+          <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/group/note/scorelist]]></mask-url>
@@ -1283,6 +1953,21 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/new]]></mask-url>
+          <real-url><![CDATA[/note/addNote.action?groupLink=$1]]></real-url>
+          <page-id>111</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/note/addScore]]></mask-url>
+          <real-url><![CDATA[/ajax/noteScoreAdd.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/note/userScoreAddLimit]]></mask-url>
+          <real-url><![CDATA[/ajax/userScoreAddLimit.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/group/note/updateGoodNote]]></mask-url>
           <real-url><![CDATA[/ajax/updateGoodNote.action]]></real-url>
           <page-id>0</page-id>
@@ -1328,6 +2013,16 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/note/noteCategoryEdit]]></mask-url>
+          <real-url><![CDATA[/ajax/noteCategoryEdit.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/group/note/noteDCashAdd]]></mask-url>
+          <real-url><![CDATA[/ajax/noteDCashAdd.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/group/note/noteAddBlackList]]></mask-url>
           <real-url><![CDATA[/ajax/noteAddBlackList.action]]></real-url>
           <page-id>0</page-id>
@@ -1338,39 +2033,49 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/topic/(\d{1,})/edit]]></mask-url>
-          <real-url><![CDATA[/note/noteEditAction?groupLink=$1&noteId=$2]]></real-url>
+          <mask-url><![CDATA[/group/category/(\d{1,})/home]]></mask-url>
+          <real-url><![CDATA[/category/categoryHomePage.action?categoryId=$1]]></real-url>
+          <page-id>38</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/category/(\d{1,})/home/public]]></mask-url>
+          <real-url><![CDATA[/category/categoryPublicGroupList.action?categoryId=$1]]></real-url>
+          <page-id>38</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/search/(\d{1,})_(.*)]]></mask-url>
+          <real-url><![CDATA[/note/noteSearchAction.action?searchScope=$1&keyword=$2]]></real-url>
+          <page-id>41</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/(\w{1,})/search/(kw|un)_(.*)]]></mask-url>
+          <real-url><![CDATA[/note/groupNoteSearchAction.action?perma=$1&searchType=$2&keyword=$3]]></real-url>
+          <page-id>41</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group]]></mask-url>
+          <real-url><![CDATA[/index/groupIndex.action]]></real-url>
+          <page-id>37</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/group/]]></mask-url>
+          <real-url><![CDATA[/index/groupIndex.action]]></real-url>
+          <page-id>37</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/(shanghai|beijing|hangzhou|guangzhou|nanjing|suzhou|shenzhen|chengdu|chongqing|tianjin|ningbo|yangzhou|wuxi|fuzhou|xiamen|wuhan|xian|shenyang|dalian|more|qingdao|jinan|hainan|shijiazhuang|tangshan|qinghuangdao|handan|xingtai|baoding|zhangjiakou|chengde|cangzhou|langfang|hengshui|taiyuan|datong|yangquan|changzhi|jincheng|shuozhou|jinzhong|yuncheng|xinzhou|linfen|lvliang|huhehaote|baotou|wuhai|chifeng|tongliao|eerduosi|hulunbeier|xingan|xilinguole|wulanchabu|bayanzhuoer|alashan|anshan|fushun|benxi|dandong|jinzhou|yingkou|fuxin|liaoyang|panjin|tieling|chaoyang|huludao|changchun|jilin|siping|liaoyuan|tonghua|baishan|songyuan|baicheng|yanbian|haerbin|qiqihaer|jixi|hegang|shuangyashan|daqing|yichun|jiamusi|qitaihe|mudanjiang|heihe|suihua|daxinganling|xuzhou|changzhou|nantong|lianyuangang|huaian|yancheng|zhengjiang|taizhou|suqian|wenzhou|jiaxing|huzhou|shaoxing|jinhua|quzhou|zhoushan|zhejiangtaizhou|lishui|hefei|wuhu|bengbu|huainan|maanshan|huaibei|tongling|anqing|huangshan|chuzhou|fuyang|anhuisuzhou|chaohu|liuan|bozhou|chizhou|xuancheng|putian|sanming|quanzhou|zhangzhou|nanping|longyan|ningde|nanchang|jingdezhen|pingxiang|jiujiang|xinyu|yingtan|ganzhou|jian|jiangxiyichun|jiangxifuzhou|shangrao|zibo|zaozhuang|dongying|yantai|weifang|jining|taian|weihai|rizhao|laiwu|linyi|dezhou|liaocheng|binzhou|heze|zhengzhou|kaifeng|luoyang|pingdingshan|anyang|hebi|xinxiang|jiaozuo|puyang|xuchang|luohe|sanmenxia|nanyang|shangqiu|xinyang|zhoukou|zhumadian|huangshi|shiyan|yichang|xiangyang|ezhou|jinmen|xiaogan|jingzhou|huanggang|xianning|suizhou|enshizhou|xiantao|qianjiang|tianmen|zhuzhou|xiangtan|hengyang|shaoyang|yueyang|changde|zhangjiajie|yiyang|chenzhou|yongzhou|huaihua|loudi|xiangxi|shaoguan|zhuhai|shantou|foshan|jiangmen|zhanjiang|maoming|zhaoqing|huizhou|meizhou|shanwei|heyuan|yangjiang|qingyuan|dongguan|zhongshan|chaozhou|jieyang|yunfu|nanning|liuzhou|guilin|wuzhou|beihai|fangchenggang|qinzhou|guigang|guangxiyulin|baise|hezhou|hechi|zigong|panzhihua|luzhou|deyang|mianyang|guangyuan|suining|neijiang|leshan|nanchong|meishan|yibin|guangan|dazhou|yaan|bazhong|ziyang|aba|ganzi|liangshan|guiyang|liupanshui|zunyi|anshun|tongrendiqu|qianxinan|bijiediqu|qiandongnan|qiannan|kunming|qujing|yuxi|baoshan|zhaotong|chuxiongzhou|honghe|wenshan|simao|xishuangbanna|dalizhou|dehong|lijiang|nujiang|diqing|linchang|lasa|changdudiqu|shannan|rikazediqu|naqu|ali|linzhi|tongchuan|baoji|xianyang|weinan|yanan|hanzhong|yulin|ankang|shangluo|lanzhou|jiayuguan|jinchang|baiyin|tianshui|wuwei|zhangye|pingliang|jiuquan|qingyang|dingxi|longnan|linxiazhou|gannanzhou|xining|haidong|haibei|huangnan|guoluo|yushu|haixi|yinchuan|shizuishan|wuzhong|guyuan|wulumuqi|kelamayi|tulufandiqu|hamidiqu|changjizhou|boertala|bayinguoleng|akesudiqu|kezilesu|kashidiqu|hetiandiqu|yili|tachengdiqu|aletaidiqu|shihezi|taiwan|hongkong|macao|guowai|changsha|beitun|zhongwei|alaer|chongzuo|jiyuan|laibin|shennongjia|tumushuke|wujiaqu|hainanzhou|qionghai|wuzhishan|danzhou|wenchang|wanning|dongfang|dingan|tunchang|chengmai|lingao|baisha|changjiang|ledong|lingshui|baoting|qiongzhong|sanya|haikou)/group]]></mask-url>
+          <real-url><![CDATA[/index/groupIndex.action?cityname=$1]]></real-url>
+          <page-id>37</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/piccenter/httpAPI]]></mask-url>
+          <real-url><![CDATA[/api/webHttpAPI]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/topic/(\d{1,})/followedit]]></mask-url>
-          <real-url><![CDATA[/note/followNoteEditAction?groupLink=$1&followNoteId=$2]]></real-url>
+          <mask-url><![CDATA[/shoppic/httpAPI]]></mask-url>
+          <real-url><![CDATA[/api/webHttpAPI]]></real-url>
           <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/JValidateCode.jpg]]></mask-url>
-          <real-url><![CDATA[/validateCode.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/group/(\w{1,})/eventmanage]]></mask-url>
-          <real-url><![CDATA[/event/eventManage.action?groupPermaLink=$1]]></real-url>
-          <page-id>122</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/note/noteDCashAdd]]></mask-url>
-          <real-url><![CDATA[/ajax/noteDCashAdd.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/group/note/noteCategoryEdit]]></mask-url>
-          <real-url><![CDATA[/ajax/noteCategoryEdit.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/topic/(\d{1,})/author/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/note/noteDetailAdaptAction?noteId=$1&userId=$2&viewMode=3]]></real-url>
-          <page-id>46</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/photos/(\d{1,})/photocenter]]></mask-url>
@@ -1398,59 +2103,14 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(d{1,})/brand]]></mask-url>
-          <real-url><![CDATA[/promo/brand.action?cityId=$1]]></real-url>
-          <page-id>6</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(d{1,})/brand_(d{1,})]]></mask-url>
-          <real-url><![CDATA[/promo/brand.action?cityId=$1&shopType=$2]]></real-url>
-          <page-id>6</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/piccenter/httpAPI]]></mask-url>
-          <real-url><![CDATA[/api/webHttpAPI]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/shoppic/httpAPI]]></mask-url>
-          <real-url><![CDATA[/api/webHttpAPI]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/member/location]]></mask-url>
           <real-url><![CDATA[/ajax/location]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/promo/info.action?promoId=$1]]></real-url>
-          <page-id>5</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/pic/flower]]></mask-url>
           <real-url><![CDATA[/ajax/picFlowerAction.action]]></real-url>
           <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/pic/flower]]></mask-url>
-          <real-url><![CDATA[/ajax/picFlowerAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})/brand]]></mask-url>
-          <real-url><![CDATA[/promo/brand.action?cityId=$1]]></real-url>
-          <page-id>6</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})/brand_(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/promo/brand.action?cityId=$1&shopType=$2]]></real-url>
-          <page-id>6</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/promo/info.action?promoId=$1]]></real-url>
-          <page-id>5</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/upload/photocenter]]></mask-url>
@@ -1473,14 +2133,49 @@
           <page-id>163</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/card/login]]></mask-url>
+          <real-url><![CDATA[/card/login.action]]></real-url>
+          <page-id>164</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/card/findpassword]]></mask-url>
+          <real-url><![CDATA[/card/findPassword.action]]></real-url>
+          <page-id>164</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/card/JValidateCode.jpg]]></mask-url>
+          <real-url><![CDATA[/validateCode.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/search/map/(category|keyword|branch|around|promo)/(\d+)/(\d+)(?:_([^/]+))?(?:/([a-z0-9]*))?(?:/([a-z0-9]*))?]]></mask-url>
+          <real-url><![CDATA[/search/mapsearch.action?searchName=$1&cityId=$2&shopType=$3&keyword=$4&paramString=$5&traceString=$6]]></real-url>
+          <page-id>142</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/search/ajax/json/shop]]></mask-url>
+          <real-url><![CDATA[/ajax/shopsearch.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/login]]></mask-url>
           <real-url><![CDATA[/account/login.action]]></real-url>
-          <page-id>0</page-id>
+          <page-id>52</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/login/success]]></mask-url>
           <real-url><![CDATA[/account/loginSuccess.action]]></real-url>
-          <page-id>0</page-id>
+          <page-id>96</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/login/prompt]]></mask-url>
+          <real-url><![CDATA[/account/loginPrompt.action]]></real-url>
+          <page-id>100</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/login/(.*)]]></mask-url>
+          <real-url><![CDATA[/account/login.action?msg=$1]]></real-url>
+          <page-id>52</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/logout]]></mask-url>
@@ -1490,37 +2185,42 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/logout/success]]></mask-url>
           <real-url><![CDATA[/account/logoutSuccess.action]]></real-url>
-          <page-id>0</page-id>
+          <page-id>99</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/reg]]></mask-url>
           <real-url><![CDATA[/account/register.action]]></real-url>
-          <page-id>0</page-id>
+          <page-id>97</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/reg/success]]></mask-url>
           <real-url><![CDATA[/account/registerSuccess.action]]></real-url>
-          <page-id>0</page-id>
+          <page-id>98</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/reg/(.*)]]></mask-url>
+          <real-url><![CDATA[/account/register.action?msg=$1]]></real-url>
+          <page-id>97</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/resetpassword]]></mask-url>
           <real-url><![CDATA[/account/resetPassword.action]]></real-url>
-          <page-id>0</page-id>
+          <page-id>102</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/resetpassword/new]]></mask-url>
           <real-url><![CDATA[/account/resetpasswordOperation.action]]></real-url>
-          <page-id>0</page-id>
+          <page-id>102</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/resetpassword/new/([a-z0-9]{8,})]]></mask-url>
           <real-url><![CDATA[/account/resetpasswordOperation.action?token=$1]]></real-url>
-          <page-id>0</page-id>
+          <page-id>102</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/tlogin]]></mask-url>
           <real-url><![CDATA[/account/tlogin.action]]></real-url>
-          <page-id>0</page-id>
+          <page-id>52</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/thirdconnect]]></mask-url>
@@ -1528,12 +2228,12 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/authLogin]]></mask-url>
+          <mask-url><![CDATA[/authlogin]]></mask-url>
           <real-url><![CDATA[/account/authLogin.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/createAndBind]]></mask-url>
+          <mask-url><![CDATA[/createandbind]]></mask-url>
           <real-url><![CDATA[/account/createAndBind.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
@@ -1578,61 +2278,6 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/account/reg]]></mask-url>
-          <real-url><![CDATA[/ajax/register.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/thirdPart/friends]]></mask-url>
-          <real-url><![CDATA[/ajax/friendsCallback.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/reg/(.*)]]></mask-url>
-          <real-url><![CDATA[/account/register.action?msg=$1]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/search/map/(category|keyword|branch|around|promo)/(\d+)/(\d+)(?:_([^/]+))?(?:/([a-z0-9]*))?(?:/([a-z0-9]*))?]]></mask-url>
-          <real-url><![CDATA[/search/mapsearch.action?searchName=$1&cityId=$2&shopType=$3&keyword=$4&paramString=$5&traceString=$6]]></real-url>
-          <page-id>142</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/search/map/(category|keyword|branch|around|promo)/(\d+)/(\d+)(?:_([^/]+))?(?:/([a-z0-9]*))?(?:/([a-z0-9]*))?]]></mask-url>
-          <real-url><![CDATA[/search/mapsearch.action?searchName=$1&cityId=$2&shopType=$3&keyword=$4&paramString=$5&traceString=$6]]></real-url>
-          <page-id>142</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/login]]></mask-url>
-          <real-url><![CDATA[/card/login.action]]></real-url>
-          <page-id>164</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/findpassword]]></mask-url>
-          <real-url><![CDATA[/card/findPassword.action]]></real-url>
-          <page-id>164</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/JValidateCode.jpg]]></mask-url>
-          <real-url><![CDATA[/validateCode.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/login]]></mask-url>
-          <real-url><![CDATA[/card/login.action]]></real-url>
-          <page-id>164</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/findpassword]]></mask-url>
-          <real-url><![CDATA[/card/findPassword.action]]></real-url>
-          <page-id>164</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/card/JValidateCode.jpg]]></mask-url>
-          <real-url><![CDATA[/validateCode.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/account/simplepassword/email]]></mask-url>
           <real-url><![CDATA[/ajax/simplePasswordConfirmByEmail.action]]></real-url>
           <page-id>0</page-id>
@@ -1643,27 +2288,27 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/login/prompt]]></mask-url>
-          <real-url><![CDATA[/account/loginPrompt.action]]></real-url>
+          <mask-url><![CDATA[/ajax/json/account/reg]]></mask-url>
+          <real-url><![CDATA[/ajax/register.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/login/(.*)]]></mask-url>
-          <real-url><![CDATA[/account/login.action?msg=$1]]></real-url>
+          <mask-url><![CDATA[/ajax/json/thirdpart/friends]]></mask-url>
+          <real-url><![CDATA[/ajax/friendsCallback.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/search/ajax/json/shop]]></mask-url>
-          <real-url><![CDATA[/ajax/shopsearch.action]]></real-url>
-          <page-id>0</page-id>
+          <mask-url><![CDATA[/promo]]></mask-url>
+          <real-url><![CDATA[/promo/home.action]]></real-url>
+          <page-id>4</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/(promo|info)/(Shanghai|Beijing|Hangzhou|Guangzhou|Nanjing|Shenzhen|Tianjin|suzhou|chengdu)]]></mask-url>
+          <mask-url><![CDATA[/(promo|info)/(Shanghai|Beijing|Hangzhou|Guangzhou|Nanjing|Shenzhen|Tianjin|suzhou|chengdu|wuxi|chongqing|xian|ningbo|shenyang|qingdao)]]></mask-url>
           <real-url><![CDATA[/promo/home.action?cityEnName=$2]]></real-url>
           <page-id>4</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/(Shanghai|Beijing|Hangzhou|Guangzhou|Nanjing|Shenzhen|Tianjin|suzhou|chengdu)/(promo|info)]]></mask-url>
+          <mask-url><![CDATA[/(Shanghai|Beijing|Hangzhou|Guangzhou|Nanjing|Shenzhen|Tianjin|suzhou|chengdu|wuxi|chongqing|xian)/(promo|info|ningbo|shenyang|qingdao)]]></mask-url>
           <real-url><![CDATA[/promo/home.action?cityEnName=$1]]></real-url>
           <page-id>4</page-id>
       </url-rewrite-rule>
@@ -1736,96 +2381,6 @@
           <mask-url><![CDATA[/promo/(\d{1,})/print]]></mask-url>
           <real-url><![CDATA[/promo/info.action?promoId=$1&t=print]]></real-url>
           <page-id>5</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/(promo|info)/(Shanghai|Beijing|Hangzhou|Guangzhou|Nanjing|Shenzhen|Tianjin|Suzhou|Chengdu)]]></mask-url>
-          <real-url><![CDATA[/promo/home.action?cityEnName=$2]]></real-url>
-          <page-id>4</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/(Shanghai|Beijing|Hangzhou|Guangzhou|Nanjing|Shenzhen|Tianjin|Suzhou|Chengdu)/(promo|info)]]></mask-url>
-          <real-url><![CDATA[/promo/home.action?cityEnName=$1]]></real-url>
-          <page-id>4</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})/brand]]></mask-url>
-          <real-url><![CDATA[/promo/brand.action?cityId=$1]]></real-url>
-          <page-id>6</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})/brand_(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/promo/brand.action?cityId=$1&shopType=$2]]></real-url>
-          <page-id>6</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/promo/info.action?promoId=$1]]></real-url>
-          <page-id>5</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})/commend]]></mask-url>
-          <real-url><![CDATA[/promo/search.action?city=$1&param=m5]]></real-url>
-          <page-id>7</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})/newshop]]></mask-url>
-          <real-url><![CDATA[/promo/search.action?city=$1&param=m4]]></real-url>
-          <page-id>7</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})/hot]]></mask-url>
-          <real-url><![CDATA[/promo/search.action?city=$1&param=m2]]></real-url>
-          <page-id>7</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})/new]]></mask-url>
-          <real-url><![CDATA[/promo/search.action?city=$1&param=m3]]></real-url>
-          <page-id>7</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/search/(\d{1,})/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/promo/search.action?cityId=$1&shopType=$2]]></real-url>
-          <page-id>7</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/search/(\d{1,})/(\d{1,})_([^/]+)]]></mask-url>
-          <real-url><![CDATA[/promo/search.action?cityId=$1&shopType=$2&keyword=$3]]></real-url>
-          <page-id>7</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/search/(\d{1,})/(\d{1,})_([^/]+)/([a-z0-9]*)]]></mask-url>
-          <real-url><![CDATA[/promo/search.action?cityId=$1&shopType=$2&keyword=$3&param=$4]]></real-url>
-          <page-id>7</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/search/(\d{1,})/(\d{1,})_([^/]+)/([a-z0-9]*)/([a-z0-9]*)]]></mask-url>
-          <real-url><![CDATA[/promo/search.action?cityId=$1&shopType=$2&keyword=$3&param=$4&ref=$5]]></real-url>
-          <page-id>7</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/search/(\d{1,})/(\d{1,})/([a-z0-9]*)]]></mask-url>
-          <real-url><![CDATA[/promo/search.action?cityId=$1&shopType=$2&param=$3]]></real-url>
-          <page-id>7</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/search/(\d{1,})/(\d{1,})/([a-z0-9]*)/([a-z0-9]*)]]></mask-url>
-          <real-url><![CDATA[/promo/search.action?cityId=$1&shopType=$2&param=$3&ref=$4]]></real-url>
-          <page-id>7</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/(\d{1,})/print]]></mask-url>
-          <real-url><![CDATA[/promo/info.action?promoId=$1&t=print]]></real-url>
-          <page-id>5</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/(\d+)/dish-([^/]+)]]></mask-url>
-          <real-url><![CDATA[/shop/dishtag.action?shopId=$1&tagName=$2]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/data/(\d+)/dish]]></mask-url>
-          <real-url><![CDATA[/shop/shopdishtag.action?shopId=$1]]></real-url>
-          <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/reg-mobileno]]></mask-url>
@@ -1848,18 +2403,33 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d+)/dish-([^/]+)]]></mask-url>
+          <real-url><![CDATA[/shop/dishtag.action?shopId=$1&tagName=$2]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/data/(\d+)/dish]]></mask-url>
+          <real-url><![CDATA[/shop/shopdishtag.action?shopId=$1]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/card/findvendorshop]]></mask-url>
           <real-url><![CDATA[/card/ajax/getVendorShop.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/card/validatelogin]]></mask-url>
-          <real-url><![CDATA[/card/ajax/validateLogin.action]]></real-url>
+          <real-url><![CDATA[/card/ajax/validateLogin_expire.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/account/info]]></mask-url>
           <real-url><![CDATA[/ajax/loadUserInfo.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/pic/resource/delete]]></mask-url>
+          <real-url><![CDATA[/ajax/deletePicture.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -1893,14 +2463,19 @@
           <page-id>12</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/(\d{1,})_(trans|grade|flower|newest|gone)]]></mask-url>
+          <mask-url><![CDATA[/shop/(\d{1,})_(trans|grade|flower|newest|gone|pic)]]></mask-url>
           <real-url><![CDATA[/shop/shopAction.action?shopId=$1&key=$2]]></real-url>
+          <page-id>12</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/chain/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/shop/shopAction.action?groupid=$1]]></real-url>
           <page-id>12</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/review/(\d{1,})]]></mask-url>
           <real-url><![CDATA[/review/reviewDetailAction.action?id=$1]]></real-url>
-          <page-id>12</page-id>
+          <page-id>29</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/shop/(\d{1,})/review]]></mask-url>
@@ -1913,14 +2488,19 @@
           <page-id>51</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/sms/result]]></mask-url>
+          <real-url><![CDATA[/shop/sms/sendShopSMS.action]]></real-url>
+          <page-id>51</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/shop/sms/activate]]></mask-url>
           <real-url><![CDATA[/shop/sms/sendSMSActivateCode.action]]></real-url>
-          <page-id>0</page-id>
+          <page-id>51</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/shop/sms/activate/result]]></mask-url>
           <real-url><![CDATA[/shop/sms/verifyActivateCode.action]]></real-url>
-          <page-id>0</page-id>
+          <page-id>51</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/shop/faq]]></mask-url>
@@ -1943,9 +2523,9 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/(\d{1,})_(trans|grade|flower|newest|gone)]]></mask-url>
-          <real-url><![CDATA[/shop/shopAction.action?shopId=$1&key=$2]]></real-url>
-          <page-id>12</page-id>
+          <mask-url><![CDATA[/ajax/json/shop/javaclear]]></mask-url>
+          <real-url><![CDATA[/cache/removeCache.action]]></real-url>
+          <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/shop/(\d{1,})/editmember]]></mask-url>
@@ -1953,34 +2533,9 @@
           <page-id>16</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/sms/result]]></mask-url>
-          <real-url><![CDATA[/shop/sms/sendShopSMS.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/Javaclear]]></mask-url>
-          <real-url><![CDATA[/cache/removeCache.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/shop/javaclear]]></mask-url>
-          <real-url><![CDATA[/cache/removeCache.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/pic/resource/delete]]></mask-url>
-          <real-url><![CDATA[/ajax/deletePicture.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/goldeggValidateCode.jpg]]></mask-url>
           <real-url><![CDATA[/validateCode.action]]></real-url>
           <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo]]></mask-url>
-          <real-url><![CDATA[/promo/home.action]]></real-url>
-          <page-id>4</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/help]]></mask-url>
@@ -2005,6 +2560,31 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/card/findlatestvendorshop]]></mask-url>
           <real-url><![CDATA[/card/ajax/findLatestVendorShop.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/help/card]]></mask-url>
+          <real-url><![CDATA[/help/faqAction.action?faqTypeId=5]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/help/faq]]></mask-url>
+          <real-url><![CDATA[/help/faqIndexAction.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/shoppic/webhawk/addpicfailure]]></mask-url>
+          <real-url><![CDATA[/webHawk/addShopPicFailure.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/shop/specTag]]></mask-url>
+          <real-url><![CDATA[/ajax/specTagAction.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d{1,})_p(\d{1,})(.*)]]></mask-url>
+          <real-url><![CDATA[/shop/shopAction.action?shopId=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2043,21 +2623,6 @@
           <page-id>3</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/shoppic/webhawk/addpicfailure]]></mask-url>
-          <real-url><![CDATA[/webHawk/addShopPicFailure.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/help/card]]></mask-url>
-          <real-url><![CDATA[/help/faqAction.action?faqTypeId=5]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/help/faq]]></mask-url>
-          <real-url><![CDATA[/help/faqIndexAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/index/channel/food/lovedish]]></mask-url>
           <real-url><![CDATA[/ajax/channel/food/loveDishTagsAction.action]]></real-url>
           <page-id>0</page-id>
@@ -2068,11 +2633,6 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/(info|promo)/(chongqing|ningbo|yangzhou|wuxi|fuzhou|xiamen|wuhan|xian|shenyang|dalian|more|qingdao|jinan|hainan|shijiazhuang|tangshan|qinghuangdao|handan|xingtai|baoding|zhangjiakou|chengde|cangzhou|langfang|hengshui|taiyuan|datong|yangquan|changzhi|jincheng|shuozhou|jinzhong|yuncheng|xinzhou|linfen|lvliang|huhehaote|baotou|wuhai|chifeng|tongliao|eerduosi|hulunbeier|xingan|xilinguole|wulanchabu|bayanzhuoer|alashan|anshan|fushun|benxi|dandong|jinzhou|yingkou|fuxin|liaoyang|panjin|tieling|chaoyang|huludao|changchun|jilin|siping|liaoyuan|tonghua|baishan|songyuan|baicheng|yanbian|haerbin|qiqihaer|jixi|hegang|shuangyashan|daqing|yichun|jiamusi|qitaihe|mudanjiang|heihe|suihua|daxinganling|xuzhou|changzhou|nantong|lianyuangang|huaian|yancheng|zhengjiang|taizhou|suqian|wenzhou|jiaxing|huzhou|shaoxing|jinhua|quzhou|zhoushan|zhejiangtaizhou|lishui|hefei|wuhu|bengbu|huainan|maanshan|huaibei|tongling|anqing|huangshan|chuzhou|fuyang|anhuisuzhou|chaohu|liuan|bozhou|chizhou|xuancheng|putian|sanming|quanzhou|zhangzhou|nanping|longyan|ningde|nanchang|jingdezhen|pingxiang|jiujiang|xinyu|yingtan|ganzhou|jian|jiangxiyichun|jiangxifuzhou|shangrao|zibo|zaozhuang|dongying|yantai|weifang|jining|taian|weihai|rizhao|laiwu|linyi|dezhou|liaocheng|binzhou|heze|zhengzhou|kaifeng|luoyang|pingdingshan|anyang|hebi|xinxiang|jiaozuo|puyang|xuchang|luohe|sanmenxia|nanyang|shangqiu|xinyang|zhoukou|zhumadian|huangshi|shiyan|yichang|xiangyang|ezhou|jinmen|xiaogan|jingzhou|huanggang|xianning|suizhou|enshizhou|xiantao|qianjiang|tianmen|zhuzhou|xiangtan|hengyang|shaoyang|yueyang|changde|zhangjiajie|yiyang|chenzhou|yongzhou|huaihua|loudi|xiangxi|shaoguan|zhuhai|shantou|foshan|jiangmen|zhanjiang|maoming|zhaoqing|huizhou|meizhou|shanwei|heyuan|yangjiang|qingyuan|dongguan|zhongshan|chaozhou|jieyang|yunfu|nanning|liuzhou|guilin|wuzhou|beihai|fangchenggang|qinzhou|guigang|guangxiyulin|baise|hezhou|hechi|zigong|panzhihua|luzhou|deyang|mianyang|guangyuan|suining|neijiang|leshan|nanchong|meishan|yibin|guangan|dazhou|yaan|bazhong|ziyang|aba|ganzi|liangshan|guiyang|liupanshui|zunyi|anshun|tongrendiqu|qianxinan|bijiediqu|qiandongnan|qiannan|kunming|qujing|yuxi|baoshan|zhaotong|chuxiongzhou|honghe|wenshan|simao|xishuangbanna|dalizhou|dehong|lijiang|nujiang|diqing|linchang|lasa|changdudiqu|shannan|rikazediqu|naqu|ali|linzhi|tongchuan|baoji|xianyang|weinan|yanan|hanzhong|yulin|ankang|shangluo|lanzhou|jiayuguan|jinchang|baiyin|tianshui|wuwei|zhangye|pingliang|jiuquan|qingyang|dingxi|longnan|linxiazhou|gannanzhou|xining|haidong|haibei|huangnan|guoluo|yushu|haixi|yinchuan|shizuishan|wuzhong|guyuan|wulumuqi|kelamayi|tulufandiqu|hamidiqu|changjizhou|boertala|bayinguoleng|akesudiqu|kezilesu|kashidiqu|hetiandiqu|yili|tachengdiqu|aletaidiqu|shihezi|taiwan|hongkong|macao|guowai|changsha|beitun|zhongwei|alaer|chongzuo|jiyuan|laibin|shennongjia|tumushuke|wujiaqu|hainanzhou|qionghai|wuzhishan|danzhou|wenchang|wanning|dongfang|dingan|tunchang|chengmai|lingao|baisha|changjiang|ledong|lingshui|baoting|qiongzhong|sanya|haikou|bayannaoer)]]></mask-url>
-          <real-url><![CDATA[/info/search?cityEnName=$2]]></real-url>
-          <page-id>4</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/info]]></mask-url>
           <real-url><![CDATA[/info/search.action]]></real-url>
           <page-id>4</page-id>
@@ -2080,21 +2640,46 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/info/(\d{1,})/search_(\d{1,})_(\d{1,})_([^/_]*)]]></mask-url>
           <real-url><![CDATA[/info/search?cityId=$1&shopType=$2&addUserId=$3&keyword=$4]]></real-url>
-          <page-id>1</page-id>
+          <page-id>7</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/info/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/info/infopage?infoId=$1]]></real-url>
-          <page-id>0</page-id>
+          <mask-url><![CDATA[/(info|promo)/(yangzhou|fuzhou|xiamen|wuhan|dalian|more|jinan|hainan|shijiazhuang|tangshan|qinghuangdao|handan|xingtai|baoding|zhangjiakou|chengde|cangzhou|langfang|hengshui|taiyuan|datong|yangquan|changzhi|jincheng|shuozhou|jinzhong|yuncheng|xinzhou|linfen|lvliang|huhehaote|baotou|wuhai|chifeng|tongliao|eerduosi|hulunbeier|xingan|xilinguole|wulanchabu|bayanzhuoer|alashan|anshan|fushun|benxi|dandong|jinzhou|yingkou|fuxin|liaoyang|panjin|tieling|chaoyang|huludao|changchun|jilin|siping|liaoyuan|tonghua|baishan|songyuan|baicheng|yanbian|haerbin|qiqihaer|jixi|hegang|shuangyashan|daqing|yichun|jiamusi|qitaihe|mudanjiang|heihe|suihua|daxinganling|xuzhou|changzhou|nantong|lianyuangang|huaian|yancheng|zhengjiang|taizhou|suqian|wenzhou|jiaxing|huzhou|shaoxing|jinhua|quzhou|zhoushan|zhejiangtaizhou|lishui|hefei|wuhu|bengbu|huainan|maanshan|huaibei|tongling|anqing|huangshan|chuzhou|fuyang|anhuisuzhou|chaohu|liuan|bozhou|chizhou|xuancheng|putian|sanming|quanzhou|zhangzhou|nanping|longyan|ningde|nanchang|jingdezhen|pingxiang|jiujiang|xinyu|yingtan|ganzhou|jian|jiangxiyichun|jiangxifuzhou|shangrao|zibo|zaozhuang|dongying|yantai|weifang|jining|taian|weihai|rizhao|laiwu|linyi|dezhou|liaocheng|binzhou|heze|zhengzhou|kaifeng|luoyang|pingdingshan|anyang|hebi|xinxiang|jiaozuo|puyang|xuchang|luohe|sanmenxia|nanyang|shangqiu|xinyang|zhoukou|zhumadian|huangshi|shiyan|yichang|xiangyang|ezhou|jinmen|xiaogan|jingzhou|huanggang|xianning|suizhou|enshizhou|xiantao|qianjiang|tianmen|zhuzhou|xiangtan|hengyang|shaoyang|yueyang|changde|zhangjiajie|yiyang|chenzhou|yongzhou|huaihua|loudi|xiangxi|shaoguan|zhuhai|shantou|foshan|jiangmen|zhanjiang|maoming|zhaoqing|huizhou|meizhou|shanwei|heyuan|yangjiang|qingyuan|dongguan|zhongshan|chaozhou|jieyang|yunfu|nanning|liuzhou|guilin|wuzhou|beihai|fangchenggang|qinzhou|guigang|guangxiyulin|baise|hezhou|hechi|zigong|panzhihua|luzhou|deyang|mianyang|guangyuan|suining|neijiang|leshan|nanchong|meishan|yibin|guangan|dazhou|yaan|bazhong|ziyang|aba|ganzi|liangshan|guiyang|liupanshui|zunyi|anshun|tongrendiqu|qianxinan|bijiediqu|qiandongnan|qiannan|kunming|qujing|yuxi|baoshan|zhaotong|chuxiongzhou|honghe|wenshan|simao|xishuangbanna|dalizhou|dehong|lijiang|nujiang|diqing|linchang|lasa|changdudiqu|shannan|rikazediqu|naqu|ali|linzhi|tongchuan|baoji|xianyang|weinan|yanan|hanzhong|yulin|ankang|shangluo|lanzhou|jiayuguan|jinchang|baiyin|tianshui|wuwei|zhangye|pingliang|jiuquan|qingyang|dingxi|longnan|linxiazhou|gannanzhou|xining|haidong|haibei|huangnan|guoluo|yushu|haixi|yinchuan|shizuishan|wuzhong|guyuan|wulumuqi|kelamayi|tulufandiqu|hamidiqu|changjizhou|boertala|bayinguoleng|akesudiqu|kezilesu|kashidiqu|hetiandiqu|yili|tachengdiqu|aletaidiqu|shihezi|taiwan|hongkong|macao|guowai|changsha|beitun|zhongwei|alaer|chongzuo|jiyuan|laibin|shennongjia|tumushuke|wujiaqu|hainanzhou|qionghai|wuzhishan|danzhou|wenchang|wanning|dongfang|dingan|tunchang|chengmai|lingao|baisha|changjiang|ledong|lingshui|baoting|qiongzhong|sanya|haikou|bayannaoer|korea|thailand|singapore|malaysia|sansha)]]></mask-url>
+          <real-url><![CDATA[/info/search?cityEnName=$2]]></real-url>
+          <page-id>4</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/(chongqing|ningbo|yangzhou|wuxi|fuzhou|xiamen|wuhan|xian|shenyang|dalian|more|qingdao|jinan|hainan|shijiazhuang|tangshan|qinghuangdao|handan|xingtai|baoding|zhangjiakou|chengde|cangzhou|langfang|hengshui|taiyuan|datong|yangquan|changzhi|jincheng|shuozhou|jinzhong|yuncheng|xinzhou|linfen|lvliang|huhehaote|baotou|wuhai|chifeng|tongliao|eerduosi|hulunbeier|xingan|xilinguole|wulanchabu|bayanzhuoer|alashan|anshan|fushun|benxi|dandong|jinzhou|yingkou|fuxin|liaoyang|panjin|tieling|chaoyang|huludao|changchun|jilin|siping|liaoyuan|tonghua|baishan|songyuan|baicheng|yanbian|haerbin|qiqihaer|jixi|hegang|shuangyashan|daqing|yichun|jiamusi|qitaihe|mudanjiang|heihe|suihua|daxinganling|xuzhou|changzhou|nantong|lianyuangang|huaian|yancheng|zhengjiang|taizhou|suqian|wenzhou|jiaxing|huzhou|shaoxing|jinhua|quzhou|zhoushan|zhejiangtaizhou|lishui|hefei|wuhu|bengbu|huainan|maanshan|huaibei|tongling|anqing|huangshan|chuzhou|fuyang|anhuisuzhou|chaohu|liuan|bozhou|chizhou|xuancheng|putian|sanming|quanzhou|zhangzhou|nanping|longyan|ningde|nanchang|jingdezhen|pingxiang|jiujiang|xinyu|yingtan|ganzhou|jian|jiangxiyichun|jiangxifuzhou|shangrao|zibo|zaozhuang|dongying|yantai|weifang|jining|taian|weihai|rizhao|laiwu|linyi|dezhou|liaocheng|binzhou|heze|zhengzhou|kaifeng|luoyang|pingdingshan|anyang|hebi|xinxiang|jiaozuo|puyang|xuchang|luohe|sanmenxia|nanyang|shangqiu|xinyang|zhoukou|zhumadian|huangshi|shiyan|yichang|xiangyang|ezhou|jinmen|xiaogan|jingzhou|huanggang|xianning|suizhou|enshizhou|xiantao|qianjiang|tianmen|zhuzhou|xiangtan|hengyang|shaoyang|yueyang|changde|zhangjiajie|yiyang|chenzhou|yongzhou|huaihua|loudi|xiangxi|shaoguan|zhuhai|shantou|foshan|jiangmen|zhanjiang|maoming|zhaoqing|huizhou|meizhou|shanwei|heyuan|yangjiang|qingyuan|dongguan|zhongshan|chaozhou|jieyang|yunfu|nanning|liuzhou|guilin|wuzhou|beihai|fangchenggang|qinzhou|guigang|guangxiyulin|baise|hezhou|hechi|zigong|panzhihua|luzhou|deyang|mianyang|guangyuan|suining|neijiang|leshan|nanchong|meishan|yibin|guangan|dazhou|yaan|bazhong|ziyang|aba|ganzi|liangshan|guiyang|liupanshui|zunyi|anshun|tongrendiqu|qianxinan|bijiediqu|qiandongnan|qiannan|kunming|qujing|yuxi|baoshan|zhaotong|chuxiongzhou|honghe|wenshan|simao|xishuangbanna|dalizhou|dehong|lijiang|nujiang|diqing|linchang|lasa|changdudiqu|shannan|rikazediqu|naqu|ali|linzhi|tongchuan|baoji|xianyang|weinan|yanan|hanzhong|yulin|ankang|shangluo|lanzhou|jiayuguan|jinchang|baiyin|tianshui|wuwei|zhangye|pingliang|jiuquan|qingyang|dingxi|longnan|linxiazhou|gannanzhou|xining|haidong|haibei|huangnan|guoluo|yushu|haixi|yinchuan|shizuishan|wuzhong|guyuan|wulumuqi|kelamayi|tulufandiqu|hamidiqu|changjizhou|boertala|bayinguoleng|akesudiqu|kezilesu|kashidiqu|hetiandiqu|yili|tachengdiqu|aletaidiqu|shihezi|taiwan|hongkong|macao|guowai|changsha|beitun|zhongwei|alaer|chongzuo|jiyuan|laibin|shennongjia|tumushuke|wujiaqu|hainanzhou|qionghai|wuzhishan|danzhou|wenchang|wanning|dongfang|dingan|tunchang|chengmai|lingao|baisha|changjiang|ledong|lingshui|baoting|qiongzhong|sanya|haikou|bayannaoer)/(info|promo)]]></mask-url>
+          <mask-url><![CDATA[/(yangzhou|fuzhou|xiamen|wuhan|dalian|more|jinan|hainan|shijiazhuang|tangshan|qinghuangdao|handan|xingtai|baoding|zhangjiakou|chengde|cangzhou|langfang|hengshui|taiyuan|datong|yangquan|changzhi|jincheng|shuozhou|jinzhong|yuncheng|xinzhou|linfen|lvliang|huhehaote|baotou|wuhai|chifeng|tongliao|eerduosi|hulunbeier|xingan|xilinguole|wulanchabu|bayanzhuoer|alashan|anshan|fushun|benxi|dandong|jinzhou|yingkou|fuxin|liaoyang|panjin|tieling|chaoyang|huludao|changchun|jilin|siping|liaoyuan|tonghua|baishan|songyuan|baicheng|yanbian|haerbin|qiqihaer|jixi|hegang|shuangyashan|daqing|yichun|jiamusi|qitaihe|mudanjiang|heihe|suihua|daxinganling|xuzhou|changzhou|nantong|lianyuangang|huaian|yancheng|zhengjiang|taizhou|suqian|wenzhou|jiaxing|huzhou|shaoxing|jinhua|quzhou|zhoushan|zhejiangtaizhou|lishui|hefei|wuhu|bengbu|huainan|maanshan|huaibei|tongling|anqing|huangshan|chuzhou|fuyang|anhuisuzhou|chaohu|liuan|bozhou|chizhou|xuancheng|putian|sanming|quanzhou|zhangzhou|nanping|longyan|ningde|nanchang|jingdezhen|pingxiang|jiujiang|xinyu|yingtan|ganzhou|jian|jiangxiyichun|jiangxifuzhou|shangrao|zibo|zaozhuang|dongying|yantai|weifang|jining|taian|weihai|rizhao|laiwu|linyi|dezhou|liaocheng|binzhou|heze|zhengzhou|kaifeng|luoyang|pingdingshan|anyang|hebi|xinxiang|jiaozuo|puyang|xuchang|luohe|sanmenxia|nanyang|shangqiu|xinyang|zhoukou|zhumadian|huangshi|shiyan|yichang|xiangyang|ezhou|jinmen|xiaogan|jingzhou|huanggang|xianning|suizhou|enshizhou|xiantao|qianjiang|tianmen|zhuzhou|xiangtan|hengyang|shaoyang|yueyang|changde|zhangjiajie|yiyang|chenzhou|yongzhou|huaihua|loudi|xiangxi|shaoguan|zhuhai|shantou|foshan|jiangmen|zhanjiang|maoming|zhaoqing|huizhou|meizhou|shanwei|heyuan|yangjiang|qingyuan|dongguan|zhongshan|chaozhou|jieyang|yunfu|nanning|liuzhou|guilin|wuzhou|beihai|fangchenggang|qinzhou|guigang|guangxiyulin|baise|hezhou|hechi|zigong|panzhihua|luzhou|deyang|mianyang|guangyuan|suining|neijiang|leshan|nanchong|meishan|yibin|guangan|dazhou|yaan|bazhong|ziyang|aba|ganzi|liangshan|guiyang|liupanshui|zunyi|anshun|tongrendiqu|qianxinan|bijiediqu|qiandongnan|qiannan|kunming|qujing|yuxi|baoshan|zhaotong|chuxiongzhou|honghe|wenshan|simao|xishuangbanna|dalizhou|dehong|lijiang|nujiang|diqing|linchang|lasa|changdudiqu|shannan|rikazediqu|naqu|ali|linzhi|tongchuan|baoji|xianyang|weinan|yanan|hanzhong|yulin|ankang|shangluo|lanzhou|jiayuguan|jinchang|baiyin|tianshui|wuwei|zhangye|pingliang|jiuquan|qingyang|dingxi|longnan|linxiazhou|gannanzhou|xining|haidong|haibei|huangnan|guoluo|yushu|haixi|yinchuan|shizuishan|wuzhong|guyuan|wulumuqi|kelamayi|tulufandiqu|hamidiqu|changjizhou|boertala|bayinguoleng|akesudiqu|kezilesu|kashidiqu|hetiandiqu|yili|tachengdiqu|aletaidiqu|shihezi|taiwan|hongkong|macao|guowai|changsha|beitun|zhongwei|alaer|chongzuo|jiyuan|laibin|shennongjia|tumushuke|wujiaqu|hainanzhou|qionghai|wuzhishan|danzhou|wenchang|wanning|dongfang|dingan|tunchang|chengmai|lingao|baisha|changjiang|ledong|lingshui|baoting|qiongzhong|sanya|haikou|bayannaoer|korea|thailand|singapore|malaysia|sansha|puer)/(info|promo)]]></mask-url>
           <real-url><![CDATA[/info/search?cityEnName=$1]]></real-url>
           <page-id>4</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/info/new]]></mask-url>
+          <real-url><![CDATA[/info/infoadd]]></real-url>
+          <page-id>5</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/info/edit/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/info/infoedit?infoId=$1]]></real-url>
+          <page-id>5</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/info/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/info/infopage?infoId=$1]]></real-url>
+          <page-id>5</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/info/print/(\d{1,})]]></mask-url>
           <real-url><![CDATA[/info/infoprint?infoId=$1]]></real-url>
+          <page-id>5</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/Promo.svc/info/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getpromoinfo&format=xml&promoid=$1]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/Promo.svc/info/json/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getpromoinfo&format=json&promoid=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2105,16 +2690,6 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/Promo.svc/filter/json]]></mask-url>
           <real-url><![CDATA[/dispatcher?method=getpromofiltertype&format=json]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/Promo.svc/info/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getpromoinfo&format=xml&promoid=$1]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/Promo.svc/info/json/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getpromoinfo&format=json&promoid=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2178,28 +2753,48 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/(\d{1,})/photos/tag-([^/-]{1,})]]></mask-url>
-          <real-url><![CDATA[/shoppic/shoppiclist.action?shopId=$1&tagName=$2]]></real-url>
+          <mask-url><![CDATA[/Shop.svc/shops/(\d+(,\d+)*)]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshops&format=xml&shopids=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/Photo.svc/shop]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getshopphotos&format=xml]]></real-url>
+          <mask-url><![CDATA[/Shop.svc/shops/json/(\d+(,\d+)*)]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshops&format=json&shopids=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/Photo.svc/shop/json]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getshopphotos&format=json]]></real-url>
+          <mask-url><![CDATA[/Shop.svc/info/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshopinfo&format=xml&shopid=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/Review.svc/search]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getsearchreview&format=xml]]></real-url>
+          <mask-url><![CDATA[/Shop.svc/info/json/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshopinfo&format=json&shopid=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/Review.svc/search/json]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getsearchreview&format=json]]></real-url>
+          <mask-url><![CDATA[/Shop.svc/info/opi/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshopinfoopi&format=xml&shopid=$1]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/Shop.svc/info/opi/json/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshopinfoopi&format=json&shopid=$1]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/Shop.svc/info/eopi/json/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshopinfoeopi&format=json&shopid=$1]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/Shop.svc/search]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchshop&format=xml]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/Shop.svc/search/json]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchshop&format=json]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2293,6 +2888,11 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/Category.svc/id/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getcategorybyid&categoryid=$1&format=xml]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/Category.svc/id/json/(\d{1,})]]></mask-url>
           <real-url><![CDATA[/dispatcher?method=getcategorybyid&categoryid=$1&format=json]]></real-url>
           <page-id>0</page-id>
@@ -2323,43 +2923,33 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/Category.svc/id/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getcategorybyid&categoryid=$1&format=xml]]></real-url>
+          <mask-url><![CDATA[/Photo.svc/shop]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshopphotos&format=xml]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/info/new]]></mask-url>
-          <real-url><![CDATA[/info/infoadd]]></real-url>
-          <page-id>5</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/info/edit/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/info/infoedit?infoId=$1]]></real-url>
-          <page-id>5</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/(\d{1,})_p(\d{1,})(.*)]]></mask-url>
-          <real-url><![CDATA[/shop/shopAction.action?shopId=$1]]></real-url>
+          <mask-url><![CDATA[/Photo.svc/shop/json]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshopphotos&format=json]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/shop/specTag]]></mask-url>
-          <real-url><![CDATA[/ajax/specTagAction.action]]></real-url>
+          <mask-url><![CDATA[/Review.svc/search]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchreview&format=xml]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/shopremote/search]]></mask-url>
-          <real-url><![CDATA[/router/ajaxsearch.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/shop/series]]></mask-url>
-          <real-url><![CDATA[/ajax/shopSeriesAction.action]]></real-url>
+          <mask-url><![CDATA[/Review.svc/search/json]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchreview&format=json]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/index/cache/clear]]></mask-url>
           <real-url><![CDATA[/ajax/cache/removeCache.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/shop/series]]></mask-url>
+          <real-url><![CDATA[/ajax/shopSeriesAction.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2375,16 +2965,6 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/shopremote/search]]></mask-url>
           <real-url><![CDATA[/router/ajaxsearch.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/Map.svc/offset/json]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getmapopi&format=json]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/Map.svc/offset/xml]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getmapopi&format=xml]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2429,7 +3009,7 @@
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/Shop.svc/search/opi]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getsearchshopopi&format=json]]></real-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchshopopi&format=xml]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2439,7 +3019,7 @@
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/Shop.svc/search/eopi]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getsearchshopeopi&format=json]]></real-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchshopeopi&format=xml]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2449,7 +3029,7 @@
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/Shop.svc/search/tags]]></mask-url>
-          <real-url><![CDATA[/dispatcher?method=getsearchtag&format=json]]></real-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchtag&format=xml]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2468,11 +3048,6 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/citylist/getCitylist]]></mask-url>
-          <real-url><![CDATA[/ajax/citylist/getCitylist.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/shop/suggestShop]]></mask-url>
           <real-url><![CDATA[/ajax/suggestShopAction.action]]></real-url>
           <page-id>0</page-id>
@@ -2480,6 +3055,11 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/index/citylist/getCitylist]]></mask-url>
           <real-url><![CDATA[/ajax/citylist/getCitylist.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/citylist]]></mask-url>
+          <real-url><![CDATA[/citylist/citylist.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2491,6 +3071,16 @@
           <mask-url><![CDATA[/ajax/json/account/reg/mobile/bind]]></mask-url>
           <real-url><![CDATA[/ajax/regMobileBind.action]]></real-url>
           <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/index/deal]]></mask-url>
+          <real-url><![CDATA[/ajax/deal/indexDealsAction.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/promo/]]></mask-url>
+          <real-url><![CDATA[/promo/home.action]]></real-url>
+          <page-id>4</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/addshop]]></mask-url>
@@ -2518,78 +3108,23 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/index/deal]]></mask-url>
-          <real-url><![CDATA[/ajax/deal/indexDealsAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/msg/private]]></mask-url>
-          <real-url><![CDATA[/message/private.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/msg/send]]></mask-url>
-          <real-url><![CDATA[/message/sendPrivate.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/msg/notice]]></mask-url>
-          <real-url><![CDATA[/message/notice.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/msg/subscribe]]></mask-url>
-          <real-url><![CDATA[/message/subscribe.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/msg/notice/delete]]></mask-url>
-          <real-url><![CDATA[/ajax/deleteNotice.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/msg/notice/detail]]></mask-url>
-          <real-url><![CDATA[/ajax/noticeDetail.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/msg/send/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/message/sendPrivate.action?targetID=$1]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/msg/private/deleteAll]]></mask-url>
-          <real-url><![CDATA[/ajax/msgDeleteAll.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/msg/private/delete]]></mask-url>
-          <real-url><![CDATA[/ajax/msgDelete.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/msg/private/reply]]></mask-url>
-          <real-url><![CDATA[/ajax/msgReply.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/msg/private/detail/list]]></mask-url>
-          <real-url><![CDATA[/ajax/msgDetailList.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/shop/(\d{1,})/edit]]></mask-url>
           <real-url><![CDATA[/shop/shopUpdate.action?id=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/msg/private/report]]></mask-url>
-          <real-url><![CDATA[/ajax/msgReport.action]]></real-url>
+          <mask-url><![CDATA[/ajax/json/shop/updateshop]]></mask-url>
+          <real-url><![CDATA[/ajax/shopUpdateAction.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/shop/updateshop]]></mask-url>
-          <real-url><![CDATA[/ajax/shopUpdateAction.action]]></real-url>
+          <mask-url><![CDATA[/shop/edit/success/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/shop/shopUpdateSuccess.action?id=$1]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/account/login/fail]]></mask-url>
+          <real-url><![CDATA[/ajax/loginFail.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2605,21 +3140,6 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/mylist/ajax/json/flower]]></mask-url>
           <real-url><![CDATA[/ajax/MyListFlowerJsonAction]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/edit/success/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shop/shopUpdateSuccess.action?id=$1]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/promo/]]></mask-url>
-          <real-url><![CDATA[/promo/home.action]]></real-url>
-          <page-id>4</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/msg/guide/add]]></mask-url>
-          <real-url><![CDATA[/ajax/recordGuide.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2640,11 +3160,6 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/shop/dishTag]]></mask-url>
           <real-url><![CDATA[/ajax/dishTagAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/account/login/fail]]></mask-url>
-          <real-url><![CDATA[/ajax/loginFail.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2748,8 +3263,68 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/(\d{1,})/photos/tag-([^/-]{1,})-([^/-]{1,})]]></mask-url>
-          <real-url><![CDATA[/shoppic/shoppiclist.action?shopId=$1&tagName=$2&title=$3]]></real-url>
+          <mask-url><![CDATA[/msg/private]]></mask-url>
+          <real-url><![CDATA[/message/private.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/msg/send]]></mask-url>
+          <real-url><![CDATA[/message/sendPrivate.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/msg/send/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/message/sendPrivate.action?targetID=$1]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/msg/notice]]></mask-url>
+          <real-url><![CDATA[/message/notice.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/msg/subscribe]]></mask-url>
+          <real-url><![CDATA[/message/subscribe.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/msg/notice/delete]]></mask-url>
+          <real-url><![CDATA[/ajax/deleteNotice.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/msg/notice/detail]]></mask-url>
+          <real-url><![CDATA[/ajax/noticeDetail.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/msg/private/delete]]></mask-url>
+          <real-url><![CDATA[/ajax/msgDelete.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/msg/private/deleteAll]]></mask-url>
+          <real-url><![CDATA[/ajax/msgDeleteAll.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/msg/private/reply]]></mask-url>
+          <real-url><![CDATA[/ajax/msgReply.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/msg/private/detail/list]]></mask-url>
+          <real-url><![CDATA[/ajax/msgDetailList.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/msg/private/report]]></mask-url>
+          <real-url><![CDATA[/ajax/msgReport.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/msg/guide/add]]></mask-url>
+          <real-url><![CDATA[/ajax/recordGuide.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2763,23 +3338,103 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/region/getallcities]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getcitylistnew&format=json]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/region/getallcities/xml]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getcitylistnew&format=xml]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/region/getdistricts]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getdregionnew&format=json]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/region/getdistricts/xml]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getdregionnew&format=xml]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/region/getneighborhoods]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getbregionnew&format=json]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/region/getneighborhoods/xml]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getbregionnew&format=xml]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/category/getshoptypes]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshoptypelistnew&format=json]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/category/getshoptypes/xml]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getshoptypelistnew&format=xml]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/category/getsubcategories]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getcategorylistnew&format=json]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/category/getsubcategories/xml]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getcategorylistnew&format=xml]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/category/getallsubcategories]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getallcategorylistnew&format=json]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/category/getallsubcategories/xml]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getallcategorylistnew&format=xml]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/review/getrecentreviews]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getreviewbyshopid&format=json]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/review/getrecentreviews/xml]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getreviewbyshopid&format=xml]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/getshops]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchshopnew&format=json]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/getshops/xml]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchshopnew&format=xml]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d{1,})/photos/tag-([^/-]{1,})-([^/-]{1,})]]></mask-url>
+          <real-url><![CDATA[/shoppic/shoppiclist.action?shopId=$1&tagName=$2&title=$3]]></real-url>
+          <page-id>180</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/photos/(\d{1,})/tag]]></mask-url>
           <real-url><![CDATA[/shoppic/showpic.action?picId=$1&type=tag]]></real-url>
+          <page-id>181</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/getshopid]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchshopcompact&format=json]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/map/ajax/json]]></mask-url>
-          <real-url><![CDATA[/ajax/MapRouteAjaxAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/(\d+)/route]]></mask-url>
-          <real-url><![CDATA[/shop/shopRoute.action?shopId=$1]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/smap/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shop/smap.action?shopId=$1]]></real-url>
+          <mask-url><![CDATA[/shop/getshopid/xml]]></mask-url>
+          <real-url><![CDATA[/dispatcher?method=getsearchshopcompact&format=xml]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2800,6 +3455,11 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/shopaccount/resetpassword]]></mask-url>
           <real-url><![CDATA[/ajax/resetpassword.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/smap/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/shop/smap.action?shopId=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2838,6 +3498,16 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/map/ajax/json]]></mask-url>
+          <real-url><![CDATA[/ajax/MapRouteAjaxAction.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d+)/route]]></mask-url>
+          <real-url><![CDATA[/shop/shopRoute.action?shopId=$1]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/msg/subscribe/setup]]></mask-url>
           <real-url><![CDATA[/message/subscribeSetup.action]]></real-url>
           <page-id>0</page-id>
@@ -2858,28 +3528,18 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/mailverify]]></mask-url>
-          <real-url><![CDATA[/account/mailVerify.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/index/userinfo]]></mask-url>
           <real-url><![CDATA[/ajax/userinfo/indexDecoratorAction.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/shop/remindShop]]></mask-url>
-          <real-url><![CDATA[/ajax/remindShopAction.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/index/abtest]]></mask-url>
           <real-url><![CDATA[/ajax/abtest/abtestAction.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/index/abtest]]></mask-url>
-          <real-url><![CDATA[/ajax/abtest/abtestAction.action]]></real-url>
+          <mask-url><![CDATA[/mailverify]]></mask-url>
+          <real-url><![CDATA[/account/mailVerify.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2888,13 +3548,13 @@
           <page-id>185</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/(\d{1,})/(good|power|early|rank)]]></mask-url>
-          <real-url><![CDATA[/shop/shopAction.action?shopId=$1]]></real-url>
+          <mask-url><![CDATA[/shop/(\d{1,})/(power|early|rank)]]></mask-url>
+          <real-url><![CDATA[/urlredirect/reviewRedirectAction.action?id=$1&type=$2]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/(\d{1,})/(good|power|early|rank)_p(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shop/shopAction.action?shopId=$1]]></real-url>
+          <mask-url><![CDATA[/shop/(\d{1,})/(power|early|rank)_p(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/urlredirect/reviewRedirectAction.action?id=$1&type=$2]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2903,34 +3563,34 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/account/getRegCityList]]></mask-url>
-          <real-url><![CDATA[/ajax/getRegCityList.action]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/cache/clearshopcache]]></mask-url>
+          <mask-url><![CDATA[/help/cache/clearshopcache]]></mask-url>
           <real-url><![CDATA[/cache/cacheClearAction.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/cache/clearshopcache]]></mask-url>
-          <real-url><![CDATA[/ajax/cacheClearAjaxAction.action]]></real-url>
+          <mask-url><![CDATA[/ajax/help/cache/clearshopcache]]></mask-url>
+          <real-url><![CDATA[/ajax/help/cacheClearAjaxAction.action]]></real-url>
           <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/shop/(\d{1,})/review_(grade|flower|newest)]]></mask-url>
-          <real-url><![CDATA[/urlredirect/reviewRedirectAction.action?id=$1&type=$2]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/chain/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shop/shopAction.action?groupid=$1]]></real-url>
-          <page-id>12</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/shop/(\d{1,})/faq([^/]*)]]></mask-url>
           <real-url><![CDATA[/urlredirect/reviewRedirectAction.action?id=$1&type=$2]]></real-url>
           <page-id>12</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d{1,})/all([^/]*)]]></mask-url>
+          <real-url><![CDATA[/urlredirect/reviewRedirectAction.action?id=$1&type=$2]]></real-url>
+          <page-id>12</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d{1,})/good([^/]*)]]></mask-url>
+          <real-url><![CDATA[/urlredirect/reviewRedirectAction.action?id=$1&type=$2]]></real-url>
+          <page-id>12</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d{1,})/review_(grade|flower|newest)]]></mask-url>
+          <real-url><![CDATA[/urlredirect/reviewRedirectAction.action?id=$1&type=$2]]></real-url>
+          <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/shop/passby]]></mask-url>
@@ -2943,13 +3603,13 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/msg/reply/checkin]]></mask-url>
-          <real-url><![CDATA[/message/followNote.action?type=4]]></real-url>
+          <mask-url><![CDATA[/ajax/json/shop/memberCard]]></mask-url>
+          <real-url><![CDATA[/ajax/memberCardAddAction.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/shop/memberCard]]></mask-url>
-          <real-url><![CDATA[/ajax/memberCardAddAction.action]]></real-url>
+          <mask-url><![CDATA[/msg/reply/checkin]]></mask-url>
+          <real-url><![CDATA[/message/followNote.action?type=4]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -2970,11 +3630,6 @@
        <url-rewrite-rule>
           <mask-url><![CDATA[/aboutus/hr]]></mask-url>
           <real-url><![CDATA[/aboutus/hr.action]]></real-url>
-          <page-id>81</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
-          <mask-url><![CDATA[/aboutus/media]]></mask-url>
-          <real-url><![CDATA[/aboutus/media.action]]></real-url>
           <page-id>81</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -3018,14 +3673,14 @@
           <page-id>81</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/aboutus/media]]></mask-url>
-          <real-url><![CDATA[/aboutus/media.action]]></real-url>
-          <page-id>81</page-id>
+          <mask-url><![CDATA[/freshshop/(cityA|cityB|cityC|cityD)]]></mask-url>
+          <real-url><![CDATA[/sitemap/sitemapAction?cityLevel=$1]]></real-url>
+          <page-id>192</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/shopall/(\d{1,})/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shopall/shopAll.action?cityId=$1&categoryId=$2]]></real-url>
-          <page-id>81</page-id>
+          <mask-url><![CDATA[/freshshop]]></mask-url>
+          <real-url><![CDATA[/sitemap/sitemapAction?cityLevel=all]]></real-url>
+          <page-id>192</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/mylist/ipad/(\d{1,})]]></mask-url>
@@ -3038,18 +3693,18 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/freshshops]]></mask-url>
-          <real-url><![CDATA[/sitemap/sitemapAction?cityLevel=all]]></real-url>
-          <page-id>1061</page-id>
+          <mask-url><![CDATA[/aboutus/media]]></mask-url>
+          <real-url><![CDATA[/aboutus/media.action]]></real-url>
+          <page-id>81</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/freshshop/(cityA|cityB|cityC|cityD)]]></mask-url>
-          <real-url><![CDATA[/sitemap/sitemapAction?cityLevel=$1]]></real-url>
-          <page-id>1061</page-id>
+          <mask-url><![CDATA[/shopall/(\d{1,})/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/shopall/shopAll.action?cityId=$1&categoryId=$2]]></real-url>
+          <page-id>81</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/booking/reserveform]]></mask-url>
-          <real-url><![CDATA[/ajax/reserveFormApply.action]]></real-url>
+          <real-url><![CDATA[/ajax/reserveFormAction.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -3078,8 +3733,13 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/booking/(order|mobile)/(\d{1,})]]></mask-url>
-          <real-url><![CDATA[/shop/reserveDetailAction.action?type=$1&key=$2]]></real-url>
+          <mask-url><![CDATA[/booking/order/(.*)]]></mask-url>
+          <real-url><![CDATA[/shop/reserveDetailAction.action?type=order&key=$1]]></real-url>
+          <page-id>193</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/booking/mobile/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/shop/reserveDetailAction.action?type=mobile&key=$1]]></real-url>
           <page-id>193</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -3088,8 +3748,8 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/search/maptouch/(category|keyword|branch|around|promo)/(\d+)/(\d+)(?:_([^/]+))?(?:/([a-z0-9]*))?(?:/([a-z0-9]*))?]]></mask-url>
-          <real-url><![CDATA[/search/mapsearchtouch.action?searchName=$1&cityId=$2&shopType=$3&keyword=$4&paramString=$5&traceString=$6]]></real-url>
+          <mask-url><![CDATA[/msg/reply/event]]></mask-url>
+          <real-url><![CDATA[/message/followNote.action?type=5]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -3108,14 +3768,19 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/shop/reviewlist]]></mask-url>
+          <real-url><![CDATA[/ajax/reviewListAction.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/aboutus/merchantagreement]]></mask-url>
           <real-url><![CDATA[/aboutus/merchantagreement.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/card/search/d(\d*)_c(\d*)]]></mask-url>
-          <real-url><![CDATA[/card/cardSearch.action?districtId=$1&categoryId=$2]]></real-url>
-          <page-id>30</page-id>
+          <mask-url><![CDATA[/ajax/json/shop/dealRemind]]></mask-url>
+          <real-url><![CDATA[/ajax/dealRemindAction.action]]></real-url>
+          <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
           <mask-url><![CDATA[/ajax/json/card/suggest]]></mask-url>
@@ -3133,8 +3798,23 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/ajax/json/shop/dealRemind]]></mask-url>
-          <real-url><![CDATA[/ajax/dealRemindAction.action]]></real-url>
+          <mask-url><![CDATA[/card/search/d(\d*)_c(\d*)]]></mask-url>
+          <real-url><![CDATA[/card/cardSearch.action?districtId=$1&categoryId=$2]]></real-url>
+          <page-id>30</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/card/mcardinfo]]></mask-url>
+          <real-url><![CDATA[/card/ajax/memberCardInfo.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d{1,})/map]]></mask-url>
+          <real-url><![CDATA[/shop/shopMap.action?shopId=$1]]></real-url>
+          <page-id>77</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/card/tgExchange]]></mask-url>
+          <real-url><![CDATA[/card/ajax/tgExchange.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
@@ -3143,23 +3823,123 @@
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
+          <mask-url><![CDATA[/shoplist/([a-zA-Z]+)_(\d{1,4})_(\d{1,5})]]></mask-url>
+          <real-url><![CDATA[/shopRank/ShopRankDetail.action?rankTypeUrlName=$1&cityId=$2&shopTypeId=$3]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
           <mask-url><![CDATA[/shoplist/spec_(\d+)$]]></mask-url>
           <real-url><![CDATA[/shopRank/ShopRankDetailRedirect.action?oldSpec=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/shoplist/([a-zA-Z]+)_(\d{1,4})_(\d{1,3})]]></mask-url>
-          <real-url><![CDATA[/shopRank/ShopRankDetail.action?rankTypeUrlName=$1&cityId=$2&shopTypeId=$3]]></real-url>
-          <page-id>0</page-id>
-      </url-rewrite-rule>
-       <url-rewrite-rule>
           <mask-url><![CDATA[/dish/(\d+)]]></mask-url>
           <real-url><![CDATA[/search/dishtagsearch.action?dishId=$1]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
        <url-rewrite-rule>
-          <mask-url><![CDATA[/dish/(\d+)]]></mask-url>
-          <real-url><![CDATA[/search/dishtagsearch.action?dishId=$1]]></real-url>
+          <mask-url><![CDATA[/loginscheck]]></mask-url>
+          <real-url><![CDATA[/account/loginSecurityCheck.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/account/mvcode]]></mask-url>
+          <real-url><![CDATA[/ajax/getMobileVerifyCode.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/account/diffverify]]></mask-url>
+          <real-url><![CDATA[/ajax/differentCityLoginVerify.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shopevent/chuantu/([a-zA-z]+)/index]]></mask-url>
+          <real-url><![CDATA[/shopevent/chuantu/index?cityEnName=$1]]></real-url>
+          <page-id>194</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shopevent/chuantu/([a-zA-z]+)/shoplist]]></mask-url>
+          <real-url><![CDATA[/shopevent/chuantu/shoplist?cityEnName=$1]]></real-url>
+          <page-id>195</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/search/ajax/categorylist/.*]]></mask-url>
+          <real-url><![CDATA[/ajax/categorylist.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/search/ajax/regionlist/.*]]></mask-url>
+          <real-url><![CDATA[/ajax/regionlist.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/sitemap]]></mask-url>
+          <real-url><![CDATA[/index/sitemap.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/sitemap]]></mask-url>
+          <real-url><![CDATA[/index/sitemap.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/mylist/mobile/(\d{1,})]]></mask-url>
+          <real-url><![CDATA[/mylist/MyListDetailActionForIPad.action?listId=$1&mode=mobile]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/card/detail/d(\d*)_c(\d*)]]></mask-url>
+          <real-url><![CDATA[/card/cardDetail.action?districtId=$1&categoryId=$2]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/mylist/ajax/json/mobile]]></mask-url>
+          <real-url><![CDATA[/ajax/MyListShopListJsonAction]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/upload/shop/(\d{1,})/result]]></mask-url>
+          <real-url><![CDATA[/upload/success?shopId=$1]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d{1,})/review_filtered]]></mask-url>
+          <real-url><![CDATA[/review/reviewFilterListAction.action?id=$1]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/card/detail/d(\d*)_c(\d*)_b(.*)_a(\d*)]]></mask-url>
+          <real-url><![CDATA[/card/cardDetail.action?districtId=$1&categoryId=$2&cardId=$3&source=$4]]></real-url>
+          <page-id>197</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/card/detail/c(\d*)_b(.*)_a(\d*)]]></mask-url>
+          <real-url><![CDATA[/card/cardDetail.action?cardType=$1&cardId=$2&source=$3]]></real-url>
+          <page-id>197</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/dish/(\d+)/r(\d+)]]></mask-url>
+          <real-url><![CDATA[/search/dishtagsearch.action?dishId=$1&regionId=$2]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d{1,})/review_pro]]></mask-url>
+          <real-url><![CDATA[/review/reviewModifyProfessionAction.action?id=$1]]></real-url>
+          <page-id>14</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/shop/(\d{1,})/pro]]></mask-url>
+          <real-url><![CDATA[/shop/shopProfessionAction.action?shopId=$1]]></real-url>
+          <page-id>12</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/logintdirect]]></mask-url>
+          <real-url><![CDATA[/account/thirdPartDirectLogin.action]]></real-url>
+          <page-id>0</page-id>
+      </url-rewrite-rule>
+       <url-rewrite-rule>
+          <mask-url><![CDATA[/ajax/json/shop/movie/showlist]]></mask-url>
+          <real-url><![CDATA[/ajax/movieShowListAction.action]]></real-url>
           <page-id>0</page-id>
       </url-rewrite-rule>
 </router-rules>
