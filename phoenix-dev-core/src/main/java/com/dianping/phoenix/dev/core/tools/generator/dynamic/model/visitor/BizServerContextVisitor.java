@@ -11,9 +11,7 @@ import org.apache.log4j.Logger;
 import com.dianping.phoenix.dev.core.model.workspace.entity.BizProject;
 import com.dianping.phoenix.dev.core.model.workspace.entity.Workspace;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.BizServerContext;
-import com.dianping.phoenix.dev.core.tools.utils.PomParser;
 import com.dianping.phoenix.dev.core.tools.utils.WebProjectFileFilter;
-import com.dianping.phoenix.dev.core.tools.wms.WorkspaceConstants;
 
 public class BizServerContextVisitor extends AbstractVisitor<BizServerContext> {
 
@@ -53,8 +51,7 @@ public class BizServerContextVisitor extends AbstractVisitor<BizServerContext> {
      * @return
      */
     private String parseProjectName(File file) {
-        return WorkspaceConstants.FROM_PLUGIN.equalsIgnoreCase(from) ? new PomParser().getArtifactId(file) : file
-                .getName();
+        return file.getName();
     }
 
     @Override
