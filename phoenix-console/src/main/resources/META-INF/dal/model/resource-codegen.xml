@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="resource" root="true">
+    <entity-ref name="product" type="list" names="products" />
+  </entity>
+  <entity name="product">
+    <attribute name="name" value-type="String" />
+    <entity-ref name="domain" type="list" names="domains" />
+  </entity>
+  <entity name="domain">
+    <attribute name="name" value-type="String" />
+    <element name="description" value-type="String" />
+    <entity-ref name="host" type="list" names="hosts" />
+  </entity>
+  <entity name="host">
+    <attribute name="ip" value-type="String" />
+    <attribute name="status" value-type="String" />
+    <attribute name="env" value-type="String" />
+    <attribute name="owner" value-type="String" />
+    <entity-ref name="phoenix-agent" />
+    <entity-ref name="container" />
+  </entity>
+  <entity name="phoenix-agent">
+    <attribute name="version" value-type="String" />
+    <attribute name="status" value-type="String" />
+  </entity>
+  <entity name="container">
+    <attribute name="type" value-type="String" />
+    <attribute name="version" value-type="String" />
+    <attribute name="status" value-type="String" />
+    <attribute name="install-path" value-type="String" />
+    <entity-ref name="app" type="list" names="apps" />
+  </entity>
+  <entity name="app">
+    <attribute name="name" value-type="String" />
+    <attribute name="version" value-type="String" />
+    <entity-ref name="lib" type="list" names="libs" xml-indent="true" />
+    <entity-ref name="kernel" />
+  </entity>
+  <entity name="lib">
+    <attribute name="artifactId" value-type="String" />
+    <attribute name="groupId" value-type="String" />
+    <attribute name="version" value-type="String" />
+    <attribute name="active" value-type="boolean" />
+  </entity>
+  <entity name="kernel">
+    <attribute name="version" value-type="String" />
+    <entity-ref name="lib" type="list" names="libs" />
+  </entity>
+</model>
+

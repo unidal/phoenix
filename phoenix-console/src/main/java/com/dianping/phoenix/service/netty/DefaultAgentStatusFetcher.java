@@ -27,8 +27,8 @@ import org.jboss.netty.util.HashedWheelTimer;
 import org.jboss.netty.util.Timer;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.phoenix.agent.resource.entity.Host;
 import com.dianping.phoenix.configure.ConfigManager;
-import com.dianping.phoenix.project.entity.Host;
 
 public class DefaultAgentStatusFetcher implements AgentStatusFetcher {
 

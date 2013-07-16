@@ -18,8 +18,8 @@ import com.dianping.phoenix.agent.response.entity.Response;
 import com.dianping.phoenix.agent.response.entity.War;
 import com.dianping.phoenix.configure.ConfigManager;
 
-public class DefaultAgentStatusHoder extends ContainerHolder implements Initializable, AgentStatusHolder {
-	Logger logger = Logger.getLogger(DefaultAgentStatusHoder.class);
+public class DefaultAgentStatusHolder extends ContainerHolder implements Initializable, AgentStatusHolder {
+	Logger logger = Logger.getLogger(DefaultAgentStatusHolder.class);
 
 	@Inject
 	private ContainerManager m_containerManager;

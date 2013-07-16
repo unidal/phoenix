@@ -1,0 +1,32 @@
+.iul {
+	list-style-type: none;
+	margin: 0 0 0 0;
+}
+
+.ili {
+	float: left;
+	margin: 10px 0 10px 0;
+	vertical-align: central;
+	height: 20px;
+	min-width: 25%;
+}
+
+.btn.btn-primary.btn-list {
+	background: #DDD;
+	border: 0;
+	border-radius: 3px;
+	padding: 8px 10px 8px;
+	box-shadow:none;
+	color: #000;
+	text-transform: capitalize;
+	margin-right: 5px;
+	text-shadow: none;
+	font-size: 13px;
+	line-height: 1;
+	font-weight: bold;
+}
+
+.btn.btn-primary.btn-list:hover {
+	background: #36F;
+	color: #FFF;
+}

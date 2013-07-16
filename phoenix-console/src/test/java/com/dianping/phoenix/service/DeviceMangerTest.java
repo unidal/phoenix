@@ -1,24 +1,33 @@
 package com.dianping.phoenix.service;
 
-import junit.framework.Assert;
+import java.util.List;
 
 import org.junit.Test;
+import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.phoenix.project.entity.Host;
+import com.dianping.phoenix.agent.resource.entity.Host;
+import com.dianping.phoenix.device.entity.Device;
+import com.dianping.phoenix.service.cmdb.DeviceManager;
+import com.dianping.phoenix.service.visitor.DeviceVisitor;
 
-public class DeviceMangerTest{
+public class DeviceMangerTest extends ComponentTestCase {
+	
 	@Test
-	public void testIPComparation(){
-		DefaultDeviceManager.IPComparator comparator = new DefaultDeviceManager.IPComparator();
-		Host h1 = new Host();
-		Host h2 = new Host();
-		Host h3 = new Host();
-		h1.setIp("10.9.99.9");
-		h2.setIp("255.100.100.9");
-		h3.setIp("10.9.99.10");
-		Assert.assertTrue(true);
-		Assert.assertTrue(comparator.compare(h1, h2)<0);
-		Assert.assertTrue(comparator.compare(h1, h3)<0);
-
+	public void testCmdb() {
+		try {
+			DeviceManager deviceManager = lookup(DeviceManager.class);
+			List<Device> list = deviceManager.getDevices("shop-web");
+			for (Device device : list) {
+				Host host = new Host();
+				device.accept(new DeviceVisitor(host));
+				System.out.println(host.getIp());
+				System.out.println(host.getEnv());
+				System.out.println(host.getStatus());
+				System.out.println(host.getOwner());
+				System.out.println("\n=================\n");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

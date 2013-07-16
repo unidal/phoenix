@@ -4,23 +4,25 @@ import java.util.List;
 
 import org.unidal.web.mvc.ViewModel;
 
+import com.dianping.phoenix.agent.resource.entity.Domain;
+import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.console.ConsolePage;
-import com.dianping.phoenix.console.dal.deploy.Deployment;
 import com.dianping.phoenix.console.dal.deploy.Deliverable;
+import com.dianping.phoenix.console.dal.deploy.Deployment;
 import com.dianping.phoenix.deploy.DeployPolicy;
-import com.dianping.phoenix.project.entity.BussinessLine;
-import com.dianping.phoenix.project.entity.Project;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {
-	private List<BussinessLine> m_bussinessLines;
+	private List<Product> m_products;
 
-	private Project m_project;
+	private Domain m_domain;
 
 	private List<Deliverable> m_deliverables;
 
 	private DeployPolicy[] m_policies;
 
 	private Deployment m_activeDeployment;
+
+	private List<String> m_libs;
 
 	public Model(Context ctx) {
 		super(ctx);
@@ -43,14 +45,6 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 		return m_policies;
 	}
 
-	public Project getProject() {
-		return m_project;
-	}
-	
-	public List<BussinessLine> getBussinessLines() {
-		return m_bussinessLines;
-	}
-
 	public void setActiveDeployment(Deployment activeDeployment) {
 		m_activeDeployment = activeDeployment;
 	}
@@ -63,12 +57,27 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 		m_policies = policies;
 	}
 
-	public void setProject(Project project) {
-		m_project = project;
+	public List<Product> getProducts() {
+		return m_products;
 	}
 
-	public void setBussinessLines(List<BussinessLine> bussinessLines) {
-		this.m_bussinessLines = bussinessLines;
+	public void setProducts(List<Product> products) {
+		m_products = products;
 	}
 
+	public Domain getDomain() {
+		return m_domain;
+	}
+
+	public void setDomain(Domain domain) {
+		m_domain = domain;
+	}
+
+	public void setLibs(List<String> libs) {
+		m_libs = libs;
+	}
+
+	public List<String> getLibs() {
+		return m_libs;
+	}
 }

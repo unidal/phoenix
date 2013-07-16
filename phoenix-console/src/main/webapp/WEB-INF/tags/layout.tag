@@ -17,8 +17,8 @@
 	<res:jsSlot id="head-js"/>
 	<res:useJs value="${res.js.local['jquery-1.8.1.min.js']}" target="head-js"/>
 	<res:useJs value="${res.js.local['core.js']}" target="head-js"/>
-	<res:useCss value='${res.css.local.bootstrap_css}' target="head-css"/>
-	<res:useCss value="${res.css.local['bootstrap-responsive.css']}" target="head-css"/>
+	<res:useCss value="${res.css.local['bootstrap.min.css']}" target="head-css"/>
+	<res:useCss value="${res.css.local['bootstrap-responsive.min.css']}" target="head-css"/>
 	<res:useCss value='${res.css.local.phoenix_css}' target="head-css"/>
 	<script type="text/javascript">var contextpath = "${model.webapp}";</script>
 </head>
@@ -32,7 +32,7 @@
 				</a> 
 				
 				<div class="pull-right">
-					<img height="39" alt="Phoenix" src="${model.webapp}/img/phoenix21.png">
+					<img style="height: 39px" alt="Phoenix" src="${model.webapp}/img/phoenix.png">
 				</div>
 				<div class="nav-collapse collapse">
 					<ul class="nav nav-pills">
@@ -56,6 +56,7 @@
                            <li><a href="${model.moduleUri}/version?type=phoenix-agent">Version</a></li>
                          </ul>
                        </li>
+					   <li><a href="${model.moduleUri}/home?op=search">Search</a></li>
 					   <li><a href="${model.moduleUri}/home?op=about">About</a></li>
 					</ul>
 				</div>
@@ -75,7 +76,7 @@
 	</div>
 	<!--/.fluid-container-->
 
-	<res:useJs value="${res.js.local.bootstrap_js}" target="bottom-js"/>
+	<res:useJs value="${res.js.local['bootstrap.min.js']}" target="bottom-js"/>
 	<res:jsSlot id="bottom-js"/>
 </body>
 </html>

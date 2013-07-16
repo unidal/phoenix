@@ -7,6 +7,8 @@ public enum JspFile {
 
 	ABOUT("/jsp/console/about.jsp"),
 
+	SEARCH("/jsp/console/search.jsp"),
+
 	DEPLOY("/jsp/console/deploy.jsp");
 
 	private String m_path;

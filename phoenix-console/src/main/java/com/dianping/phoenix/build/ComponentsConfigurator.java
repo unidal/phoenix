@@ -26,17 +26,20 @@ import com.dianping.phoenix.deploy.internal.DefaultAgentListener;
 import com.dianping.phoenix.deploy.internal.DefaultDeployExecutor;
 import com.dianping.phoenix.deploy.internal.DefaultDeployListener;
 import com.dianping.phoenix.deploy.internal.DefaultDeployManager;
-import com.dianping.phoenix.service.DefaultDeviceManager;
 import com.dianping.phoenix.service.DefaultGitService;
 import com.dianping.phoenix.service.DefaultProjectManager;
 import com.dianping.phoenix.service.DefaultWarService;
-import com.dianping.phoenix.service.DeviceManager;
 import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.LogService;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.WarService;
+import com.dianping.phoenix.service.cmdb.DefaultDeviceManager;
+import com.dianping.phoenix.service.cmdb.DeviceManager;
 import com.dianping.phoenix.service.netty.AgentStatusFetcher;
 import com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher;
+import com.dianping.phoenix.service.resource.DefaultResourceManager;
+import com.dianping.phoenix.service.resource.MockResourceManager;
+import com.dianping.phoenix.service.resource.ResourceManager;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public static void main(String[] args) {
@@ -77,9 +80,11 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(AgentStatusFetcher.class, DefaultAgentStatusFetcher.class).req(ConfigManager.class));
 		all.add(C(DeviceManager.class, DefaultDeviceManager.class) //
-				.req(ConfigManager.class, AgentStatusFetcher.class));
+				.req(ConfigManager.class));
 		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
 				.req(DeploymentDao.class, DeploymentDetailsDao.class));
+		all.add(C(ResourceManager.class, MockResourceManager.class)//
+				.req(AgentStatusFetcher.class, DeviceManager.class, ConfigManager.class));
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //
@@ -94,7 +99,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(DeployManager.class, DefaultDeployManager.class) //
 				.req(ProjectManager.class, DeployListener.class));
 	}
-
 	private void defineWebComponents(List<Component> all) {
 		all.add(C(Module.class, PhoenixConsoleModule.ID, PhoenixConsoleModule.class));
 		all.add(C(ModuleManager.class, DefaultModuleManager.class) //

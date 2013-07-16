@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+	<product name="TuanGou">
+		<domain name="TuanGouWeb">
+			<description>TuanGou Web Application</description>
+			<host ip="127.0.0.1" status="up" env="product" owner="marsqing">
+				<phoenix-agent version="1.0.1" status="up"/> 
+				<container type="tomcat" version="6.2.0" status="up" install-path="/usr/local/tomcat/">
+					<app name="tuangou-web" version="1.2.3">
+						<libs>
+							<lib artifactId="pegion" groupId="com.dianiong" version="2.0.3" />
+							<lib artifactId="cat" groupId="com.dianiong" version="2.0.3" />
+							<lib artifactId="swallow" groupId="com.dianiong" version="2.0.3" />
+						</libs>
+						<kernel version="0.1.1-SNAPSHOT">
+							<lib artifactId="pegion" groupId="com.dianiong" version="2.0.3" />
+							<lib artifactId="cat" groupId="com.dianiong" version="2.0.3" active="false" />
+							<lib artifactId="swallow" groupId="com.dianiong" version="2.0.3" />
+						</kernel>
+					</app>
+					<app name="user-acount" ></app>
+				</container>
+			</host>
+			<host ip="127.0.0.2"></host>
+		</domain>
+		<domain name="TuanGouRemote">
+		</domain>
+		<domain name="DealService">
+		</domain>
+	</product>
+	<product name="UserCard">
+	</product>
+</resource>

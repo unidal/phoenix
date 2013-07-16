@@ -153,30 +153,32 @@ public class ConfigManager implements Initializable {
 																		// second
 	}
 
-	private String getCmdbBaseUrl() {
+	public String getCmdbBaseUrl() {
+		check();
+
 		return m_config.getConsole().getCmdb().getBaseUrlPattern();
 	}
 	public String getCmdbCatalogUrl() {
 		check();
-		String baseUrlPattern = getCmdbBaseUrl();
+		String baseUrlPattern = m_config.getConsole().getCmdb().getBaseUrlPattern();
 		String catalogUrlPart = m_config.getConsole().getCmdb().getCatalogUrlPart();
 		return String.format(baseUrlPattern, catalogUrlPart);
 	}
 
 	public String getCmdbDomainUrlPattern() {
 		check();
-		String baseUrlPattern = getCmdbBaseUrl();
+		String baseUrlPattern = m_config.getConsole().getCmdb().getBaseUrlPattern();
 		String domainUrlPattern = m_config.getConsole().getCmdb().getDomainUrlPatternPart();
 		return String.format(baseUrlPattern, domainUrlPattern);
 	}
 
 	public String getCmdbIpUrlPattern() {
 		check();
-		String baseUrlPattern = getCmdbBaseUrl();
+		String baseUrlPattern = m_config.getConsole().getCmdb().getBaseUrlPattern();
 		String ipUrlPattern = m_config.getConsole().getCmdb().getIpUrlPatternPart();
 		return String.format(baseUrlPattern, ipUrlPattern);
 	}
-	
+
 	public String getAgentStatusUrl(String host) {
 		check();
 
@@ -184,5 +186,9 @@ public class ConfigManager implements Initializable {
 
 		return String.format(pattern, host);
 	}
-
+	
+	public String getResourceCachePath() {
+		check();
+		return m_config.getConsole().getResourceCachePath();
+	}
 }

@@ -19,7 +19,7 @@
 	   </pre>
 	</w:errors>
 	
-	<c:set var="project" value="${model.project}"/>
+	<c:set var="domain" value="${model.domain}"/>
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span12">
@@ -27,20 +27,20 @@
 					<tbody>
 						<tr>
 							<th width="80">Project</th>
-							<td width="200">${project.name}</td>
+							<td width="200">${domain.name}</td>
 							<th width="80">Owner</th>
 							<td width="200">
 								<c:choose>
-									<c:when test="${fn:length(project.owners) eq 0}">N/A</c:when>
+									<c:when test="${fn:length(domain.owners) eq 0}">N/A</c:when>
 									<c:otherwise>
-										<c:forEach var="owner" items="${project.owners}">
+										<c:forEach var="owner" items="${domain.owners}">
 										${owner}&nbsp;
 										</c:forEach>
 									</c:otherwise>
 								</c:choose>
 							</td>
 							<th width="80">Description</th>
-							<td>${project.description}</td>
+							<td>${domain.description}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -48,7 +48,7 @@
 		</div>
 		
 		<form>
-		<input type="hidden" name="project" value="${payload.project}">
+		<input type="hidden" name="domain" value="${payload.project}">
 		<div class="row-fluid">
 			<div class="span3">
 				<div class="row-fluid">
@@ -63,18 +63,18 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="host" items="${project.hosts}" varStatus="status">
+								<c:forEach var="host" items="${domain.hosts}" varStatus="status">
 									<tr>
 										<td>
-											${w:showCheckbox('host', host, payload.hosts, 'ip', 'ip')}
-											<c:if test="${host.agentStatus=='ok'}">
+											${w:showCheckbox('host', host.value, payload.hosts, 'ip', 'ip')}
+											<c:if test="${host.value.phoenixAgent.status=='ok'}">
 											   <div class="z6 a-f-e" title="可用"></div>
 											</c:if>
-											<c:if test="${host.agentStatus!='ok'}">
+											<c:if test="${host.value.phoenixAgent.status!='ok'}">
 											   <div class="u6 a-f-e" title="不可用"></div>
 											</c:if>
 										</td>
-										<td>${host.env}</td>
+										<td>${host.value.env}</td>
 										<td>1.0</td>
 										<td>2.0.3</td>
 									</tr>
