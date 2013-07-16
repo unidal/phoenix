@@ -15,28 +15,23 @@
  */
 package com.dianping.phoenix.dev.core.tools.wms;
 
+import java.io.File;
+import java.io.OutputStream;
+import java.util.List;
+
+import com.dianping.phoenix.dev.core.model.workspace.entity.Workspace;
+
 /**
  * @author Leo Liang
  * 
  */
-public class WorkspaceManagementException extends Exception {
+public interface WorkspaceService {
 
-    private static final long serialVersionUID = -652464443921355874L;
+    public void create(Workspace model, OutputStream out) throws Exception;
 
-    public WorkspaceManagementException() {
-        super();
-    }
+    public void modify(Workspace model, OutputStream out) throws Exception;
 
-    public WorkspaceManagementException(String message) {
-        super(message);
-    }
+	public void pullConfig(File wsDir);
 
-    public WorkspaceManagementException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public WorkspaceManagementException(Throwable cause) {
-        super(cause);
-    }
-
+	public List<String> getProjectListByPattern(String pattern);
 }
