@@ -31,6 +31,7 @@ import org.zeroturnaround.zip.ZipUtil;
 import com.dianping.phoenix.dev.core.model.workspace.entity.BizProject;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.ContainerWebXMLGenerator;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspaceStartSHGenerator;
+import com.dianping.phoenix.dev.core.tools.generator.dynamic.WorkspaceStopSHGenerator;
 
 /**
  * 
@@ -94,6 +95,11 @@ public class AgentWorkspaceServiceImpl extends AbstractWorkspaceService {
 		File startSh = new File(context.getBaseDir(), "start.sh");
 		workspaceStartSHGenerator.generate(startSh, new ArrayList<String>());
 		startSh.setExecutable(true);
+		
+		WorkspaceStopSHGenerator workspaceStopSHGenerator = new WorkspaceStopSHGenerator();
+        File stopSh = new File(context.getBaseDir(), "stop.sh");
+        workspaceStopSHGenerator.generate(stopSh, new ArrayList<String>());
+        stopSh.setExecutable(true);
 	}
 
 	@Override

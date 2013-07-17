@@ -2,14 +2,22 @@ package com.dianping.phoenix.dev.agent.page.home;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
@@ -29,9 +37,12 @@ import com.google.gson.JsonSyntaxException;
 public class Handler implements PageHandler<Context> {
     @Inject
     private WorkspaceFacade     m_workspaceFacade;
+    private final static Logger logger              = Logger.getLogger(Handler.class);
 
-    private Gson                gson        = new Gson();
-    private static final String DEPLOY_PATH = "/data/webapps/phoenix-dev/";
+    private Gson                gson                = new Gson();
+    private static final String DEPLOY_PATH         = "/data/webapps/phoenix-dev/";
+    private static final int    START_TIMEOUT       = 3;
+    private static final String STARTED_LOG_PATTERN = "Started SocketConnector@0.0.0.0:8080";
 
     @Override
     @PayloadMeta(Payload.class)
@@ -53,7 +64,7 @@ public class Handler implements PageHandler<Context> {
                 try {
                     m_workspaceFacade.create(convertToWorkspace(param));
 
-                    startPhoenixServer(new File(param.deployPath, "start.sh").getAbsolutePath());
+                    executeShell(new File(param.deployPath, "start.sh").getAbsolutePath());
 
                 } catch (Exception e) {
                     reqRes.addError(Status.WORKSPACE_RUNTIMEERROR, e.getMessage());
@@ -61,8 +72,80 @@ public class Handler implements PageHandler<Context> {
             }
         }
 
-        ctx.getHttpServletResponse().getOutputStream().write(reqRes.toJson().getBytes());
+        if (reqRes.success && !checkStarted(new File(param.deployPath, "boot.log"), param.startTimeout)) {
+            reqRes.addError(Status.START_FAIL, "Start phoenix server fail.");
+            executeShell(new File(param.deployPath, "stop.sh").getAbsolutePath());
+        }
 
+        if (param == null || StringUtils.isBlank(param.returnUrl)) {
+            ctx.getHttpServletResponse().getOutputStream().write(reqRes.toJson().getBytes());
+        } else {
+            responseResultToReturnUrl(param.returnUrl, reqRes.toJson());
+        }
+
+    }
+
+    private void responseResultToReturnUrl(String returnUrl, String json) {
+        URL reqUrl;
+        try {
+            reqUrl = new URL(returnUrl);
+            HttpURLConnection conn = (HttpURLConnection) reqUrl.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setConnectTimeout(3000);
+            conn.setDoOutput(true);
+
+            PrintWriter out = new PrintWriter(conn.getOutputStream());
+
+            out.print(URLEncoder.encode("response", "UTF-8") + "=" + URLEncoder.encode(json, "UTF-8"));
+
+            out.close();
+
+            InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream(), "UTF-8");
+
+            IOUtils.toString(inputStreamReader);
+        } catch (Exception e) {
+            logger.error(String.format("Request returnUrl(%s) fail.", returnUrl), e);
+        }
+    }
+
+    private boolean checkStarted(File logFile, int timeout) {
+        long nanosTimeout = TimeUnit.MINUTES.toNanos(timeout);
+        long lastTime = System.nanoTime();
+        while (true) {
+            if (startedPatternExist(logFile)) {
+                return true;
+            }
+
+            long now = System.nanoTime();
+            nanosTimeout -= now - lastTime;
+            lastTime = now;
+
+            if (nanosTimeout <= 0) {
+                if (startedPatternExist(logFile)) {
+                    return true;
+                }
+                logger.warn("Started check timeout.");
+                return false;
+            }
+        }
+    }
+
+    private boolean startedPatternExist(File logFile) {
+        List<String> logs = null;
+        try {
+            logs = FileUtils.readLines(logFile);
+        } catch (IOException e) {
+            // ignore
+        }
+        if (logs != null) {
+            for (String line : logs) {
+                if (line.indexOf(STARTED_LOG_PATTERN) >= 0) {
+                    logger.info("Started check success.");
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private Workspace convertToWorkspace(ReqParam param) {
@@ -95,7 +178,10 @@ public class Handler implements PageHandler<Context> {
                 return false;
             } else if (subFiles.length > 0 && forceDeploy) {
                 try {
-                    killPhoenixServer();
+                    File stopScript = new File(deployPath, "stop.sh");
+                    if (stopScript.exists()) {
+                        executeShell(stopScript.getAbsolutePath());
+                    }
 
                     FileUtils.cleanDirectory(deployDir);
                 } catch (Exception e) {
@@ -116,14 +202,7 @@ public class Handler implements PageHandler<Context> {
         return true;
     }
 
-    private void killPhoenixServer() throws IOException {
-        ScriptExecutor scriptExecutor = new DefaultScriptExecutor();
-        scriptExecutor
-                .exec("jps -lvm | awk -v javaclass=com.dianping.phoenix.container.PhoenixServer '$2==javaclass{cmd=sprintf(\"kill -9 %s\", $1, $1);system(cmd)}'",
-                        System.out, System.out);
-    }
-
-    private void startPhoenixServer(String scriptPath) throws IOException {
+    private void executeShell(String scriptPath) throws IOException {
         ScriptExecutor scriptExecutor = new DefaultScriptExecutor();
         scriptExecutor.exec(scriptPath, System.out, System.out);
     }
@@ -154,7 +233,8 @@ public class Handler implements PageHandler<Context> {
     }
 
     private static enum Status {
-        OK(200), PARAM_INVALIDATE(201), WAR_INVALIDATE(202), DEPLOYPATH_INVALIDATE(203), WORKSPACE_RUNTIMEERROR(204);
+        OK(200), PARAM_INVALIDATE(201), WAR_INVALIDATE(202), DEPLOYPATH_INVALIDATE(203), WORKSPACE_RUNTIMEERROR(204), START_FAIL(
+                205);
         private int code;
 
         private Status(int code) {
@@ -184,8 +264,18 @@ public class Handler implements PageHandler<Context> {
     private static class ReqParam {
         private String[] wars;
         private String   returnUrl;
-        private String   deployPath  = DEPLOY_PATH;
-        private boolean  forceDeploy = false;
+        private String   deployPath   = DEPLOY_PATH;
+        private boolean  forceDeploy  = false;
+        private int      startTimeout = START_TIMEOUT;
+    }
 
+    public static void main(String[] args) throws Exception {
+        // ReqParam param = new ReqParam();
+        // param.wars = new String[] { "sss" };
+        // Gson gson = new Gson();
+        // System.out.println(gson.toJson(param));
+
+        ScriptExecutor scriptExecutor = new DefaultScriptExecutor();
+        scriptExecutor.exec("jps -lvm | echo 1", System.out, System.out);
     }
 }

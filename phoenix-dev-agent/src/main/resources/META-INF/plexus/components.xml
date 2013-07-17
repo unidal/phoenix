@@ -98,19 +98,7 @@
 			<implementation>com.dianping.phoenix.dev.agent.page.home.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.dev.agent.page.home.JspViewer</role>
-				</requirement>
-				<requirement>
 					<role>com.dianping.phoenix.dev.core.WorkspaceFacade</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.phoenix.dev.agent.page.home.JspViewer</role>
-			<implementation>com.dianping.phoenix.dev.agent.page.home.JspViewer</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
 				</requirement>
 			</requirements>
 		</component>

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+jps -lvm | awk -v javaclass=com.dianping.phoenix.container.PhoenixServer '$2==javaclass{cmd=sprintf("kill -9 %s", $1, $1);system(cmd)}'

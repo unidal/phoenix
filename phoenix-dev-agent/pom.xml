@@ -42,6 +42,12 @@
 			<groupId>com.dianping.platform</groupId>
 			<artifactId>phoenix-dev-core</artifactId>
 			<version>0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.site.common</groupId>
+					<artifactId>test-framework</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- for unit test -->
 		<dependency>
