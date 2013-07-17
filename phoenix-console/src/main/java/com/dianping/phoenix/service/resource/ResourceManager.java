@@ -7,6 +7,7 @@ import java.util.Set;
 import com.dianping.phoenix.agent.resource.entity.Domain;
 import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
+import com.dianping.phoenix.console.page.home.Payload;
 
 public interface ResourceManager {
 
@@ -19,4 +20,8 @@ public interface ResourceManager {
 	public List<Product> getProducts();
 
 	public Map<String, Set<String>> getLibSet();
+
+	public List<Product> getFilteredProducts(Payload payload);
+
+	public Domain getFilteredDomain(Payload payload, String name);
 }

@@ -37,7 +37,6 @@ import com.dianping.phoenix.service.cmdb.DefaultDeviceManager;
 import com.dianping.phoenix.service.cmdb.DeviceManager;
 import com.dianping.phoenix.service.netty.AgentStatusFetcher;
 import com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher;
-import com.dianping.phoenix.service.resource.DefaultResourceManager;
 import com.dianping.phoenix.service.resource.MockResourceManager;
 import com.dianping.phoenix.service.resource.ResourceManager;
 

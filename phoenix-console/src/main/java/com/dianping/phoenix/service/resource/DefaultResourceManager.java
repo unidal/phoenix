@@ -31,10 +31,13 @@ import com.dianping.phoenix.agent.resource.entity.Resource;
 import com.dianping.phoenix.agent.resource.transform.DefaultSaxParser;
 import com.dianping.phoenix.agent.resource.transform.DefaultXmlBuilder;
 import com.dianping.phoenix.configure.ConfigManager;
+import com.dianping.phoenix.console.page.home.Payload;
 import com.dianping.phoenix.device.entity.Device;
 import com.dianping.phoenix.service.cmdb.DeviceManager;
 import com.dianping.phoenix.service.netty.AgentStatusFetcher;
 import com.dianping.phoenix.service.visitor.DeviceVisitor;
+import com.dianping.phoenix.service.visitor.FilterStrategy;
+import com.dianping.phoenix.service.visitor.FilteredResourceBuilder;
 
 public class DefaultResourceManager implements ResourceManager, Initializable, LogEnabled {
 	@Inject
@@ -51,7 +54,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 
 	private AtomicReference<Resource> m_resource = new AtomicReference<Resource>();
 	private AtomicReference<Map<String, Domain>> m_domains = new AtomicReference<Map<String, Domain>>();
-	private AtomicReference<Map<String, Set<String>>> m_libs = new AtomicReference<Map<String, Set<String>>>();
+	private AtomicReference<Map<String, Set<String>>> m_domainLibs = new AtomicReference<Map<String, Set<String>>>();
 	private AtomicReference<Map<String, List<String>>> m_resourceInfo = new AtomicReference<Map<String, List<String>>>();
 
 	private Resource m_resourceCache;
@@ -174,55 +177,10 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 				resource.addProduct(product);
 			}
 
-			analysisResource(resource);
-
 			m_resourceCache = resource;
+			m_domainLibs.set(analysisResource(resource));
 			m_resource.set(resource);
 			m_domains.set(domains);
-		}
-
-		private void analysisResource(Resource resource) {
-			Map<String, Set<String>> libs = new HashMap<String, Set<String>>();
-			for (Product product : resource.getProducts().values()) {
-				for (Domain domain : product.getDomains().values()) {
-					int activeCount = 0;
-					int inactiveCount = 0;
-					Set<String> domainLibs = new HashSet<String>();
-					for (Host host : domain.getHosts().values()) {
-						domain.addOwner(getUnknowIfBlank(host.getOwner()));
-						if (host.getPhoenixAgent() != null && "ok".equals(host.getPhoenixAgent().getStatus())) {
-							activeCount++;
-						} else {
-							inactiveCount++;
-						}
-
-						if (host.getContainer() != null) {
-							for (App app : host.getContainer().getApps()) {
-								Kernel kernel = app.getKernel();
-								domain.addKernelVersion(kernel == null ? "NONE" : getUnknowIfBlank(kernel.getVersion()));
-								domain.addAppVersion(getUnknowIfBlank(app.getVersion()));
-								for (Lib lib : app.getLibs()) {
-									domainLibs.add(lib.getArtifactId());
-								}
-								if (kernel != null) {
-									for (Lib lib : kernel.getLibs()) {
-										domainLibs.add(lib.getArtifactId());
-									}
-								}
-							}
-						}
-					}
-					domain.setActiveCount(activeCount);
-					domain.setInactiveCount(inactiveCount);
-					libs.put(domain.getName(), domainLibs);
-				}
-			}
-
-			m_libs.set(libs);
-		}
-
-		private String getUnknowIfBlank(String str) {
-			return str != null && str.trim().length() > 0 ? str : "Unknow";
 		}
 
 		@Override
@@ -241,6 +199,49 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 				}
 			}
 		}
+	}
+
+	private Map<String, Set<String>> analysisResource(Resource resource) {
+		Map<String, Set<String>> libs = new HashMap<String, Set<String>>();
+		for (Product product : resource.getProducts().values()) {
+			for (Domain domain : product.getDomains().values()) {
+				int activeCount = 0;
+				int inactiveCount = 0;
+				Set<String> domainLibs = new HashSet<String>();
+				for (Host host : domain.getHosts().values()) {
+					domain.addOwner(getUnknowIfBlank(host.getOwner()));
+					if (host.getPhoenixAgent() != null && "ok".equals(host.getPhoenixAgent().getStatus())) {
+						activeCount++;
+					} else {
+						inactiveCount++;
+					}
+
+					if (host.getContainer() != null) {
+						for (App app : host.getContainer().getApps()) {
+							Kernel kernel = app.getKernel();
+							domain.addKernelVersion(kernel == null ? "NONE" : getUnknowIfBlank(kernel.getVersion()));
+							domain.addAppVersion(getUnknowIfBlank(app.getVersion()));
+							for (Lib lib : app.getLibs()) {
+								domainLibs.add(lib.getArtifactId());
+							}
+							if (kernel != null) {
+								for (Lib lib : kernel.getLibs()) {
+									domainLibs.add(lib.getArtifactId());
+								}
+							}
+						}
+					}
+				}
+				domain.setActiveCount(activeCount);
+				domain.setInactiveCount(inactiveCount);
+				libs.put(domain.getName(), domainLibs);
+			}
+		}
+		return libs;
+	}
+
+	private String getUnknowIfBlank(String str) {
+		return str != null && str.trim().length() > 0 ? str : "Unknow";
 	}
 
 	@Override
@@ -371,6 +372,28 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 
 	@Override
 	public Map<String, Set<String>> getLibSet() {
-		return m_libs.get();
+		return m_domainLibs.get();
 	}
+
+	@Override
+	public List<Product> getFilteredProducts(Payload payload) {
+		Resource resource = new FilteredResourceBuilder(new FilterStrategy(getResource(), payload))
+				.getFilteredResource();
+		return new ArrayList<Product>(resource.getProducts().values());
+	}
+
+	@Override
+	public Domain getFilteredDomain(Payload payload, String name) {
+		Resource resource = new FilteredResourceBuilder(new FilterStrategy(getResource(), payload))
+				.getFilteredResource();
+
+		for (Product product : resource.getProducts().values()) {
+			if (product.getDomains().containsKey(name)) {
+				return product.getDomains().get(name);
+			}
+		}
+
+		return new Domain(name);
+	}
+
 }

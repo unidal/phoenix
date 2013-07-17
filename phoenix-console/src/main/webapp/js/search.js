@@ -15,8 +15,7 @@ function getNewQueryHtml() {
 
 	ret += '<div id="query' + queryIdx
 			+ '" style="margin:10px 10px 0px 10px;">';
-	ret += '<input id="join' + queryIdx + '" name="join' + queryIdx
-			+ '" type="hidden" value="or">';
+	ret += '<input id="join' + queryIdx + '" name="joint" type="hidden" value="or">';
 	ret += '<div class="btn-group jar-logic" data-toggle="buttons-radio" for="join'
 			+ queryIdx + '">';
 	ret += '<button type="button" class="btn">&amp;</button>';
@@ -24,19 +23,15 @@ function getNewQueryHtml() {
 	ret += '</div>&emsp;';
 	ret += '<input id="dep'
 			+ queryIdx
-			+ '" name="dep'
-			+ queryIdx
-			+ '" class="dependency" type="text" placeholder="Type or select artifactId" data-provide="typeahead">';
-	ret += '<input id="op' + queryIdx + '" name="op' + queryIdx
-			+ '" type="hidden" value="=">&emsp;';
+			+ '" name="dependency" class="dependency" type="text" placeholder="Type or select artifactId" data-provide="typeahead">';
+	ret += '<input id="op' + queryIdx + '" name="operator" type="hidden" value="=">&emsp;';
 	ret += '<div class="btn-group jar-opt" data-toggle="buttons-radio" for="op'
 			+ queryIdx + '">';
 	ret += '<button type="button" class="btn">&lt;</button>';
 	ret += '<button type="button" class="btn active">=</button>';
 	ret += '<button type="button" class="btn">&gt;</button>';
 	ret += '</div>&emsp;';
-	ret += '<input id="ver' + queryIdx + '" name="ver' + queryIdx
-			+ '" type="text" placeholder="Input version info">';
+	ret += '<input id="ver' + queryIdx + '" name="version" type="text" placeholder="Input version info">';
 	ret += '</div>';
 
 	return ret;

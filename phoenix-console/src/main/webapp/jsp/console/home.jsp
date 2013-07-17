@@ -4,14 +4,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"  %>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
+<%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 
 <jsp:useBean id="ctx" type="com.dianping.phoenix.console.page.home.Context" scope="request" />
 <jsp:useBean id="payload" type="com.dianping.phoenix.console.page.home.Payload" scope="request" />
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.home.Model" scope="request" />
-<script src="js/jquery-1.8.1.min.js" ></script>
-<script src="js/console-home.js" type="text/javascript"></script>
 
 <a:layout>
+	<input type="hidden" id="payload_dependencies" value="${payload.dependencies}">
+	<input type="hidden" id="payload_operators" value="${payload.operators}">
+	<input type="hidden" id="payload_versions" value="${payload.versions}">
+	<input type="hidden" id="payload_joints" value="${payload.joints}">
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span12">
@@ -65,7 +68,7 @@
 								<c:forEach var="domain" items="${product.domains}">
 									<tr>									
 										<td><img src="${model.webapp}/img/green.gif"></td>
-										<td><a href="?op=project&type=${payload.plan.warType}&project=${domain.value.name}">${domain.value.name}</a></td>
+										<td><a class="toProject" href="?op=project&type=${payload.plan.warType}&project=${domain.value.name}">${domain.value.name}</a></td>
 										<td>
 											<c:choose>
 												<c:when test="${fn:length(domain.value.owners) eq 0}">N/A</c:when>
@@ -106,4 +109,6 @@
 			</c:forEach>
 		</div>
 	</div>
+	<res:useJs value="${res.js.local['console-home.js']}" target="home-js" />
+	<res:jsSlot id="home-js" />
 </a:layout>
