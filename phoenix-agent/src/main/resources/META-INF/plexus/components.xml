@@ -51,7 +51,7 @@
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.core.AgentStatusHolder</role>
-			<implementation>com.dianping.phoenix.agent.core.DefaultAgentStatusHoder</implementation>
+			<implementation>com.dianping.phoenix.agent.core.DefaultAgentStatusHolder</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -224,6 +224,11 @@
 		<component>
 			<role>com.dianping.phoenix.agent.page.home.JspViewer</role>
 			<implementation>com.dianping.phoenix.agent.page.home.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.phoenix.agent.page.deploy.Handler</role>
@@ -246,6 +251,11 @@
 		<component>
 			<role>com.dianping.phoenix.agent.page.deploy.JspViewer</role>
 			<implementation>com.dianping.phoenix.agent.page.deploy.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
 		</component>
 	</components>
 </plexus>

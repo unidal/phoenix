@@ -17,7 +17,7 @@
 			<div class="span12">
 				<ul class="nav nav-tabs" id="myTab">
 					<c:set var="flag" scope="page" value="true"/>
-					<c:forEach var="bussinessLine" items="${model.bussinessLines}">
+					<c:forEach var="product" items="${model.products}">
 						<c:choose>
 						    <c:when test="${flag}">
 						       <li class="active bl">
@@ -27,7 +27,7 @@
 						        <li class="bl">
 						    </c:otherwise>
 						</c:choose>
-									<a href="#${bussinessLine.name}">${bussinessLine.name}</a>
+									<a href="#${product.name}">${product.name}</a>
 								</li>
 					</c:forEach>
 					<li class="pull-right">
@@ -39,14 +39,14 @@
 		</div>
 		<div class="tab-content">
 			<c:set var="flag" scope="page" value="true"/>
-			<c:forEach var="bussinessLine" items="${model.bussinessLines}">	
+			<c:forEach var="product" items="${model.products}">	
 			<c:choose>
 				<c:when test="${flag}">
-					<div class="tab-pane active row-fluid" id="${bussinessLine.name}">
+					<div class="tab-pane active row-fluid" id="${product.name}">
 					<c:set var="flag" scope="page" value="false"/>
 				</c:when>
 				<c:otherwise>
-					<div class="tab-pane row-fluid" id="${bussinessLine.name}">
+					<div class="tab-pane row-fluid" id="${product.name}">
 				</c:otherwise>
 			</c:choose>
 				<div class="span12">
@@ -62,26 +62,26 @@
 							</tr>
 						</thead>
 						<tbody>
-								<c:forEach var="project" items="${bussinessLine.projects}">
+								<c:forEach var="domain" items="${product.domains}">
 									<tr>									
 										<td><img src="${model.webapp}/img/green.gif"></td>
-										<td><a href="?op=project&type=${payload.plan.warType}&project=${project.value.name}">${project.value.name}</a></td>
+										<td><a href="?op=project&type=${payload.plan.warType}&project=${domain.value.name}">${domain.value.name}</a></td>
 										<td>
 											<c:choose>
-												<c:when test="${fn:length(project.value.owners) eq 0}">N/A</c:when>
+												<c:when test="${fn:length(domain.value.owners) eq 0}">N/A</c:when>
 												<c:otherwise>
-													<c:forEach var="owner" items="${project.value.owners}">
+													<c:forEach var="owner" items="${domain.value.owners}">
 													${owner}&nbsp;
 													</c:forEach>
 												</c:otherwise>
 											</c:choose>
 										</td>
-										<td>${project.value.activeCount}/${project.value.inactiveCount}</td>
+										<td>${domain.value.activeCount}/${domain.value.inactiveCount}</td>
 										<td>
 											<c:choose>
-												<c:when test="${fn:length(project.value.kernelVersions) eq 0}">N/A</c:when>
+												<c:when test="${fn:length(domain.value.kernelVersions) eq 0}">N/A</c:when>
 												<c:otherwise>
-													<c:forEach var="kerVersion" items="${project.value.kernelVersions}">
+													<c:forEach var="kerVersion" items="${domain.value.kernelVersions}">
 													${kerVersion}&nbsp;
 													</c:forEach>
 												</c:otherwise>
@@ -89,9 +89,9 @@
 										</td>
 										<td>
 											<c:choose>
-												<c:when test="${fn:length(project.value.appVersions) eq 0}">N/A</c:when>
+												<c:when test="${fn:length(domain.value.appVersions) eq 0}">N/A</c:when>
 												<c:otherwise>
-													<c:forEach var="appVersion" items="${project.value.appVersions}">
+													<c:forEach var="appVersion" items="${domain.value.appVersions}">
 													${appVersion}&nbsp;
 													</c:forEach>
 												</c:otherwise>

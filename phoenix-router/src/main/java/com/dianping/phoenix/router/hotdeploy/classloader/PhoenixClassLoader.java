@@ -3,14 +3,18 @@ package com.dianping.phoenix.router.hotdeploy.classloader;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,6 +26,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.dianping.phoenix.router.hotdeploy.ClassRedefiner;
+import com.dianping.phoenix.utils.version.VersionParser;
 
 public class PhoenixClassLoader extends WebAppClassLoader {
 	private static final Logger LOGGER = Logger.getLogger(PhoenixClassLoader.class);
@@ -35,16 +40,28 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 	private File m_classesDir;
 
 	private ClassRedefiner m_deployer = new ClassRedefiner(this);
-	
+
 	private File m_projectDir;
+
+	private VersionParser m_versionParser = new VersionParser();
+
+	public PhoenixClassLoader(File projectDir, int checkFreq, WebAppContext ctx, ClassLoader parent,
+			List<String> sequence) throws IOException {
+		super(parent, ctx);
+		init(projectDir, checkFreq, sequence);
+	}
 
 	public PhoenixClassLoader(File projectDir, int checkFreq, WebAppContext ctx, ClassLoader parent) throws IOException {
 		super(parent, ctx);
+		init(projectDir, checkFreq, null);
+	}
+
+	private void init(File projectDir, int checkFreq, List<String> sequence) {
 		m_projectDir = projectDir;
-		parseAndAddClasspath(projectDir);
+		parseAndAddClasspath(projectDir, sequence);
 		startMonitorThread(checkFreq);
 	}
-	
+
 	public File getProjectDir() {
 		return m_projectDir;
 	}
@@ -68,7 +85,7 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 		monitorThread.start();
 	}
 
-	private void parseAndAddClasspath(File projectDir) {
+	private void parseAndAddClasspath(File projectDir, List<String> sequence) {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug(String.format("##### Starting scan project dir: [%s].", projectDir.getPath()));
 		}
@@ -107,6 +124,9 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 			if (m_classesDir == null || !m_classesDir.exists() || !m_classesDir.isDirectory()) {
 				throw new RuntimeException("Can not find classes dir in project.");
 			}
+
+			sortWithSequence(extraDirs, sequence);
+
 			for (URL var : extraDirs) {
 				super.addURL(var);
 				if (LOGGER.isDebugEnabled()) {
@@ -116,6 +136,58 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 		} else {
 			throw new RuntimeException("Can not find classpath file.");
 		}
+	}
+
+	void sortWithSequence(List<URL> list, List<String> sequence) {
+		if (sequence == null || sequence.size() == 0 || list == null || list.size() == 0) {
+			return;
+		} else {
+			List<Boolean> existArray = new ArrayList<Boolean>();
+			Pattern pattern = Pattern.compile("(\\d+((\\.\\d+\\.)+|\\.)\\d+)");
+			List<Queue<URL>> sortedArray = new ArrayList<Queue<URL>>();
+
+			for (int idx = 0; idx < sequence.size(); idx++) {
+				sortedArray.add(new LinkedList<URL>());
+			}
+
+			for (URL url : list) {
+				boolean match = false;
+				for (int idx = 0; idx < sequence.size(); idx++) {
+					if (isMatch(pattern, url, sequence.get(idx))) {
+						sortedArray.get(idx).offer(url);
+						match = true;
+						break;
+					}
+				}
+				existArray.add(match);
+			}
+
+			for (int idx = 0; idx < existArray.size(); idx++) {
+				if (existArray.get(idx)) {
+					for (Queue<URL> queue : sortedArray) {
+						if (queue.size() > 0) {
+							list.set(idx, queue.poll());
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private boolean isMatch(Pattern pattern, URL url, String str) {
+
+		try {
+			String name = new File(url.toURI()).getName();
+			if (name.endsWith(".jar")) {
+				name = m_versionParser.parse(name.substring(0, name.length() - ".jar".length()))[0];
+				return name.equals(str);
+			}
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			// ignore it
+		}
+		return false;
 	}
 
 	private void addPaths(File classesDir, List<File> libDirs) {

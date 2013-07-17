@@ -6,11 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -21,14 +17,10 @@ import org.unidal.lookup.ComponentTestCase;
 import com.dianping.phoenix.dev.core.model.workspace.entity.BizProject;
 import com.dianping.phoenix.dev.core.model.workspace.entity.Workspace;
 import com.dianping.phoenix.dev.core.model.workspace.transform.DefaultSaxParser;
-import com.dianping.phoenix.dev.core.tools.generator.dynamic.BizServerContext;
-import com.dianping.phoenix.dev.core.tools.generator.dynamic.F5Pool;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.LaunchFileContext;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.LaunchFileGenerator;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.ServiceLionContext;
 import com.dianping.phoenix.dev.core.tools.generator.dynamic.ServiceLionPropertiesGenerator;
-import com.dianping.phoenix.dev.core.tools.generator.dynamic.UrlRuleContext;
-import com.dianping.phoenix.dev.core.tools.wms.WorkspaceContext;
 
 public class WorkspaceFacadeTest extends ComponentTestCase {
 
@@ -40,8 +32,6 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
     @Before
     public void before() throws Exception {
         facade = lookup(WorkspaceFacade.class);
-        lionGenerator = lookup(ServiceLionPropertiesGenerator.class);
-        lauchFileGenerator = lookup(LaunchFileGenerator.class);
     }
 
     @Test
@@ -54,33 +44,8 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
         BizProject bizProject = new BizProject();
         bizProject.setName("http://192.168.22.71/user-web-qa-0.0.3.war");
         model.addBizProject(bizProject);
-        facade.init(new File("/Users/leoleung/test"));
+        facade.init(new File("/Users/marsqing/Projects/tmp/test"));
         facade.create(model);
-    }
-
-    public void testCreateSkeletonWorkspace() throws Exception {
-        WorkspaceContext workspaceCtx = new WorkspaceContext();
-        File workSpaceDir = new File("/Users/leoleung/test");
-        workspaceCtx.setBaseDir(workSpaceDir);
-        workspaceCtx.setPhoenixRouterVersion("0.1-SNAPSHOT");
-        List<String> projectNameList = Arrays.asList(new String[] { "user-web", "user-service", "user-base-service" });
-        workspaceCtx.setProjects(convertToBizProjects(projectNameList));
-
-        facade.createSkeletonWorkspace(workspaceCtx);
-
-        assertTrue(new File(workSpaceDir, "user-web").exists());
-        assertTrue(new File(workSpaceDir, "user-service").exists());
-        assertTrue(new File(workSpaceDir, "user-base-service").exists());
-    }
-
-    private List<BizProject> convertToBizProjects(List<String> projectNames) {
-        List<BizProject> res = new ArrayList<BizProject>();
-        for (String name : projectNames) {
-            BizProject p = new BizProject();
-            p.setName(name);
-            res.add(p);
-        }
-        return res;
     }
 
     public void testCreateAll() throws Exception {
@@ -95,36 +60,6 @@ public class WorkspaceFacadeTest extends ComponentTestCase {
         assertTrue(new File(wsDir, "user-service").exists());
         assertTrue(new File(wsDir, "user-base-service").exists());
 
-    }
-
-    public void testCreateBizServerFile() throws IOException {
-        File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-        File bizServerFile = new File(tmpDir, "bizServer.properties");
-        BizServerContext ctx = new BizServerContext();
-        ctx.addWebContext("/_user-web", "/a/b/c");
-        facade.createBizServerProperties(bizServerFile, ctx);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtils.copy(new FileInputStream(bizServerFile), out);
-        String resultFile = new String(out.toByteArray(), UTF_8);
-        assertTrue(resultFile.indexOf("/_user-web=/a/b/c") >= 0);
-    }
-
-    public void testCreateRouterRulesXml() throws IOException {
-        File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-        File routerRulesXml = new File(tmpDir, "router-rules.xml");
-
-        UrlRuleContext ctx = new UrlRuleContext();
-        ctx.addLocalPool(new F5Pool("", "Web.Web_X_Userweb", "http://127.0.0.1:8080/_user-web%s"));
-
-        facade.createUrlRuleXml(routerRulesXml, ctx);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtils.copy(new FileInputStream(routerRulesXml), out);
-
-        String resultFile = new String(out.toByteArray(), "UTF-8");
-
-        assertTrue(resultFile.indexOf("<pool name='Default' url-pattern='http://w.51ping.com%s' />") >= 0);
-        assertTrue(resultFile
-                .indexOf("<pool name='Web.Web_X_Userweb' url-pattern='http://127.0.0.1:8080/_user-web%s' />") >= 0);
     }
 
     public void testCreateLionPropertiesFile() throws Exception {

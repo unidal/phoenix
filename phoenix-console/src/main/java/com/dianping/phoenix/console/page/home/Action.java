@@ -7,6 +7,8 @@ public enum Action implements org.unidal.web.mvc.Action {
 
 	DEPLOY("deploy"),
 	
+	SEARCH("search"),
+	
 	ABOUT("about");
 
 	private String m_name;
