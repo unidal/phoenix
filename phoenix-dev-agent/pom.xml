@@ -13,6 +13,11 @@
 	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-exec</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
 			<groupId>org.unidal.framework</groupId>
 			<artifactId>web-framework</artifactId>
 			<version>2.0.3-SNAPSHOT</version>
@@ -28,7 +33,16 @@
 			<artifactId>WebResServer</artifactId>
 			<version>1.2.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dianping.platform</groupId>
+			<artifactId>phoenix-dev-core</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- for unit test -->
 		<dependency>
 			<groupId>junit</groupId>
