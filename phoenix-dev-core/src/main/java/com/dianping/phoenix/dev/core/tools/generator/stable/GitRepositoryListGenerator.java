@@ -31,83 +31,106 @@ import org.apache.commons.lang.StringUtils;
  * 
  */
 public class GitRepositoryListGenerator {
-    private static final String REPO_BASEURL = "http://code.dianpingoa.com/";
-    private static final String PATTERN_PRE  = "git clone http://code.dianpingoa.com/";
-    private static final String PATTERN_SUF  = "</pre>";
-    private static final String PATTERN_GIT  = ".git";
+	private static final String REPO_BASEURL = "http://code.dianpingoa.com/";
+	private static final String PATTERN_PRE = "git clone http://code.dianpingoa.com/";
+	private static final String PATTERN_SUF = "</pre>";
+	private static final String PATTERN_GIT = ".git";
 
-    public static void main(String[] args) throws Exception {
-        List<ProjectRepositoryPair> pairs = parse();
-        persist(pairs, new File("/Users/leoleung/gitRepo.properties"));
-    }
+	public static void main(String[] args) throws Exception {
+		List<ProjectRepositoryPair> pairs = parse();
+		persist(pairs, new File("/Users/marsqing/gitRepo.properties"));
+	}
 
-    private static void persist(List<ProjectRepositoryPair> pairs, File file) throws Exception {
-        StringBuilder content = new StringBuilder();
-        for (ProjectRepositoryPair pair : pairs) {
-            content.append(pair.name).append("=").append(pair.repoUrl).append("\n");
-        }
-        FileUtils.writeStringToFile(file, content.toString());
-    }
+	private static void persist(List<ProjectRepositoryPair> pairs, File file) throws Exception {
+		StringBuilder content = new StringBuilder();
+		for (ProjectRepositoryPair pair : pairs) {
+			content.append(pair.name).append("=").append(pair.repoUrl).append("\n");
+		}
+		FileUtils.writeStringToFile(file, content.toString());
+	}
 
-    private static List<ProjectRepositoryPair> parse() throws Exception {
-        List<ProjectRepositoryPair> pairs = new ArrayList<ProjectRepositoryPair>();
+	private static List<ProjectRepositoryPair> parse() throws Exception {
+		List<ProjectRepositoryPair> pairs = new ArrayList<ProjectRepositoryPair>();
 
-        List<ProjectRepositoryPair> temp = null;
-        int pageNo = 1;
+		List<ProjectRepositoryPair> temp = null;
+		int pageNo = 1;
 
-        while (true) {
-            temp = parsePage(pageNo++);
-            if (temp == null || temp.isEmpty()) {
-                break;
-            } else {
-                pairs.addAll(temp);
-            }
-        }
+		while (true) {
+			temp = parsePage(pageNo++);
+			if (temp == null) {
+				break;
+			} else {
+				pairs.addAll(temp);
+			}
+		}
 
-        return pairs;
-    }
+		return pairs;
+	}
 
-    private static List<ProjectRepositoryPair> parsePage(int pageNo) throws Exception {
-        String page = curl(REPO_BASEURL + "/public/projects?page=" + pageNo);
-        List<ProjectRepositoryPair> pairs = new ArrayList<ProjectRepositoryPair>();
+	private static List<ProjectRepositoryPair> parsePage(int pageNo) throws Exception {
+		String page = curl(REPO_BASEURL + "/public/projects?page=" + pageNo);
+		List<ProjectRepositoryPair> pairs = null;
 
-        if (StringUtils.isNotBlank(page)) {
-            String[] lines = StringUtils.split(page, "\n");
-            for (String line : lines) {
-                if (StringUtils.isNotBlank(line)) {
-                    int pos = line.indexOf(PATTERN_PRE);
-                    if (pos >= 0) {
-                        String repoUrl = line.substring(pos + PATTERN_PRE.length() - REPO_BASEURL.length(),
-                                line.length() - PATTERN_SUF.length());
-                        String projectName = repoUrl.substring(repoUrl.lastIndexOf("/") + 1, repoUrl.length()
-                                - PATTERN_GIT.length());
+		if (StringUtils.isNotBlank(page)) {
+			String[] lines = StringUtils.split(page, "\n");
+			for (String line : lines) {
+				if (StringUtils.isNotBlank(line)) {
+					int pos = line.indexOf(PATTERN_PRE);
+					if (pos >= 0) {
+						pairs = pairs == null ? new ArrayList<ProjectRepositoryPair>() : pairs;
+						String repoUrl = line.substring(pos + PATTERN_PRE.length() - REPO_BASEURL.length(),
+								line.length() - PATTERN_SUF.length());
+						String projectName = repoUrl.substring(repoUrl.lastIndexOf("/") + 1, repoUrl.length()
+								- PATTERN_GIT.length());
 
-                        pairs.add(new ProjectRepositoryPair(projectName, repoUrl));
-                    }
-                }
-            }
-        }
+						if(hasPom(repoUrl)) {
+							pairs.add(new ProjectRepositoryPair(projectName, repoUrl));
+						}
+					}
+				}
+			}
+		}
 
-        return pairs;
-    }
+		return pairs;
+	}
+	
 
-    private static String curl(String url) throws Exception {
-        URL reqUrl = new URL(url);
-        HttpURLConnection conn = (HttpURLConnection) reqUrl.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setConnectTimeout(3000);
+	private static boolean hasPom(String repoUrl) throws Exception {
+		// http://code.dianpingoa.com/f2e-ba/group.git
+		// http://code.dianpingoa.com/f2e-ba/group/blob/master/pom.xml
+		String pomUrl = repoUrl.substring(0, repoUrl.length() - 4) + "/blob/master/pom.xml";
+		return curl_code(pomUrl) != 404;
+	}
 
-        return IOUtils.toString(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-    }
+	private static int curl_code(String url) throws Exception {
+		URL reqUrl = new URL(url);
+		HttpURLConnection conn = (HttpURLConnection) reqUrl.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setConnectTimeout(3000);
 
-    private static class ProjectRepositoryPair {
-        String name;
-        String repoUrl;
+		conn.setRequestProperty(
+				"Cookie",
+				"uid=code51c3bceea328e0.87696853; remember_user_token=BAhbB1sGaXFJIiIkMmEkMTAkQUR2YXNENGNqT2NSaDBvVWRSS2guTwY6BkVU--bd148a50388e51e524e89809afd6d98e69793711; request_method=GET; _gitlab_session=BAh7CEkiD3Nlc3Npb25faWQGOgZFRkkiJTMzY2U3YzM3YjlhZWQ1ODcwNDljNDA0MjFkOTdjZjA4BjsAVEkiEF9jc3JmX3Rva2VuBjsARkkiMTNqS1V3V2paUCtCWU0rbVZtTUVraFBpTDR3MGFpZ2FtaExXeWphYjJRSVE9BjsARkkiGXdhcmRlbi51c2VyLnVzZXIua2V5BjsAVFsHWwZpcUkiIiQyYSQxMCRBRHZhc0Q0Y2pPY1JoMG9VZFJLaC5PBjsAVA%3D%3D--af5d6859bcba9e86e72ca6c3b2430400db75dcad");
+		return conn.getResponseCode();
+	}
+	
+	private static String curl(String url) throws Exception {
+		URL reqUrl = new URL(url);
+		HttpURLConnection conn = (HttpURLConnection) reqUrl.openConnection();
+		conn.setRequestMethod("GET");
+		conn.setConnectTimeout(3000);
+		System.out.println(url);
+		return IOUtils.toString(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+	}
 
-        public ProjectRepositoryPair(String name, String repoUrl) {
-            this.name = name;
-            this.repoUrl = repoUrl;
-        }
+	private static class ProjectRepositoryPair {
+		String name;
+		String repoUrl;
 
-    }
+		public ProjectRepositoryPair(String name, String repoUrl) {
+			this.name = name;
+			this.repoUrl = repoUrl;
+		}
+
+	}
 }
