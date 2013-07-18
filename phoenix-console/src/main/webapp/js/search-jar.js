@@ -23,7 +23,7 @@ function getNewQueryHtml() {
 	ret += '</div>&emsp;';
 	ret += '<input id="dep'
 			+ queryIdx
-			+ '" name="dependency" class="dependency" type="text" placeholder="Type or select artifactId" data-provide="typeahead">';
+			+ '" name="dependency" class="dependency" autocomplete="off" type="text" placeholder="Type or select artifactId" data-provide="typeahead">';
 	ret += '<input id="op' + queryIdx + '" name="operator" type="hidden" value="=">&emsp;';
 	ret += '<div class="btn-group jar-opt" data-toggle="buttons-radio" for="op'
 			+ queryIdx + '">';

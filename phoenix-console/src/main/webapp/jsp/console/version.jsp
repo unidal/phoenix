@@ -8,6 +8,19 @@
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.version.Model" scope="request"/>
 
 <a:layout>
+	<ul class="breadcrumb">
+		<li><a href="${model.webapp}/console/home">Home</a><span class="divider">/</span></li>
+		<c:choose>
+			<c:when test="${payload.type=='phoenix-agent'}">
+				<li><a href="${model.webapp}/console/home?type=phoenix-agent">Agent</a><span class="divider">/</span></li>
+			</c:when>
+			<c:otherwise>
+				<li><a href="${model.webapp}/console/home">Kernel</a><span class="divider">/</span></li>
+			</c:otherwise>
+		</c:choose>
+		<li class="active">Version</li>
+	</ul>
+
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span12">

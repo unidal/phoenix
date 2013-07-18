@@ -53,6 +53,12 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("joint")
 	private List<String> m_joints;
 
+	@FieldMeta("agentversion")
+	private String m_agentVersion;
+
+	@FieldMeta("agentoperator")
+	private String m_agentOperator;
+
 	@Override
 	public Action getAction() {
 		return m_action;
@@ -144,12 +150,18 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 		if (m_action == Action.HOME) {
 			if (!isActionNull) {
-				if (m_dependencies == null || m_operators == null || m_versions == null) {
-					ctx.addError("search.error", null);
-				} else if (isListEmpty(m_dependencies) || m_dependencies.size() != m_versions.size()
-						|| m_dependencies.size() != m_operators.size()
-						|| (m_joints != null && m_dependencies.size() != m_joints.size() + 1)) {
-					ctx.addError("search.error", null);
+				if ("phoenix-kernel".equals(m_type)) {
+					if (isListEmpty(m_dependencies) || isListEmpty(m_versions) || isListEmpty(m_operators)
+							|| m_dependencies.size() != m_versions.size()
+							|| m_dependencies.size() != m_operators.size()
+							|| (m_joints != null && m_dependencies.size() != m_joints.size() + 1)) {
+						ctx.addError("search.error", null);
+					}
+				} else if ("phoenix-agent".equals(m_type)) {
+					if (m_agentOperator == null || m_agentOperator.trim().length() == 0 || m_agentVersion == null
+							|| m_agentVersion.trim().length() == 0) {
+						ctx.addError("search.error", null);
+					}
 				}
 			}
 		}
@@ -195,5 +207,25 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	public void setJoints(List<String> joints) {
 		this.m_joints = joints;
+	}
+
+	public String getAgentVersion() {
+		return m_agentVersion;
+	}
+
+	public String getAgentOperator() {
+		return m_agentOperator;
+	}
+
+	public void setAgentVersion(String agentVersion) {
+		this.m_agentVersion = agentVersion;
+	}
+
+	public void setAgentOperator(String agentOperator) {
+		this.m_agentOperator = agentOperator;
+	}
+
+	public String getType() {
+		return m_type;
 	}
 }

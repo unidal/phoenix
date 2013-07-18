@@ -12,6 +12,11 @@
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.home.Model" scope="request" />
 
 <a:layout>
+	<ul class="breadcrumb">
+		<li><a href="${model.webapp}/console/home">Home</a><span class="divider">/</span></li>
+		<li><a href="${model.webapp}/console/home">Kernel</a><span class="divider">/</span></li>
+		<li class="active">Search</li>
+	</ul>
 	<w:errors>
 		<h3>Error occurred:</h3>
 		<pre class="error">
@@ -20,12 +25,13 @@
 				<strong>\${code}</strong>: \${exception.message}</w:error>
 	   </pre>
 	</w:errors>
-	<res:useCss value="${res.css.local['search.css']}" target="head-css" />
+	<res:useCss value="${res.css.local['search-jar.css']}" target="head-css" />
 	<div class="container-fluid">
 		<div class="row-fluid span10" style="margin: 0 0 -20px 8%;">
 			<div class="well">
 				<form class="form-inline" id="queryform">
-					<input type="hidden" name="op" value="home"/>
+					<input type="hidden" name="op" value="home" />
+					<input type="hidden" name="type" value="phoenix-kernel" />
 					<div id="query1" style="margin: 10px 10px 0 10px">
 						<a id="qadd" href="#" style="margin: 0 3px 0 13px; text-decoration: none">
 							<img src="${model.webapp}/img/plus.png" style="width: 16px">
@@ -33,7 +39,7 @@
 						<a id="qdel" href="#" style="margin: 0 21px 0 5px; text-decoration: none">
 							<img src="${model.webapp}/img/minus.png" style="width: 16px">
 						</a>
-						<input id="dep1" name="dependency" class="dependency" type="text" placeholder="Type or select artifactId" data-provide="typeahead">
+						<input id="dep1" name="dependency" class="dependency" autocomplete="off" type="text" placeholder="Type or select artifactId" data-provide="typeahead">
 						<input id="op1" name="operator" type="hidden" value="=">
 						&nbsp;
 						<div class="btn-group jar-opt" data-toggle="buttons-radio" for="op1">
@@ -57,6 +63,6 @@
 			</div>
 		</div>
 	</div>
-	<res:useJs value="${res.js.local['search.js']}" target="search-js" />
+	<res:useJs value="${res.js.local['search-jar.js']}" target="search-js" />
 	<res:jsSlot id="search-js" />
 </a:layout>

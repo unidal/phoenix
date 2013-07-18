@@ -6,9 +6,11 @@ public enum Action implements org.unidal.web.mvc.Action {
 	PROJECT("project"),
 
 	DEPLOY("deploy"),
-	
-	SEARCH("search"),
-	
+
+	SEARCHJAR("jar-search"),
+
+	SEARCHAGENT("agent-search"),
+
 	ABOUT("about");
 
 	private String m_name;

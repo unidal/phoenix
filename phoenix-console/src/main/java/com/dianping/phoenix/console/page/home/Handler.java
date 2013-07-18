@@ -3,11 +3,7 @@ package com.dianping.phoenix.console.page.home;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 
@@ -101,7 +97,9 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 			payload.setAction(Action.PROJECT.getName());
 		} else if (action == Action.HOME) {
 			if (ctx.hasErrors()) {
-				payload.setAction(Action.SEARCH.getName());
+				payload.setAction("phoenix-agent".equals(payload.getType())
+						? Action.SEARCHAGENT.getName()
+						: Action.SEARCHJAR.getName());
 			}
 		}
 	}
@@ -148,15 +146,15 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 
 				break;
 
-			case SEARCH :
-				Map<String, Set<String>> libMap = m_resourceManager.getLibSet();
-				Set<String> libs = new HashSet<String>();
-				for (Entry<String, Set<String>> entry : libMap.entrySet()) {
-					libs.addAll(entry.getValue());
-				}
-				List<String> list = new ArrayList<String>(libs);
-				Collections.sort(list);
-				model.setLibs(list);
+			case SEARCHJAR :
+				List<String> jarList = new ArrayList<String>(m_resourceManager.getJarNameSet());
+				Collections.sort(jarList);
+				model.setLibs(jarList);
+				break;
+			case SEARCHAGENT :
+				List<String> agentList = new ArrayList<String>(m_resourceManager.getAgentVersionSet());
+				Collections.sort(agentList);
+				model.setAgentVersions(agentList);
 				break;
 			default :
 				break;

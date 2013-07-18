@@ -1,11 +1,6 @@
 package com.dianping.phoenix.service.resource;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 
@@ -20,7 +15,6 @@ import com.dianping.phoenix.agent.resource.entity.Resource;
 
 public class MockResourceManager extends DefaultResourceManager {
 	private Resource m_resource;
-	private Map<String, Set<String>> m_libSet = new HashMap<String, Set<String>>();
 
 	@Override
 	public void initialize() throws InitializationException {
@@ -57,36 +51,51 @@ public class MockResourceManager extends DefaultResourceManager {
 		m_resource.addProduct(product);
 
 		m_agentStatusFetcher.fetchPhoenixAgentStatus(new ArrayList<Host>(domain.getHosts().values()));
-		Set<String> s = new HashSet<String>();
-		if (host.getContainer().getApps().size() > 0) {
-			App app = host.getContainer().getApps().get(0);
-			for (Lib lib : app.getLibs()) {
-				s.add(lib.getArtifactId());
-			}
-			for (Lib lib : app.getKernel().getLibs()) {
-				s.add(lib.getArtifactId());
-			}
+
+		product = new Product();
+		domain = new Domain();
+		product.setName("PhoenixTestMock");
+		domain.setName("test2");
+
+		int max = 5;
+
+		for (int idx = 0; idx < max; idx++) {
+			host = new Host();
+			container = new Container();
+			agent = new PhoenixAgent();
+			agent.setStatus("ok");
+			agent.setVersion("0.0." + idx);
+			host.setPhoenixAgent(agent);
+
+			App app = new App();
+			Lib lib = new Lib();
+			lib.setArtifactId("test" + idx);
+			lib.setVersion(String.valueOf(idx));
+			app.addLib(lib);
+
+			lib = new Lib();
+			lib.setArtifactId("test" + (idx + 1));
+			lib.setVersion(String.valueOf(idx + 1));
+			app.addLib(lib);
+
+			lib = new Lib();
+			lib.setArtifactId("test" + (idx + 2));
+			lib.setVersion(String.valueOf(idx + 2));
+			app.addLib(lib);
+
+			container.addApp(app);
+			host.setIp("127.0.0." + idx);
+			host.setContainer(container);
+			domain.addHost(host);
 		}
-		m_libSet.put(domain.getName(), s);
+
+		product.addDomain(domain);
+		m_resource.addProduct(product);
+		analysisResource(m_resource);
 	}
 
 	@Override
 	public Resource getResource() {
 		return m_resource;
-	}
-
-	@Override
-	public List<Product> getProducts() {
-		return new ArrayList<Product>(m_resource.getProducts().values());
-	}
-
-	@Override
-	public Domain getDomain(String name) {
-		return m_resource.getProducts().get("PhoenixTest").getDomains().get("test");
-	}
-
-	@Override
-	public Map<String, Set<String>> getLibSet() {
-		return m_libSet;
 	}
 }

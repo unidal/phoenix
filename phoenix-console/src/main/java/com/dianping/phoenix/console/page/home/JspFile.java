@@ -7,7 +7,9 @@ public enum JspFile {
 
 	ABOUT("/jsp/console/about.jsp"),
 
-	SEARCH("/jsp/console/search.jsp"),
+	SEARCHJAR("/jsp/console/search_jar.jsp"),
+
+	SEARCHAGENT("/jsp/console/search_agent.jsp"),
 
 	DEPLOY("/jsp/console/deploy.jsp");
 

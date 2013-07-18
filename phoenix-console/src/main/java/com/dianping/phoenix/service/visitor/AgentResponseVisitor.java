@@ -43,12 +43,12 @@ public class AgentResponseVisitor implements IVisitor {
 
 			// set libs
 			for (Lib lib : domain.getWar().getLibs()) {
-				lib.accept(this);
+				visitLib(lib);
 				m_app.addLib(m_lib);
 			}
 
 			// set phoenix kernel
-			domain.getKernel().accept(this);
+			visitKernel(domain.getKernel());
 			m_app.setKernel(m_kernel);
 		}
 	}
@@ -59,7 +59,7 @@ public class AgentResponseVisitor implements IVisitor {
 		if (m_kernel != null) {
 			m_kernel.setVersion(kernel.getWar().getVersion());
 			for (Lib lib : kernel.getWar().getLibs()) {
-				lib.accept(this);
+				visitLib(lib);
 				m_kernel.addLib(m_lib);
 			}
 		}
@@ -83,12 +83,12 @@ public class AgentResponseVisitor implements IVisitor {
 			m_host.setPhoenixAgent(agent);
 
 			// set container
-			response.getContainer().accept(this);
+			visitContainer(response.getContainer());
 			m_host.setContainer(m_container);
 
 			// add apps
 			for (Domain domain : response.getDomains()) {
-				domain.accept(this);
+				visitDomain(domain);
 				if (m_app != null) {
 					m_host.getContainer().addApp(m_app);
 				}

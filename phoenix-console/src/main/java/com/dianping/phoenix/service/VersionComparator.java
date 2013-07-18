@@ -1,4 +1,4 @@
-package com.dianping.phoenix.console.page.home;
+package com.dianping.phoenix.service;
 
 import java.util.Comparator;
 import java.util.StringTokenizer;

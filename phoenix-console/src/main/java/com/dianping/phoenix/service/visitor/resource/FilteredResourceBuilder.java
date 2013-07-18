@@ -1,17 +1,10 @@
-package com.dianping.phoenix.service.visitor;
+package com.dianping.phoenix.service.visitor.resource;
 
-import com.dianping.phoenix.agent.resource.IVisitor;
-import com.dianping.phoenix.agent.resource.entity.App;
-import com.dianping.phoenix.agent.resource.entity.Container;
 import com.dianping.phoenix.agent.resource.entity.Domain;
-import com.dianping.phoenix.agent.resource.entity.Host;
-import com.dianping.phoenix.agent.resource.entity.Kernel;
-import com.dianping.phoenix.agent.resource.entity.Lib;
-import com.dianping.phoenix.agent.resource.entity.PhoenixAgent;
 import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
 
-public class FilteredResourceBuilder implements IVisitor {
+public class FilteredResourceBuilder extends BaseResourceVisitor {
 	private FilterStrategy m_strategy;
 	private Resource m_resource;
 	private Product m_product;
@@ -22,16 +15,6 @@ public class FilteredResourceBuilder implements IVisitor {
 		if (m_strategy.getResource() != null) {
 			m_strategy.getResource().accept(this);
 		}
-	}
-
-	@Override
-	public void visitApp(App app) {
-		// ignore it
-	}
-
-	@Override
-	public void visitContainer(Container container) {
-		// ignore it
 	}
 
 	@Override
@@ -49,32 +32,12 @@ public class FilteredResourceBuilder implements IVisitor {
 	}
 
 	@Override
-	public void visitHost(Host host) {
-		// ignore it
-	}
-
-	@Override
-	public void visitKernel(Kernel kernel) {
-		// ignore it
-	}
-
-	@Override
-	public void visitLib(Lib lib) {
-		// ignore it
-	}
-
-	@Override
-	public void visitPhoenixAgent(PhoenixAgent phoenixAgent) {
-		// ignore it
-	}
-
-	@Override
 	public void visitProduct(Product product) {
 		m_product = new Product();
 		m_product.setName(product.getName());
-		for (Domain domain : product.getDomains().values()) {
-			domain.accept(this);
-		}
+
+		super.visitProduct(product);
+
 		if (m_product.getDomains().size() > 0) {
 			m_resource.addProduct(m_product);
 		}
@@ -82,14 +45,12 @@ public class FilteredResourceBuilder implements IVisitor {
 
 	@Override
 	public void visitResource(Resource resource) {
-		if (m_strategy.getStrategy().size() == 0 && m_strategy.isEmptyFilter()) {
+		if (m_strategy.getStrategy() == null || m_strategy.getStrategy().size() == 0) {
 			m_resource = m_strategy.getResource();
 			return;
 		}
 		m_resource = new Resource();
-		for (Product product : resource.getProducts().values()) {
-			product.accept(this);
-		}
+		super.visitResource(resource);
 	}
 
 	public Resource getFilteredResource() {

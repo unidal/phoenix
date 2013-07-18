@@ -1,4 +1,4 @@
-package com.dianping.phoenix.service.visitor;
+package com.dianping.phoenix.service.visitor.resource;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,20 +6,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-import com.dianping.phoenix.agent.resource.IVisitor;
-import com.dianping.phoenix.agent.resource.entity.App;
-import com.dianping.phoenix.agent.resource.entity.Container;
-import com.dianping.phoenix.agent.resource.entity.Domain;
 import com.dianping.phoenix.agent.resource.entity.Host;
-import com.dianping.phoenix.agent.resource.entity.Kernel;
 import com.dianping.phoenix.agent.resource.entity.Lib;
-import com.dianping.phoenix.agent.resource.entity.PhoenixAgent;
-import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
 import com.dianping.phoenix.console.page.home.Payload;
-import com.dianping.phoenix.console.page.home.VersionComparator;
+import com.dianping.phoenix.service.VersionComparator;
 
-public class FilterStrategy implements IVisitor {
+public class JarFilterStrategy extends BaseResourceVisitor implements FilterStrategy {
 	private static final VersionComparator m_comparator = new VersionComparator();
 
 	private List<String> m_dependencies;
@@ -27,28 +20,22 @@ public class FilterStrategy implements IVisitor {
 	private List<String> m_versions;
 	private List<String> m_joints;
 
-	private List<Set<String>> m_rules;
-	private Set<String> m_strategy = new HashSet<String>();
+	private List<Set<String>> m_rules = new ArrayList<Set<String>>();
+	private Set<String> m_strategy;
 	private Resource m_resource;
 	private Host m_currentHost;
-	private boolean m_emptyFilter;
 
-	public FilterStrategy(Resource resource, Payload payload) {
+	public JarFilterStrategy(Resource resource, Payload payload) {
 		m_resource = resource;
 		fillListWithoutBlankElements(m_dependencies = new ArrayList<String>(), payload.getDependencies());
 		if (m_dependencies.size() > 0) {
-			m_rules = new ArrayList<Set<String>>();
 			fillListWithoutBlankElements(m_operators = new ArrayList<String>(), payload.getOperators());
 			fillListWithoutBlankElements(m_versions = new ArrayList<String>(), payload.getVersions());
 			fillListWithoutBlankElements(m_joints = new ArrayList<String>(), payload.getJoints());
-			for (int idx = 0; idx < m_dependencies.size(); idx++) {
-				m_rules.add(new HashSet<String>());
-			}
-		} else {
-			m_emptyFilter = true;
+			for (int idx = 0; idx < m_dependencies.size(); m_rules.add(new HashSet<String>()), idx++);
+			visitResource(m_resource);
+			m_strategy = generateStrategy();
 		}
-
-		resource.accept(this);
 	}
 
 	private void fillListWithoutBlankElements(List<String> target, List<String> source) {
@@ -69,46 +56,9 @@ public class FilterStrategy implements IVisitor {
 	}
 
 	@Override
-	public void visitApp(App app) {
-		if (app.getLibs() != null) {
-			for (Lib lib : app.getLibs()) {
-				lib.accept(this);
-			}
-		}
-		if (app.getKernel() != null && app.getKernel().getLibs() != null) {
-			for (Lib lib : app.getLibs()) {
-				lib.accept(this);
-			}
-		}
-	}
-
-	@Override
-	public void visitContainer(Container container) {
-		// ignore it
-	}
-
-	@Override
-	public void visitDomain(Domain domain) {
-		if (domain.getHosts() != null) {
-			for (Host host : domain.getHosts().values()) {
-				m_currentHost = host;
-				host.accept(this);
-			}
-		}
-	}
-
-	@Override
 	public void visitHost(Host host) {
-		if (host.getContainer() != null && host.getContainer().getApps() != null) {
-			for (App app : host.getContainer().getApps()) {
-				app.accept(this);
-			}
-		}
-	}
-
-	@Override
-	public void visitKernel(Kernel kernel) {
-		// ignore it
+		m_currentHost = host;
+		super.visitHost(host);
 	}
 
 	@Override
@@ -125,28 +75,12 @@ public class FilterStrategy implements IVisitor {
 	}
 
 	@Override
-	public void visitPhoenixAgent(PhoenixAgent phoenixAgent) {
-		// ignore it
-	}
-
-	@Override
-	public void visitProduct(Product product) {
-		if (product.getDomains() != null) {
-			for (Domain domain : product.getDomains().values()) {
-				domain.accept(this);
-			}
-		}
-	}
-
-	@Override
 	public void visitResource(Resource resource) {
-		if (m_dependencies.size() == 0 || resource.getProducts() == null) {
+		if (m_dependencies.size() == 0) {
 			m_strategy = new HashSet<String>();
 			return;
 		}
-		for (Product product : resource.getProducts().values()) {
-			product.accept(this);
-		}
+		super.visitResource(resource);
 		m_strategy = generateStrategy();
 	}
 
@@ -228,9 +162,5 @@ public class FilterStrategy implements IVisitor {
 
 	public Resource getResource() {
 		return m_resource;
-	}
-
-	public boolean isEmptyFilter() {
-		return m_emptyFilter;
 	}
 }

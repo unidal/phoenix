@@ -1,7 +1,6 @@
 package com.dianping.phoenix.service.resource;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.dianping.phoenix.agent.resource.entity.Domain;
@@ -15,11 +14,13 @@ public interface ResourceManager {
 
 	public Domain updateDomainManually(String name);
 
-	public Domain getDomain(String name);
+	public Set<String> getAgentVersionSet();
+
+	public Set<String> getJarNameSet();
 
 	public List<Product> getProducts();
 
-	public Map<String, Set<String>> getLibSet();
+	public Domain getDomain(String name);
 
 	public List<Product> getFilteredProducts(Payload payload);
 

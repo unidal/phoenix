@@ -36,8 +36,9 @@ import com.dianping.phoenix.device.entity.Device;
 import com.dianping.phoenix.service.cmdb.DeviceManager;
 import com.dianping.phoenix.service.netty.AgentStatusFetcher;
 import com.dianping.phoenix.service.visitor.DeviceVisitor;
-import com.dianping.phoenix.service.visitor.FilterStrategy;
-import com.dianping.phoenix.service.visitor.FilteredResourceBuilder;
+import com.dianping.phoenix.service.visitor.resource.AgentFilterStrategy;
+import com.dianping.phoenix.service.visitor.resource.FilteredResourceBuilder;
+import com.dianping.phoenix.service.visitor.resource.JarFilterStrategy;
 
 public class DefaultResourceManager implements ResourceManager, Initializable, LogEnabled {
 	@Inject
@@ -54,8 +55,10 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 
 	private AtomicReference<Resource> m_resource = new AtomicReference<Resource>();
 	private AtomicReference<Map<String, Domain>> m_domains = new AtomicReference<Map<String, Domain>>();
-	private AtomicReference<Map<String, Set<String>>> m_domainLibs = new AtomicReference<Map<String, Set<String>>>();
 	private AtomicReference<Map<String, List<String>>> m_resourceInfo = new AtomicReference<Map<String, List<String>>>();
+
+	private AtomicReference<Set<String>> m_jarNameSet = new AtomicReference<Set<String>>();
+	private AtomicReference<Set<String>> m_agentVersionSet = new AtomicReference<Set<String>>();
 
 	private Resource m_resourceCache;
 	protected String m_cachePath;
@@ -178,9 +181,10 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 			}
 
 			m_resourceCache = resource;
-			m_domainLibs.set(analysisResource(resource));
 			m_resource.set(resource);
 			m_domains.set(domains);
+
+			analysisResource(resource);
 		}
 
 		@Override
@@ -201,17 +205,21 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 		}
 	}
 
-	private Map<String, Set<String>> analysisResource(Resource resource) {
-		Map<String, Set<String>> libs = new HashMap<String, Set<String>>();
+	void analysisResource(Resource resource) {
+		Set<String> agentset = new HashSet<String>();
+		Set<String> jarset = new HashSet<String>();
+
 		for (Product product : resource.getProducts().values()) {
 			for (Domain domain : product.getDomains().values()) {
 				int activeCount = 0;
 				int inactiveCount = 0;
-				Set<String> domainLibs = new HashSet<String>();
 				for (Host host : domain.getHosts().values()) {
 					domain.addOwner(getUnknowIfBlank(host.getOwner()));
-					if (host.getPhoenixAgent() != null && "ok".equals(host.getPhoenixAgent().getStatus())) {
-						activeCount++;
+					if (host.getPhoenixAgent() != null) {
+						agentset.add(host.getPhoenixAgent().getVersion());
+						if ("ok".equals(host.getPhoenixAgent().getStatus())) {
+							activeCount++;
+						}
 					} else {
 						inactiveCount++;
 					}
@@ -222,11 +230,11 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 							domain.addKernelVersion(kernel == null ? "NONE" : getUnknowIfBlank(kernel.getVersion()));
 							domain.addAppVersion(getUnknowIfBlank(app.getVersion()));
 							for (Lib lib : app.getLibs()) {
-								domainLibs.add(lib.getArtifactId());
+								jarset.add(lib.getArtifactId());
 							}
 							if (kernel != null) {
 								for (Lib lib : kernel.getLibs()) {
-									domainLibs.add(lib.getArtifactId());
+									jarset.add(lib.getArtifactId());
 								}
 							}
 						}
@@ -234,10 +242,10 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 				}
 				domain.setActiveCount(activeCount);
 				domain.setInactiveCount(inactiveCount);
-				libs.put(domain.getName(), domainLibs);
 			}
 		}
-		return libs;
+		setJarNameSet(jarset);
+		setAgentVersionSet(agentset);
 	}
 
 	private String getUnknowIfBlank(String str) {
@@ -371,21 +379,18 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 	}
 
 	@Override
-	public Map<String, Set<String>> getLibSet() {
-		return m_domainLibs.get();
-	}
-
-	@Override
 	public List<Product> getFilteredProducts(Payload payload) {
-		Resource resource = new FilteredResourceBuilder(new FilterStrategy(getResource(), payload))
-				.getFilteredResource();
+		Resource resource = new FilteredResourceBuilder("phoenix-agent".equals(payload.getType())
+				? new AgentFilterStrategy(getResource(), payload)
+				: new JarFilterStrategy(getResource(), payload)).getFilteredResource();
 		return new ArrayList<Product>(resource.getProducts().values());
 	}
 
 	@Override
 	public Domain getFilteredDomain(Payload payload, String name) {
-		Resource resource = new FilteredResourceBuilder(new FilterStrategy(getResource(), payload))
-				.getFilteredResource();
+		Resource resource = new FilteredResourceBuilder("phoenix-agent".equals(payload.getType())
+				? new AgentFilterStrategy(getResource(), payload)
+				: new JarFilterStrategy(getResource(), payload)).getFilteredResource();
 
 		for (Product product : resource.getProducts().values()) {
 			if (product.getDomains().containsKey(name)) {
@@ -396,4 +401,21 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 		return new Domain(name);
 	}
 
+	@Override
+	public Set<String> getAgentVersionSet() {
+		return m_agentVersionSet.get();
+	}
+
+	@Override
+	public Set<String> getJarNameSet() {
+		return m_jarNameSet.get();
+	}
+
+	void setAgentVersionSet(Set<String> set) {
+		m_agentVersionSet.set(set);
+	}
+
+	void setJarNameSet(Set<String> set) {
+		m_jarNameSet.set(set);
+	}
 }

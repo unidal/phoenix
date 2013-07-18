@@ -23,6 +23,8 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 	private Deployment m_activeDeployment;
 
 	private List<String> m_libs;
+	
+	private List<String> m_agentVersions;
 
 	public Model(Context ctx) {
 		super(ctx);
@@ -79,5 +81,13 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	public List<String> getLibs() {
 		return m_libs;
+	}
+
+	public List<String> getAgentVersions() {
+		return m_agentVersions;
+	}
+
+	public void setAgentVersions(List<String> agentVersions) {
+		this.m_agentVersions = agentVersions;
 	}
 }

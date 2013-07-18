@@ -14,6 +14,7 @@ import com.dianping.phoenix.agent.resource.entity.Lib;
 import com.dianping.phoenix.agent.resource.entity.Resource;
 import com.dianping.phoenix.console.page.home.Payload;
 import com.dianping.phoenix.service.resource.ResourceManager;
+import com.dianping.phoenix.service.visitor.resource.JarFilterStrategy;
 
 public class FilterStrategyTest extends ComponentTestCase {
 
@@ -58,14 +59,14 @@ public class FilterStrategyTest extends ComponentTestCase {
 		List<String> ver = new ArrayList<String>();
 		List<String> joints = new ArrayList<String>();
 
-		for (int idx = 1; idx <= 3; idx++) {
+		for (int idx = 0; idx <= 2; idx++) {
 			dep.add("test" + idx);
 			opr.add("=");
 			ver.add(String.valueOf(idx));
 		}
 
 		joints.add("or");
-		joints.add("and");
+		joints.add("or");
 
 		for (Host host : domain.getHosts().values()) {
 			StringBuilder str = new StringBuilder(1000);
@@ -84,7 +85,7 @@ public class FilterStrategyTest extends ComponentTestCase {
 			System.out.println(dep.get(idx) + opr.get(idx) + ver.get(idx));
 		}
 		long begin = System.currentTimeMillis();
-		FilterStrategy strategy = new FilterStrategy(resource, payload);
+		JarFilterStrategy strategy = new JarFilterStrategy(resource, payload);
 		System.out.println(System.currentTimeMillis() - begin);
 
 		System.out.println(strategy.getStrategy());
