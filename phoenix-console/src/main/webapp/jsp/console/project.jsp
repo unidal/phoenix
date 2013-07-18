@@ -21,6 +21,10 @@
 		</c:choose>
 		<li class="active">Project</li>
 	</ul>
+	<div class="alert alert-success" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>当前查询条件:</strong>&emsp;<span id="queryInfo"></span>
+    </div>
 	<w:errors>
        <h3>Error occurred:</h3>
 	   <pre class="error">

@@ -6,7 +6,6 @@ $(function() {
 	$("a.toParent").attr("href", function() {
 		return $(this).attr("href") + payloadStr;
 	});
-
 });
 
 function bind_cmp_evt_handlers() {
@@ -16,36 +15,48 @@ function bind_cmp_evt_handlers() {
 }
 
 function parsePayload() {
+	var queryTips = "";
+
 	var deparray = getArrayFromString($("#payload_dependencies").val());
 	var oparray = getArrayFromString($("#payload_operators").val());
 	var verarray = getArrayFromString($("#payload_versions").val());
 	var jointarray = getArrayFromString($("#payload_joints").val());
 
 	for ( var idx = 0; idx < deparray.length; idx++) {
-		payloadStr += deparray[idx] == "" ? "" : "&dependency="
-				.concat(deparray[idx]);
-	}
-	for ( var idx = 0; idx < oparray.length; idx++) {
-		payloadStr += oparray[idx] == "" ? "" : "&operator="
-				.concat(oparray[idx]);
-	}
-	for ( var idx = 0; idx < verarray.length; idx++) {
-		payloadStr += verarray[idx] == "" ? "" : "&version="
-				.concat(verarray[idx]);
-	}
-	for ( var idx = 0; idx < jointarray.length; idx++) {
-		payloadStr += jointarray[idx] == "" ? "" : "&joint="
-				.concat(jointarray[idx]);
+		if (idx > 0) {
+			payloadStr += "&joint=".concat(jointarray[idx - 1]);
+			queryTips += " " + jointarray[idx - 1] + " ";
+		}
+		payloadStr += "&dependency=".concat(deparray[idx]);
+		payloadStr += "&operator=".concat(oparray[idx]);
+		payloadStr += "&version=".concat(verarray[idx]);
+		queryTips += deparray[idx] + oparray[idx] + verarray[idx];
 	}
 
 	var agentversion = $("#payload_agentversion").val();
 	var agentoperator = $("#payload_agentoperator").val();
+
 	payloadStr += agentversion == "" ? "" : "&agentversion="
 			.concat(agentversion);
 	payloadStr += agentoperator == "" ? "" : "&agentoperator="
 			.concat(agentoperator);
+	if (agentversion != "" && agentoperator != "") {
+		queryTips += "AgentVersion " + agentoperator + " " + agentversion;
+	}
+
+	if (queryTips != "") {
+		$("#queryInfo").html(queryTips);
+		$("#queryInfo").parent().css({"display":""});
+	}
 }
 
 function getArrayFromString(str) {
-	return str.substring(1, str.length - 1).split(", ");
+	var sourceArray = str.substring(1, str.length - 1).split(", ");
+	var finalArray = [];
+	for ( var idx = 0; idx < sourceArray.length; idx++) {
+		if (sourceArray[idx] != "") {
+			finalArray.push(sourceArray[idx]);
+		}
+	}
+	return finalArray;
 }
