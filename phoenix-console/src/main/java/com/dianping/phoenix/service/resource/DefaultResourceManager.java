@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +19,8 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.lookup.annotation.Inject;
 
-import com.dianping.phoenix.agent.resource.entity.App;
 import com.dianping.phoenix.agent.resource.entity.Domain;
 import com.dianping.phoenix.agent.resource.entity.Host;
-import com.dianping.phoenix.agent.resource.entity.Kernel;
-import com.dianping.phoenix.agent.resource.entity.Lib;
 import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
 import com.dianping.phoenix.agent.resource.transform.DefaultSaxParser;
@@ -39,6 +34,7 @@ import com.dianping.phoenix.service.visitor.DeviceVisitor;
 import com.dianping.phoenix.service.visitor.resource.AgentFilterStrategy;
 import com.dianping.phoenix.service.visitor.resource.FilteredResourceBuilder;
 import com.dianping.phoenix.service.visitor.resource.JarFilterStrategy;
+import com.dianping.phoenix.service.visitor.resource.ResourceAnalyzer;
 
 public class DefaultResourceManager implements ResourceManager, Initializable, LogEnabled {
 	@Inject
@@ -60,8 +56,10 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 	private AtomicReference<Set<String>> m_jarNameSet = new AtomicReference<Set<String>>();
 	private AtomicReference<Set<String>> m_agentVersionSet = new AtomicReference<Set<String>>();
 
+	private AtomicReference<Map<String, Set<String>>> m_domainToJarNameSet = new AtomicReference<Map<String, Set<String>>>();
+
 	private Resource m_resourceCache;
-	protected String m_cachePath;
+	private String m_cachePath;
 
 	@Override
 	public void initialize() throws InitializationException {
@@ -157,7 +155,6 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 		private void refreshAgentStatus(boolean needInteval) {
 			Map<String, List<String>> m = m_resourceInfo.get();
 			Resource resource = new Resource();
-			Map<String, Domain> domains = new HashMap<String, Domain>();
 
 			for (Entry<String, List<String>> entry : m.entrySet()) {
 				Product product = new Product();
@@ -167,7 +164,6 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 					Domain domain = getDomainFromName(domainName);
 					if (domain != null) {
 						product.addDomain(domain);
-						domains.put(domainName, domain);
 						if (needInteval) {
 							try {
 								TimeUnit.SECONDS.sleep(m_delay * 60 / m.size() / entry.getValue().size());
@@ -182,11 +178,14 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 
 			m_resourceCache = resource;
 			m_resource.set(resource);
-			m_domains.set(domains);
 
-			analysisResource(resource);
+			ResourceAnalyzer analyzer = new ResourceAnalyzer(resource);
+			setAgentVersionSet(analyzer.getAgentVersionSet());
+			setJarNameSet(analyzer.getJarNameSet());
+			setDomainToJarNameSet(analyzer.getDomainToJarNameSet());
+			setDomains(analyzer.getDomains());
 		}
-
+		
 		@Override
 		public void run() {
 			try {
@@ -197,7 +196,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 			while (true) {
 				try {
 					refreshAgentStatus(true);
-					cacheResource();
+					cacheResource(m_cachePath);
 				} catch (Exception e) {
 					m_logger.warn("Refresh agent status failed.", e);
 				}
@@ -205,56 +204,13 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 		}
 	}
 
-	void analysisResource(Resource resource) {
-		Set<String> agentset = new HashSet<String>();
-		Set<String> jarset = new HashSet<String>();
-
-		for (Product product : resource.getProducts().values()) {
-			for (Domain domain : product.getDomains().values()) {
-				int activeCount = 0;
-				int inactiveCount = 0;
-				for (Host host : domain.getHosts().values()) {
-					domain.addOwner(getUnknowIfBlank(host.getOwner()));
-					if (host.getPhoenixAgent() != null) {
-						agentset.add(host.getPhoenixAgent().getVersion());
-						if ("ok".equals(host.getPhoenixAgent().getStatus())) {
-							activeCount++;
-						}
-					} else {
-						inactiveCount++;
-					}
-
-					if (host.getContainer() != null) {
-						for (App app : host.getContainer().getApps()) {
-							Kernel kernel = app.getKernel();
-							domain.addKernelVersion(kernel == null ? "NONE" : getUnknowIfBlank(kernel.getVersion()));
-							domain.addAppVersion(getUnknowIfBlank(app.getVersion()));
-							for (Lib lib : app.getLibs()) {
-								jarset.add(lib.getArtifactId());
-							}
-							if (kernel != null) {
-								for (Lib lib : kernel.getLibs()) {
-									jarset.add(lib.getArtifactId());
-								}
-							}
-						}
-					}
-				}
-				domain.setActiveCount(activeCount);
-				domain.setInactiveCount(inactiveCount);
-			}
-		}
-		setJarNameSet(jarset);
-		setAgentVersionSet(agentset);
-	}
-
-	private String getUnknowIfBlank(String str) {
-		return str != null && str.trim().length() > 0 ? str : "Unknow";
-	}
-
 	@Override
 	public void enableLogging(Logger logger) {
 		m_logger = logger;
+	}
+
+	public void setDomains(Map<String, Domain> domains) {
+		m_domains.set(domains);
 	}
 
 	@Override
@@ -262,8 +218,8 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 		return m_resource.get();
 	}
 
-	private void cacheResource() {
-		File cache = new File(m_cachePath, "resource-cache.xml");
+	private void cacheResource(String cachePath) {
+		File cache = new File(cachePath, "resource-cache.xml");
 		if (!cache.exists()) {
 			try {
 				cache.getParentFile().mkdirs();
@@ -275,7 +231,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 		if (cache.exists()) {
 			FileWriter writer = null;
 			try {
-				String cacheStr = m_xmlBuilder.buildXml(m_resource.get());
+				String cacheStr = m_xmlBuilder.buildXml(getResource());
 				writer = new FileWriter(cache);
 				writer.write(cacheStr);
 				writer.close();
@@ -318,7 +274,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 
 	private Domain getDomainFromCache(String domainName) {
 		if (m_resourceCache == null) {
-			m_resourceCache = getResourceFromCacheFile();
+			m_resourceCache = getResourceFromCacheFile(m_cachePath);
 		}
 		if (m_resourceCache != null) {
 			for (Product product : m_resourceCache.getProducts().values()) {
@@ -330,10 +286,10 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 		return null;
 	}
 
-	protected Resource getResourceFromCacheFile() {
+	protected Resource getResourceFromCacheFile(String cachePath) {
 		m_logger.warn("Fetch agent status from real host failed, attempt to load resource from cache file.");
 
-		File cache = new File(m_cachePath, "resource-cache.xml");
+		File cache = new File(cachePath, "resource-cache.xml");
 		if (cache.exists()) {
 			try {
 				System.out.println(cache.getAbsolutePath());
@@ -352,7 +308,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 	public Domain updateDomainManually(String name) {
 		Domain domain = getDomainFromName(name);
 		if (domain != null) {
-			Resource resource = m_resource.get();
+			Resource resource = getResource();
 			for (Product product : resource.getProducts().values()) {
 				if (product.getDomains().containsKey(name)) {
 					product.getDomains().put(name, domain);
@@ -375,7 +331,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 
 	@Override
 	public List<Product> getProducts() {
-		return new ArrayList<Product>(m_resource.get().getProducts().values());
+		return new ArrayList<Product>(getResource().getProducts().values());
 	}
 
 	@Override
@@ -411,11 +367,21 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 		return m_jarNameSet.get();
 	}
 
+	@Override
+	public Set<String> getJarNameSet(String domainName) {
+		Map<String, Set<String>> map = m_domainToJarNameSet.get();
+		return map.containsKey(domainName) ? map.get(domainName) : null;
+	}
+
 	void setAgentVersionSet(Set<String> set) {
 		m_agentVersionSet.set(set);
 	}
 
 	void setJarNameSet(Set<String> set) {
 		m_jarNameSet.set(set);
+	}
+
+	void setDomainToJarNameSet(Map<String, Set<String>> map) {
+		m_domainToJarNameSet.set(map);
 	}
 }

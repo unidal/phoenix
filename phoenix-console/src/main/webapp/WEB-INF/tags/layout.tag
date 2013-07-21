@@ -16,6 +16,7 @@
 	<res:cssSlot id="head-css"/>
 	<res:jsSlot id="head-js"/>
 	<res:useJs value="${res.js.local['jquery-1.8.1.min.js']}" target="head-js"/>
+	<res:useJs value="${res.js.local['bootstrap.min.js']}" target="head-js"/>
 	<res:useJs value="${res.js.local['core.js']}" target="head-js"/>
 	<res:useCss value="${res.css.local['bootstrap.min.css']}" target="head-css"/>
 	<res:useCss value="${res.css.local['bootstrap-responsive.min.css']}" target="head-css"/>
@@ -58,6 +59,7 @@
 					   	   <li><a href="${model.moduleUri}/home?op=agent-search">Search</a></li>
                          </ul>
                        </li>
+					   <li><a href="${model.moduleUri}/home?op=overview">Overview</a></li>
 					   <li><a href="${model.moduleUri}/home?op=about">About</a></li>
 					</ul>
 				</div>
@@ -77,7 +79,5 @@
 	</div>
 	<!--/.fluid-container-->
 
-	<res:useJs value="${res.js.local['bootstrap.min.js']}" target="bottom-js"/>
-	<res:jsSlot id="bottom-js"/>
 </body>
 </html>

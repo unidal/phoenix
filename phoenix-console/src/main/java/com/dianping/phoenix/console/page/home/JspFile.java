@@ -11,6 +11,10 @@ public enum JspFile {
 
 	SEARCHAGENT("/jsp/console/search_agent.jsp"),
 
+	OVERVIEW("/jsp/console/overview.jsp"),
+
+	DOMAININFO("/jsp/console/overview_inner.jsp"),
+
 	DEPLOY("/jsp/console/deploy.jsp");
 
 	private String m_path;

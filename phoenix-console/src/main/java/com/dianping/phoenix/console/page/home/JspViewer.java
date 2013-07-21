@@ -20,6 +20,10 @@ public class JspViewer extends BaseJspViewer<ConsolePage, Action, Context, Model
 			return JspFile.SEARCHJAR.getPath();
 		case SEARCHAGENT:
 			return JspFile.SEARCHAGENT.getPath();
+		case OVERVIEW:
+			return JspFile.OVERVIEW.getPath();
+		case DOMAININFO:
+			return JspFile.DOMAININFO.getPath();
 		case ABOUT:
 			return JspFile.ABOUT.getPath();
 		}

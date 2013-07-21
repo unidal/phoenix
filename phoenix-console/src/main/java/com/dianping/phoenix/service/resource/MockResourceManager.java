@@ -12,14 +12,14 @@ import com.dianping.phoenix.agent.resource.entity.Lib;
 import com.dianping.phoenix.agent.resource.entity.PhoenixAgent;
 import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
+import com.dianping.phoenix.service.visitor.resource.ResourceAnalyzer;
 
 public class MockResourceManager extends DefaultResourceManager {
 	private Resource m_resource;
 
 	@Override
 	public void initialize() throws InitializationException {
-		m_cachePath = m_configManager.getResourceCachePath();
-		m_resource = super.getResourceFromCacheFile();
+		m_resource = super.getResourceFromCacheFile(m_configManager.getResourceCachePath());
 		Product product = new Product();
 		product.setName("PhoenixTest");
 
@@ -57,7 +57,7 @@ public class MockResourceManager extends DefaultResourceManager {
 		product.setName("PhoenixTestMock");
 		domain.setName("test2");
 
-		int max = 5;
+		int max = 20;
 
 		for (int idx = 0; idx < max; idx++) {
 			host = new Host();
@@ -68,6 +68,7 @@ public class MockResourceManager extends DefaultResourceManager {
 			host.setPhoenixAgent(agent);
 
 			App app = new App();
+			app.setName("app:" + idx);
 			Lib lib = new Lib();
 			lib.setArtifactId("test" + idx);
 			lib.setVersion(String.valueOf(idx));
@@ -91,7 +92,11 @@ public class MockResourceManager extends DefaultResourceManager {
 
 		product.addDomain(domain);
 		m_resource.addProduct(product);
-		analysisResource(m_resource);
+		ResourceAnalyzer analyzer = new ResourceAnalyzer(m_resource);
+		setAgentVersionSet(analyzer.getAgentVersionSet());
+		setJarNameSet(analyzer.getJarNameSet());
+		setDomainToJarNameSet(analyzer.getDomainToJarNameSet());
+		setDomains(analyzer.getDomains());
 	}
 
 	@Override

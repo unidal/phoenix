@@ -24,7 +24,7 @@
 	</ul>
 	<div class="alert alert-success" style="display: none;">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>当前查询条件:</strong>&emsp;<span id="queryInfo"></span>
+            <strong>Query Condition: </strong>&emsp;<span id="queryInfo"></span>
     </div>
 	<input type="hidden" id="payload_dependencies" value="${payload.dependencies}">
 	<input type="hidden" id="payload_operators" value="${payload.operators}">

@@ -39,11 +39,11 @@ public abstract class BaseResourceVisitor implements IVisitor {
 
 	@Override
 	public void visitHost(Host host) {
-		if (host.getContainer() != null) {
-			visitContainer(host.getContainer());
-		}
 		if (host.getPhoenixAgent() != null) {
 			visitPhoenixAgent(host.getPhoenixAgent());
+		}
+		if (host.getContainer() != null) {
+			visitContainer(host.getContainer());
 		}
 	}
 

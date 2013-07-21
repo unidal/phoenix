@@ -59,6 +59,9 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@FieldMeta("agentoperator")
 	private String m_agentOperator;
 
+	@FieldMeta("getdomain")
+	private String m_domaininfo;
+
 	@Override
 	public Action getAction() {
 		return m_action;
@@ -227,5 +230,13 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	public String getType() {
 		return m_type;
+	}
+
+	public String getDomaininfo() {
+		return m_domaininfo;
+	}
+
+	public void setDomaininfo(String domaininfo) {
+		m_domaininfo = domaininfo;
 	}
 }

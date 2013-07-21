@@ -145,7 +145,6 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 				}
 
 				break;
-
 			case SEARCHJAR :
 				List<String> jarList = new ArrayList<String>(m_resourceManager.getJarNameSet());
 				Collections.sort(jarList);
@@ -155,6 +154,17 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 				List<String> agentList = new ArrayList<String>(m_resourceManager.getAgentVersionSet());
 				Collections.sort(agentList);
 				model.setAgentVersions(agentList);
+				break;
+			case OVERVIEW :
+				model.setProducts(m_resourceManager.getProducts());
+				break;
+			case DOMAININFO :
+				Domain domain = m_resourceManager.getDomain(payload.getDomaininfo());
+				if (domain != null) {
+					List<String> list = new ArrayList<String>(m_resourceManager.getJarNameSet(domain.getName()));
+					Collections.sort(list);
+					model.setDomainInfos(domain, list);
+				}
 				break;
 			default :
 				break;

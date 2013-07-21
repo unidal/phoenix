@@ -11,6 +11,10 @@ public enum Action implements org.unidal.web.mvc.Action {
 
 	SEARCHAGENT("agent-search"),
 
+	OVERVIEW("overview"),
+
+	DOMAININFO("domaininfo"),
+
 	ABOUT("about");
 
 	private String m_name;

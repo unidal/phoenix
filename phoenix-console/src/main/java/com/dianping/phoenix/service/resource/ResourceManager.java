@@ -17,6 +17,8 @@ public interface ResourceManager {
 	public Set<String> getAgentVersionSet();
 
 	public Set<String> getJarNameSet();
+	
+	public Set<String> getJarNameSet(String domainName);
 
 	public List<Product> getProducts();
 
