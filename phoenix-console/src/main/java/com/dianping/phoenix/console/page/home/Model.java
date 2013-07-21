@@ -1,11 +1,9 @@
 package com.dianping.phoenix.console.page.home;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.unidal.web.mvc.ViewModel;
 import org.unidal.webres.json.JsonSerializer;
-import org.unidal.webres.json.SerializationException;
 
 import com.dianping.phoenix.agent.resource.entity.Domain;
 import com.dianping.phoenix.agent.resource.entity.Product;
