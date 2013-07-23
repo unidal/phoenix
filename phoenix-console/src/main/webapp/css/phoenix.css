@@ -8,21 +8,21 @@ body {
 }
 
 .pagination {
-	margin : 0 0;
+	margin: 0 0;
 }
 
 .pagination a {
-	line-height : 23px;
+	line-height: 23px;
 }
 
 table.table-page {
 	margin-bottom: 8px !important;
 }
 
-.z6, .u6 {
+.z6,.u6 {
 	width: 9px;
 	height: 9px;
-	background-image: url(../img/small-pic0.png);	
+	background-image: url(../img/small-pic0.png);
 	vertical-align: middle;
 	margin-left: 3px;
 }
@@ -44,32 +44,31 @@ table.lion tr:hover td.lion-label {
 	background-color: #f5f5f5 !important;
 }
 
-table.lion td select, td textarea, td input {
+table.lion td select,td textarea,td input {
 	margin-bottom: 0px !important;
 }
 
 table.lion td label {
-	display : inline;
+	display: inline;
 	vertical-align: middle;
 	margin-left: 5px;
 }
 
-table.lion td *+input[type="radio"], table.lion td *+input[type="checkbox"],
-.form-horizontal .controls *+input[type="radio"] {
-	margin-left : 20px;
+table.lion td *+input[type="radio"],table.lion td *+input[type="checkbox"],.form-horizontal .controls *+input[type="radio"]
+	{
+	margin-left: 20px;
 }
 
 table.lion td {
 	vertical-align: middle;
 }
 
-table.lion input[type="radio"], input[type="checkbox"] {
-	margin : 0 0;
+table.lion input[type="radio"],input[type="checkbox"] {
+	margin: 0 0;
 }
 
-.nohover tbody tr:hover td,
-.nohover tbody tr:hover th {
-  background-color: transparent !important;
+.nohover tbody tr:hover td,.nohover tbody tr:hover th {
+	background-color: transparent !important;
 }
 
 .terminal-like {
@@ -78,7 +77,7 @@ table.lion input[type="radio"], input[type="checkbox"] {
 }
 
 .no-vertial-margin {
-	margin-top: 0px !important; 
+	margin-top: 0px !important;
 	margin-bottom: 0px !important;
 }
 
@@ -87,29 +86,37 @@ a.no-dec {
 }
 
 .btn-mini2 {
-  padding: 1px 6px;
-  font-size: 11px;
-  line-height: 14px;
+	padding: 1px 6px;
+	font-size: 11px;
+	line-height: 14px;
 }
 
 tr.selected {
-    background-color: #dff0d8;
+	background-color: #dff0d8;
 }
 
 .error-panel {
-	margin-bottom : 8px;
-	padding-bottom : 0px;
+	margin-bottom: 8px;
+	padding-bottom: 0px;
 }
 
 .error-panel ul {
-	margin-left : 14px;	
+	margin-left: 14px;
 }
 
 .error {
 	color: red;
-	margin-left : 20px;	
-	margin-right : 20px;	
+	margin-left: 20px;
+	margin-right: 20px;
 }
 
+.breadcrumb {
+	margin: -10px 0 10px 0;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
 
-
+.alert.alert-success{
+	padding-top: 3px;
+	padding-bottom: 3px;
+}

@@ -41,6 +41,27 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 	@ObjectMeta("plan")
 	private DeployPlan m_plan;
 
+	@FieldMeta("dependency")
+	private List<String> m_dependencies;
+
+	@FieldMeta("operator")
+	private List<String> m_operators;
+
+	@FieldMeta("version")
+	private List<String> m_versions;
+
+	@FieldMeta("joint")
+	private List<String> m_joints;
+
+	@FieldMeta("agentversion")
+	private String m_agentVersion;
+
+	@FieldMeta("agentoperator")
+	private String m_agentOperator;
+
+	@FieldMeta("getdomain")
+	private String m_domaininfo;
+
 	@Override
 	public Action getAction() {
 		return m_action;
@@ -98,7 +119,9 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 
 	@Override
 	public void validate(ActionContext<?> ctx) {
+		boolean isActionNull = false;
 		if (m_action == null) {
+			isActionNull = true;
 			m_action = Action.HOME;
 		}
 
@@ -127,5 +150,93 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 				ctx.addError("project.version", null);
 			}
 		}
+
+		if (m_action == Action.HOME) {
+			if (!isActionNull) {
+				if ("phoenix-kernel".equals(m_type)) {
+					if (isListEmpty(m_dependencies) || isListEmpty(m_versions) || isListEmpty(m_operators)
+							|| m_dependencies.size() != m_versions.size()
+							|| m_dependencies.size() != m_operators.size()
+							|| (m_joints != null && m_dependencies.size() != m_joints.size() + 1)) {
+						ctx.addError("search.error", null);
+					}
+				} else if ("phoenix-agent".equals(m_type)) {
+					if (m_agentOperator == null || m_agentOperator.trim().length() == 0 || m_agentVersion == null
+							|| m_agentVersion.trim().length() == 0) {
+						ctx.addError("search.error", null);
+					}
+				}
+			}
+		}
+	}
+
+	private boolean isListEmpty(List<String> list) {
+		if (list != null) {
+			for (String str : list) {
+				if (str.trim().length() != 0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	public List<String> getDependencies() {
+		return m_dependencies;
+	}
+
+	public List<String> getOperators() {
+		return m_operators;
+	}
+
+	public List<String> getVersions() {
+		return m_versions;
+	}
+
+	public List<String> getJoints() {
+		return m_joints;
+	}
+
+	public void setDependencies(List<String> dependencies) {
+		this.m_dependencies = dependencies;
+	}
+
+	public void setOperators(List<String> operators) {
+		this.m_operators = operators;
+	}
+
+	public void setVersions(List<String> versions) {
+		this.m_versions = versions;
+	}
+
+	public void setJoints(List<String> joints) {
+		this.m_joints = joints;
+	}
+
+	public String getAgentVersion() {
+		return m_agentVersion;
+	}
+
+	public String getAgentOperator() {
+		return m_agentOperator;
+	}
+
+	public void setAgentVersion(String agentVersion) {
+		this.m_agentVersion = agentVersion;
+	}
+
+	public void setAgentOperator(String agentOperator) {
+		this.m_agentOperator = agentOperator;
+	}
+
+	public String getType() {
+		return m_type;
+	}
+
+	public String getDomaininfo() {
+		return m_domaininfo;
+	}
+
+	public void setDomaininfo(String domaininfo) {
+		m_domaininfo = domaininfo;
 	}
 }

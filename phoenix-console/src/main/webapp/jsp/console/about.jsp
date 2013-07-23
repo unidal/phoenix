@@ -9,6 +9,10 @@
 	type="com.dianping.phoenix.console.page.home.Model" scope="request" />
 
 <a:layout>
+	<ul class="breadcrumb">
+		<li><a href="${model.webapp}/console/home">Home</a><span class="divider">/</span></li>
+		<li class="active">About</li>
+	</ul>
 
 	<div class="row-fluid">
 		<div class="hero-unit">

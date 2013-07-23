@@ -16,6 +16,7 @@
 	<res:cssSlot id="head-css"/>
 	<res:jsSlot id="head-js"/>
 	<res:useJs value="${res.js.local['jquery-1.8.1.min.js']}" target="head-js"/>
+	<res:useJs value="${res.js.local['bootstrap.min.js']}" target="head-js"/>
 	<res:useJs value="${res.js.local['core.js']}" target="head-js"/>
 	<res:useCss value="${res.css.local['bootstrap.min.css']}" target="head-css"/>
 	<res:useCss value="${res.css.local['bootstrap-responsive.min.css']}" target="head-css"/>
@@ -32,7 +33,7 @@
 				</a> 
 				
 				<div class="pull-right">
-					<img style="height: 39px" alt="Phoenix" src="${model.webapp}/img/phoenix.png">
+					<a href="${model.moduleUri}/home"><img style="height: 39px" alt="Phoenix" src="${model.webapp}/img/phoenix.png"></a>
 				</div>
 				<div class="nav-collapse collapse">
 					<ul class="nav nav-pills">
@@ -44,6 +45,7 @@
                          <ul class="dropdown-menu">
                            <li><a href="${model.moduleUri}/home">Rollout</a></li>
                            <li><a href="${model.moduleUri}/version">Version</a></li>
+					   	   <li><a href="${model.moduleUri}/home?op=jar-search">Search</a></li>
                          </ul>
                        </li>
                        <li class="dropdown" id="menu1">
@@ -54,9 +56,10 @@
                          <ul class="dropdown-menu">
                            <li><a href="${model.moduleUri}/home?type=phoenix-agent">Rollout</a></li>
                            <li><a href="${model.moduleUri}/version?type=phoenix-agent">Version</a></li>
+					   	   <li><a href="${model.moduleUri}/home?op=agent-search">Search</a></li>
                          </ul>
                        </li>
-					   <li><a href="${model.moduleUri}/home?op=search">Search</a></li>
+					   <li><a href="${model.moduleUri}/home?op=overview">Overview</a></li>
 					   <li><a href="${model.moduleUri}/home?op=about">About</a></li>
 					</ul>
 				</div>
@@ -76,7 +79,5 @@
 	</div>
 	<!--/.fluid-container-->
 
-	<res:useJs value="${res.js.local['bootstrap.min.js']}" target="bottom-js"/>
-	<res:jsSlot id="bottom-js"/>
 </body>
 </html>

@@ -9,7 +9,22 @@
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.home.Model" scope="request" />
 
 <a:layout>
-
+	<ul class="breadcrumb">
+		<li><a href="${model.webapp}/console/home">Home</a><span class="divider">/</span></li>
+		<c:choose>
+			<c:when test="${payload.type=='phoenix-agent'}">
+				<li><a class="toParent" href="${model.webapp}/console/home?type=phoenix-agent">Agent</a><span class="divider">/</span></li>
+			</c:when>
+			<c:otherwise>
+				<li><a class="toParent" href="${model.webapp}/console/home?type=phoenix-kernel">Kernel</a><span class="divider">/</span></li>
+			</c:otherwise>
+		</c:choose>
+		<li class="active">Project</li>
+	</ul>
+	<div class="alert alert-success" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Query Condition: </strong>&emsp;<span id="queryInfo"></span>
+    </div>
 	<w:errors>
        <h3>Error occurred:</h3>
 	   <pre class="error">
@@ -18,7 +33,12 @@
 	      <w:error code="*"><strong>\${code}</strong>: \${exception.message}</w:error>
 	   </pre>
 	</w:errors>
-	
+	<input type="hidden" id="payload_dependencies" value="${payload.dependencies}">
+	<input type="hidden" id="payload_operators" value="${payload.operators}">
+	<input type="hidden" id="payload_versions" value="${payload.versions}">
+	<input type="hidden" id="payload_joints" value="${payload.joints}">
+	<input type="hidden" id="payload_agentversion" value="${payload.agentVersion}">
+	<input type="hidden" id="payload_agentoperator" value="${payload.agentOperator}">
 	<c:set var="domain" value="${model.domain}"/>
 	<div class="container-fluid">
 		<div class="row-fluid">
@@ -48,7 +68,7 @@
 		</div>
 		
 		<form>
-		<input type="hidden" name="domain" value="${payload.project}">
+		<input type="hidden" name="project" value="${payload.project}">
 		<div class="row-fluid">
 			<div class="span3">
 				<div class="row-fluid">

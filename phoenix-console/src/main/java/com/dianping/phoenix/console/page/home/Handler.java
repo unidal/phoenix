@@ -3,11 +3,7 @@ package com.dianping.phoenix.console.page.home;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 
@@ -20,7 +16,6 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.agent.resource.entity.Domain;
-import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Deliverable;
 import com.dianping.phoenix.console.dal.deploy.Deployment;
@@ -100,6 +95,12 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 
 			// validation failed, back to project page
 			payload.setAction(Action.PROJECT.getName());
+		} else if (action == Action.HOME) {
+			if (ctx.hasErrors()) {
+				payload.setAction("phoenix-agent".equals(payload.getType())
+						? Action.SEARCHAGENT.getName()
+						: Action.SEARCHJAR.getName());
+			}
 		}
 	}
 
@@ -116,7 +117,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 		switch (action) {
 			case HOME :
 				try {
-					model.setProducts(new ArrayList<Product>(m_resourceManager.getProducts()));
+					model.setProducts(m_resourceManager.getFilteredProducts(payload));
 				} catch (Exception e) {
 					m_logger.warn(
 							String.format("Error when searching projects with keyword(%s)!", payload.getKeyword()), e);
@@ -129,7 +130,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 
 				try {
 					String warType = plan.getWarType();
-					Domain domain = m_resourceManager.getDomain(name);
+					Domain domain = m_resourceManager.getFilteredDomain(payload, name);
 					List<Deliverable> versions = m_deliverableManager.getAllDeliverables(warType,
 							DeliverableStatus.ACTIVE);
 					Deployment activeDeployment = m_projectManager.findActiveDeploy(warType, name);
@@ -144,17 +145,26 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 				}
 
 				break;
-
-			case SEARCH :
-
-				Map<String, Set<String>> libMap = m_resourceManager.getLibSet();
-				Set<String> libs = new HashSet<String>();
-				for (Entry<String, Set<String>> entry : libMap.entrySet()) {
-					libs.addAll(entry.getValue());
+			case SEARCHJAR :
+				List<String> jarList = new ArrayList<String>(m_resourceManager.getJarNameSet());
+				Collections.sort(jarList);
+				model.setLibs(jarList);
+				break;
+			case SEARCHAGENT :
+				List<String> agentList = new ArrayList<String>(m_resourceManager.getAgentVersionSet());
+				Collections.sort(agentList);
+				model.setAgentVersions(agentList);
+				break;
+			case OVERVIEW :
+				model.setProducts(m_resourceManager.getProducts());
+				break;
+			case DOMAININFO :
+				Domain domain = m_resourceManager.getDomain(payload.getDomaininfo());
+				if (domain != null) {
+					List<String> list = new ArrayList<String>(m_resourceManager.getJarNameSet(domain.getName()));
+					Collections.sort(list);
+					model.setDomainInfos(domain, list);
 				}
-				List<String> list = new ArrayList<String>(libs);
-				Collections.sort(list);
-				model.setLibs(list);
 				break;
 			default :
 				break;
