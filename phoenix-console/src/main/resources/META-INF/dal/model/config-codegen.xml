@@ -27,9 +27,14 @@
     <element name="deploy-connect-timeout" value-type="int" />
     <element name="deploy-read-timeout" value-type="int" />
     <element name="deploy-getlog-retrycount" value-type="int" />
+    <element name="resource-cache-path" value-type="String" />
     <element name="agent-status-url-pattern" value-type="String" />
     <element name="test-service-url-prefix" value-type="String" />
     <element name="test-service-timeout" value-type="int" />
+    <element name="agent-fetch-connect-timeout" value-type="int" />
+    <element name="agent-fetch-read-timeout" value-type="int" />
+    <element name="agent-fetch-interval-min" value-type="int" />
+    <element name="resource-info-refresh-interval-min" value-type="int" />
     <entity-ref name="cmdb" />
   </entity>
   <entity name="cmdb">

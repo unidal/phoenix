@@ -49,14 +49,15 @@ public class DefaultAgentStatusFetcher implements AgentStatusFetcher {
 			bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
 				public ChannelPipeline getPipeline() throws Exception {
 					ChannelPipeline pipeline = Channels.pipeline();
-					pipeline.addFirst("timeout", new ReadTimeoutHandler(timer, 50, TimeUnit.MILLISECONDS));
+					pipeline.addFirst("timeout", new ReadTimeoutHandler(timer, m_config.getAgentFetchReadTimeout(),
+							TimeUnit.MILLISECONDS));
 					pipeline.addLast("codec", new HttpClientCodec());
 					pipeline.addLast("inflater", new HttpContentDecompressor());
 					pipeline.addLast("handler", new AgentStatusFetcherHandler(latch, hosts));
 					return pipeline;
 				}
 			});
-			bootstrap.setOption("connectTimeoutMillis", 50);
+			bootstrap.setOption("connectTimeoutMillis", m_config.getAgentFetchConnectTimeout());
 			bootstrap.setOption("keepAlive", true);
 
 			for (Host host : hosts) {
@@ -96,6 +97,7 @@ public class DefaultAgentStatusFetcher implements AgentStatusFetcher {
 			}
 
 			bootstrap.releaseExternalResources();
+			timer.stop();
 		}
 	}
 

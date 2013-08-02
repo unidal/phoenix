@@ -24,6 +24,10 @@
 		<agent-status-url-pattern><![CDATA[http://%s:3473/phoenix/agent/deploy]]></agent-status-url-pattern>
 		<test-service-url-prefix><![CDATA[http://192.168.26.23:8080/qa/service/task]]></test-service-url-prefix>
 		<test-service-timeout>300000</test-service-timeout>
+		<agent-fetch-connect-timeout>50</agent-fetch-connect-timeout>
+		<agent-fetch-read-timeout>50</agent-fetch-read-timeout>
+		<agent-fetch-interval-min>10</agent-fetch-interval-min>
+		<resource-info-refresh-interval-min>30</resource-info-refresh-interval-min>
 		<cmdb>
 			<base-url-pattern><![CDATA[http://10.1.1.129/cmdb/device%s&wt=xml]]></base-url-pattern>
 			<catalog-url-part><![CDATA[/s?q=*&facet=catalog]]></catalog-url-part>

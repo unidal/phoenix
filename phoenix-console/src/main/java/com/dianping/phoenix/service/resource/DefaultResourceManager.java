@@ -65,8 +65,10 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 	public void initialize() throws InitializationException {
 		m_cachePath = m_configManager.getResourceCachePath();
 
-		new ConfigFileWatchdog().setDelay(30).start();
-		new AgentStatusWatchdog().setDelay(10).start();
+		m_logger.info("Starting resource file watchdog thread ...");
+		new ConfigFileWatchdog().setDelay(m_configManager.getResourceInfoRefreshIntervalMin()).start();
+		m_logger.info("Starting agent status watchdog thread ...");
+		new AgentStatusWatchdog().setDelay(m_configManager.getAgentFetchIntervalMin()).start();
 	}
 
 	private class ConfigFileWatchdog extends Thread {
@@ -100,13 +102,15 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 			}
 
 			if (f.lastModified() > m_lastRefresh) {
+				m_logger.info(String.format("Read resource info from: [%s]", f));
+
 				m_lastRefresh = System.currentTimeMillis();
 
 				Resource r = null;
 				try {
 					r = DefaultSaxParser.parse(new FileInputStream(f));
 				} catch (Exception e) {
-					throw new RuntimeException("Can't parse project.xml.", e);
+					throw new RuntimeException("Can't parse resource.xml.", e);
 				}
 
 				Map<String, List<String>> m = new LinkedHashMap<String, List<String>>();
@@ -185,7 +189,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 			setDomainToJarNameSet(analyzer.getDomainToJarNameSet());
 			setDomains(analyzer.getDomains());
 		}
-		
+
 		@Override
 		public void run() {
 			try {
@@ -257,6 +261,7 @@ public class DefaultResourceManager implements ResourceManager, Initializable, L
 
 			List<Device> devices;
 			try {
+				m_logger.info(String.format("Getting [%s]'s device infos from cmdb and phoenix agent ...", name));
 				devices = m_deviceManager.getDevices(name);
 				for (Device device : devices) {
 					Host host = new Host();
