@@ -146,7 +146,20 @@ public class KernelUpgradeStep extends AbstractStep {
 		}
 	};
 
-	private static KernelUpgradeStep GET_KERNEL_WAR = new KernelUpgradeStep(STOP_ALL, ROLLBACK, 4) {
+	private static KernelUpgradeStep INJECT_PHOENIX_LOADER = new KernelUpgradeStep(STOP_ALL, ROLLBACK, 4) {
+
+		@Override
+		protected int doActivity(Context ctx) throws Exception {
+			return getStepProvider(ctx).injectPhoenixLoader(ctx);
+		}
+
+		@Override
+		public String toString() {
+			return "INJECT_PHOENIX_LOADER";
+		}
+	};
+	
+	private static KernelUpgradeStep GET_KERNEL_WAR = new KernelUpgradeStep(INJECT_PHOENIX_LOADER, FAILED, 3) {
 
 		@Override
 		protected int doActivity(Context ctx) throws Exception {
@@ -159,20 +172,7 @@ public class KernelUpgradeStep extends AbstractStep {
 		}
 	};
 
-	private static KernelUpgradeStep INJECT_PHOENIX_LOADER = new KernelUpgradeStep(GET_KERNEL_WAR, ROLLBACK, 3) {
-
-		@Override
-		protected int doActivity(Context ctx) throws Exception {
-			return getStepProvider(ctx).injectPhoenixLoader(ctx);
-		}
-
-		@Override
-		public String toString() {
-			return "INJECT_PHOENIX_LOADER";
-		}
-	};
-
-	private static KernelUpgradeStep CHECK_ARGUMENT = new KernelUpgradeStep(INJECT_PHOENIX_LOADER, FAILED, 2) {
+	private static KernelUpgradeStep CHECK_ARGUMENT = new KernelUpgradeStep(GET_KERNEL_WAR, FAILED, 2) {
 
 		@Override
 		protected int doActivity(Context ctx) throws Exception {
