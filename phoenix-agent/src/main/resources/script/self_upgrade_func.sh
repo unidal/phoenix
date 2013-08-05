@@ -35,7 +35,7 @@ function add_ssh_private_key {
 
 function create_git_repo {
 	local git_dir=$1
-	if [ ! -e $git_dir/.git ];then
+	if [[ ! -d $git_dir/.git || ! -f $git_dir/.git/index ]];then
 		log "no .git directory found in $git_dir, make it a git repo"
 		cd $git_dir
 		git init
@@ -58,7 +58,7 @@ function sync_git_repo {
 	mkdir -p $dest_dir
 
 	cd $dest_dir
-	if [ -e $dest_dir/.git ];then
+	if [ -f $dest_dir/.git/index ];then
 		log "found existing repo, fetching update"
 		git reset --hard
 		git fetch --tags $git_url master
