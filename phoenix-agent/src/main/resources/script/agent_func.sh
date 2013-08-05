@@ -36,7 +36,7 @@ function init {
 
 		if [[ -f $i ]]; then
 			server_xml_dir=`dirname $i`
-			if [ ! -e $server_xml_dir/.git ];then
+			if [[ ! -d $server_xml_dir/.git || ! -f $server_xml_dir/.git/index ]];then
 				log "no .git directory found in server xml directory $server_xml_dir, make it a git repo"
 				cd $server_xml_dir
 				git init
@@ -48,7 +48,7 @@ function init {
 		
 		elif [[ -d $i ]]; then
 			server_xml_dir=$i
-			if [ ! -e $server_xml_dir/.git ];then
+			if [[ ! -d $server_xml_dir/.git || ! -f $server_xml_dir/.git/index ]];then
 				log "no .git directory found in server xml directory $server_xml_dir, make it a git repo"
 				cd $server_xml_dir
 				git init
