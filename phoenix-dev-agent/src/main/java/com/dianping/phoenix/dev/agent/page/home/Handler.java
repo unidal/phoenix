@@ -43,6 +43,7 @@ public class Handler implements PageHandler<Context> {
     private static final String DEPLOY_PATH         = "/data/webapps/phoenix-dev/";
     private static final int    START_TIMEOUT       = 3;
     private static final String STARTED_LOG_PATTERN = "Started SocketConnector@0.0.0.0:8080";
+    private static final String KEY_PRIVATETOKEN    = "PRIVATE-TOKEN";
 
     @Override
     @PayloadMeta(Payload.class)
@@ -80,12 +81,12 @@ public class Handler implements PageHandler<Context> {
         if (param == null || StringUtils.isBlank(param.returnUrl)) {
             ctx.getHttpServletResponse().getOutputStream().write(reqRes.toJson().getBytes());
         } else {
-            responseResultToReturnUrl(param.returnUrl, reqRes.toJson());
+            responseResultToReturnUrl(param.returnUrl, reqRes.toJson(), param.privateToken);
         }
 
     }
 
-    private void responseResultToReturnUrl(String returnUrl, String json) {
+    private void responseResultToReturnUrl(String returnUrl, String json, String privateToken) {
         URL reqUrl;
         try {
             reqUrl = new URL(returnUrl);
@@ -93,6 +94,9 @@ public class Handler implements PageHandler<Context> {
             conn.setRequestMethod("POST");
             conn.setConnectTimeout(3000);
             conn.setDoOutput(true);
+            if (privateToken != null) {
+                conn.addRequestProperty(KEY_PRIVATETOKEN, privateToken);
+            }
 
             PrintWriter out = new PrintWriter(conn.getOutputStream());
 
@@ -267,15 +271,17 @@ public class Handler implements PageHandler<Context> {
         private String   deployPath   = DEPLOY_PATH;
         private boolean  forceDeploy  = false;
         private int      startTimeout = START_TIMEOUT;
+        private String   privateToken;
     }
 
     public static void main(String[] args) throws Exception {
-        // ReqParam param = new ReqParam();
-        // param.wars = new String[] { "sss" };
-        // Gson gson = new Gson();
-        // System.out.println(gson.toJson(param));
+        ReqParam param = new ReqParam();
+        param.wars = new String[] { "http://127.0.0.1/user-web-qa-0.0.3.war", "http://127.0.0.1/shop-web-qa-0.0.3.war" };
+        param.returnUrl = "http://button.dp/phoenixStatus";
+        Gson gson = new Gson();
+        System.out.println(gson.toJson(param));
 
-        ScriptExecutor scriptExecutor = new DefaultScriptExecutor();
-        scriptExecutor.exec("jps -lvm | echo 1", System.out, System.out);
+        // ScriptExecutor scriptExecutor = new DefaultScriptExecutor();
+        // scriptExecutor.exec("jps -lvm | echo 1", System.out, System.out);
     }
 }
