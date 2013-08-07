@@ -58,5 +58,5 @@ function parse_argument_and_set_variable {
 
 function kill_by_javaclass {
 	local javaclass=$1	
-	jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
+	/usr/local/jdk/bin/jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
 }

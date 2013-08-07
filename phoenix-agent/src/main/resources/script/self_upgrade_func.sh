@@ -126,7 +126,7 @@ function git_commit {
 function kill_by_javaclass {
 	local javaclass=$1	
 
-	jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
+	/usr/local/jdk/bin/jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
 }
 
 function change_status {
@@ -160,7 +160,7 @@ function tag_failed {
 
 function ensure_agent_started {
     log "checking whether agent process alive"
-    agent_process_num=`jps -lvm | awk -v javaclass=$agent_class '$2==javaclass{print $0}' | wc -l`
+    agent_process_num=`/usr/local/jdk/bin/jps -lvm | awk -v javaclass=$agent_class '$2==javaclass{print $0}' | wc -l`
     if [ $agent_process_num -eq 0 ];then
         log_error "no agent process found, try to git reset agent dir and start it"
         cd $agent_doc_base

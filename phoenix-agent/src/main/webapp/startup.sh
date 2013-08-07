@@ -6,7 +6,7 @@ cd `dirname $0`
 
 function kill_by_javaclass {
 	local javaclass=$1
-	jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
+	/usr/local/jdk/bin/jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
 }
 
 agent_class="com.dianping.phoenix.agent.PhoenixAgent"
@@ -34,5 +34,5 @@ if [ ! -x $java ];then
 fi
 
 echo "Starting phoenix-agent $agent_class $port `pwd`"
-nohup $java -Xmx512m -classpath classes:"lib/*" $agent_class $port /phoenix `pwd` >/dev/null 2>&1 &
+nohup $java -Xmx256m -classpath classes:"lib/*" $agent_class $port /phoenix `pwd` >/dev/null 2>&1 &
 echo "Started"
