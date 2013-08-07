@@ -231,27 +231,26 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 
 	private class ClassesMonitor implements Runnable {
 		private int m_freq = 5000;
-		private long m_lastCheck;
-		private Set<File> m_holder;
+		private long m_lastCheck = 0;
+		private Set<File> m_holder = null;
 
 		public ClassesMonitor(int checkFreq) {
 			m_freq = checkFreq;
 		}
 
 		public void run() {
-			walkPath(m_classesDir);
-			m_lastCheck = System.currentTimeMillis();
 			while (true) {
 				try {
+					m_deployer.redefineClasses(m_classesDir, checkAndGetModifiedClasses(m_classesDir));
 					Thread.sleep(m_freq);
-					m_deployer.redefineClasses(m_classesDir, walkPath(m_classesDir));
 				} catch (Throwable e) {
 					LOGGER.error(e);
 				}
 			}
 		}
 
-		private Set<File> walkPath(File classesDir) {
+		private Set<File> checkAndGetModifiedClasses(File classesDir) {
+			long checkTime = System.currentTimeMillis();
 			Set<File> newHolder = new HashSet<File>();
 			Set<File> modified = new HashSet<File>();
 			Map<File, Long> mfl = recurseDir(classesDir, ".*\\.class");
@@ -265,7 +264,7 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 			} else {
 				LOGGER.warn(String.format("Path [%s] does not has any class file.", classesDir));
 			}
-			m_lastCheck = System.currentTimeMillis();
+			m_lastCheck = checkTime;
 			m_holder = newHolder;
 			return modified;
 		}

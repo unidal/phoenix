@@ -186,9 +186,29 @@ public class ConfigManager implements Initializable {
 
 		return String.format(pattern, host);
 	}
-	
+
 	public String getResourceCachePath() {
 		check();
 		return m_config.getConsole().getResourceCachePath();
+	}
+
+	public int getAgentFetchIntervalMin() {
+		check();
+		return m_config.getConsole().getAgentFetchIntervalMin();
+	}
+
+	public int getAgentFetchConnectTimeout() {
+		check();
+		return m_config.getConsole().getAgentFetchConnectTimeout();
+	}
+
+	public int getAgentFetchReadTimeout() {
+		check();
+		return m_config.getConsole().getAgentFetchReadTimeout();
+	}
+
+	public int getResourceInfoRefreshIntervalMin() {
+		check();
+		return m_config.getConsole().getResourceInfoRefreshIntervalMin();
 	}
 }

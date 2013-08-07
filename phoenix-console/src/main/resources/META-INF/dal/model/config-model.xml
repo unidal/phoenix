@@ -28,6 +28,10 @@
     <element name="deploy-getlog-retrycount" value-type="int" default-value="10" primitive="true"/>
     <element name="test-service-url-prefix" value-type="String" default-value="http://192.168.26.23:8080/qa/service/task"/>
     <element name="test-service-timeout" value-type="long" default-value="300000" primitive="true"/>
+    <element name="agent-fetch-connect-timeout" value-type="int" default-value="50" primitive="true"/>
+    <element name="agent-fetch-read-timeout" value-type="int" default-value="50" primitive="true"/>
+    <element name="agent-fetch-interval-min" value-type="int" default-value="10" primitive="true"/>
+    <element name="resource-info-refresh-interval-min" value-type="int" default-value="30" primitive="true"/>
   </entity>
   <entity name="cmdb" class-name="Cmdb">
   	<element name="base-url-pattern" value-type="String" default-value="http://10.1.1.129/cmdb/device%s&amp;wt=xml"/>
