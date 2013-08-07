@@ -21,11 +21,11 @@ ensure_not_empty container_install_path="$container_install_path" container_type
 
 ############################## functions for dev ############################## 
 function kill_jboss {
-	jps -lvm | awk '$2=="org.jboss.Main"{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
+	/usr/local/jdk/bin/jps -lvm | awk '$2=="org.jboss.Main"{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
 }
 
 function kill_tomcat {
-	jps -lvm | awk '$2=="org.apache.catalina.startup.Bootstrap"{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
+	/usr/local/jdk/bin/jps -lvm | awk '$2=="org.apache.catalina.startup.Bootstrap"{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
 }
 
 function start_tomcat {
@@ -49,8 +49,8 @@ function container_status_inner {
 
 	container_up=1
 	case $container_type in
-			tomcat)		pid=`jps -lvm | awk -v tocheck=$container_install_path '$2=="org.apache.catalina.startup.Bootstrap" && index($0, tocheck)>0{pid=$1;print pid;}'`;;
-			jboss)		pid=`jps -lvm | awk -v tocheck=$container_install_path '$2=="org.jboss.Main" && index($0, tocheck)>0{pid=$1;print pid;}'`;;
+			tomcat)		pid=`/usr/local/jdk/bin/jps -lvm | awk -v tocheck=$container_install_path '$2=="org.apache.catalina.startup.Bootstrap" && index($0, tocheck)>0{pid=$1;print pid;}'`;;
+			jboss)		pid=`/usr/local/jdk/bin/jps -lvm | awk -v tocheck=$container_install_path '$2=="org.jboss.Main" && index($0, tocheck)>0{pid=$1;print pid;}'`;;
 	esac
 
 	if [ x$pid != x ];then
