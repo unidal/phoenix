@@ -38,7 +38,7 @@ public class PluginWorkspaceServiceImpl extends AbstractWorkspaceService {
 		FileUtils.forceMkdir(resourceFolder);
 		FileUtils.forceMkdir(webinfFolder);
 
-		copyFile("log4j.xml", resourceFolder);
+		// copyFile("log4j.xml", resourceFolder);
 
 		// web.xml
 		ContainerWebXMLGenerator containerWebXMLGenerator = new ContainerWebXMLGenerator();
