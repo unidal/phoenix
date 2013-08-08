@@ -231,8 +231,7 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 
 	private class ClassesMonitor implements Runnable {
 		private int m_freq = 5000;
-		private long m_lastCheck = 0;
-		private Set<File> m_holder = null;
+		private Map<File, Long> m_classFileHolder = null;
 
 		public ClassesMonitor(int checkFreq) {
 			m_freq = checkFreq;
@@ -250,22 +249,19 @@ public class PhoenixClassLoader extends WebAppClassLoader {
 		}
 
 		private Set<File> checkAndGetModifiedClasses(File classesDir) {
-			long checkTime = System.currentTimeMillis();
-			Set<File> newHolder = new HashSet<File>();
+			Map<File, Long> currentClassFiles = recurseDir(classesDir, ".*\\.class");
 			Set<File> modified = new HashSet<File>();
-			Map<File, Long> mfl = recurseDir(classesDir, ".*\\.class");
-			if (mfl != null && mfl.size() > 0) {
-				newHolder.addAll(mfl.keySet());
-				for (Map.Entry<File, Long> entry : mfl.entrySet()) {
-					if (m_holder != null && m_holder.contains(entry.getKey()) && entry.getValue() > m_lastCheck) {
-						modified.add(entry.getKey());
+			if (m_classFileHolder != null && currentClassFiles.size() > 0) {
+				for (Map.Entry<File, Long> entry : currentClassFiles.entrySet()) {
+					File newFile = entry.getKey();
+					Long newTime = entry.getValue();
+					Long oldTime = m_classFileHolder.get(newFile);
+					if (oldTime != null && !oldTime.equals(newTime)) {
+						modified.add(newFile);
 					}
 				}
-			} else {
-				LOGGER.warn(String.format("Path [%s] does not has any class file.", classesDir));
 			}
-			m_lastCheck = checkTime;
-			m_holder = newHolder;
+			m_classFileHolder = currentClassFiles;
 			return modified;
 		}
 
