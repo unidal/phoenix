@@ -4,7 +4,7 @@ cd `dirname "$0"`
 HOME=`pwd`
 CONTAINER_HOME=$HOME/phoenix/phoenix-container
 
-JAVA_OPTS="-server -Xms1024m -Xmx1024m -Xmn256m -Xss256k -javaagent:`pwd`/phoenix/lib/byteman-2.1.2.jar=script:`pwd`/phoenix/meta/service-lion.btm"
+JAVA_OPTS="-server -Xms1024m -Xmx1024m -Xmn256m -Xss256k -XX:PermSize=128M -XX:MaxPermSize=128M -javaagent:`pwd`/phoenix/lib/byteman-2.1.2.jar=script:`pwd`/phoenix/meta/service-lion.btm"
 
 cd $HOME
 
