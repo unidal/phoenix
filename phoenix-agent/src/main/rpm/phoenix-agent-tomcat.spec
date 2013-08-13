@@ -47,6 +47,7 @@ BOOTSTRAP_JAR_DIR=$RPM_BUILD_ROOT/usr/local/tomcat/lib/
 # copy agent files to corresponding directories
 cp -r phoenix-agent/* $AGENT_INSTALL_DIR/
 chmod +x $AGENT_INSTALL_DIR/startup.sh
+chmod +x $AGENT_INSTALL_DIR/phoenix-agent
 cp config.xml $AGENT_CONFIG_DIR
 cp phoenix-bootstrap.jar $BOOTSTRAP_JAR_DIR
 
