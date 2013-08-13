@@ -1,0 +1,73 @@
+function jps_agent_count {
+  /usr/local/jdk/bin/jps -lvm | awk 'BEGIN{found=0;}$2=="com.dianping.phoenix.agent.PhoenixAgent"{found+=1}END{print found;}'
+}
+
+function ps_self_upgrade_count {
+  ps ax | grep -E phoenix-agent-self-upgrade.sh.[[:digit:]]+ | wc -l
+}
+
+function kill_by_javaclass {
+  local javaclass=$1  
+  /usr/local/jdk/bin/jps -lvm | awk -v javaclass=$javaclass '$2==javaclass{cmd=sprintf("kill -s TERM %s; sleep 1; kill -9 %s", $1, $1);system(cmd)}'
+}
+
+PID_FILE=/var/run/phoenix_wrapper.pid
+
+function stop {
+  kill_by_javaclass "com.dianping.phoenix.agent.PhoenixAgent"
+  if [ -f $PID_FILE ];then
+    pid=`cat $PID_FILE`
+    if [ $pid -gt 0 ];then
+      ps -p $pid > /dev/null
+      if [ $? -eq 0 ];then
+        # pid is still alive
+        kill -9 $pid
+      fi
+    fi
+  fi
+}
+
+function start {
+  stop
+  echo $$ > $PID_FILE
+  su phoenix -c "/data/webapps/phoenix/phoenix-agent/startup.sh"
+  while true; do
+    sleep 30 
+    if [ `status` != "running" ];then
+      exit
+    fi
+  done
+}
+
+
+function status {
+  if [[ `jps_agent_count` -gt 0 || `ps_self_upgrade_count` -gt 0 ]];then
+    echo "running"
+  else
+    echo "stopped"
+  fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+         
+        stop)
+            stop
+            ;;
+         
+        status)
+            status anacron
+            ;;
+        restart)
+            stop
+            start
+            ;;
+         
+        *)
+            echo $"Usage: $0 {start|stop|restart|status}"
+            exit 1
+ 
+esac
+
