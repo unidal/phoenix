@@ -8,6 +8,9 @@
 			<virtual-server name="tuangou">
 				<default-url-pattern>http://tjava.51ping.com%s</default-url-pattern>
 			</virtual-server>
+			<virtual-server name="d">
+				<default-url-pattern>http://d.51ping.com%s</default-url-pattern>
+			</virtual-server>
 		</router>
 	</phoenix-project>
 	

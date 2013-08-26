@@ -138,9 +138,13 @@ public class PhoenixServer {
 		context.setDescriptor(new File(warRoot, "WEB-INF/web.xml").getPath());
 		context.setResourceBase(warRoot.getAbsolutePath());
 
+		List<String> jarOrder = new ArrayList<String>();
+		jarOrder.add("dp-common-util");
+		jarOrder.add("dp-common-service");
+		jarOrder.add("dp-common-web");
 		if (hotReDeploy) {
 			PhoenixClassLoader pcl = new PhoenixClassLoader(projectDir.getAbsoluteFile(), 2000, context,
-					PhoenixServer.class.getClassLoader());
+					PhoenixServer.class.getClassLoader(), jarOrder);
 			if (projectDenpendencies.containsKey(path)) {
 				for (String classPath : projectDenpendencies.get(path)) {
 					pcl.addClassPath(classPath);

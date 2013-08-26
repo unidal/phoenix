@@ -1,0 +1,2 @@
+Premain-Class: com.dianping.platform.CookiesReplaceInstrumentation
+Can-Redefine-Classes: true

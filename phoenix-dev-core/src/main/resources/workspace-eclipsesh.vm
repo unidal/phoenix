@@ -19,7 +19,7 @@ fi
 
 grep -i "\-Dfile.encoding=utf-8" $ECLIPSE_HOME/eclipse.ini >/dev/null 2>&1
 if [ $? -ne 0 ];then
-	echo "-Dfile.encoding=utf-8" >> $ECLIPSE_HOME/eclipse.ini
+	sudo echo "-Dfile.encoding=utf-8" >> $ECLIPSE_HOME/eclipse.ini
 fi
 
 "$ECLIPSE_HOME"/eclipse -data "$WORKSPACE_HOME"/ws > /dev/null 2>&1 &
