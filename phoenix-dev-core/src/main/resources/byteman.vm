@@ -1,0 +1,24 @@
+# usage:
+# -javaagent:{BYTEMAN_HOME}/lib/byteman.jar=script:{BTM_HOME}/{BTM_NAME},boot:{BYTEMAN_HOME}/lib/byteman.jar -Dorg.jboss.byteman.transform.all
+#
+RULE lion change
+CLASS com.dianping.lion.client.InitializeConfig
+METHOD postProcessBeanFactory
+HELPER com.dianping.phoenix.router.byteman.ServiceLionBytemanDataLoader
+AT INVOKE setPts
+IF true
+#set($dollar = "$")
+DO    
+    ${dollar}this.pts.putAll(loadServices("^router-.*\.xml$"));
+    System.out.println("Phoenix runtime config modification complete...")
+ENDRULE
+
+RULE TemplateUtils
+CLASS com.dianping.w3c.pagelet.template.freemarker.TemplateUtils
+METHOD freemarker(Template ,String, Map)
+HELPER com.dianping.phoenix.router.remedy.TemplateUtilsRemedy
+AT ENTRY
+IF true
+DO
+    $2=getWebappDir($1);
+ENDRULE

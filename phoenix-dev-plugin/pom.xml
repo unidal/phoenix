@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.dianping.platform</groupId>
+		<artifactId>phoenix-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+	<groupId>com.dianping.maven.plugins</groupId>
+	<artifactId>phoenix-maven-plugin</artifactId>
+	<version>0.2-SNAPSHOT</version>
+	<packaging>maven-plugin</packaging>
+	<prerequisites>
+		<maven>3.0.3</maven>
+	</prerequisites>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.site.common</groupId>
+			<artifactId>test-framework</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.unidal.maven.plugins</groupId>
+			<artifactId>common</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dianping.platform</groupId>
+			<artifactId>phoenix-dev-core</artifactId>
+			<version>0.2-SNAPSHOT</version>
+		</dependency>
+		<!-- for unit test -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.dianping.maven.plugins</groupId>
+				<artifactId>phoenix-maven-plugin</artifactId>
+				<version>0.1-SNAPSHOT</version>
+				<configuration>
+					<name>Marsqing</name>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.unidal.maven.plugins</groupId>
+				<artifactId>codegen-maven-plugin</artifactId>
+				<version>2.0.2</version>
+				<executions>
+					<execution>
+						<id>generate plexus component descriptor</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>plexus</goal>
+						</goals>
+						<configuration>
+							<className>com.dianping.maven.plugins.build.ComponentsConfigurator</className>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
