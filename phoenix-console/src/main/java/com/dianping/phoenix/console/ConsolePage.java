@@ -9,7 +9,9 @@ public enum ConsolePage implements Page {
 
    DEPLOY("deploy", "deploy", "Deploy", "Deploy", true),
 
-   VERSION("version", "version", "Version", "Version", true);
+   VERSION("version", "version", "Version", "Version", true),
+
+   LB("lb", "lb", "Lb", "Lb", true);
 
    private String m_name;
 
