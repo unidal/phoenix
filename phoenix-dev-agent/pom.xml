@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.dianping.platform</groupId>
 	<artifactId>phoenix-dev-agent</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>com.dianping.platform</groupId>
 			<artifactId>phoenix-dev-core</artifactId>
-			<version>0.1-SNAPSHOT</version>
+			<version>0.2.1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.site.common</groupId>
