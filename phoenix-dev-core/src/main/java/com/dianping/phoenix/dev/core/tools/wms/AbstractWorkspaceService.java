@@ -51,12 +51,19 @@ public abstract class AbstractWorkspaceService implements WorkspaceService {
 
 	protected void copyGitFileToClasspath(Workspace model) throws IOException {
 		File wsDir = new File(model.getDir());
-		String[] filesToCopy = new String[]{"url-rules-main.vm", "url-rules-tuangou.vm", "url-rules-d.vm", "virtualServer.properties"};
+		String[] filesToCopy = new String[]{"url-rules-main.vm", "url-rules-tuangou.vm", 
+				"url-rules-d.vm", "url-rules-s.vm","virtualServer.properties"};
 		
 		for (int i = 0; i < filesToCopy.length; i++) {
-			File srcFile = new File(new File(wsDir, WorkspaceConstants.PHOENIX_CONFIG_FOLDER), filesToCopy[i]);
-			File destDir = resourceFileFor(wsDir, "");
-			FileUtils.copyFileToDirectory(srcFile, destDir);
+			File srcFile = null;
+			try {
+				srcFile = new File(new File(wsDir, WorkspaceConstants.PHOENIX_CONFIG_FOLDER), filesToCopy[i]);
+				File destDir = resourceFileFor(wsDir, "");
+				FileUtils.copyFileToDirectory(srcFile, destDir);
+			} catch (Exception e) {
+				log.warn(String.format("config file %s not found in git repository, read it from jar",
+						srcFile.getCanonicalPath()));
+			}
 		}
 	}
 
