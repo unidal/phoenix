@@ -1,0 +1,52 @@
+<router-rules>
+<pool name='Default' url-pattern='http://d.51ping.com%s' />
+<!--pool name='Web.Web_D_Shopaccount' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='Moblie.yuding' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='midas_midas-merchant' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='www_shopmanagement-web' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='www_activity-shopadmin-web' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='www_shop-businesspic-web' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='www_shopclaim-web' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='Web.Web_D_Shopbusiness' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<!--pool name='mcard-bc-web' url-pattern='http://HOST:PORT/CONTEXT%s' /-->
+<f5-rule target-pool='Web.Web_D_Shopaccount'>
+	<pattern>^/slogin.*</pattern>
+	<pattern>^/slogout.*</pattern>
+	<pattern>^/shopaccount/.*</pattern>
+	<pattern>^/sresetpassword.*</pattern>
+	<pattern>^/shopportal/.*</pattern>
+	<pattern>^/ajax/json/shopaccount/.*</pattern>
+	<pattern>^/s/.*</pattern>
+	<pattern>^/jvalidatecode.jpg.*</pattern>
+</f5-rule>
+<f5-rule target-pool='Moblie.yuding'>
+	<pattern>^/yuding.*</pattern>
+</f5-rule>
+<f5-rule target-pool='midas_midas-merchant'>
+	<pattern>^/mpromo.*</pattern>
+</f5-rule>
+<f5-rule target-pool='www_shopmanagement-web'>
+	<pattern>^/shopmanagement/.*</pattern>
+</f5-rule>
+<f5-rule target-pool='www_activity-shopadmin-web'>
+	<pattern>^/activityshopadmin/.*</pattern>
+</f5-rule>
+<f5-rule target-pool='www_shop-businesspic-web'>
+	<pattern>^/shop/portal/.*</pattern>
+	<pattern>^/ajax/portal/.*</pattern>
+</f5-rule>
+<f5-rule target-pool='www_shopclaim-web'>
+	<pattern>^/shopclaim/.*</pattern>
+</f5-rule>
+<f5-rule target-pool='Web.Web_D_Shopbusiness'>
+	<pattern>^/shop/.*</pattern>
+	<pattern>^/ajax/shop/.*</pattern>
+</f5-rule>
+<f5-rule target-pool='mcard-bc-web'>
+	<pattern>^/mc.*</pattern>
+	<pattern>^/huiyuanka.*</pattern>
+</f5-rule>
+<f5-rule target-pool='Web.Web_D_Shopaccount'>
+	<pattern>.*</pattern>
+</f5-rule>
+</router-rules>

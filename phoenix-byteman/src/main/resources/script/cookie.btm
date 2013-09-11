@@ -1,0 +1,9 @@
+RULE bypass tomcat 6.0.36's org.apache.catalina.connector.Request.unescape(String)
+CLASS org.apache.catalina.connector.Request
+METHOD unescape
+HELPER 
+AT ENTRY
+IF true
+DO    
+    return $1;
+ENDRULE

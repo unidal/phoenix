@@ -1,0 +1,17 @@
+
+#foreach($upstream in $upstreams)
+$upstream.pool.name
+#end
+
+#foreach($location in $locations)
+	#set($urlMatcher = $location.action.urlMatcher)
+	location $urlMatcher.type $urlMatcher.target {
+ 		#foreach($step in $location.action.steps)
+ 			#if($step.class.simpleName == "Forward")
+ 				proxy_pass http://$step.pool.name;
+ 			#elseif($step.class.simpleName == "Redirect")
+ 				Redirect
+ 			#end
+ 		#end
+	}
+#end

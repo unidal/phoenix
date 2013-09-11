@@ -11,6 +11,9 @@
          <page name="version" title="Version" path="version">
             <description>Version</description>
          </page>
+         <page name="lb" title="Lb" path="lb" template="default">
+            <description>Lb</description>
+         </page>
       </module>
    </webapp>
 </wizard>
