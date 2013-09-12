@@ -99,7 +99,7 @@ public class ServiceMetaGenerator extends TemplateBasedFileGenerator<ServiceMeta
 
     public static void main(String[] args) throws Exception {
         ServiceMetaGenerator serviceMetaGenerator = new ServiceMetaGenerator();
-        serviceMetaGenerator.generate(new File("/Users/leoleung/service-meta.xml"), new ServiceMetaContext(
+        serviceMetaGenerator.generate(new File("/Users/marsqing/service-meta.xml"), new ServiceMetaContext(
                 "com.mysql.jdbc.Driver", "jdbc:mysql://192.168.7.105:3306/hawk", "dpcom_hawk", "123456"));
     }
 }
