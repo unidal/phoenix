@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.dianping.maven.plugins</groupId>
 	<artifactId>phoenix-maven-plugin</artifactId>
-	<version>0.2.3-SNAPSHOT</version>
+	<version>0.2.4-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<prerequisites>
 		<maven>3.0.3</maven>
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>com.dianping.platform</groupId>
 			<artifactId>phoenix-dev-core</artifactId>
-			<version>0.2.3-SNAPSHOT</version>
+			<version>0.2.4-SNAPSHOT</version>
 		</dependency>
 		<!-- for unit test -->
 		<dependency>
