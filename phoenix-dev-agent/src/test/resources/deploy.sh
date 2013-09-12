@@ -16,6 +16,8 @@ expect "(yes/no)?" {
          send "$PWD\r"
      } 
 expect "*]*"
+send "chmod 777 -R /data/applogs\r"
+expect "*]*"
 send "cd /data/webapps/phoenix-dev-agent/phoenix.war/\r"
 expect "*]*"
 send "sed -i \"s/8080/7463/g\" /usr/local/jboss/server/default/deploy/jboss-web.deployer/server.xml\r"
