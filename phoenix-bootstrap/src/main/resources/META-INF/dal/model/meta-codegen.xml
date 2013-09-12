@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="meta" root="true">
+    <entity-ref name="domainMeta" type="list" names="domainMetas" />
+  </entity>
+  <entity name="domainMeta">
+    <attribute name="name" value-type="String" />
+    <entity-ref name="artifact" type="list" names="artifacts" />
+  </entity>
+  <entity name="artifact">
+    <attribute name="artifactId" value-type="String" />
+    <attribute name="version" value-type="String" />
+  </entity>
+</model>
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model model-package="com.dianping.phoenix.bootstrap.meta"
+	enable-sax-parser="true" enable-merger="true">
+	<entity name="meta" root="true">
+		<entity-ref name="domainMeta" type="map" names="domainMetas" />
+	</entity>
+	<entity name="domainMeta">
+		<attribute name="name" value-type="String" key="true" />
+		<entity-ref name="artifact" type="map" names="artifacts" />
+	</entity>
+	<entity name="artifact">
+		<attribute name="artifactId" value-type="String" key="true" />
+	</entity>
+</model>
+

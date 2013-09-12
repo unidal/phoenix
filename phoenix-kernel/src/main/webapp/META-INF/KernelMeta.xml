@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<meta>
+	<domainMeta name="user-web">
+		<artifact artifactId="lion-client" version="0.2.1" />
+	</domainMeta>
+</meta>

@@ -72,7 +72,7 @@
 			<button id="pause" class="btn btn-warning pull-right" onclick="ctrl_pause()">Pause</button>
 		</div>
 		<script type="text/javascript">
-			$(document).ready(setButtonStatus);
+			$(document).ready(setButtonStatus());
 			
 			function setButtonStatus(){
 				var deployStatus = $("#deploy_status").text();
@@ -97,9 +97,7 @@
 						"op" : "cancel",
 					}, true),
 					cache : false,
-					success : function(result) {
-					}
-				});
+				}).done(setButtonStatus());
 			}
 	
 			function ctrl_continue() {
@@ -108,9 +106,7 @@
 						"op" : "continue",
 					}, true),
 					cache : false,
-					success : function(result) {
-					}
-				});
+				}).done(setButtonStatus());
 			}
 
 			function ctrl_pause() {
@@ -119,9 +115,7 @@
 						"op" : "pause",
 					}, true),
 					cache : false,
-					success : function(result) {
-					}
-				});
+				}).done(setButtonStatus());
 			}
 		</script>
 		<div class="span8">

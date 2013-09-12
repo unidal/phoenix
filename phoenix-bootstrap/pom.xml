@@ -70,7 +70,10 @@
 							<goal>dal-model</goal>
 						</goals>
 						<configuration>
-							<manifest>${basedir}/src/main/resources/META-INF/dal/model/rule-manifest.xml</manifest>
+							<manifest>
+							${basedir}/src/main/resources/META-INF/dal/model/rule-manifest.xml,
+							${basedir}/src/main/resources/META-INF/dal/model/meta-manifest.xml
+							</manifest>
 						</configuration>
 					</execution>
 				</executions>
