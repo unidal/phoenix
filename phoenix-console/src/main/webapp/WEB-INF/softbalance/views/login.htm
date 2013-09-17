@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flat UI</title>
+<link href="/softbalance/css/bootstraped.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <div class="container" style="width: 1100px">
+    <div>
+      <form class="form-signin" method="POST" action=".">
+        <div style="display: none;">
+          <input id="csrf_token" name="csrf_token" type="hidden"
+            value="20130912160737##5c0cf31d22c48d75966737c100a55c0aa1df9594"><input id="next" name="next"
+            type="hidden" value="">
+        </div>
+        <h2 class="form-signin-heading">Login</h2>
+        <input class="input-block-level" id="login" name="login" placeholder="Username or email address" size="30"
+          type="text" value=""> <input class="input-block-level" id="password" name="password"
+          placeholder="Passwd" size="30" type="password" value=""> <label class="checkbox"> <input
+          id="remember" name="remember" type="checkbox" value="y"> <label for="remember">Remember me</label>
+        </label> <input class="btn btn-large btn-primary" id="submit" name="submit" type="submit" value="Login">
+      </form>
+    </div>
+  </div>
+
+  <script src="/softbalance/js/bootstraped.min.js"></script>
+  <script src="/softbalance/js/jquery-1.8.3.min.js"></script>
+</body>
+</html>

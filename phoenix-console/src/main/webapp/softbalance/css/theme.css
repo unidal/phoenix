@@ -1,0 +1,315 @@
+body {
+	padding-top: 20px;
+	/*position: relative;*/
+	/*background: url(bg.png) repeat;*/
+}
+
+.mybrand {
+	background: url('../image/logo33.png') no-repeat 0 3px;
+}
+
+.table tbody tr.goldtime td {
+	background-color: #F2DEDE;
+}
+
+section {
+	padding-top: 60px;
+}
+
+.modal form {
+	margin-bottom: 0px;
+}
+
+#footer p {
+	margin-bottom: 0;
+}
+
+#footer p.right {
+	float: right;
+}
+
+#footer .legal {
+	margin-bottom: 5px;
+}
+
+.home .intro {
+	background: url("../image/index-logo-yinying.png") no-repeat scroll
+		300px 0 transparent;
+	height: 400px;
+}
+
+.home h1.pre {
+	font-size: 28px;
+	margin-top: 70px;
+}
+
+.home h1 {
+	font-weight: normal;
+	line-height: 1.2em;
+	margin: 0 0 20px;
+}
+
+.home h2 {
+	font-size: 22px;
+}
+
+.home a.signup {
+	margin: 20px 0 0 0;
+	font-size: 16px;
+	padding: 10px 20px;
+}
+
+.home .icon-template {
+	background: url("../image/layers_48.png") no-repeat scroll 16px 6px
+		transparent;
+	float: left;
+	height: 64px;
+	width: 80px;
+}
+
+.home .icon-pdf {
+	background: url("../image/pdf.png") no-repeat scroll 16px 6px
+		transparent;
+	float: left;
+	height: 64px;
+	width: 80px;
+}
+
+.home .icon-myqrcode {
+	background: url("../image/qrcode.png") no-repeat scroll 0 0 transparent;
+	float: left;
+	height: 80px;
+	width: 80px;
+}
+
+.home .features h3 {
+	margin-bottom: 10px;
+}
+
+.home .features h2 {
+	margin-bottom: 40px;
+	text-align: center;
+}
+
+.home .features p {
+	color: #888888;
+	line-height: 1.6em;
+	margin-left: 80px;
+}
+
+#index_body {
+	margin-top: 40px;
+	background: url("../image/school_bg.png") repeat scroll 0 0 transparent;
+}
+
+hr.soften {
+	border: 0 none;
+	height: 1px;
+}
+
+.step_active { /*color: #485764;*/
+	color: #3A87AD;
+}
+
+.step_done {
+	color: #468847;
+}
+
+.step_undo {
+	color: #A4A4A4;
+}
+
+.shop { /*	width: 1100px;*/
+	
+}
+
+.template {
+	overflow: hidden;
+	position: relative;
+	/*z-index: 0;*/
+	margin-bottom: 7px;
+}
+
+.selected .thumbnail {
+	border-color: #99356B;
+	border-width: 1px;
+}
+
+.selected .selectIcon {
+	display: block;
+}
+
+.selectIcon {
+	background: url("../image/vicon.png") no-repeat scroll 0 0 transparent;
+	/*	background-position: 0 -18px;*/
+	position: absolute;
+	/*z-index: 1;*/
+	bottom: 1px;
+	right: 1px;
+	display: none;
+	height: 31px;
+	width: 32px;
+}
+
+.preview {
+	border: 1px dashed #DD4814;
+	overflow: hidden;
+	position: relative;
+	width: 750px;
+	height: 300px;
+}
+
+.show {
+	border: 1px dashed #DD4814;
+	overflow: scroll;
+	position: relative;
+	width: 750px;
+	height: 300px;
+}
+
+.divider_line {
+	*width: 100%;
+	height: 1px;
+	margin: 9px 1px;
+	*margin: -5px 0 5px;
+	overflow: hidden;
+	background-color: #e5e5e5;
+	border-bottom: 1px solid #ffffff;
+}
+
+.nav-header {
+	color: #485764;
+	font-size: 14px;
+	padding-left: 0px;
+	font-weight: normal;
+}
+
+.sitesContainer {
+	background: none repeat scroll 0 0 #FFFFFF;
+	list-style: none outside none;
+	overflow: hidden;
+}
+
+.site {
+	background: none repeat scroll 0 0 #FFFFFF;
+	display: block;
+	float: left;
+	font-size: 12px;
+	height: 66px;
+	text-align: center;
+	width: 66px;
+}
+
+.sitesContainer img {
+	height: 32px;
+	width: 32px;
+}
+
+.sitesContainer img:hover {
+	border-color: #0088CC;
+	box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+	height: 35px;
+	width: 35px;
+}
+
+.siteLabel {
+	color: #3A87AD;
+	overflow: hidden;
+	width: 66px;
+	line-height: 1.2em;
+	margin-top: 5px;
+}
+
+.selected .siteLabel span {
+	color: #FFFFFF;
+	background-color: #468847;
+	border-radius: 3px 3px 3px 3px;
+}
+
+#preview label {
+	width: 60px;
+	text-align: left;
+}
+
+strong.stronger {
+	color: #B94A48;
+	font-size: 14px;
+}
+
+#preview .controls { /*margin-left: 80px;*/
+	
+}
+
+td>div.progress {
+	margin-bottom: 0px;
+}
+
+#readme span {
+	color: #B94A48;
+}
+
+#readme li {
+	margin-bottom: 5px;
+	font-weight: normal;
+}
+
+#readme dt {
+	margin-bottom: 10px;
+	margin-left: 30px;
+	font-weight: normal;
+}
+
+#readme img {
+	margin-left: 100px;
+}
+
+.affix {
+	position: fixed;
+}
+
+.cred {
+	color: #D90B00;
+}
+
+p.zd_title {
+	margin: 0 0 0px;
+}
+
+.zd_title a {
+	text-decoration: underline;
+}
+
+.zd_title a.anwserIt {
+	margin-left: 10px;
+	font-size: 9px;
+	color: green;
+	text-decoration: none;
+}
+
+.zd_desc {
+	font-size: 10px;
+}
+
+.zd_desc .n-green {
+	color: #666;
+}
+
+.modal-body .form-horizontal .control-label {
+	float: left;
+	width: 140px;
+	padding-top: 5px;
+	text-align: right;
+}
+
+.uneditable-input {
+	color: #999999;
+	cursor: not-allowed;
+	background-color: #fcfcfc;
+	border-color: #cccccc;
+	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.025);
+	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.025);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.025);
+}
+
+.area{
+}

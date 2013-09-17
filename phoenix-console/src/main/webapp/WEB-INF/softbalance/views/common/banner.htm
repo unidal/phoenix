@@ -1,0 +1,43 @@
+<div class="navbar navbar-fixed-top">
+   <div class="navbar-inner" style="background-color: white;">
+      <div class="container">
+         <a class="btn btn-navbar" data-toggle="collapse"
+            data-target=".nav-collapse"> <span class="icon-bar"></span>
+            <span class="icon-bar"></span> <span class="icon-bar"></span>
+         </a> <a class="brand mybrand" href="${rc.contextPath}/">
+            &nbsp;&nbsp;&nbsp;&nbsp;咕咕叽-淘宝良质原创品牌精选</a>
+         <div class="nav-collapse">
+            <ul class="nav pull-right">
+               #if(${weibouser})
+               <li class="dropdown"><a data-toggle="dropdown"
+                  class="dropdown-toggle" href="#"><img
+                     style="height: 18px"
+                     src="${rc.contextPath}/image/weibo.png" /> 欢迎微博用户
+                     ${weibouser} <b class="caret"></b> </a>
+                  <ul class="dropdown-menu">
+                     <li><a href="${rc.contextPath}/weibosetting"><i
+                           class="icon-edit"></i> 微博设置</a></li>
+                     <li><a href="${rc.contextPath}/logout"><i
+                           class="icon-off"></i> 退出</a></li>
+                  </ul></li> 
+                #elseif(${txweibouser})
+               <li class="dropdown"><a data-toggle="dropdown"
+                  class="dropdown-toggle" href="#"><img
+                     style="height: 18px"
+                     src="http://mat1.gtimg.com/app/opent/images/wiki/resource/weiboicon16.png" /> 欢迎微博用户
+                     ${txweibouser} <b class="caret"></b> </a>
+                  <ul class="dropdown-menu">
+                     <li><a href="${rc.contextPath}/weibosetting"><i
+                           class="icon-edit"></i> 微博设置</a></li>
+                     <li><a href="${rc.contextPath}/logout"><i
+                           class="icon-off"></i> 退出</a></li>
+                  </ul></li> 
+                #else
+              <li><a href="https://open.t.qq.com/cgi-bin/oauth2/authorize?client_id=801287673&amp;response_type=code&amp;redirect_uri=http://www.guguji001.com/denglu/txlogined"><img alt="" src="/image/tencent.gif"></a></li><li><a href="https://api.weibo.com/oauth2/authorize?client_id=3019325185&amp;response_type=code&amp;redirect_uri=http%3A%2F%2Fwww.guguji001.com%2Fdenglu%2Fweibologined"><img alt="" src="http://img.t.sinajs.cn/t4/appstyle/open/images/website/loginbtn/loginbtn_04.png"></a></li> 
+                #end
+
+            </ul>
+         </div>
+      </div>
+   </div>
+</div>

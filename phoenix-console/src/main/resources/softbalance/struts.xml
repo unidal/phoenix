@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+    <!-- struts2中改变struts.xml默认路径, 这些本来struts会自动加载的文件，需要手动加载include。参考：http://my.oschina.net/jawayjiang/blog/88077 -->
+    <include file="struts-default.xml" />
+    <include file="struts-plugin.xml" />
+
+    <!-- <constant name="struts.velocity.toolboxlocation" value="WEB-INF/softbalance/velocity/toolbox.xml" 
+        /> -->
+    <!-- <constant name="struts.velocity.configfile" value="WEB-INF/softbalance/velocity/velocity.properties" 
+        /> -->
+    <constant name="struts.action.extension" value="" />
+    <constant name="struts.custom.properties" value="classpath:/softbalance/struts.properties" />
+    <constant name="struts.objectFactory"
+        value="org.apache.struts2.spring.StrutsSpringObjectFactory" />
+    <constant name="struts.action.excludePattern" value=".*/js/.*,.*/css/.*,.*/images/.*,.*/font/.*" />
+
+    <package name="softbalance" extends="httl-default">
+
+        <interceptors>
+            <interceptor-stack name="myStack">
+                <interceptor-ref name="timer" />
+                <interceptor-ref name="logger" />
+                <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
+        </interceptors>
+
+        <action name="index" class="indexAction">
+            <result name="success" type="httl">
+                proxy.httl
+            </result>
+            <result name="input" type="httl">/error.htm</result>
+        </action>
+
+        <action name="login" class="loginAction">
+            <result type="httl">
+                <param name="location">login.httl</param>
+            </result>
+        </action>
+
+    </package>
+
+</struts>
