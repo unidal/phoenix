@@ -5,23 +5,25 @@ import java.util.Map;
 
 public class PhoenixEnvironment {
 
-    public static final String                      METAS            = "metas";
-    public static final String                      REQUEST_ID       = "request_id";
-    public static final String                      REFER_REQUEST_ID = "refer_request_id";
-    public static final String                      GUID             = "guid";
-    public static final String                      ENV              = "phoenixEnvironment";
+    public static final String                      MOBILE_REQUEST_ID       = "pragma-page-id";
+    public static final String                      MOBILE_REFER_REQUEST_ID = "pragma-prev-page-id";
+    public static final String                      METAS                   = "metas";
+    public static final String                      REQUEST_ID              = "request_id";
+    public static final String                      REFER_REQUEST_ID        = "refer_request_id";
+    public static final String                      GUID                    = "guid";
+    public static final String                      ENV                     = "phoenixEnvironment";
 
-    private static ThreadLocal<Map<String, Object>> map              = new ThreadLocal<Map<String, Object>>() {
-                                                                         protected synchronized Map<String, Object> initialValue() {
-                                                                             return new HashMap<String, Object>();
-                                                                         }
-                                                                     };
+    private static ThreadLocal<Map<String, Object>> map                     = new ThreadLocal<Map<String, Object>>() {
+                                                                                protected synchronized Map<String, Object> initialValue() {
+                                                                                    return new HashMap<String, Object>();
+                                                                                }
+                                                                            };
 
-    private static ThreadLocal<Map<String, Object>> inheritableMap   = new InheritableThreadLocal<Map<String, Object>>() {
-                                                                         protected synchronized Map<String, Object> initialValue() {
-                                                                             return new HashMap<String, Object>();
-                                                                         }
-                                                                     };
+    private static ThreadLocal<Map<String, Object>> inheritableMap          = new InheritableThreadLocal<Map<String, Object>>() {
+                                                                                protected synchronized Map<String, Object> initialValue() {
+                                                                                    return new HashMap<String, Object>();
+                                                                                }
+                                                                            };
 
     public static Object get(String key) {
         return get(key, false);

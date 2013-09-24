@@ -33,11 +33,11 @@ public class PhoenixEnvironmentFilter implements Filter {
                 HttpServletRequest hRequest = (HttpServletRequest) request;
 
                 //从request中或去id
-                String requestId = hRequest.getHeader("request_id");//TODO 待毅敏告知具体字符串
+                String requestId = hRequest.getHeader(PhoenixEnvironment.MOBILE_REQUEST_ID);
                 String referRequestId = null;
 
                 if (requestId != null) {//如果存在requestId，则说明是移动api的web端
-                    referRequestId = hRequest.getHeader("refer_request_id");//TODO 待毅敏告知具体字符串
+                    referRequestId = hRequest.getHeader(PhoenixEnvironment.MOBILE_REFER_REQUEST_ID);
 
                 } else {//普通web端  TODO 待第二期实现
                     //requestId不存在，则生成
