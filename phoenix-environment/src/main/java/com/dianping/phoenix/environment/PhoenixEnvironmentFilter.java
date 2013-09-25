@@ -16,9 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class PhoenixEnvironmentFilter implements Filter {
 
-    private static final Logger LOG         = LoggerFactory.getLogger(PhoenixEnvironmentFilter.class);
-
-    private boolean             inheritable = false;
+    private static final Logger LOG = LoggerFactory.getLogger(PhoenixEnvironmentFilter.class);
 
     @Override
     public void destroy() {
@@ -33,11 +31,11 @@ public class PhoenixEnvironmentFilter implements Filter {
                 HttpServletRequest hRequest = (HttpServletRequest) request;
 
                 //从request中或去id
-                String requestId = hRequest.getHeader(PhoenixEnvironment.MOBILE_REQUEST_ID);
+                String requestId = hRequest.getHeader(PhoenixContext.MOBILE_REQUEST_ID);
                 String referRequestId = null;
 
                 if (requestId != null) {//如果存在requestId，则说明是移动api的web端
-                    referRequestId = hRequest.getHeader(PhoenixEnvironment.MOBILE_REFER_REQUEST_ID);
+                    referRequestId = hRequest.getHeader(PhoenixContext.MOBILE_REFER_REQUEST_ID);
 
                 } else {//普通web端  TODO 待第二期实现
                     //requestId不存在，则生成
@@ -49,10 +47,10 @@ public class PhoenixEnvironmentFilter implements Filter {
 
                 //将id放入ThreadLocal
                 if (requestId != null) {
-                    PhoenixEnvironment.set(PhoenixEnvironment.REQUEST_ID, requestId, inheritable);
+                    PhoenixContext.getInstance().set(PhoenixContext.REQUEST_ID, requestId);
                 }
                 if (referRequestId != null) {
-                    PhoenixEnvironment.set(PhoenixEnvironment.REFER_REQUEST_ID, referRequestId, inheritable);
+                    PhoenixContext.getInstance().set(PhoenixContext.REFER_REQUEST_ID, referRequestId);
                 }
 
             } catch (RuntimeException e) {
@@ -60,18 +58,17 @@ public class PhoenixEnvironmentFilter implements Filter {
             }
         }
 
-        chain.doFilter(request, response);
+        try {
+            chain.doFilter(request, response);
 
-        //清除ThreadLocal
-        PhoenixEnvironment.clear();
+        } finally {
+            //清除ThreadLocal
+            PhoenixContext.getInstance().clear();
+        }
 
     }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        String inheritableParam = filterConfig.getInitParameter("inheritable");
-        if (inheritableParam != null) {
-            inheritable = Boolean.parseBoolean(inheritableParam);
-        }
     }
 }
