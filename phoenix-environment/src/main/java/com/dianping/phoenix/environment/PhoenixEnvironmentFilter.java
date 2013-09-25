@@ -48,8 +48,12 @@ public class PhoenixEnvironmentFilter implements Filter {
                 }
 
                 //将id放入ThreadLocal
-                PhoenixEnvironment.set(PhoenixEnvironment.REQUEST_ID, requestId, inheritable);
-                PhoenixEnvironment.set(PhoenixEnvironment.REFER_REQUEST_ID, referRequestId, inheritable);
+                if (requestId != null) {
+                    PhoenixEnvironment.set(PhoenixEnvironment.REQUEST_ID, requestId, inheritable);
+                }
+                if (referRequestId != null) {
+                    PhoenixEnvironment.set(PhoenixEnvironment.REFER_REQUEST_ID, referRequestId, inheritable);
+                }
 
             } catch (RuntimeException e) {
                 LOG.warn(e.getMessage(), e);
@@ -57,6 +61,9 @@ public class PhoenixEnvironmentFilter implements Filter {
         }
 
         chain.doFilter(request, response);
+
+        //清除ThreadLocal
+        PhoenixEnvironment.clear();
 
     }
 

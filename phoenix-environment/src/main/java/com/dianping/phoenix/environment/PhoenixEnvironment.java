@@ -81,4 +81,12 @@ public class PhoenixEnvironment {
         }
     }
 
+    /**
+     * 清除ThreadLocal
+     */
+    public static void clear() {
+        map.remove();
+        inheritableMap.remove();
+    }
+
 }
