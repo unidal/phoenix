@@ -41,14 +41,10 @@ public class PhoenixEnvironmentFilter implements Filter {
 
                 } else {//普通web端  TODO 待第二期实现
                     //requestId不存在，则生成
-
                     //referRequestId，异步通过pigeon去session服务器获取
-
                     //判断cookie中的guid是否存在，不存在则生成
-
                     //将所有id放入request属性，供页头使用
                     //request.setAttribute(PhoenixEnvironment.ENV, new PhoenixEnvironment());
-
                 }
 
                 //将id放入ThreadLocal

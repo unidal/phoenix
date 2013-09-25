@@ -81,39 +81,4 @@ public class PhoenixEnvironment {
         }
     }
 
-    /**
-     * 获取metas，用于页头插入到html中
-     */
-    public static String getMetas() {
-        return (String) get(METAS);
-    }
-
-    public static void setMetas(String metas) {
-        set(METAS, metas);
-    }
-
-    public static String getRequestId() {
-        return (String) get(REQUEST_ID);
-    }
-
-    public static void setRequestId(String requestId) {
-        set(REQUEST_ID, requestId);
-    }
-
-    public static String getReferRequestId() {
-        return (String) get(REFER_REQUEST_ID);
-    }
-
-    public static void setReferRequestId(String referRequestId) {
-        set(REFER_REQUEST_ID, referRequestId);
-    }
-
-    public static String getGuid() {
-        return (String) get(GUID);
-    }
-
-    public static void setGuid(String guid) {
-        set(GUID, guid);
-    }
-
 }
