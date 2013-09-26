@@ -41,7 +41,7 @@ public class PhoenixContext {
      * @return
      */
     public Object get(String key) {
-        return get(key);
+        return map.get().get(key);
     }
 
     /**
@@ -51,7 +51,7 @@ public class PhoenixContext {
      * @return
      */
     public void set(String key, Object value) {
-        set(key, value);
+        map.get().put(key, value);
     }
 
     /**
