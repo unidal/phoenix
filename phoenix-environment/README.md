@@ -1,16 +1,16 @@
 **Maven依赖**
-	<!-- requestId项目的通用容器(基于ThreadLocal) -->
-	<dependency>
-		<groupId>com.dianping.platform</groupId>
-    	<artifactId>phoenix-environment</artifactId>
-    	<version>0.1.0</version>
-    </dependency>
-    <!-- 如果使用filter,则需要依赖servlet -->
-    <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>2.5</version>
-    </dependency>
+	&lt;!-- requestId项目的通用容器(基于ThreadLocal) --&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;com.dianping.platform&lt;/groupId&gt;
+    	&lt;artifactId&gt;phoenix-environment&lt;/artifactId&gt;
+    	&lt;version&gt;0.1.0&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;!-- 如果使用filter,则需要依赖servlet --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+        &lt;artifactId&gt;servlet-api&lt;/artifactId&gt;
+        &lt;version&gt;2.5&lt;/version&gt;
+    &lt;/dependency&gt;
 
 
 **通用容器的使用**: 
