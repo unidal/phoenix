@@ -35,7 +35,7 @@ public class PhoenixContext {
     }
 
     /**
-     * 根据key获取存在ThreadLocal的map中的对象
+     * 根据key获取存在ThreadLocal中的对象
      * 
      * @param key
      * @return
@@ -45,7 +45,7 @@ public class PhoenixContext {
     }
 
     /**
-     * 以key将value存在ThreadLocal的map中
+     * 以key将value存在ThreadLocal中
      * 
      * @param key
      * @return
@@ -62,36 +62,69 @@ public class PhoenixContext {
     }
 
     /**
-     * 获取metas，用于页头插入到html中
+     * 获取metas，metas用于页头插入到html中
      */
     public String getMetas() {
         return (String) get(METAS);
     }
 
+    /**
+     * 设置metas，metas用于页头插入到html中
+     */
     public void setMetas(String metas) {
         set(METAS, metas);
     }
 
+    /**
+     * 从ThreadLocal中获取requestId
+     * 
+     * @return requestId
+     */
     public String getRequestId() {
         return (String) get(REQUEST_ID);
     }
 
+    /**
+     * 将requestId存放到ThreadLocal中
+     * 
+     * @param requestId
+     */
     public void setRequestId(String requestId) {
         set(REQUEST_ID, requestId);
     }
 
+    /**
+     * 从ThreadLocal中获取referRequestId
+     * 
+     * @return referRequestId
+     */
     public String getReferRequestId() {
         return (String) get(REFER_REQUEST_ID);
     }
 
+    /**
+     * 将referRequestId存放到ThreadLocal中
+     * 
+     * @param referRequestId
+     */
     public void setReferRequestId(String referRequestId) {
         set(REFER_REQUEST_ID, referRequestId);
     }
 
+    /**
+     * 从ThreadLocal中获取guid
+     * 
+     * @return guid
+     */
     public String getGuid() {
         return (String) get(GUID);
     }
 
+    /**
+     * 将guid存放到ThreadLocal中
+     * 
+     * @param guid
+     */
     public void setGuid(String guid) {
         set(GUID, guid);
     }

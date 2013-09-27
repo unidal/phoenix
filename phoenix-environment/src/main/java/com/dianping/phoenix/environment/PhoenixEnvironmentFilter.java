@@ -47,10 +47,10 @@ public class PhoenixEnvironmentFilter implements Filter {
 
                 //将id放入ThreadLocal
                 if (requestId != null) {
-                    PhoenixContext.getInstance().set(PhoenixContext.REQUEST_ID, requestId);
+                    PhoenixContext.getInstance().setRequestId(requestId);
                 }
                 if (referRequestId != null) {
-                    PhoenixContext.getInstance().set(PhoenixContext.REFER_REQUEST_ID, referRequestId);
+                    PhoenixContext.getInstance().setReferRequestId(referRequestId);
                 }
 
             } catch (RuntimeException e) {
