@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model>
   <entity name="meta" root="true">
-    <entity-ref name="domainMeta" type="list" names="domainMetas" />
+    <entity-ref name="rule" type="list" names="rules" />
   </entity>
-  <entity name="domainMeta">
-    <attribute name="name" value-type="String" />
-    <entity-ref name="artifact" type="list" names="artifacts" />
+  <entity name="rule">
+    <attribute name="artifactId-pattern" value-type="String" />
+    <element name="solution" value-type="String" />
+    <element name="domain" value-type="String" type="list" names="domains" />
+    <entity-ref name="conflict" />
   </entity>
-  <entity name="artifact">
-    <attribute name="artifactId" value-type="String" />
-    <attribute name="version" value-type="String" />
+  <entity name="conflict">
+    <attribute name="app-version-range" value-type="String" />
+    <attribute name="kernel-version-range" value-type="String" />
   </entity>
 </model>
 

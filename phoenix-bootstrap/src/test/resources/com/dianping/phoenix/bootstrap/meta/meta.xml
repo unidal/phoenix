@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <meta>
-	<domainMeta name="user-web">
-		<artifact artifactId="alpaca-client" version="1.0.0" />
-		<artifact artifactId="alpaca-common" version="1.0.0" />
-	</domainMeta>
-	<domainMeta name="shop-web"></domainMeta>
+	<rule artifactId-pattern="spring*">
+		<conflict app-version-range="[3.0]" kernel-version-range="[1.0, 3.0)" />
+		<solution>app</solution>
+		<domain>user-web</domain>
+		<domain>shop-web</domain>
+	</rule>
+	<rule></rule>
 </meta>
