@@ -9,6 +9,9 @@
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.home.Model" scope="request" />
 
 <a:layout>
+	<res:useCss value="${res.css.local['DT_bootstrap.css']}" target="head-css" />
+	<res:useCss value="${res.css.local['overview.css']}" target="head-css" />
+
 	<ul class="breadcrumb">
 		<li><a href="${model.webapp}/console/home">Home</a><span class="divider">/</span></li>
 		<c:choose>
@@ -70,14 +73,15 @@
 		<form>
 		<input type="hidden" name="project" value="${payload.project}">
 		<div class="row-fluid">
-			<div class="span3">
+			<div class="span5">
 				<div class="row-fluid">
 					<div class="span12 thumbnail" style="height:300px;overflow-y: auto;">
-						<table class="table table-striped table-condensed lion">
+						<table id="host-nav" class="table table-striped table-condensed lion">
 							<thead>
 								<tr>
-									<th><input type="checkbox" id="all-machine-check"/> Machine</th>
-									<th>env</th>
+									<th><input type="checkbox" id="all-machine-check"/> IP</th>
+									<th>Hostname</th>
+									<th>Env</th>
 									<th>Kernel</th>
 									<th>App</th>
 								</tr>
@@ -86,6 +90,7 @@
 								<c:forEach var="host" items="${domain.hosts}" varStatus="status">
 									<tr>
 										<td>
+											<%--  ${w:showCheckbox('host', host.value, payload.hosts, 'ip', 'ip')}--%>
 											${w:showCheckbox('host', host.value, payload.hosts, 'ip', 'ip')}
 											<c:if test="${host.value.phoenixAgent.status=='ok'}">
 											   <div class="z6 a-f-e" title="可用"></div>
@@ -94,9 +99,43 @@
 											   <div class="u6 a-f-e" title="不可用"></div>
 											</c:if>
 										</td>
+										<td>
+											${host.value.hostname}
+										</td>
 										<td>${host.value.env}</td>
-										<td>1.0</td>
-										<td>2.0.3</td>
+										<c:choose>
+											<c:when test="${fn:length(host.value.container.apps) eq 0}">
+												<td>N/A</td>
+												<td>N/A</td>
+											</c:when>
+											<c:otherwise>
+												<c:forEach var="app" items="${host.value.container.apps}">
+													<td>${app.name}</td>
+													<c:if test="${app.name==domain.name}">
+														<td>
+															<c:choose>
+																<c:when test="${fn:length(app.version) eq 0}">
+																	N/A
+																</c:when>
+																<c:otherwise>
+																	${app.version}
+																</c:otherwise>
+															</c:choose>
+														</td>
+														<td>
+															<c:choose>
+																<c:when test="${fn:length(app.kernel.version) eq 0}">
+																	N/A
+																</c:when>
+																<c:otherwise>
+																	${app.kernel.version}
+																</c:otherwise>
+															</c:choose>
+														</td>
+													</c:if>
+												</c:forEach>
+											</c:otherwise>
+										</c:choose>
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -104,7 +143,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="span9">
+			<div class="span7">
 				<div class="row-fluid">
 					<div class="span12">
 						<table class="table table-bordered table-condensed lion nohover">
@@ -451,6 +490,8 @@
 		</div>
 	</div>
 
+	<res:useJs value="${res.js.local['jquery.dataTables.min.js']}" target="datatable-js" />
     <res:useJs value="${res.js.local.project_js}" target="project-js" />
+	<res:jsSlot id="datatable-js" />
     <res:jsSlot id="project-js" />
 </a:layout>

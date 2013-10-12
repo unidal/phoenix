@@ -19,6 +19,8 @@ public class DeviceVisitor implements IVisitor {
 
 	private static final String KEY_ENV = "env";
 
+	private static final String KEY_HOSTNAME = "hostname";
+
 	private Host m_host;
 
 	public DeviceVisitor(Host host) {
@@ -42,9 +44,10 @@ public class DeviceVisitor implements IVisitor {
 			m_host.setOwner(attr == null ? "" : attr.getText());
 			attr = map.get(KEY_STATUS);
 			m_host.setStatus(attr == null ? "" : attr.getText());
+			attr = map.get(KEY_HOSTNAME);
+			m_host.setHostname(attr == null ? "" : attr.getText());
 		}
 	}
-
 	@Override
 	public void visitFacet(Facet facet) {
 	}

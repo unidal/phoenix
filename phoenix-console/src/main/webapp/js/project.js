@@ -46,7 +46,9 @@ function parsePayload() {
 
 	if (queryTips != "") {
 		$("#queryInfo").html(queryTips);
-		$("#queryInfo").parent().css({"display":""});
+		$("#queryInfo").parent().css({
+			"display" : ""
+		});
 	}
 }
 
@@ -60,3 +62,13 @@ function getArrayFromString(str) {
 	}
 	return finalArray;
 }
+
+$(function() {
+	var navtable = $("#host-nav").dataTable({
+		"bFilter" : false,
+		"bInfo" : false,
+		"bLengthChange": false,
+		"bPaginate": false
+	});
+	navtable.fnSort([ [ 1, 'asc' ] ]);
+});

@@ -17,6 +17,7 @@
     <attribute name="status" value-type="String" />
     <attribute name="env" value-type="String" />
     <attribute name="owner" value-type="String" />
+    <attribute name="hostname" value-type="String" />
     <entity-ref name="phoenix-agent" />
     <entity-ref name="container" />
   </entity>
