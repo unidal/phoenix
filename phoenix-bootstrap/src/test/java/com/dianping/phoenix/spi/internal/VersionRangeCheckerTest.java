@@ -10,6 +10,11 @@ public class VersionRangeCheckerTest {
 	public void test() {
 		VersionRangeChecker checker = new VersionRangeChecker();
 
+		assertFalse(checker.matches("", "1.3"));
+		assertFalse(checker.matches(null, null));
+
+		assertTrue(checker.matches("*", "1.3"));
+		
 		assertTrue(checker.matches("1.3", "1.3"));
 		assertFalse(checker.matches("1.3.2", "1.3"));
 		assertFalse(checker.matches("[1.3.2]", "1.3.2"));

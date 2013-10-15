@@ -21,9 +21,7 @@ public class MetaBasedClasspathBuilder extends AbstractClasspathBuilder {
 				Meta meta = DefaultSaxParser.parse(new FileInputStream(metafile));
 				if (meta != null && app != null) {
 					for (Rule rule : meta.getRules()) {
-						if (rule.getArtifactIdPattern() != null && rule.getConflict() != null
-								&& rule.getSolution() != null
-								&& (rule.getDomains().size() == 0 || rule.getDomains().contains(app))) {
+						if (rule.getJarPattern() != null && isDomainMatch(rule, app)) {
 							m_rules.add(rule);
 						}
 					}
@@ -34,16 +32,35 @@ public class MetaBasedClasspathBuilder extends AbstractClasspathBuilder {
 		}
 	}
 
+	private boolean isDomainMatch(Rule rule, String domain) {
+		if (rule.getIncludeDomains().size() == 0
+				&& (rule.getExcludeDomains().size() == 0 || !rule.getExcludeDomains().contains(domain))) {
+			return true;
+		} else if (rule.getIncludeDomains().size() != 0 && rule.getIncludeDomains().contains(domain)) {
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	protected Entry pickup(Entry kernelEntry, Entry appEntry) {
-		if (m_rules.size() > 0) {
-			for (Rule rule : m_rules) {
-				// artifactId, kernel version, app version matches
-				System.out.println(String.format("Rule: %s", rule.getArtifactIdPattern()));
-				if (Pattern.matches(rule.getArtifactIdPattern(), kernelEntry.getArtifactId())
-						&& m_rangeChecker.matches(rule.getConflict().getKernelVersionRange(), kernelEntry.getVersion())
-						&& m_rangeChecker.matches(rule.getConflict().getAppVersionRange(), appEntry.getVersion())) {
-					return "app".equals(rule.getSolution()) ? appEntry : kernelEntry;
+		for (Rule rule : m_rules) {
+			// artifactId, kernel version, app version matches
+			if (Pattern.matches(rule.getJarPattern(), kernelEntry.getArtifactId())
+					&& m_rangeChecker.matches(rule.getVersionInKernel(), kernelEntry.getVersion())
+					&& m_rangeChecker.matches(rule.getVersionInApp(), appEntry.getVersion())) {
+				PickupPolicy policy = PickupPolicy.getByName(rule.getPolicy());
+				if (policy != null) {
+					switch (policy) {
+						case USE_APP :
+							return appEntry;
+						case USE_KERNEL :
+							return kernelEntry;
+						case USE_NEITHER :
+							return null;
+						default :
+							break;
+					}
 				}
 			}
 		}
