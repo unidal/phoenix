@@ -6,6 +6,13 @@ $(function() {
 	$("a.toParent").attr("href", function() {
 		return $(this).attr("href") + payloadStr;
 	});
+	var navtable = $("#host-nav").dataTable({
+		"bFilter" : false,
+		"bInfo" : false,
+		"bLengthChange": false,
+		"bPaginate": false
+	});
+	navtable.fnSort([ [ 1, 'asc' ] ]);
 });
 
 function bind_cmp_evt_handlers() {
@@ -62,13 +69,3 @@ function getArrayFromString(str) {
 	}
 	return finalArray;
 }
-
-$(function() {
-	var navtable = $("#host-nav").dataTable({
-		"bFilter" : false,
-		"bInfo" : false,
-		"bLengthChange": false,
-		"bPaginate": false
-	});
-	navtable.fnSort([ [ 1, 'asc' ] ]);
-});
