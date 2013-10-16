@@ -1,6 +1,7 @@
 package com.dianping.phoenix.configure;
 
 import java.io.File;
+import java.util.Set;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
@@ -126,12 +127,17 @@ public class ConfigManager implements Initializable {
 				if (m_config.getConsole().getCmdb() == null) {
 					m_config.getConsole().setCmdb(new Cmdb());
 				}
+
+				if (m_config.getConsole().getEnvironments().size() == 0) {
+					m_config.getConsole().getEnvironments().add("beta");
+				}
 			} else {
 				m_config = new Config();
 				m_config.setGit(new GitConfig());
 				m_config.setAgent(new AgentConfig());
 				m_config.setConsole(new ConsoleConfig());
 				m_config.getConsole().setCmdb(new Cmdb());
+				m_config.getConsole().getEnvironments().add("beta");
 			}
 		} catch (Exception e) {
 			throw new InitializationException(String.format("Unable to load configuration file(%s)!", m_configFile), e);
@@ -210,5 +216,10 @@ public class ConfigManager implements Initializable {
 	public int getResourceInfoRefreshIntervalMin() {
 		check();
 		return m_config.getConsole().getResourceInfoRefreshIntervalMin();
+	}
+
+	public Set<String> getEnvironments() {
+		check();
+		return m_config.getConsole().getEnvironments();
 	}
 }

@@ -32,6 +32,7 @@
     <element name="agent-fetch-read-timeout" value-type="int" default-value="50" primitive="true"/>
     <element name="agent-fetch-interval-min" value-type="int" default-value="10" primitive="true"/>
     <element name="resource-info-refresh-interval-min" value-type="int" default-value="30" primitive="true"/>
+    <element name="environment" value-type="String" type="set" names="environments"/>
   </entity>
   <entity name="cmdb" class-name="Cmdb">
   	<element name="base-url-pattern" value-type="String" default-value="http://10.1.1.129/cmdb/device%s&amp;wt=xml"/>

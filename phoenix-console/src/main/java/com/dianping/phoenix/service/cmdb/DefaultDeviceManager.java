@@ -55,7 +55,11 @@ public class DefaultDeviceManager implements DeviceManager, Initializable, LogEn
 					String.format("/s?q=app:%s&fl=hostname,private_ip,status,rd_duty,env", name.trim()));
 			Responce responce = readCmdb(cmdbQuery);
 			if (responce != null && responce.getDevices() != null) {
-				devices.addAll(responce.getDevices());
+				for (Device device : responce.getDevices()) {
+					if (m_configManager.getEnvironments().contains(device.getAttributes().get("env").getText())) {
+						devices.add(device);
+					}
+				}
 			}
 		}
 		return devices;

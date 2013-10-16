@@ -35,6 +35,7 @@
     <element name="agent-fetch-read-timeout" value-type="int" />
     <element name="agent-fetch-interval-min" value-type="int" />
     <element name="resource-info-refresh-interval-min" value-type="int" />
+    <element name="environment" value-type="String" type="list" names="environments" />
     <entity-ref name="cmdb" />
   </entity>
   <entity name="cmdb">
