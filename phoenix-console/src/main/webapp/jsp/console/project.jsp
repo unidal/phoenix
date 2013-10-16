@@ -110,7 +110,6 @@
 											</c:when>
 											<c:otherwise>
 												<c:forEach var="app" items="${host.value.container.apps}">
-													<td>${app.name}</td>
 													<c:if test="${app.name==domain.name}">
 														<td>
 															<c:choose>
