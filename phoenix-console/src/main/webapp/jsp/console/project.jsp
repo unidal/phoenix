@@ -75,7 +75,7 @@
 		<div class="row-fluid">
 			<div class="span5">
 				<div class="row-fluid">
-					<div class="span12 thumbnail" style="height:300px;overflow-y: auto;">
+					<div class="span12 thumbnail" style="height:400px;overflow-y: auto;">
 						<table id="host-nav" class="table table-striped table-condensed lion">
 							<thead>
 								<tr>
@@ -149,7 +149,7 @@
 						<table class="table table-bordered table-condensed lion nohover">
 							<thead>
 								<tr>
-									<th width="20%">
+									<th width="40%">
                                        <label class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">版本号 (${payload.plan.warType})</strong></label>
                                     </th>
 									<td>

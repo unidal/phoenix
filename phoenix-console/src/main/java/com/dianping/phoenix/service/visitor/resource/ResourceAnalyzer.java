@@ -87,6 +87,9 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 	@Override
 	public void visitHost(Host host) {
 		m_currentDomain.addOwner(StringUtils.getDefaultValueIfBlank(host.getOwner(), "NONE"));
+		if (host.getPhoenixAgent() == null) {
+			m_currentDomainInactiveCount++;
+		}
 		super.visitHost(host);
 	}
 
