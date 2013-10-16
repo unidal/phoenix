@@ -109,18 +109,10 @@
 												<td>N/A</td>
 											</c:when>
 											<c:otherwise>
+												<c:set var="isShowed" value="false"></c:set>
 												<c:forEach var="app" items="${host.value.container.apps}">
 													<c:if test="${app.name==domain.name}">
-														<td>
-															<c:choose>
-																<c:when test="${fn:length(app.version) eq 0}">
-																	N/A
-																</c:when>
-																<c:otherwise>
-																	${app.version}
-																</c:otherwise>
-															</c:choose>
-														</td>
+														<c:set var="isShowed" value="true"></c:set>
 														<td>
 															<c:choose>
 																<c:when test="${fn:length(app.kernel.version) eq 0}">
@@ -131,8 +123,22 @@
 																</c:otherwise>
 															</c:choose>
 														</td>
+														<td>
+															<c:choose>
+																<c:when test="${fn:length(app.version) eq 0}">
+																	N/A
+																</c:when>
+																<c:otherwise>
+																	${app.version}
+																</c:otherwise>
+															</c:choose>
+														</td>
 													</c:if>
 												</c:forEach>
+												<c:if test="${isShowed == false}">
+													<td>N/A</td>
+													<td>N/A</td>
+												</c:if>
 											</c:otherwise>
 										</c:choose>
 									</tr>
