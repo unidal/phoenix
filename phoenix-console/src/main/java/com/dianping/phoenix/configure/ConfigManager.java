@@ -222,4 +222,9 @@ public class ConfigManager implements Initializable {
 		check();
 		return m_config.getConsole().getEnvironments();
 	}
+
+	public int getCmdbTimeoutInSecond() {
+		check();
+		return m_config.getConsole().getCmdb().getTimeoutInSecond();
+	}
 }

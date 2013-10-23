@@ -48,8 +48,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.service.netty.AgentStatusFetcher</role>
-			<implementation>com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher</implementation>
+			<role>com.dianping.phoenix.service.resource.netty.AgentStatusFetcher</role>
+			<implementation>com.dianping.phoenix.service.resource.netty.DefaultAgentStatusFetcher</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -57,8 +57,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.service.cmdb.DeviceManager</role>
-			<implementation>com.dianping.phoenix.service.cmdb.DefaultDeviceManager</implementation>
+			<role>com.dianping.phoenix.service.resource.cmdb.DeviceManager</role>
+			<implementation>com.dianping.phoenix.service.resource.cmdb.DefaultDeviceManager</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -82,13 +82,13 @@
 			<implementation>com.dianping.phoenix.service.resource.DefaultResourceManager</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.service.netty.AgentStatusFetcher</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.service.cmdb.DeviceManager</role>
+					<role>com.dianping.phoenix.service.resource.cmdb.DeviceManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.resource.netty.AgentStatusFetcher</role>
 				</requirement>
 			</requirements>
 		</component>

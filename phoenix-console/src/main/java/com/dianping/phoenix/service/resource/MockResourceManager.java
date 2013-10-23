@@ -12,6 +12,7 @@ import com.dianping.phoenix.agent.resource.entity.Lib;
 import com.dianping.phoenix.agent.resource.entity.PhoenixAgent;
 import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
+import com.dianping.phoenix.service.resource.netty.AgentStatusFetcher;
 import com.dianping.phoenix.service.visitor.resource.ResourceAnalyzer;
 
 public class MockResourceManager extends DefaultResourceManager {
@@ -49,8 +50,7 @@ public class MockResourceManager extends DefaultResourceManager {
 		domain.addHost(host);
 		product.addDomain(domain);
 		m_resource.addProduct(product);
-
-		m_agentStatusFetcher.fetchPhoenixAgentStatus(new ArrayList<Host>(domain.getHosts().values()));
+		lookup(AgentStatusFetcher.class).fetchPhoenixAgentStatus(new ArrayList<Host>(domain.getHosts().values()));
 
 		product = new Product();
 		domain = new Domain();

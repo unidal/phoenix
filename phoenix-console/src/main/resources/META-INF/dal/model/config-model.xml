@@ -39,6 +39,7 @@
   	<element name="catalog-url-part" value-type="String" default-value="/s?q=*&amp;facet=catalog"/>
   	<element name="domain-url-pattern-part" value-type="String" default-value="/s?q=catalog:%s&amp;facet=app"/>
   	<element name="ip-url-pattern-part" value-type="String" default-value="/s?q=app:%s&amp;facet=private_ip"/>
+  	<element name="timeout-in-second" value-type="int" default-value="3"/>
   </entity>
 </model>
 

@@ -33,12 +33,12 @@ import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.LogService;
 import com.dianping.phoenix.service.ProjectManager;
 import com.dianping.phoenix.service.WarService;
-import com.dianping.phoenix.service.cmdb.DefaultDeviceManager;
-import com.dianping.phoenix.service.cmdb.DeviceManager;
-import com.dianping.phoenix.service.netty.AgentStatusFetcher;
-import com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher;
 import com.dianping.phoenix.service.resource.DefaultResourceManager;
 import com.dianping.phoenix.service.resource.ResourceManager;
+import com.dianping.phoenix.service.resource.cmdb.DefaultDeviceManager;
+import com.dianping.phoenix.service.resource.cmdb.DeviceManager;
+import com.dianping.phoenix.service.resource.netty.AgentStatusFetcher;
+import com.dianping.phoenix.service.resource.netty.DefaultAgentStatusFetcher;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public static void main(String[] args) {
@@ -83,7 +83,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(ProjectManager.class, DefaultProjectManager.class) //
 				.req(DeploymentDao.class, DeploymentDetailsDao.class));
 		all.add(C(ResourceManager.class, DefaultResourceManager.class)//
-				.req(AgentStatusFetcher.class, DeviceManager.class, ConfigManager.class));
+				.req(DeviceManager.class, ConfigManager.class, AgentStatusFetcher.class));
 
 		for (DeployPolicy policy : DeployPolicy.values()) {
 			all.add(C(DeployExecutor.class, policy.getId(), DefaultDeployExecutor.class) //

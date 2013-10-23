@@ -35,6 +35,7 @@
 			<catalog-url-part><![CDATA[/s?q=*&facet=catalog]]></catalog-url-part>
 			<domain-url-pattern-part><![CDATA[/s?q=catalog:%s&facet=app]]></domain-url-pattern-part>
 			<ip-url-pattern-part><![CDATA[/s?q=app:%s&facet=private_ip]]></ip-url-pattern-part>
+			<timeout-in-second>3</timeout-in-second>
 		</cmdb>
 	</console>
 </config>

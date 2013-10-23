@@ -11,20 +11,25 @@ import com.dianping.phoenix.device.entity.Responce;
 import com.dianping.phoenix.device.entity.Value;
 
 public class DeviceVisitor implements IVisitor {
-	private static final String KEY_OWNER = "rd_duty";
+	public static final String KEY_OWNER = "rd_duty";
 
-	private static final String KEY_IP = "private_ip";
+	public static final String KEY_IP = "private_ip";
 
-	private static final String KEY_STATUS = "status";
+	public static final String KEY_STATUS = "status";
 
-	private static final String KEY_ENV = "env";
+	public static final String KEY_ENV = "env";
 
-	private static final String KEY_HOSTNAME = "hostname";
+	public static final String KEY_HOSTNAME = "hostname";
+
+	public static final String KEY_CATALOG = "catalog";
+
+	public static final String KEY_APP = "app";
 
 	private Host m_host;
 
-	public DeviceVisitor(Host host) {
+	public DeviceVisitor setHost(Host host) {
 		m_host = host;
+		return this;
 	}
 
 	@Override
@@ -59,5 +64,4 @@ public class DeviceVisitor implements IVisitor {
 	@Override
 	public void visitValue(Value value) {
 	}
-
 }

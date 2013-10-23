@@ -1,9 +1,11 @@
 <%@ page contentType="text/html; charset=utf-8"%>
+
 <%@ taglib prefix="a" uri="http://www.dianping.com/phoenix/console"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"  %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
+
 <jsp:useBean id="ctx" type="com.dianping.phoenix.console.page.home.Context" scope="request" />
 <jsp:useBean id="payload" type="com.dianping.phoenix.console.page.home.Payload" scope="request" />
 <jsp:useBean id="model" type="com.dianping.phoenix.console.page.home.Model" scope="request" />
@@ -50,7 +52,7 @@
 					<tbody>
 						<tr>
 							<th width="80">Project</th>
-							<td width="200">${domain.name}</td>
+							<td width="300">${domain.name}</td>
 							<th width="80">Owner</th>
 							<td width="200">
 								<c:choose>

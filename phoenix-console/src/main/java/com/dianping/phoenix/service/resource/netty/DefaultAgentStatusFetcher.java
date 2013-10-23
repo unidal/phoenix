@@ -1,4 +1,4 @@
-package com.dianping.phoenix.service.netty;
+package com.dianping.phoenix.service.resource.netty;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -7,6 +7,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
@@ -30,10 +32,15 @@ import org.unidal.lookup.annotation.Inject;
 import com.dianping.phoenix.agent.resource.entity.Host;
 import com.dianping.phoenix.configure.ConfigManager;
 
-public class DefaultAgentStatusFetcher implements AgentStatusFetcher {
+public class DefaultAgentStatusFetcher implements AgentStatusFetcher, Initializable {
 
 	@Inject
-	ConfigManager m_config;
+	private ConfigManager m_config;
+
+
+	@Override
+	public void initialize() throws InitializationException {
+	}
 
 	@Override
 	public void fetchPhoenixAgentStatus(final List<Host> hosts) {
@@ -42,10 +49,14 @@ public class DefaultAgentStatusFetcher implements AgentStatusFetcher {
 		}
 
 		if (hosts.size() > 0) {
-			final CountDownLatch latch = new CountDownLatch(hosts.size());
-			final ClientBootstrap bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(
+			ClientBootstrap bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(
 					Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
+			
+			final CountDownLatch latch = new CountDownLatch(hosts.size());
 			final Timer timer = new HashedWheelTimer();
+			
+			bootstrap.setOption("connectTimeoutMillis", m_config.getAgentFetchConnectTimeout());
+			bootstrap.setOption("keepAlive", true);
 			bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
 				public ChannelPipeline getPipeline() throws Exception {
 					ChannelPipeline pipeline = Channels.pipeline();
@@ -57,8 +68,6 @@ public class DefaultAgentStatusFetcher implements AgentStatusFetcher {
 					return pipeline;
 				}
 			});
-			bootstrap.setOption("connectTimeoutMillis", m_config.getAgentFetchConnectTimeout());
-			bootstrap.setOption("keepAlive", true);
 
 			for (Host host : hosts) {
 				final URI uri = validateUri(m_config.getAgentStatusUrl(host.getIp()));
@@ -115,4 +124,5 @@ public class DefaultAgentStatusFetcher implements AgentStatusFetcher {
 		}
 		return null;
 	}
+
 }

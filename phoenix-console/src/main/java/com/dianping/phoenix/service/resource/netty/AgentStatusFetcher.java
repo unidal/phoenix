@@ -1,4 +1,4 @@
-package com.dianping.phoenix.service.netty;
+package com.dianping.phoenix.service.resource.netty;
 
 import java.util.List;
 
