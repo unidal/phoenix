@@ -100,13 +100,11 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 		Map<String, Map<String, List<Device>>> catalog = new LinkedHashMap<String, Map<String, List<Device>>>();
 		for (Device device : devices) {
 			if (isDeviceEnvRight(device)) {
-				String productName = getAttributeText(device.getAttributes().get(DeviceVisitor.KEY_CATALOG), "Unknown");
-				String domainName = getAttributeText(device.getAttributes().get(DeviceVisitor.KEY_APP), "Unknown");
-				domainName = "Unknown".equals(domainName)
-						? String.format("%s-%s", productName, domainName)
-						: domainName;
-
-				getDomainFromProduct(getProductFromCatalog(catalog, productName), domainName).add(device);
+				String productName = getAttributeText(device.getAttributes().get(DeviceVisitor.KEY_CATALOG), "none");
+				String domainName = getAttributeText(device.getAttributes().get(DeviceVisitor.KEY_APP), "none");
+				if (!"none".equals(productName) && !"none".equals(domainName)) {
+					getDomainFromProduct(getProductFromCatalog(catalog, productName), domainName).add(device);
+				}
 			}
 		}
 		return catalog;

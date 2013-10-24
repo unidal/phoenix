@@ -11,6 +11,7 @@ import com.dianping.phoenix.agent.resource.entity.Host;
 import com.dianping.phoenix.agent.resource.entity.Kernel;
 import com.dianping.phoenix.agent.resource.entity.Lib;
 import com.dianping.phoenix.agent.resource.entity.PhoenixAgent;
+import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
 import com.dianping.phoenix.utils.StringUtils;
 
@@ -26,6 +27,8 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 	private Set<String> m_currentDomainJarNameSet;
 	private int m_currentDomainActiveCount;
 	private int m_currentDomainInactiveCount;
+	private int m_currentProductActiveCount;
+	private int m_currentProductInactiveCount;
 
 	public ResourceAnalyzer(Resource resource) {
 		visitResource(resource);
@@ -61,6 +64,9 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 			m_domainToJarNameSet.put(domain.getName(), m_currentDomainJarNameSet);
 			m_currentDomain.setActiveCount(m_currentDomainActiveCount);
 			m_currentDomain.setInactiveCount(m_currentDomainInactiveCount);
+
+			m_currentProductActiveCount += m_currentDomainActiveCount;
+			m_currentProductInactiveCount += m_currentDomainInactiveCount;
 		}
 	}
 
@@ -107,4 +113,16 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 		m_currentDomain.addKernelVersion(StringUtils.getDefaultValueIfBlank(kernel.getVersion(), "NONE"));
 		super.visitKernel(kernel);
 	}
+
+	@Override
+	public void visitProduct(Product product) {
+		m_currentProductActiveCount = 0;
+		m_currentProductInactiveCount = 0;
+
+		super.visitProduct(product);
+
+		product.setProductActiveCount(m_currentProductActiveCount);
+		product.setProductInactiveCount(m_currentProductInactiveCount);
+	}
+
 }

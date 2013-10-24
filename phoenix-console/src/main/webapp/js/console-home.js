@@ -32,7 +32,9 @@ function parsePayload() {
 
 	if (queryTips != "") {
 		$("#queryInfo").html(queryTips);
-		$("#queryInfo").parent().css({"display":""});
+		$("#queryInfo").parent().css({
+			"display" : ""
+		});
 	}
 }
 
@@ -54,5 +56,6 @@ $(function() {
 	});
 	$('#myTab a').click(function(e) {
 		$(this).tab('show');
-	})
+	});
+	$('table').dataTable();
 });

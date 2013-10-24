@@ -6,8 +6,11 @@
   	</entity>
   	<entity name="product">
   		<attribute name="name" value-type="String" key="true"/>
+	  	<attribute name="productActiveCount" value-type="int" default-value="0"></attribute>
+	  	<attribute name="productInactiveCount" value-type="int" default-value="0"></attribute>
 		<entity-ref name="domain" type="map" names="domains" />
 	</entity>
+
 	<entity name="domain">
 		<attribute name="name" value-type="String" key="true" />
 		<entity-ref name="host" type="map" names="hosts" />
