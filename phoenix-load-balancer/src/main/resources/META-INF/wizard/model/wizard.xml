@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wizard package="com.dianping.phoenix.lb.model">
+   <model package="com.dianping.phoenix.lb.model.configure" name="configure">
+      <sample-model>src/test/resources/configure.xml</sample-model>
+   </model>
+</wizard>
