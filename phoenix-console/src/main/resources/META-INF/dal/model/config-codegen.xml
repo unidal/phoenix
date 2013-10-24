@@ -36,6 +36,7 @@
     <element name="agent-fetch-interval-min" value-type="int" />
     <element name="resource-info-refresh-interval-min" value-type="int" />
     <element name="environment" value-type="String" type="list" names="environments" />
+    <element name="product" value-type="String" type="list" names="products" />
     <entity-ref name="cmdb" />
   </entity>
   <entity name="cmdb">
@@ -43,6 +44,7 @@
     <element name="catalog-url-part" value-type="String" />
     <element name="domain-url-pattern-part" value-type="String" />
     <element name="ip-url-pattern-part" value-type="String" />
+    <element name="timeout-in-second" value-type="int" />
   </entity>
 </model>
 

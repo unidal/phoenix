@@ -30,6 +30,8 @@
 		<resource-info-refresh-interval-min>30</resource-info-refresh-interval-min>
 		<environment>生产</environment>
 		<environment>预发</environment>
+		<product>信息线</product>
+		<product>商务线</product>
 		<cmdb>
 			<base-url-pattern><![CDATA[http://10.1.1.129/cmdb/device%s&wt=xml]]></base-url-pattern>
 			<catalog-url-part><![CDATA[/s?q=*&facet=catalog]]></catalog-url-part>

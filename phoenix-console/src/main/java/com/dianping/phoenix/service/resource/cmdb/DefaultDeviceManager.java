@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,9 +55,12 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 	public List<Device> getDevices(String name) throws ConnectException {
 		List<Device> devices = new ArrayList<Device>();
 		if (name != null && name.trim().length() > 0) {
-			String cmdbQuery = String.format(m_configManager.getCmdbBaseUrl(),
-					String.format("/s?q=app:%s&fl=hostname,private_ip,status,rd_duty,env", name.trim()));
-			Responce responce = readCmdb(cmdbQuery);
+			StringBuilder cmdbQuery = new StringBuilder(String.format(m_configManager.getCmdbBaseUrl(),
+					"/s?wt=xml&fl=hostname,private_ip,status,rd_duty,env&q=app:%s,"));
+			for (String env : m_configManager.getEnvironments()) {
+				cmdbQuery.append(String.format("-env:%s,", env));
+			}
+			Responce responce = readCmdb(cmdbQuery.toString());
 			if (responce != null && responce.getDevices() != null) {
 				for (Device device : responce.getDevices()) {
 					devices.add(device);
@@ -68,51 +72,70 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 
 	@Override
 	public Map<String, Map<String, List<Device>>> getDeviceCatalog() throws ConnectException {
-		String cmdbQuery = String.format(m_configManager.getCmdbBaseUrl(),
-				"/s?q=*&fl=hostname,private_ip,status,rd_duty,env,app,catalog");
-		Responce responce = readCmdb(cmdbQuery);
+		StringBuilder cmdbQuery = new StringBuilder(String.format(m_configManager.getCmdbBaseUrl(),
+				"/s?wt=xml&fl=hostname,private_ip,status,rd_duty,env,app,catalog&q="));
+		for (String env : m_configManager.getEnvironments()) {
+			cmdbQuery.append(String.format("-env:%s,", env));
+		}
+
+		Responce responce = readCmdb(cmdbQuery.toString());
 		ExecutorService executor = Executors.newCachedThreadPool();
+		boolean finish = false;
 
 		if (responce != null) {
 			int pageCount = (int) Math.ceil(responce.getNumfound() / 50.0);
-			int threadCount = (int) Math.ceil(pageCount / 10.0);// 10_pages/thread
+			int threadCount = (int) Math.ceil((pageCount - 1) / 10.0);// 10_pages/thread
 			int curPage = 2;
 			CountDownLatch latch = new CountDownLatch(threadCount);
+			m_logger.info(String.format(
+					"########## Cmdb page count:【%d】, thread count:【%d】, latch count:【%d】##########", pageCount,
+					threadCount, latch.getCount()));
 			while (curPage <= pageCount) {
-				executor.execute(new QueryTask(responce, curPage,
-						(curPage + 9) < pageCount ? (curPage + 9) : pageCount, latch));// 10_pages/thread
+				executor.execute(new QueryTask(cmdbQuery.toString(), responce, curPage, getEndPageNumber(curPage,
+						pageCount), latch));
 				curPage += 10;
 			}
+
 			try {
-				latch.await(m_configManager.getCmdbTimeoutInSecond(), TimeUnit.SECONDS);
+				finish = latch.await(m_configManager.getCmdbTimeoutInSecond(), TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				m_logger.error("Error happens when get cmdb infos, lost some infos.", e);
 			}
 		}
-		executor.shutdown();
+		executor.shutdownNow();
 
-		m_logger.info("Read cmdb catalog finished. Total device: " + responce.getDevices().size());
+		m_logger.info(String
+				.format("########## Read cmdb catalog finished. Except count:【%d】, Total count:【%d】, Finish correctly:【%b】 ##########",
+						responce.getNumfound(), responce.getDevices().size(), finish));
 
 		return generateCatalog(responce.getDevices());
 	}
 
-	private Map<String, Map<String, List<Device>>> generateCatalog(List<Device> devices) {
-		Map<String, Map<String, List<Device>>> catalog = new LinkedHashMap<String, Map<String, List<Device>>>();
-		for (Device device : devices) {
-			if (isDeviceEnvRight(device)) {
-				String productName = getAttributeText(device.getAttributes().get(DeviceVisitor.KEY_CATALOG), "none");
-				String domainName = getAttributeText(device.getAttributes().get(DeviceVisitor.KEY_APP), "none");
-				if (!"none".equals(productName) && !"none".equals(domainName)) {
-					getDomainFromProduct(getProductFromCatalog(catalog, productName), domainName).add(device);
-				}
-			}
-		}
-		return catalog;
+	private int getEndPageNumber(int startPageNumber, int totalCount) {
+		// 10 pages per thread
+		return (startPageNumber + 9) < totalCount ? (startPageNumber + 9) : totalCount;
 	}
 
-	private boolean isDeviceEnvRight(Device device) {
-		String env = getAttributeText(device.getAttributes().get(DeviceVisitor.KEY_ENV), "NONENV");
-		return m_configManager.getEnvironments().contains(env);
+	private Map<String, Map<String, List<Device>>> generateCatalog(List<Device> devices) {
+		Set<String> productSet = m_configManager.getProductSet();
+
+		Map<String, Map<String, List<Device>>> catalog = new LinkedHashMap<String, Map<String, List<Device>>>();
+		int ignoreDeviceCount = 0;
+
+		for (Device device : devices) {
+			String productName = getAttributeText(device.getAttributes().get(DeviceVisitor.KEY_CATALOG), "none");
+			String domainName = getAttributeText(device.getAttributes().get(DeviceVisitor.KEY_APP), "none");
+			if (!"none".equals(productName) && !"none".equals(domainName)
+					&& (productSet.size() == 0 || productSet.contains(productName))) {
+				getDomainFromProduct(getProductFromCatalog(catalog, productName), domainName).add(device);
+			} else {
+				ignoreDeviceCount++;
+			}
+		}
+		m_logger.info(String.format(
+				"########## Ignore some devices due to Product name or domain name is null, count:【%d】##########",
+				ignoreDeviceCount));
+		return catalog;
 	}
 
 	private String getAttributeText(Attribute attribute, String defaultValue) {
@@ -139,26 +162,27 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 	}
 
 	private class QueryTask implements Runnable {
+		private String query;
 		private Responce all;
 		private int startPage;
 		private int endPage;
 		private CountDownLatch latch;
 
-		public QueryTask(Responce responce, int startPage, int endPage, CountDownLatch latch) {
+		public QueryTask(String queryBaseString, Responce responce, int startPage, int endPage, CountDownLatch latch) {
 			this.all = responce;
 			this.startPage = startPage;
 			this.endPage = endPage;
 			this.latch = latch;
+			this.query = queryBaseString;
 		}
 
 		@Override
 		public void run() {
-			for (int page = startPage; page <= endPage; page++) {
-				String query = String.format(m_configManager.getCmdbBaseUrl(),
-						String.format("/s?q=*&fl=hostname,private_ip,status,rd_duty,env,app,catalog&page=%d", page));
-				m_logger.info(String.format("Querying: [%s]", query));
+			for (int page = startPage; page <= endPage && !Thread.interrupted(); page++) {
+				String q = String.format(query + "&page=%d", page);
+				m_logger.info(String.format("Querying: [%s]", q));
 				try {
-					Responce responce = readCmdb(query);
+					Responce responce = readCmdb(q);
 					for (Device device : responce.getDevices()) {
 						all.addDevice(device);
 					}

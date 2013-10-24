@@ -227,4 +227,9 @@ public class ConfigManager implements Initializable {
 		check();
 		return m_config.getConsole().getCmdb().getTimeoutInSecond();
 	}
+
+	public Set<String> getProductSet() {
+		check();
+		return m_config.getConsole().getProducts();
+	}
 }

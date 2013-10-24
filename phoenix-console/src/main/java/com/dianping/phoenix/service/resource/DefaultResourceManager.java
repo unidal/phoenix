@@ -151,10 +151,11 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 
 			executor.shutdown();
 
+			ResourceAnalyzer analyzer = new ResourceAnalyzer(resource);
+
 			m_resourceCache = resource;
 			m_resource.set(resource);
 
-			ResourceAnalyzer analyzer = new ResourceAnalyzer(resource);
 			setAgentVersionSet(analyzer.getAgentVersionSet());
 			setJarNameSet(analyzer.getJarNameSet());
 			setDomainToJarNameSet(analyzer.getDomainToJarNameSet());
