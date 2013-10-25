@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.log4j.Logger;
 
@@ -36,9 +36,9 @@ public abstract class AbstractModelStore implements ModelStore {
     protected ConcurrentMap<String, ConfigMeta> virtualServerConfigFileMapping = new ConcurrentHashMap<String, ConfigMeta>();
 
     protected static class ConfigMeta {
-        protected String        key;
-        protected ReentrantLock lock = new ReentrantLock();
-        protected Configure     configure;
+        protected String                 key;
+        protected ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        protected Configure              configure;
 
         public ConfigMeta(String key, Configure configure) {
             this.key = key;
@@ -48,26 +48,50 @@ public abstract class AbstractModelStore implements ModelStore {
     }
 
     public List<VirtualServer> listVirtualServers() {
+        // ignore concurrent issue, since it will introduce unnecessary
+        // complexity
         return new ArrayList<VirtualServer>(configure.getVirtualServers().values());
     }
 
     public List<Strategy> listStrategies() {
-        return new ArrayList<Strategy>(configure.getStrategies().values());
+        baseConfigMeta.lock.readLock().lock();
+        try {
+            return new ArrayList<Strategy>(configure.getStrategies().values());
+        } finally {
+            baseConfigMeta.lock.readLock().unlock();
+        }
     }
 
     public List<Template> listTemplates() {
-        return new ArrayList<Template>(configure.getTemplates().values());
+        baseConfigMeta.lock.readLock().lock();
+        try {
+            return new ArrayList<Template>(configure.getTemplates().values());
+        } finally {
+            baseConfigMeta.lock.readLock().unlock();
+        }
     }
 
     public Template findTemplate(String name) {
-        return configure.findTemplate(name);
+        baseConfigMeta.lock.readLock().lock();
+        try {
+            return configure.findTemplate(name);
+        } finally {
+            baseConfigMeta.lock.readLock().unlock();
+        }
     }
 
     public Strategy findStrategy(String name) {
-        return configure.findStrategy(name);
+        baseConfigMeta.lock.readLock().lock();
+        try {
+            return configure.findStrategy(name);
+        } finally {
+            baseConfigMeta.lock.readLock().unlock();
+        }
     }
 
     public VirtualServer findVirtualServer(String name) {
+        // ignore concurrent issue, since it will introduce unnecessary
+        // complexity
         return configure.findVirtualServer(name);
     }
 
@@ -81,7 +105,7 @@ public abstract class AbstractModelStore implements ModelStore {
     @Override
     public void updateOrCreateTemplate(String name, Template template) throws IOException {
         Template originalTemplate = null;
-        baseConfigMeta.lock.lock();
+        baseConfigMeta.lock.writeLock().lock();
         try {
             Date now = new Date();
 
@@ -108,7 +132,7 @@ public abstract class AbstractModelStore implements ModelStore {
             log.error(String.format("Save template(%s) failed.", name), e);
             throw e;
         } finally {
-            baseConfigMeta.lock.unlock();
+            baseConfigMeta.lock.writeLock().unlock();
         }
     }
 
@@ -122,7 +146,7 @@ public abstract class AbstractModelStore implements ModelStore {
     @Override
     public void removeTemplate(String name) throws IOException {
         Template originalTemplate = null;
-        baseConfigMeta.lock.lock();
+        baseConfigMeta.lock.writeLock().lock();
 
         try {
             originalTemplate = baseConfigMeta.configure.findTemplate(name);
@@ -140,7 +164,7 @@ public abstract class AbstractModelStore implements ModelStore {
             log.error(String.format("Save template(%s) failed.", name), e);
             throw e;
         } finally {
-            baseConfigMeta.lock.unlock();
+            baseConfigMeta.lock.writeLock().unlock();
         }
     }
 
@@ -154,7 +178,7 @@ public abstract class AbstractModelStore implements ModelStore {
     @Override
     public void updateOrCreateStrategy(String name, Strategy strategy) throws IOException {
         Strategy originalStrategy = null;
-        baseConfigMeta.lock.lock();
+        baseConfigMeta.lock.writeLock().lock();
         try {
             Date now = new Date();
 
@@ -181,7 +205,7 @@ public abstract class AbstractModelStore implements ModelStore {
             log.error(String.format("Save template(%s) failed.", name), e);
             throw e;
         } finally {
-            baseConfigMeta.lock.unlock();
+            baseConfigMeta.lock.writeLock().unlock();
         }
     }
 
@@ -195,7 +219,7 @@ public abstract class AbstractModelStore implements ModelStore {
     @Override
     public void removeStrategy(String name) throws IOException {
         Strategy originalStrategy = null;
-        baseConfigMeta.lock.lock();
+        baseConfigMeta.lock.writeLock().lock();
         try {
             originalStrategy = baseConfigMeta.configure.findStrategy(name);
 
@@ -213,7 +237,7 @@ public abstract class AbstractModelStore implements ModelStore {
             log.error(String.format("Save template(%s) failed.", name), e);
             throw e;
         } finally {
-            baseConfigMeta.lock.unlock();
+            baseConfigMeta.lock.writeLock().unlock();
         }
     }
 
@@ -230,7 +254,7 @@ public abstract class AbstractModelStore implements ModelStore {
         VirtualServer originalVirtualServer = null;
         ConfigMeta configFileEntry = virtualServerConfigFileMapping.get(name);
         if (configFileEntry != null) {
-            configFileEntry.lock.lock();
+            configFileEntry.lock.writeLock().lock();
 
             try {
                 if (configFileEntry.configure.findVirtualServer(name) == null
@@ -258,7 +282,7 @@ public abstract class AbstractModelStore implements ModelStore {
                 log.error(String.format("Save virtualServer(%s) failed.", name), e);
                 throw e;
             } finally {
-                configFileEntry.lock.unlock();
+                configFileEntry.lock.writeLock().unlock();
             }
         } else {
             throw new BizException(String.format("VirtualServer(%s) not exists.", name));
@@ -277,7 +301,7 @@ public abstract class AbstractModelStore implements ModelStore {
         VirtualServer originalVirtualServer = null;
         ConfigMeta configFileEntry = virtualServerConfigFileMapping.get(name);
         if (configFileEntry != null) {
-            configFileEntry.lock.lock();
+            configFileEntry.lock.writeLock().lock();
             try {
                 if (configFileEntry.configure.findVirtualServer(name) == null
                         || configure.findVirtualServer(name) == null) {
@@ -309,7 +333,7 @@ public abstract class AbstractModelStore implements ModelStore {
                 log.error(String.format("Save virtualServer(%s) failed.", name), e);
                 throw e;
             } finally {
-                configFileEntry.lock.unlock();
+                configFileEntry.lock.writeLock().unlock();
             }
         } else {
             throw new BizException(String.format("VirtualServer(%s) not exists.", name));
@@ -345,7 +369,7 @@ public abstract class AbstractModelStore implements ModelStore {
             return;
         } else {
             ConfigMeta configMeta = virtualServerConfigFileMapping.get(name);
-            configMeta.lock.lock();
+            configMeta.lock.writeLock().lock();
             try {
                 if (configure.findVirtualServer(name) != null) {
                     throw new BizException(String.format("Virtual Server %s already exist.", name));
@@ -360,7 +384,7 @@ public abstract class AbstractModelStore implements ModelStore {
                 log.error(String.format("Add virtualServer(%s) failed.", name), e);
                 throw e;
             } finally {
-                configMeta.lock.unlock();
+                configMeta.lock.writeLock().unlock();
             }
         }
     }

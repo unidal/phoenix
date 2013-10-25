@@ -837,6 +837,63 @@ public class LocalFileModelStoreTest {
 
     }
 
+    @Test
+    public void testRemoveVirtualServer() throws Exception {
+        store.removeVirtualServer("www");
+
+        Assert.assertNull(store.findVirtualServer("www"));
+        // assert www configure deleted
+        Assert.assertFalse(new File(tmpDir, "configure_www.xml").exists());
+        // assert tuangou & base configure not changed
+        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
+                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
+        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
+                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+    }
+
+    @Test
+    public void testRemoveVirtualServerRollback() throws Exception {
+        tmpDir.setWritable(false);
+        new File(tmpDir, "configure_www.xml").setWritable(false);
+        try {
+            store.removeVirtualServer("www");
+            Assert.fail();
+        } catch (IOException e) {
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        Assert.assertNotNull(store.findVirtualServer("www"));
+        // assert www configure not changed
+        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_www.xml")),
+                FileUtils.readFileToString(new File(tmpDir, "configure_www.xml")));
+        // assert tuangou & base configure not changed
+        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
+                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
+        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
+                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+    }
+    
+    @Test
+    public void testRemoveVirtualServerNotExist() throws Exception {
+        try {
+            store.removeVirtualServer("sss");
+            Assert.fail();
+        } catch (BizException e) {
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        // assert www configure not changed
+        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_www.xml")),
+                FileUtils.readFileToString(new File(tmpDir, "configure_www.xml")));
+        // assert tuangou & base configure not changed
+        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
+                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
+        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
+                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+    }
+
     private <T> void assertEquals(List<T> expectedList, List<T> actualList) {
         Assert.assertEquals(expectedList.size(), actualList.size());
         for (T expected : expectedList) {

@@ -6,6 +6,7 @@
  */
 package com.dianping.phoenix.lb.dao.impl;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.dianping.phoenix.lb.dao.TemplateDao;
@@ -13,53 +14,62 @@ import com.dianping.phoenix.lb.model.configure.entity.Template;
 
 /**
  * @author Leo Liang
- *
+ * 
  */
-public class TemplateDaoImpl implements TemplateDao {
-    
-    /* (non-Javadoc)
+public class TemplateDaoImpl extends AbstractDao implements TemplateDao {
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.dianping.phoenix.lb.dao.TemplateDao#find(java.lang.String)
      */
     @Override
     public Template find(String templateName) {
-        // TODO Auto-generated method stub
-        return null;
+        return store.findTemplate(templateName);
     }
 
-    /* (non-Javadoc)
-     * @see com.dianping.phoenix.lb.dao.TemplateDao#add(com.dianping.phoenix.lb.model.configure.entity.Template)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.dianping.phoenix.lb.dao.TemplateDao#add(com.dianping.phoenix.lb.model
+     * .configure.entity.Template)
      */
     @Override
-    public boolean add(Template template) {
-        // TODO Auto-generated method stub
-        return false;
+    public void add(Template template) throws IOException {
+        store.updateOrCreateTemplate(template.getName(), template);
     }
 
-    /* (non-Javadoc)
-     * @see com.dianping.phoenix.lb.dao.TemplateDao#update(com.dianping.phoenix.lb.model.configure.entity.Template)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.dianping.phoenix.lb.dao.TemplateDao#update(com.dianping.phoenix.lb
+     * .model.configure.entity.Template)
      */
     @Override
-    public void update(Template template) {
-        // TODO Auto-generated method stub
-
+    public void update(Template template) throws IOException {
+        store.updateOrCreateTemplate(template.getName(), template);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.dianping.phoenix.lb.dao.TemplateDao#list()
      */
     @Override
     public List<Template> list() {
-        // TODO Auto-generated method stub
-        return null;
+        return store.listTemplates();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.dianping.phoenix.lb.dao.TemplateDao#delete(java.lang.String)
      */
     @Override
-    public void delete(String templateName) {
-        // TODO Auto-generated method stub
-
+    public void delete(String templateName) throws IOException {
+        store.removeTemplate(templateName);
     }
 
 }
