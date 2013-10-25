@@ -6,6 +6,7 @@
  */
 package com.dianping.phoenix.lb.service.impl;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -85,9 +86,6 @@ public class TemplateServiceImpl extends ConcurrentControlTemplate implements Te
 
         final Template newTemplate = new Template(templateName);
         newTemplate.setContent(content);
-        Date now = new Date();
-        newTemplate.setCreationDate(now);
-        newTemplate.setLastModifiedDate(now);
 
         write(new WriteOperation<Void>() {
 
@@ -97,7 +95,11 @@ public class TemplateServiceImpl extends ConcurrentControlTemplate implements Te
                     throw new BizException(String.format("Template(%s) already exists.", templateName));
                 }
 
-                templateDao.add(newTemplate);
+                try {
+                    templateDao.add(newTemplate);
+                } catch (IOException e) {
+                    throw new BizException(e);
+                }
 
                 return null;
 
@@ -120,7 +122,11 @@ public class TemplateServiceImpl extends ConcurrentControlTemplate implements Te
 
                 @Override
                 public Void doWrite() throws BizException {
-                    templateDao.delete(templateName);
+                    try {
+                        templateDao.delete(templateName);
+                    } catch (IOException e) {
+                        throw new BizException(e);
+                    }
                     return null;
                 }
             });
@@ -139,10 +145,14 @@ public class TemplateServiceImpl extends ConcurrentControlTemplate implements Te
     @Override
     public void modifyTemplate(String templateName, String content) throws BizException {
         Template template = templateDao.find(templateName);
-        if(template != null){
+        if (template != null) {
             template.setContent(content);
             template.setLastModifiedDate(new Date());
-            templateDao.update(template);
+            try {
+                templateDao.update(template);
+            } catch (IOException e) {
+                throw new BizException(e);
+            }
         }
     }
 

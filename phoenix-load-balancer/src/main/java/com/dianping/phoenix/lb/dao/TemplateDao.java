@@ -6,6 +6,7 @@
  */
 package com.dianping.phoenix.lb.dao;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.dianping.phoenix.lb.model.configure.entity.Template;
@@ -18,12 +19,12 @@ public interface TemplateDao {
 
     Template find(String templateName);
 
-    boolean add(Template template);
+    void add(Template template) throws IOException;
 
-    void update(Template template);
+    void update(Template template) throws IOException;
 
     List<Template> list();
 
-    void delete(String templateName);
+    void delete(String templateName) throws IOException;
 
 }
