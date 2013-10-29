@@ -7,10 +7,8 @@
 package com.dianping.phoenix.lb.dao.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +19,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.dianping.phoenix.lb.constant.MessageID;
 import com.dianping.phoenix.lb.exception.BizException;
 import com.dianping.phoenix.lb.model.Availability;
 import com.dianping.phoenix.lb.model.State;
@@ -176,7 +175,8 @@ public class LocalFileModelStoreTest {
         try {
             store.updateOrCreateTemplate("default-template", modifiedTemplate);
             Assert.fail();
-        } catch (IOException e) {
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.TEMPLATE_SAVE_FAIL, e.getMessageId());
         } catch (Exception e) {
             Assert.fail();
         }
@@ -199,7 +199,8 @@ public class LocalFileModelStoreTest {
         try {
             store.updateOrCreateTemplate("test-template", newTemplate);
             Assert.fail();
-        } catch (IOException e) {
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.TEMPLATE_SAVE_FAIL, e.getMessageId());
         } catch (Exception e) {
             Assert.fail();
         }
@@ -234,7 +235,8 @@ public class LocalFileModelStoreTest {
         try {
             store.removeTemplate("default-template");
             Assert.fail();
-        } catch (IOException e) {
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.TEMPLATE_SAVE_FAIL, e.getMessageId());
         } catch (Exception e) {
             Assert.fail();
         }
@@ -305,7 +307,8 @@ public class LocalFileModelStoreTest {
         try {
             store.updateOrCreateStrategy("dper-hash", newStrategy);
             Assert.fail();
-        } catch (IOException e) {
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.STRATEGY_SAVE_FAIL, e.getMessageId());
         } catch (Exception e) {
             Assert.fail();
         }
@@ -330,7 +333,8 @@ public class LocalFileModelStoreTest {
         try {
             store.updateOrCreateStrategy("uri-hash", modifiedStrategy);
             Assert.fail();
-        } catch (IOException e) {
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.STRATEGY_SAVE_FAIL, e.getMessageId());
         } catch (Exception e) {
             Assert.fail();
         }
@@ -365,7 +369,8 @@ public class LocalFileModelStoreTest {
         try {
             store.removeStrategy("uri-hash");
             Assert.fail();
-        } catch (IOException e) {
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.STRATEGY_SAVE_FAIL, e.getMessageId());
         } catch (Exception e) {
             Assert.fail();
         }
@@ -506,8 +511,8 @@ public class LocalFileModelStoreTest {
         try {
             store.updateVirtualServer("www", newVirtualServer1);
             Assert.fail();
-        } catch (ConcurrentModificationException e) {
-
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.VIRTUALSERVER_CONCURRENT_MOD, e.getMessageId());
         } catch (Exception e1) {
             Assert.fail();
         }
@@ -630,8 +635,8 @@ public class LocalFileModelStoreTest {
         try {
             store.updateVirtualServer("www", newVirtualServer);
             Assert.fail();
-        } catch (IOException e) {
-
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.VIRTUALSERVER_SAVE_FAIL, e.getMessageId());
         } catch (Exception e) {
             Assert.fail();
 
@@ -811,8 +816,8 @@ public class LocalFileModelStoreTest {
         try {
             store.addVirtualServer("test", newVirtualServer);
             Assert.fail();
-        } catch (IOException e) {
-
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.VIRTUALSERVER_SAVE_FAIL, e.getMessageId());
         } catch (Exception e) {
             Assert.fail();
         }
@@ -858,7 +863,8 @@ public class LocalFileModelStoreTest {
         try {
             store.removeVirtualServer("www");
             Assert.fail();
-        } catch (IOException e) {
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.VIRTUALSERVER_SAVE_FAIL, e.getMessageId());
         } catch (Exception e) {
             Assert.fail();
         }
@@ -873,7 +879,7 @@ public class LocalFileModelStoreTest {
         Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
                 FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
     }
-    
+
     @Test
     public void testRemoveVirtualServerNotExist() throws Exception {
         try {

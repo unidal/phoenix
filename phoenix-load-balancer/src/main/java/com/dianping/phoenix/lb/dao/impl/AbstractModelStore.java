@@ -15,21 +15,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.log4j.Logger;
-
+import com.dianping.phoenix.lb.constant.MessageID;
 import com.dianping.phoenix.lb.dao.ModelStore;
 import com.dianping.phoenix.lb.exception.BizException;
 import com.dianping.phoenix.lb.model.configure.entity.Configure;
 import com.dianping.phoenix.lb.model.configure.entity.Strategy;
 import com.dianping.phoenix.lb.model.configure.entity.Template;
 import com.dianping.phoenix.lb.model.configure.entity.VirtualServer;
+import com.dianping.phoenix.lb.utils.ExceptionUtils;
 
 /**
  * @author Leo Liang
  * 
  */
 public abstract class AbstractModelStore implements ModelStore {
-    private static final Logger                 log                            = Logger.getLogger(AbstractModelStore.class);
 
     protected Configure                         configure                      = new Configure();
     protected ConfigMeta                        baseConfigMeta;
@@ -103,7 +102,7 @@ public abstract class AbstractModelStore implements ModelStore {
      * .lang.String, com.dianping.phoenix.lb.model.configure.entity.Template)
      */
     @Override
-    public void updateOrCreateTemplate(String name, Template template) throws IOException {
+    public void updateOrCreateTemplate(String name, Template template) throws BizException {
         Template originalTemplate = null;
         baseConfigMeta.lock.writeLock().lock();
         try {
@@ -129,8 +128,7 @@ public abstract class AbstractModelStore implements ModelStore {
                 baseConfigMeta.configure.addTemplate(originalTemplate);
                 configure.addTemplate(originalTemplate);
             }
-            log.error(String.format("Save template(%s) failed.", name), e);
-            throw e;
+            ExceptionUtils.logAndRethrowBizException(e, MessageID.TEMPLATE_SAVE_FAIL, name);
         } finally {
             baseConfigMeta.lock.writeLock().unlock();
         }
@@ -144,7 +142,7 @@ public abstract class AbstractModelStore implements ModelStore {
      * String)
      */
     @Override
-    public void removeTemplate(String name) throws IOException {
+    public void removeTemplate(String name) throws BizException {
         Template originalTemplate = null;
         baseConfigMeta.lock.writeLock().lock();
 
@@ -161,8 +159,7 @@ public abstract class AbstractModelStore implements ModelStore {
         } catch (IOException e) {
             baseConfigMeta.configure.addTemplate(originalTemplate);
             configure.addTemplate(originalTemplate);
-            log.error(String.format("Save template(%s) failed.", name), e);
-            throw e;
+            ExceptionUtils.logAndRethrowBizException(e, MessageID.TEMPLATE_SAVE_FAIL, name);
         } finally {
             baseConfigMeta.lock.writeLock().unlock();
         }
@@ -176,7 +173,7 @@ public abstract class AbstractModelStore implements ModelStore {
      * .lang.String, com.dianping.phoenix.lb.model.configure.entity.Strategy)
      */
     @Override
-    public void updateOrCreateStrategy(String name, Strategy strategy) throws IOException {
+    public void updateOrCreateStrategy(String name, Strategy strategy) throws BizException {
         Strategy originalStrategy = null;
         baseConfigMeta.lock.writeLock().lock();
         try {
@@ -202,8 +199,7 @@ public abstract class AbstractModelStore implements ModelStore {
                 baseConfigMeta.configure.addStrategy(originalStrategy);
                 configure.addStrategy(originalStrategy);
             }
-            log.error(String.format("Save template(%s) failed.", name), e);
-            throw e;
+            ExceptionUtils.logAndRethrowBizException(e, MessageID.STRATEGY_SAVE_FAIL, name);
         } finally {
             baseConfigMeta.lock.writeLock().unlock();
         }
@@ -217,7 +213,7 @@ public abstract class AbstractModelStore implements ModelStore {
      * String)
      */
     @Override
-    public void removeStrategy(String name) throws IOException {
+    public void removeStrategy(String name) throws BizException {
         Strategy originalStrategy = null;
         baseConfigMeta.lock.writeLock().lock();
         try {
@@ -234,8 +230,7 @@ public abstract class AbstractModelStore implements ModelStore {
         } catch (IOException e) {
             baseConfigMeta.configure.addStrategy(originalStrategy);
             configure.addStrategy(originalStrategy);
-            log.error(String.format("Save template(%s) failed.", name), e);
-            throw e;
+            ExceptionUtils.logAndRethrowBizException(e, MessageID.STRATEGY_SAVE_FAIL, name);
         } finally {
             baseConfigMeta.lock.writeLock().unlock();
         }
@@ -250,7 +245,7 @@ public abstract class AbstractModelStore implements ModelStore {
      * com.dianping.phoenix.lb.model.configure.entity.VirtualServer)
      */
     @Override
-    public void updateVirtualServer(String name, VirtualServer virtualServer) throws IOException, BizException {
+    public void updateVirtualServer(String name, VirtualServer virtualServer) throws BizException {
         VirtualServer originalVirtualServer = null;
         ConfigMeta configFileEntry = virtualServerConfigFileMapping.get(name);
         if (configFileEntry != null) {
@@ -265,8 +260,8 @@ public abstract class AbstractModelStore implements ModelStore {
                 originalVirtualServer = configFileEntry.configure.findVirtualServer(name);
 
                 if (originalVirtualServer.getVersion() != virtualServer.getVersion()) {
-                    throw new ConcurrentModificationException(String.format(
-                            "VirtualServer(%s) concurrent modification exception.", name));
+                    ExceptionUtils.logAndRethrowBizException(new ConcurrentModificationException(),
+                            MessageID.VIRTUALSERVER_CONCURRENT_MOD, name);
                 } else {
                     virtualServer.setVersion(originalVirtualServer.getVersion() + 1);
                     virtualServer.setLastModifiedDate(new Date());
@@ -279,13 +274,12 @@ public abstract class AbstractModelStore implements ModelStore {
             } catch (IOException e) {
                 configFileEntry.configure.addVirtualServer(originalVirtualServer);
                 configure.addVirtualServer(originalVirtualServer);
-                log.error(String.format("Save virtualServer(%s) failed.", name), e);
-                throw e;
+                ExceptionUtils.logAndRethrowBizException(e, MessageID.VIRTUALSERVER_SAVE_FAIL, name);
             } finally {
                 configFileEntry.lock.writeLock().unlock();
             }
         } else {
-            throw new BizException(String.format("VirtualServer(%s) not exists.", name));
+            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NOT_EXISTS, name);
         }
     }
 
@@ -297,7 +291,7 @@ public abstract class AbstractModelStore implements ModelStore {
      * lang.String)
      */
     @Override
-    public void removeVirtualServer(String name) throws BizException, IOException {
+    public void removeVirtualServer(String name) throws BizException {
         VirtualServer originalVirtualServer = null;
         ConfigMeta configFileEntry = virtualServerConfigFileMapping.get(name);
         if (configFileEntry != null) {
@@ -319,8 +313,7 @@ public abstract class AbstractModelStore implements ModelStore {
 
                 if (configFileEntry.configure.getVirtualServers().size() == 0) {
                     if (!delete(configFileEntry.key)) {
-                        throw new IOException(String.format("Delete Virtual Server(%s) failed(file: %s).", name,
-                                configFileEntry.key));
+                        throw new IOException();
                     } else {
                         virtualServerConfigFileMapping.remove(name);
                     }
@@ -330,13 +323,12 @@ public abstract class AbstractModelStore implements ModelStore {
             } catch (IOException e) {
                 configFileEntry.configure.addVirtualServer(originalVirtualServer);
                 configure.addVirtualServer(originalVirtualServer);
-                log.error(String.format("Save virtualServer(%s) failed.", name), e);
-                throw e;
+                ExceptionUtils.logAndRethrowBizException(e, MessageID.VIRTUALSERVER_SAVE_FAIL, name);
             } finally {
                 configFileEntry.lock.writeLock().unlock();
             }
         } else {
-            throw new BizException(String.format("VirtualServer(%s) not exists.", name));
+            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NOT_EXISTS, name);
         }
     }
 
@@ -348,9 +340,9 @@ public abstract class AbstractModelStore implements ModelStore {
      * .String, com.dianping.phoenix.lb.model.configure.entity.VirtualServer)
      */
     @Override
-    public void addVirtualServer(String name, VirtualServer virtualServer) throws IOException, BizException {
+    public void addVirtualServer(String name, VirtualServer virtualServer) throws BizException {
         if (virtualServerConfigFileMapping.containsKey(name)) {
-            throw new BizException(String.format("Virtual Server %s already exist.", name));
+            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_ALREADY_EXISTS, name);
         }
 
         Date now = new Date();
@@ -372,7 +364,7 @@ public abstract class AbstractModelStore implements ModelStore {
             configMeta.lock.writeLock().lock();
             try {
                 if (configure.findVirtualServer(name) != null) {
-                    throw new BizException(String.format("Virtual Server %s already exist.", name));
+                    ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_ALREADY_EXISTS, name);
                 } else {
                     configure.addVirtualServer(virtualServer);
                     save(configMeta.key, newConfigure);
@@ -381,8 +373,7 @@ public abstract class AbstractModelStore implements ModelStore {
             } catch (IOException e) {
                 configure.removeVirtualServer(name);
                 virtualServerConfigFileMapping.remove(name);
-                log.error(String.format("Add virtualServer(%s) failed.", name), e);
-                throw e;
+                ExceptionUtils.logAndRethrowBizException(new IOException(), MessageID.VIRTUALSERVER_SAVE_FAIL, name);
             } finally {
                 configMeta.lock.writeLock().unlock();
             }
