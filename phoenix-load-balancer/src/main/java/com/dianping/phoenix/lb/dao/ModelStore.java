@@ -6,7 +6,6 @@
  */
 package com.dianping.phoenix.lb.dao;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.dianping.phoenix.lb.exception.BizException;
@@ -32,18 +31,18 @@ public interface ModelStore {
 
     public VirtualServer findVirtualServer(String name);
 
-    public void updateOrCreateTemplate(String name, Template template) throws IOException;
+    public void updateOrCreateTemplate(String name, Template template) throws BizException;
 
-    public void removeTemplate(String name) throws IOException;
+    public void removeTemplate(String name) throws BizException;
 
-    public void updateOrCreateStrategy(String name, Strategy strategy) throws IOException;
+    public void updateOrCreateStrategy(String name, Strategy strategy) throws BizException;
 
-    public void removeStrategy(String name) throws IOException;
+    public void removeStrategy(String name) throws BizException;
 
-    public void updateVirtualServer(String name, VirtualServer virtualServer) throws IOException, BizException;
+    public void updateVirtualServer(String name, VirtualServer virtualServer) throws BizException;
 
-    public void removeVirtualServer(String name) throws BizException, IOException;
+    public void removeVirtualServer(String name) throws BizException;
 
-    public void addVirtualServer(String name, VirtualServer virtualServer) throws IOException, BizException;
+    public void addVirtualServer(String name, VirtualServer virtualServer) throws BizException;
 
 }

@@ -6,24 +6,24 @@
  */
 package com.dianping.phoenix.lb.service.impl;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.dianping.phoenix.lb.constant.MessageID;
 import com.dianping.phoenix.lb.dao.TemplateDao;
 import com.dianping.phoenix.lb.exception.BizException;
 import com.dianping.phoenix.lb.model.configure.entity.Template;
-import com.dianping.phoenix.lb.service.ConcurrentControlTemplate;
+import com.dianping.phoenix.lb.service.ConcurrentControlServiceTemplate;
 import com.dianping.phoenix.lb.service.TemplateService;
+import com.dianping.phoenix.lb.utils.ExceptionUtils;
 
 /**
  * @author Leo Liang
  * 
  */
-public class TemplateServiceImpl extends ConcurrentControlTemplate implements TemplateService {
+public class TemplateServiceImpl extends ConcurrentControlServiceTemplate implements TemplateService {
 
     @Autowired
     private TemplateDao templateDao;
@@ -39,7 +39,7 @@ public class TemplateServiceImpl extends ConcurrentControlTemplate implements Te
             return read(new ReadOperation<List<Template>>() {
 
                 @Override
-                public List<Template> doRead() throws BizException {
+                public List<Template> doRead() {
                     return templateDao.list();
                 }
             });
@@ -58,13 +58,14 @@ public class TemplateServiceImpl extends ConcurrentControlTemplate implements Te
      */
     @Override
     public Template findTemplate(final String templateName) throws BizException {
+        if (StringUtils.isBlank(templateName)) {
+            ExceptionUtils.throwBizException(MessageID.TEMPLATE_NAME_EMPTY);
+        }
+
         return read(new ReadOperation<Template>() {
 
             @Override
             public Template doRead() throws BizException {
-                if (StringUtils.isBlank(templateName)) {
-                    throw new BizException("Argument(templateName) must not be empty/null.");
-                }
                 return templateDao.find(templateName);
             }
         });
@@ -80,8 +81,12 @@ public class TemplateServiceImpl extends ConcurrentControlTemplate implements Te
      */
     @Override
     public void addTemplate(final String templateName, final String content) throws BizException {
-        if (StringUtils.isBlank(templateName) || StringUtils.isBlank(content)) {
-            throw new BizException("Argument(templateName or content) must not be empty/null.");
+        if (StringUtils.isBlank(templateName)) {
+            ExceptionUtils.throwBizException(MessageID.TEMPLATE_NAME_EMPTY);
+        }
+
+        if (StringUtils.isBlank(content)) {
+            ExceptionUtils.throwBizException(MessageID.TEMPLATE_CONTENT_EMPTY);
         }
 
         final Template newTemplate = new Template(templateName);
@@ -90,16 +95,12 @@ public class TemplateServiceImpl extends ConcurrentControlTemplate implements Te
         write(new WriteOperation<Void>() {
 
             @Override
-            public Void doWrite() throws BizException {
+            public Void doWrite() throws Exception {
                 if (templateDao.find(templateName) != null) {
-                    throw new BizException(String.format("Template(%s) already exists.", templateName));
+                    ExceptionUtils.throwBizException(MessageID.TEMPLATE_ALREADY_EXISTS, templateName);
                 }
 
-                try {
-                    templateDao.add(newTemplate);
-                } catch (IOException e) {
-                    throw new BizException(e);
-                }
+                templateDao.add(newTemplate);
 
                 return null;
 
@@ -116,17 +117,17 @@ public class TemplateServiceImpl extends ConcurrentControlTemplate implements Te
      * .String)
      */
     @Override
-    public void deleteTemplate(final String templateName) {
+    public void deleteTemplate(final String templateName) throws BizException {
+        if (StringUtils.isBlank(templateName)) {
+            ExceptionUtils.throwBizException(MessageID.TEMPLATE_NAME_EMPTY);
+        }
+
         try {
             write(new WriteOperation<Void>() {
 
                 @Override
-                public Void doWrite() throws BizException {
-                    try {
-                        templateDao.delete(templateName);
-                    } catch (IOException e) {
-                        throw new BizException(e);
-                    }
+                public Void doWrite() throws Exception {
+                    templateDao.delete(templateName);
                     return null;
                 }
             });
@@ -143,17 +144,28 @@ public class TemplateServiceImpl extends ConcurrentControlTemplate implements Te
      * .String, java.lang.String)
      */
     @Override
-    public void modifyTemplate(String templateName, String content) throws BizException {
-        Template template = templateDao.find(templateName);
-        if (template != null) {
-            template.setContent(content);
-            template.setLastModifiedDate(new Date());
-            try {
-                templateDao.update(template);
-            } catch (IOException e) {
-                throw new BizException(e);
-            }
+    public void modifyTemplate(final String templateName, final String content) throws BizException {
+        if (StringUtils.isBlank(templateName)) {
+            ExceptionUtils.throwBizException(MessageID.TEMPLATE_NAME_EMPTY);
         }
-    }
 
+        if (StringUtils.isBlank(content)) {
+            ExceptionUtils.throwBizException(MessageID.TEMPLATE_CONTENT_EMPTY);
+        }
+
+        write(new WriteOperation<Void>() {
+
+            @Override
+            public Void doWrite() throws Exception {
+                Template template = templateDao.find(templateName);
+                if (template != null) {
+                    template.setContent(content);
+                    templateDao.update(template);
+                } else {
+                    ExceptionUtils.throwBizException(MessageID.TEMPLATE_NOT_EXISTS, templateName);
+                }
+                return null;
+            }
+        });
+    }
 }

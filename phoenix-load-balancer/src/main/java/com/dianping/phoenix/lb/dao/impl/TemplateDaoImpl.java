@@ -6,10 +6,10 @@
  */
 package com.dianping.phoenix.lb.dao.impl;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.dianping.phoenix.lb.dao.TemplateDao;
+import com.dianping.phoenix.lb.exception.BizException;
 import com.dianping.phoenix.lb.model.configure.entity.Template;
 
 /**
@@ -36,7 +36,7 @@ public class TemplateDaoImpl extends AbstractDao implements TemplateDao {
      * .configure.entity.Template)
      */
     @Override
-    public void add(Template template) throws IOException {
+    public void add(Template template) throws BizException {
         store.updateOrCreateTemplate(template.getName(), template);
     }
 
@@ -48,7 +48,7 @@ public class TemplateDaoImpl extends AbstractDao implements TemplateDao {
      * .model.configure.entity.Template)
      */
     @Override
-    public void update(Template template) throws IOException {
+    public void update(Template template) throws BizException {
         store.updateOrCreateTemplate(template.getName(), template);
     }
 
@@ -68,7 +68,7 @@ public class TemplateDaoImpl extends AbstractDao implements TemplateDao {
      * @see com.dianping.phoenix.lb.dao.TemplateDao#delete(java.lang.String)
      */
     @Override
-    public void delete(String templateName) throws IOException {
+    public void delete(String templateName) throws BizException {
         store.removeTemplate(templateName);
     }
 
