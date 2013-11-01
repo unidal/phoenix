@@ -46,7 +46,7 @@ public class LocalFileModelStoreTest {
 
     @Before
     public void before() throws Exception {
-        baseDir = new File(".", "src/test/resources");
+        baseDir = new File(".", "src/test/resources/storeTest");
         tmpDir = new File(System.getProperty("java.io.tmpdir"), "model-test");
         if (tmpDir.exists()) {
             FileUtils.forceDelete(tmpDir);

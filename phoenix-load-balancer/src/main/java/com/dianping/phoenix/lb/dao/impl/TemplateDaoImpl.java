@@ -8,6 +8,7 @@ package com.dianping.phoenix.lb.dao.impl;
 
 import java.util.List;
 
+import com.dianping.phoenix.lb.dao.ModelStore;
 import com.dianping.phoenix.lb.dao.TemplateDao;
 import com.dianping.phoenix.lb.exception.BizException;
 import com.dianping.phoenix.lb.model.configure.entity.Template;
@@ -17,6 +18,13 @@ import com.dianping.phoenix.lb.model.configure.entity.Template;
  * 
  */
 public class TemplateDaoImpl extends AbstractDao implements TemplateDao {
+
+    /**
+     * @param store
+     */
+    public TemplateDaoImpl(ModelStore store) {
+        super(store);
+    }
 
     /*
      * (non-Javadoc)

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure>
+	<strategies>
+		<strategy name="uri-hash" type="hash" creation-date="2013-10-15 16:40:00" last-modified-date="2013-10-15 16:40:00"
+			target="uri" method="crc32" />
+		<strategy name="ip-hash" type="hash" creation-date="2013-10-15 16:40:00" last-modified-date="2013-10-15 16:40:00" />
+	</strategies>
+	<templates>
+		<template name="default-template" creation-date="2013-10-15 16:40:00" last-modified-date="2013-10-15 16:40:00">
+			<content>server{default}</content>
+		</template>
+	</templates>
+</configure>

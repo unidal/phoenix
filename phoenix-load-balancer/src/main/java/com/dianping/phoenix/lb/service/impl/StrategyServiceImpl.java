@@ -25,6 +25,22 @@ public class StrategyServiceImpl extends ConcurrentControlServiceTemplate implem
     @Autowired
     private StrategyDao strategyDao;
 
+    /**
+     * @param strategyDao
+     */
+    public StrategyServiceImpl(StrategyDao strategyDao) {
+        super();
+        this.strategyDao = strategyDao;
+    }
+
+    /**
+     * @param strategyDao
+     *            the strategyDao to set
+     */
+    public void setStrategyDao(StrategyDao strategyDao) {
+        this.strategyDao = strategyDao;
+    }
+
     /*
      * (non-Javadoc)
      * 
