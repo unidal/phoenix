@@ -29,6 +29,11 @@
 		<component>
 			<role>com.dianping.kernel.inspect.page.home.JspViewer</role>
 			<implementation>com.dianping.kernel.inspect.page.home.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.kernel.inspect.page.classpath.Handler</role>
@@ -45,6 +50,11 @@
 		<component>
 			<role>com.dianping.kernel.inspect.page.classpath.JspViewer</role>
 			<implementation>com.dianping.kernel.inspect.page.classpath.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.kernel.inspect.page.classpath.ArtifactResolver</role>
@@ -62,6 +72,11 @@
 		<component>
 			<role>com.dianping.kernel.inspect.page.description.JspViewer</role>
 			<implementation>com.dianping.kernel.inspect.page.description.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
 		</component>
 	</components>
 </plexus>

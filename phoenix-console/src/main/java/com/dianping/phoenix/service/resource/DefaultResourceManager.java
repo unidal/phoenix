@@ -67,160 +67,126 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 	private Resource m_resourceCache;
 	private String m_cachePath;
 
+	private Long m_lastUpdateTime = 0L;
+
 	@Override
 	public void initialize() throws InitializationException {
 		m_cachePath = m_configManager.getResourceCachePath();
 
+		loadReosurceFromCacheFile();
+
 		m_logger.info("Starting device catalog watchdog thread ...");
-		new DeviceCatalogWatchdog().setDelay(m_configManager.getResourceInfoRefreshIntervalMin()).start();
-		m_logger.info("Starting agent status watchdog thread ...");
-		new AgentStatusWatchdog().setDelay(m_configManager.getAgentFetchIntervalMin()).start();
-	}
-
-	private class DeviceCatalogWatchdog extends Thread {
-
-		public static final long DEFAULT_DELAY = 1;
-
-		private long m_delay = DEFAULT_DELAY;
-
-		public DeviceCatalogWatchdog() {
-			setDaemon(true);
-			checkAndConfigure();
-		}
-
-		public DeviceCatalogWatchdog setDelay(int minutes) {
-			m_delay = minutes;
-			return this;
-		}
-
-		private void checkAndConfigure() {
-			try {
-				m_deviceCatalog.set(m_deviceManager.getDeviceCatalog());
-			} catch (Exception e) {
-				throw new RuntimeException("Can not get device catalog from cmdb.", e);
-			}
-		}
-
-		@Override
-		public void run() {
-			while (true) {
-				try {
-					TimeUnit.MINUTES.sleep(m_delay);
-					checkAndConfigure();
-				} catch (Exception e) {
-					m_logger.warn("Get resource frame failed.", e);
-				}
-			}
-		}
-	}
-
-	private class AgentStatusWatchdog extends Thread {
-		public static final long DEFAULT_DELAY = 5;
-
-		private long m_delay = DEFAULT_DELAY;
-
-		public AgentStatusWatchdog setDelay(int minutes) {
-			m_delay = minutes;
-			return this;
-		}
-
-		public AgentStatusWatchdog() {
-			setDaemon(true);
-			refreshAgentStatus(false);
-		}
-
-		private void refreshAgentStatus(boolean needInterval) {
-			Map<String, Map<String, List<Device>>> catalog = m_deviceCatalog.get();
-			Resource resource = new Resource();
-
-			ExecutorService executor = Executors.newCachedThreadPool();
-			CountDownLatch latch = new CountDownLatch(catalog.size());
-
-			for (Entry<String, Map<String, List<Device>>> productEntry : catalog.entrySet()) {
-				Product product = new Product(productEntry.getKey());
-				executor.execute(new EnrichProductTask(product, productEntry.getValue(), latch, m_delay * 60
-						/ catalog.size(), needInterval));
-				resource.addProduct(product);
-			}
-
-			try {
-				latch.await();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-
-			executor.shutdown();
-
-			ResourceAnalyzer analyzer = new ResourceAnalyzer(resource);
-
-			m_resourceCache = resource;
-			m_resource.set(resource);
-
-			setAgentVersionSet(analyzer.getAgentVersionSet());
-			setJarNameSet(analyzer.getJarNameSet());
-			setDomainToJarNameSet(analyzer.getDomainToJarNameSet());
-			setDomains(analyzer.getDomains());
-		}
-
-		private class EnrichProductTask implements Runnable {
-			private Product m_product;
-			private Map<String, List<Device>> m_productCatalog;
-			private CountDownLatch m_latch;
-			private long m_timeout;
-			private boolean m_needInterval;
-
-			public EnrichProductTask(Product product, Map<String, List<Device>> productCatalog, CountDownLatch latch,
-					long timeout, boolean needInterval) {
-				m_product = product;
-				m_productCatalog = productCatalog;
-				m_latch = latch;
-				m_timeout = timeout;
-				m_needInterval = needInterval;
-			}
-
+		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					for (Entry<String, List<Device>> domainEntry : m_productCatalog.entrySet()) {
-						Domain domain = new Domain(domainEntry.getKey());
-
-						m_logger.info(String.format("Fetching agent status: [product= %s]\t[domain= %s]",
-								m_product.getName(), domain.getName()));
-						enrichDomain(domain, domainEntry.getValue());
-
-						m_product.addDomain(domain);
-						if (m_needInterval) {
-							try {
-								TimeUnit.SECONDS.sleep(m_timeout / m_productCatalog.size());
-							} catch (InterruptedException e) {
-								// ignore it
-							}
-						}
-					}
-				} catch (Exception e) {
-					m_logger.error(String.format("Fetch Product[%s] agent status failed.", m_product.getName()), e);
-				} finally {
-					m_latch.countDown();
+					m_deviceCatalog.set(m_deviceManager.getDeviceCatalog());
+				} catch (ConnectException e) {
+					m_logger.error("Can not get device catalog from cmdb.", e);
 				}
 			}
+		}, 0, m_configManager.getResourceInfoRefreshIntervalMin(), TimeUnit.MINUTES);
+
+		m_logger.info("Starting agent status watchdog thread ...");
+		Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(new Runnable() {
+			@Override
+			public void run() {
+				refreshAgentStatus();
+				cacheResource(m_cachePath);
+			}
+		}, 0, m_configManager.getAgentFetchIntervalMin(), TimeUnit.MINUTES);
+	}
+
+	private void loadReosurceFromCacheFile() {
+		Resource resource = getResourceFromCacheFile(m_cachePath);
+
+		generateMetaInformation(resource);
+
+		m_resourceCache = resource;
+		m_resource.set(resource);
+	}
+
+	private void refreshAgentStatus() {
+		long current = System.currentTimeMillis();
+
+		Map<String, Map<String, List<Device>>> catalog = m_deviceCatalog.get();
+		Resource resource = new Resource();
+
+		ExecutorService executor = Executors.newCachedThreadPool();
+		CountDownLatch latch = new CountDownLatch(catalog.size());
+
+		for (Entry<String, Map<String, List<Device>>> productEntry : catalog.entrySet()) {
+			Product product = new Product(productEntry.getKey());
+			executor.execute(new EnrichProductTask(product, productEntry.getValue(), latch, m_configManager
+					.getAgentFetchIntervalMin() * 60 / catalog.size()));
+			resource.addProduct(product);
+		}
+
+		try {
+			latch.await();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+
+		executor.shutdown();
+
+		synchronized (m_lastUpdateTime) {
+			if (current > m_lastUpdateTime) {
+				generateMetaInformation(resource);
+
+				m_resourceCache = resource;
+				m_resource.set(resource);
+
+				m_lastUpdateTime = System.currentTimeMillis();
+			}
+		}
+	}
+
+	private class EnrichProductTask implements Runnable {
+		private Product m_product;
+		private Map<String, List<Device>> m_productCatalog;
+		private CountDownLatch m_latch;
+		private long m_timeout;
+
+		public EnrichProductTask(Product product, Map<String, List<Device>> productCatalog, CountDownLatch latch,
+				long timeout) {
+			m_product = product;
+			m_productCatalog = productCatalog;
+			m_latch = latch;
+			m_timeout = timeout;
 		}
 
 		@Override
 		public void run() {
 			try {
-				TimeUnit.MINUTES.sleep(m_delay);
-			} catch (InterruptedException e) {
-				// ignore it
-			}
-			while (true) {
-				try {
-					refreshAgentStatus(true);
-					cacheResource(m_cachePath);
-				} catch (Exception e) {
-					m_logger.warn("Refresh agent status failed.", e);
+				for (Entry<String, List<Device>> domainEntry : m_productCatalog.entrySet()) {
+					Domain domain = new Domain(domainEntry.getKey());
+
+					m_logger.info(String.format("Fetching agent status: [product= %s]\t[domain= %s]",
+							m_product.getName(), domain.getName()));
+					enrichDomain(domain, domainEntry.getValue());
+
+					m_product.addDomain(domain);
+					try {
+						TimeUnit.SECONDS.sleep(m_timeout / m_productCatalog.size());
+					} catch (InterruptedException e) {
+					}
 				}
+			} catch (Exception e) {
+				m_logger.error(String.format("Fetch Product[%s] agent status failed.", m_product.getName()), e);
+			} finally {
+				m_latch.countDown();
 			}
 		}
+	}
+
+	private void generateMetaInformation(Resource resource) {
+		ResourceAnalyzer analyzer = new ResourceAnalyzer(resource);
+
+		setAgentVersionSet(analyzer.getAgentVersionSet());
+		setJarNameSet(analyzer.getJarNameSet());
+		setDomainToJarNameSet(analyzer.getDomainToJarNameSet());
+		setDomains(analyzer.getDomains());
 	}
 
 	@Override
@@ -287,18 +253,16 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 		if (m_resourceCache == null) {
 			m_resourceCache = getResourceFromCacheFile(m_cachePath);
 		}
-		if (m_resourceCache != null) {
-			for (Product product : m_resourceCache.getProducts().values()) {
-				if (product.getDomains() != null && product.getDomains().containsKey(domainName)) {
-					return product.getDomains().get(domainName);
-				}
+		for (Product product : m_resourceCache.getProducts().values()) {
+			if (product.getDomains() != null && product.getDomains().containsKey(domainName)) {
+				return product.getDomains().get(domainName);
 			}
 		}
 		return null;
 	}
 
 	protected Resource getResourceFromCacheFile(String cachePath) {
-		m_logger.warn("Fetch agent status from real host failed, attempt to load resource from cache file.");
+		m_logger.info("Fetch agent status from cache file.");
 
 		File cache = new File(cachePath, "resource-cache.xml");
 		if (cache.exists()) {
@@ -312,7 +276,7 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 		} else {
 			m_logger.warn("Can not find resource cache file.");
 		}
-		return null;
+		return new Resource();
 	}
 
 	@Override
@@ -363,6 +327,7 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 		Resource resource = new FilteredResourceBuilder("phoenix-agent".equals(payload.getType())
 				? new AgentFilterStrategy(getResource(), payload)
 				: new JarFilterStrategy(getResource(), payload)).getFilteredResource();
+		
 		return new ArrayList<Product>(resource.getProducts().values());
 	}
 

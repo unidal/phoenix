@@ -57,5 +57,8 @@ $(function() {
 	$('#myTab a').click(function(e) {
 		$(this).tab('show');
 	});
-	$('table').dataTable();
+	$('table').dataTable({
+		"bPaginate": false
+		
+	});
 });

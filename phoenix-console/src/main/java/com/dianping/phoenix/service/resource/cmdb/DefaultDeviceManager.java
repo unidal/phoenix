@@ -72,48 +72,74 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 
 	@Override
 	public Map<String, Map<String, List<Device>>> getDeviceCatalog() throws ConnectException {
-		StringBuilder cmdbQuery = new StringBuilder(String.format(m_configManager.getCmdbBaseUrl(),
-				"/s?wt=xml&fl=hostname,private_ip,status,rd_duty,env,app,catalog&q="));
-		for (String env : m_configManager.getEnvironments()) {
-			cmdbQuery.append(String.format("-env:%s,", env));
-		}
-
-		Responce responce = readCmdb(cmdbQuery.toString());
-		ExecutorService executor = Executors.newCachedThreadPool();
-		boolean finish = false;
+		String cmdbQuery = generateCmdbQuery();
+		Responce responce = readCmdb(cmdbQuery);
 
 		if (responce != null) {
-			int pageCount = (int) Math.ceil(responce.getNumfound() / 50.0);
-			int threadCount = (int) Math.ceil((pageCount - 1) / 10.0);// 10_pages/thread
+			ExecutorService executor = Executors.newCachedThreadPool();
+
+			int totalPageCount = (int) Math.ceil(responce.getNumfound() / 50.0);// 50_devices/page
+			int threadCount = (int) Math.ceil((totalPageCount - 1) / 10.0);// 10_pages/thread
 			int curPage = 2;
+
 			CountDownLatch latch = new CountDownLatch(threadCount);
+			boolean finishCorrectly = false;
+
 			m_logger.info(String.format(
-					"########## Cmdb page count:【%d】, thread count:【%d】, latch count:【%d】##########", pageCount,
+					"########## Cmdb page count:【%d】, thread count:【%d】, latch count:【%d】##########", totalPageCount,
 					threadCount, latch.getCount()));
-			while (curPage <= pageCount) {
-				executor.execute(new QueryTask(cmdbQuery.toString(), responce, curPage, getEndPageNumber(curPage,
-						pageCount), latch));
+
+			while (curPage <= totalPageCount) {
+				executor.execute(new QueryTask(cmdbQuery, responce, curPage, getEndPageNumber(curPage, totalPageCount),
+						latch));
 				curPage += 10;
 			}
 
 			try {
-				finish = latch.await(m_configManager.getCmdbTimeoutInSecond(), TimeUnit.SECONDS);
+				finishCorrectly = latch.await(m_configManager.getCmdbTimeoutInSecond(), TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				m_logger.error("Error happens when get cmdb infos, lost some infos.", e);
 			}
+
+			executor.shutdownNow();
+
+			m_logger.info(String
+					.format("########## Read cmdb catalog finished. Except count:【%d】, Total count:【%d】, Finish correctly:【%b】 ##########",
+							responce.getNumfound(), responce.getDevices().size(), finishCorrectly));
+
+			return generateCatalog(responce.getDevices());
 		}
-		executor.shutdownNow();
 
-		m_logger.info(String
-				.format("########## Read cmdb catalog finished. Except count:【%d】, Total count:【%d】, Finish correctly:【%b】 ##########",
-						responce.getNumfound(), responce.getDevices().size(), finish));
-
-		return generateCatalog(responce.getDevices());
+		return new LinkedHashMap<String, Map<String, List<Device>>>();
 	}
 
 	private int getEndPageNumber(int startPageNumber, int totalCount) {
 		// 10 pages per thread
 		return (startPageNumber + 9) < totalCount ? (startPageNumber + 9) : totalCount;
+	}
+
+	private String generateCmdbQuery() {
+		StringBuilder cmdbQuery = new StringBuilder(String.format(m_configManager.getCmdbBaseUrl(),
+				"/s?wt=xml&fl=hostname,private_ip,status,rd_duty,env,app,catalog&q="));
+
+		Set<String> envs = m_configManager.getEnvironments();
+		Set<String> products = m_configManager.getProductSet();
+
+		cmdbQuery.append("env:(");
+		for (String env : envs) {
+			cmdbQuery.append(String.format("%s;", env));
+		}
+
+		if (products.size() > 0) {
+			cmdbQuery.append("),catalog:(");
+			for (String product : m_configManager.getProductSet()) {
+				cmdbQuery.append(String.format("%s;", product));
+			}
+		}
+
+		cmdbQuery.append(")");
+
+		return cmdbQuery.toString();
 	}
 
 	private Map<String, Map<String, List<Device>>> generateCatalog(List<Device> devices) {
