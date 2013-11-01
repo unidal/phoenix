@@ -8,6 +8,7 @@ package com.dianping.phoenix.lb.dao.impl;
 
 import java.util.List;
 
+import com.dianping.phoenix.lb.dao.ModelStore;
 import com.dianping.phoenix.lb.dao.VirtualServerDao;
 import com.dianping.phoenix.lb.exception.BizException;
 import com.dianping.phoenix.lb.model.configure.entity.VirtualServer;
@@ -17,6 +18,13 @@ import com.dianping.phoenix.lb.model.configure.entity.VirtualServer;
  * 
  */
 public class VirtualServerDaoImpl extends AbstractDao implements VirtualServerDao {
+
+    /**
+     * @param store
+     */
+    public VirtualServerDaoImpl(ModelStore store) {
+        super(store);
+    }
 
     @Override
     public VirtualServer find(String virtualServerName) {

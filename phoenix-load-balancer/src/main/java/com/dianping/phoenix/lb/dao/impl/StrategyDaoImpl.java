@@ -8,6 +8,7 @@ package com.dianping.phoenix.lb.dao.impl;
 
 import java.util.List;
 
+import com.dianping.phoenix.lb.dao.ModelStore;
 import com.dianping.phoenix.lb.dao.StrategyDao;
 import com.dianping.phoenix.lb.model.configure.entity.Strategy;
 
@@ -16,6 +17,13 @@ import com.dianping.phoenix.lb.model.configure.entity.Strategy;
  * 
  */
 public class StrategyDaoImpl extends AbstractDao implements StrategyDao {
+
+    /**
+     * @param store
+     */
+    public StrategyDaoImpl(ModelStore store) {
+        super(store);
+    }
 
     @Override
     public List<Strategy> list() {

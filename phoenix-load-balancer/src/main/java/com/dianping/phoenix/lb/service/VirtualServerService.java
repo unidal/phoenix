@@ -25,4 +25,6 @@ public interface VirtualServerService {
     void deleteVirtualServer(String virtualServerName) throws BizException;
 
     void modifyVirtualServer(String virtualServerName, VirtualServer virtualServer) throws BizException;
+
+    String generateNginxConfig(VirtualServer virtualServer) throws BizException;
 }

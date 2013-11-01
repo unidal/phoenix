@@ -1,0 +1,73 @@
+/**
+ * Project: phoenix-load-balancer
+ * 
+ * File Created at Nov 1, 2013
+ * 
+ */
+package com.dianping.phoenix.lb.service.impl;
+
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.dianping.phoenix.lb.dao.StrategyDao;
+import com.dianping.phoenix.lb.dao.TemplateDao;
+import com.dianping.phoenix.lb.dao.VirtualServerDao;
+import com.dianping.phoenix.lb.dao.impl.LocalFileModelStoreImpl;
+import com.dianping.phoenix.lb.dao.impl.StrategyDaoImpl;
+import com.dianping.phoenix.lb.dao.impl.TemplateDaoImpl;
+import com.dianping.phoenix.lb.dao.impl.VirtualServerDaoImpl;
+import com.dianping.phoenix.lb.model.configure.entity.Template;
+import com.dianping.phoenix.lb.service.VirtualServerService;
+
+/**
+ * @author Leo Liang
+ * 
+ */
+public class VirtualServerServiceImplTest {
+    private LocalFileModelStoreImpl store;
+    private File                    baseDir;
+    private File                    tmpDir;
+    private VirtualServerService    virtualServerService;
+    private VirtualServerDao        virtualServerDao;
+    private TemplateDao             templateDao;
+    private StrategyDao             strategyDao;
+
+    @Before
+    public void before() throws Exception {
+        baseDir = new File(".", "src/test/resources/virtualServerServiceTest");
+        tmpDir = new File(System.getProperty("java.io.tmpdir"), "virtualServerServiceTest");
+        if (tmpDir.exists()) {
+            FileUtils.forceDelete(tmpDir);
+        }
+        FileUtils.copyDirectory(baseDir, tmpDir);
+        store = new LocalFileModelStoreImpl();
+        store.setBaseDir(tmpDir.getAbsolutePath());
+        store.init();
+
+        virtualServerDao = new VirtualServerDaoImpl(store);
+
+        templateDao = new TemplateDaoImpl(store);
+        strategyDao = new StrategyDaoImpl(store);
+        virtualServerService = new VirtualServerServiceImpl(virtualServerDao, templateDao, strategyDao);
+    }
+
+    @After
+    public void after() throws Exception {
+        if (tmpDir.exists()) {
+            tmpDir.setWritable(true);
+            FileUtils.forceDelete(tmpDir);
+        }
+    }
+
+    @Test
+    public void testNginxConf() throws Exception {
+        Template template = new Template("default-template");
+        template.setContent(FileUtils.readFileToString(new File(tmpDir, "nginx_conf.vm")));
+        templateDao.add(template);
+        System.out.println(virtualServerService.generateNginxConfig(virtualServerDao.find("www")));
+    }
+}

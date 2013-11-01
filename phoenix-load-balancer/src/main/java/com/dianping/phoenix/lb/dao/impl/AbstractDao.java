@@ -18,4 +18,12 @@ public class AbstractDao {
     @Autowired
     protected ModelStore store;
 
+    /**
+     * @param store
+     */
+    public AbstractDao(ModelStore store) {
+        super();
+        this.store = store;
+    }
+
 }

@@ -28,6 +28,22 @@ public class TemplateServiceImpl extends ConcurrentControlServiceTemplate implem
     @Autowired
     private TemplateDao templateDao;
 
+    /**
+     * @param templateDao
+     */
+    public TemplateServiceImpl(TemplateDao templateDao) {
+        super();
+        this.templateDao = templateDao;
+    }
+
+    /**
+     * @param templateDao
+     *            the templateDao to set
+     */
+    public void setTemplateDao(TemplateDao templateDao) {
+        this.templateDao = templateDao;
+    }
+
     /*
      * (non-Javadoc)
      * 
