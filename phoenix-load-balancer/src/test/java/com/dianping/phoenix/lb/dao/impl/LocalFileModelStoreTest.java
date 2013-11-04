@@ -30,7 +30,6 @@ import com.dianping.phoenix.lb.model.configure.entity.Location;
 import com.dianping.phoenix.lb.model.configure.entity.Member;
 import com.dianping.phoenix.lb.model.configure.entity.Pool;
 import com.dianping.phoenix.lb.model.configure.entity.Strategy;
-import com.dianping.phoenix.lb.model.configure.entity.Template;
 import com.dianping.phoenix.lb.model.configure.entity.VirtualServer;
 import com.dianping.phoenix.lb.model.configure.transform.DefaultMerger;
 import com.dianping.phoenix.lb.model.configure.transform.DefaultSaxParser;
@@ -66,15 +65,6 @@ public class LocalFileModelStoreTest {
     }
 
     @Test
-    public void testListTemplates() throws Exception {
-        Configure configure = DefaultSaxParser.parse(FileUtils
-                .readFileToString(new File(baseDir, "configure_base.xml")));
-
-        assertEquals(new ArrayList<Template>(configure.getTemplates().values()), store.listTemplates());
-
-    }
-
-    @Test
     public void testListVirtualServers() throws Exception {
         Configure wwwConfigure = DefaultSaxParser.parse(FileUtils.readFileToString(new File(baseDir,
                 "configure_www.xml")));
@@ -102,14 +92,6 @@ public class LocalFileModelStoreTest {
     }
 
     @Test
-    public void testFindTemplate() throws Exception {
-        Configure configure = DefaultSaxParser.parse(FileUtils
-                .readFileToString(new File(baseDir, "configure_base.xml")));
-        Template expected = configure.findTemplate("default-template");
-        Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, store.findTemplate("default-template"), true));
-    }
-
-    @Test
     public void testFindStrategy() throws Exception {
         Configure configure = DefaultSaxParser.parse(FileUtils
                 .readFileToString(new File(baseDir, "configure_base.xml")));
@@ -126,134 +108,8 @@ public class LocalFileModelStoreTest {
     }
 
     @Test
-    public void testAddTemplate() throws Exception {
-        Template newTemplate = new Template("test-template");
-        newTemplate.setContent("test");
-        store.updateOrCreateTemplate("test-template", newTemplate);
-
-        Configure configure = DefaultSaxParser.parse(FileUtils
-                .readFileToString(new File(baseDir, "configure_base.xml")));
-
-        configure.addTemplate(newTemplate);
-
-        assertEquals(new ArrayList<Template>(configure.getTemplates().values()), store.listTemplates());
-        Assert.assertNotNull(newTemplate.getCreationDate());
-        Assert.assertEquals(newTemplate.getLastModifiedDate(), newTemplate.getCreationDate());
-
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
-    }
-
-    @Test
-    public void testUpdateTemplate() throws Exception {
-        Template modifiedTemplate = new Template("default-template");
-        modifiedTemplate.setContent("test-mod");
-        Date now = new Date();
-        store.updateOrCreateTemplate("default-template", modifiedTemplate);
-
-        Configure configure = DefaultSaxParser.parse(FileUtils
-                .readFileToString(new File(baseDir, "configure_base.xml")));
-
-        Template expectedTemplate = configure.findTemplate("default-template");
-        expectedTemplate.setContent("test-mod");
-        expectedTemplate.setLastModifiedDate(now);
-
-        assertEquals(new ArrayList<Template>(configure.getTemplates().values()), store.listTemplates());
-        Assert.assertEquals(now, modifiedTemplate.getLastModifiedDate());
-        Assert.assertEquals(expectedTemplate.getCreationDate(), modifiedTemplate.getCreationDate());
-
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
-    }
-
-    @Test
-    public void testUpdateTemplateRollback() throws Exception {
-        new File(tmpDir, "configure_base.xml").setWritable(false);
-
-        Template modifiedTemplate = new Template("default-template");
-        modifiedTemplate.setContent("test-mod");
-        try {
-            store.updateOrCreateTemplate("default-template", modifiedTemplate);
-            Assert.fail();
-        } catch (BizException e) {
-            Assert.assertEquals(MessageID.TEMPLATE_SAVE_FAIL, e.getMessageId());
-        } catch (Exception e) {
-            Assert.fail();
-        }
-
-        Configure configure = DefaultSaxParser.parse(FileUtils
-                .readFileToString(new File(baseDir, "configure_base.xml")));
-
-        assertEquals(new ArrayList<Template>(configure.getTemplates().values()), store.listTemplates());
-
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
-    }
-
-    @Test
-    public void testAddTemplateRollback() throws Exception {
-        new File(tmpDir, "configure_base.xml").setWritable(false);
-
-        Template newTemplate = new Template("test-template");
-        newTemplate.setContent("test");
-        try {
-            store.updateOrCreateTemplate("test-template", newTemplate);
-            Assert.fail();
-        } catch (BizException e) {
-            Assert.assertEquals(MessageID.TEMPLATE_SAVE_FAIL, e.getMessageId());
-        } catch (Exception e) {
-            Assert.fail();
-        }
-
-        Configure configure = DefaultSaxParser.parse(FileUtils
-                .readFileToString(new File(baseDir, "configure_base.xml")));
-
-        assertEquals(new ArrayList<Template>(configure.getTemplates().values()), store.listTemplates());
-
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
-    }
-
-    @Test
-    public void testRemoveTemplate() throws Exception {
-        store.removeTemplate("default-template");
-
-        Configure configure = DefaultSaxParser.parse(FileUtils
-                .readFileToString(new File(baseDir, "configure_base.xml")));
-        configure.removeTemplate("default-template");
-
-        assertEquals(new ArrayList<Template>(configure.getTemplates().values()), store.listTemplates());
-
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
-    }
-
-    @Test
-    public void testRemoveTemplateRollback() throws Exception {
-        new File(tmpDir, "configure_base.xml").setWritable(false);
-
-        try {
-            store.removeTemplate("default-template");
-            Assert.fail();
-        } catch (BizException e) {
-            Assert.assertEquals(MessageID.TEMPLATE_SAVE_FAIL, e.getMessageId());
-        } catch (Exception e) {
-            Assert.fail();
-        }
-
-        Configure configure = DefaultSaxParser.parse(FileUtils
-                .readFileToString(new File(baseDir, "configure_base.xml")));
-
-        assertEquals(new ArrayList<Template>(configure.getTemplates().values()), store.listTemplates());
-
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
-    }
-
-    @Test
     public void testAddStrategy() throws Exception {
         Strategy newStrategy = new Strategy("dper-hash");
-        newStrategy.setType("hash");
         newStrategy.setDynamicAttribute("target", "dper");
         newStrategy.setDynamicAttribute("method", "crc32");
         store.updateOrCreateStrategy("dper-hash", newStrategy);
@@ -276,7 +132,6 @@ public class LocalFileModelStoreTest {
         Strategy modifiedStrategy = new Strategy("uri-hash");
         modifiedStrategy.setDynamicAttribute("target", "uri");
         modifiedStrategy.setDynamicAttribute("method", "md5");
-        modifiedStrategy.setType("hash");
         Date now = new Date();
         store.updateOrCreateStrategy("uri-hash", modifiedStrategy);
 
@@ -300,7 +155,6 @@ public class LocalFileModelStoreTest {
         new File(tmpDir, "configure_base.xml").setWritable(false);
 
         Strategy newStrategy = new Strategy("dper-hash");
-        newStrategy.setType("hash");
         newStrategy.setDynamicAttribute("target", "dper");
         newStrategy.setDynamicAttribute("method", "crc32");
 
@@ -329,7 +183,6 @@ public class LocalFileModelStoreTest {
         Strategy modifiedStrategy = new Strategy("uri-hash");
         modifiedStrategy.setDynamicAttribute("target", "uri");
         modifiedStrategy.setDynamicAttribute("method", "md5");
-        modifiedStrategy.setType("hash");
         try {
             store.updateOrCreateStrategy("uri-hash", modifiedStrategy);
             Assert.fail();

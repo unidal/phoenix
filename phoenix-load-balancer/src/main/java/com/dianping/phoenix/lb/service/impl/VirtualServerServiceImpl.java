@@ -18,19 +18,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.dianping.phoenix.lb.constant.Constants;
 import com.dianping.phoenix.lb.constant.MessageID;
 import com.dianping.phoenix.lb.dao.StrategyDao;
-import com.dianping.phoenix.lb.dao.TemplateDao;
 import com.dianping.phoenix.lb.dao.VirtualServerDao;
 import com.dianping.phoenix.lb.exception.BizException;
+import com.dianping.phoenix.lb.model.Availability;
+import com.dianping.phoenix.lb.model.State;
 import com.dianping.phoenix.lb.model.configure.entity.Configure;
 import com.dianping.phoenix.lb.model.configure.entity.Directive;
 import com.dianping.phoenix.lb.model.configure.entity.Location;
+import com.dianping.phoenix.lb.model.configure.entity.Member;
 import com.dianping.phoenix.lb.model.configure.entity.Pool;
 import com.dianping.phoenix.lb.model.configure.entity.Strategy;
-import com.dianping.phoenix.lb.model.configure.entity.Template;
 import com.dianping.phoenix.lb.model.configure.entity.VirtualServer;
 import com.dianping.phoenix.lb.service.ConcurrentControlServiceTemplate;
 import com.dianping.phoenix.lb.service.VirtualServerService;
 import com.dianping.phoenix.lb.utils.ExceptionUtils;
+import com.dianping.phoenix.lb.velocity.TemplateManager;
 import com.dianping.phoenix.lb.velocity.VelocityEngineManager;
 import com.dianping.phoenix.lb.visitor.NginxConfigVisitor;
 
@@ -42,18 +44,15 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
     @Autowired
     private VirtualServerDao virtualServerDao;
     @Autowired
-    private TemplateDao      templateDao;
-    @Autowired
     private StrategyDao      strategyDao;
 
     /**
      * @param virtualServerDao
      * @param templateDao
      */
-    public VirtualServerServiceImpl(VirtualServerDao virtualServerDao, TemplateDao templateDao, StrategyDao strategyDao) {
+    public VirtualServerServiceImpl(VirtualServerDao virtualServerDao, StrategyDao strategyDao) {
         super();
         this.virtualServerDao = virtualServerDao;
-        this.templateDao = templateDao;
         this.strategyDao = strategyDao;
     }
 
@@ -71,14 +70,6 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
      */
     public void setVirtualServerDao(VirtualServerDao virtualServerDao) {
         this.virtualServerDao = virtualServerDao;
-    }
-
-    /**
-     * @param templateDao
-     *            the templateDao to set
-     */
-    public void setTemplateDao(TemplateDao templateDao) {
-        this.templateDao = templateDao;
     }
 
     /*
@@ -227,11 +218,6 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
                     virtualServer.getDefaultPoolName());
         }
 
-        if (templateDao.find(virtualServer.getTemplateName()) == null) {
-            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_TEMPLATE_NOT_EXISTS,
-                    virtualServer.getTemplateName());
-        }
-
         List<Strategy> strategies = strategyDao.list();
         List<String> strategyNames = new ArrayList<String>();
         for (Strategy strategy : strategies) {
@@ -243,11 +229,27 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
                 ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_STRATEGY_NOT_SUPPORT,
                         pool.getLoadbalanceStrategyName(), pool.getName());
             }
+
+            if (pool.getMembers().size() == 0) {
+                ExceptionUtils.throwBizException(MessageID.POOL_NO_MEMBER, pool.getName());
+            }
+
+            int availMemberCount = 0;
+            for (Member member : pool.getMembers()) {
+                if (member.getAvailability() == Availability.AVAILABLE && member.getState() == State.ENABLED) {
+                    availMemberCount++;
+                }
+            }
+
+            if (availMemberCount * 100.0d / pool.getMembers().size() < pool.getMinAvailableMemberPercentage()) {
+                ExceptionUtils.throwBizException(MessageID.POOL_LOWER_THAN_MINAVAIL_PCT,
+                        pool.getMinAvailableMemberPercentage(), pool.getName());
+            }
         }
 
         for (Location location : virtualServer.getLocations()) {
             for (Directive directive : location.getDirectives()) {
-                if (!Arrays.asList(Constants.DIRECTIVE_TYPES).contains(directive.getType())) {
+                if (!TemplateManager.INSTANCE.availableFiles("directive").contains(directive.getType())) {
                     ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_DIRECTIVE_TYPE_NOT_SUPPORT,
                             directive.getType());
                 }
@@ -260,12 +262,6 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
     public String generateNginxConfig(VirtualServer virtualServer) throws BizException {
         validate(virtualServer);
 
-        Template template = templateDao.find(virtualServer.getTemplateName());
-        if (template == null) {
-            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_TEMPLATE_NOT_EXISTS,
-                    virtualServer.getTemplateName());
-        }
-
         Configure tmpConfigure = new Configure();
         for (Strategy strategy : strategyDao.list()) {
             tmpConfigure.addStrategy(strategy);
@@ -277,6 +273,7 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
         tmpConfigure.accept(visitor);
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("config", visitor.getVisitorResult());
-        return VelocityEngineManager.INSTANCE.merge(template.getContent(), context);
+        return VelocityEngineManager.INSTANCE.merge(TemplateManager.INSTANCE.getTemplate("server", "default"), context);
     }
+
 }

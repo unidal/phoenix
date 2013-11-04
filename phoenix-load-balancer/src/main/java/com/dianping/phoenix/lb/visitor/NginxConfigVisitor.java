@@ -42,15 +42,15 @@ public class NginxConfigVisitor extends AbstractVisitor<NginxConfig> {
     @Override
     public void visitVirtualServer(VirtualServer virtualServer) {
         NginxServer server = new NginxServer();
+        server.setProperties(virtualServer.getDynamicAttributes());
         server.setListen(virtualServer.getPort());
         server.setServerName(virtualServer.getDomain());
         NginxLocation defaultLocation = new NginxLocation();
         defaultLocation.setMatchType(MatchType.COMMON);
         defaultLocation.setPattern("/");
         Directive directive = new Directive();
-        directive.setType(Constants.DIRECTIVE_TYPE_PROXYPASS);
-        directive.setDynamicAttribute(Constants.DIRECTIVE_PROXYPASS_POOLNAME,
-                toUpstreamName(virtualServer.getDefaultPoolName()));
+        directive.setType("proxy_pass");
+        directive.setDynamicAttribute("pool-name", toUpstreamName(virtualServer.getDefaultPoolName()));
         defaultLocation.addDirective(directive);
         server.addLocations(defaultLocation);
         result.setServer(server);

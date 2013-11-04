@@ -20,7 +20,6 @@ import com.dianping.phoenix.lb.dao.ModelStore;
 import com.dianping.phoenix.lb.exception.BizException;
 import com.dianping.phoenix.lb.model.configure.entity.Configure;
 import com.dianping.phoenix.lb.model.configure.entity.Strategy;
-import com.dianping.phoenix.lb.model.configure.entity.Template;
 import com.dianping.phoenix.lb.model.configure.entity.VirtualServer;
 import com.dianping.phoenix.lb.utils.ExceptionUtils;
 
@@ -61,24 +60,6 @@ public abstract class AbstractModelStore implements ModelStore {
         }
     }
 
-    public List<Template> listTemplates() {
-        baseConfigMeta.lock.readLock().lock();
-        try {
-            return new ArrayList<Template>(configure.getTemplates().values());
-        } finally {
-            baseConfigMeta.lock.readLock().unlock();
-        }
-    }
-
-    public Template findTemplate(String name) {
-        baseConfigMeta.lock.readLock().lock();
-        try {
-            return configure.findTemplate(name);
-        } finally {
-            baseConfigMeta.lock.readLock().unlock();
-        }
-    }
-
     public Strategy findStrategy(String name) {
         baseConfigMeta.lock.readLock().lock();
         try {
@@ -92,77 +73,6 @@ public abstract class AbstractModelStore implements ModelStore {
         // ignore concurrent issue, since it will introduce unnecessary
         // complexity
         return configure.findVirtualServer(name);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.dianping.phoenix.lb.dao.impl.ModelStore#updateOrCreateTemplate(java
-     * .lang.String, com.dianping.phoenix.lb.model.configure.entity.Template)
-     */
-    @Override
-    public void updateOrCreateTemplate(String name, Template template) throws BizException {
-        Template originalTemplate = null;
-        baseConfigMeta.lock.writeLock().lock();
-        try {
-            Date now = new Date();
-
-            originalTemplate = baseConfigMeta.configure.findTemplate(name);
-            template.setLastModifiedDate(now);
-
-            if (baseConfigMeta.configure.findTemplate(name) == null) {
-                template.setCreationDate(now);
-            } else {
-                template.setCreationDate(originalTemplate.getCreationDate());
-            }
-            baseConfigMeta.configure.addTemplate(template);
-            configure.addTemplate(template);
-            save(baseConfigMeta.key, baseConfigMeta.configure);
-
-        } catch (IOException e) {
-            if (originalTemplate == null) {
-                baseConfigMeta.configure.removeTemplate(name);
-                configure.removeTemplate(name);
-            } else {
-                baseConfigMeta.configure.addTemplate(originalTemplate);
-                configure.addTemplate(originalTemplate);
-            }
-            ExceptionUtils.logAndRethrowBizException(e, MessageID.TEMPLATE_SAVE_FAIL, name);
-        } finally {
-            baseConfigMeta.lock.writeLock().unlock();
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.dianping.phoenix.lb.dao.impl.ModelStore#removeTemplate(java.lang.
-     * String)
-     */
-    @Override
-    public void removeTemplate(String name) throws BizException {
-        Template originalTemplate = null;
-        baseConfigMeta.lock.writeLock().lock();
-
-        try {
-            originalTemplate = baseConfigMeta.configure.findTemplate(name);
-            if (originalTemplate == null) {
-                return;
-            }
-
-            baseConfigMeta.configure.removeTemplate(name);
-            configure.removeTemplate(name);
-            save(baseConfigMeta.key, baseConfigMeta.configure);
-
-        } catch (IOException e) {
-            baseConfigMeta.configure.addTemplate(originalTemplate);
-            configure.addTemplate(originalTemplate);
-            ExceptionUtils.logAndRethrowBizException(e, MessageID.TEMPLATE_SAVE_FAIL, name);
-        } finally {
-            baseConfigMeta.lock.writeLock().unlock();
-        }
     }
 
     /*
