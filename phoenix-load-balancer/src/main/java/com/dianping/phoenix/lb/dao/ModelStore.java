@@ -10,7 +10,6 @@ import java.util.List;
 
 import com.dianping.phoenix.lb.exception.BizException;
 import com.dianping.phoenix.lb.model.configure.entity.Strategy;
-import com.dianping.phoenix.lb.model.configure.entity.Template;
 import com.dianping.phoenix.lb.model.configure.entity.VirtualServer;
 
 /**
@@ -23,17 +22,9 @@ public interface ModelStore {
 
     public List<Strategy> listStrategies();
 
-    public List<Template> listTemplates();
-
-    public Template findTemplate(String name);
-
     public Strategy findStrategy(String name);
 
     public VirtualServer findVirtualServer(String name);
-
-    public void updateOrCreateTemplate(String name, Template template) throws BizException;
-
-    public void removeTemplate(String name) throws BizException;
 
     public void updateOrCreateStrategy(String name, Strategy strategy) throws BizException;
 

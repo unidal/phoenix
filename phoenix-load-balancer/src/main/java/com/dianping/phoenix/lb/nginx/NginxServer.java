@@ -8,6 +8,7 @@ package com.dianping.phoenix.lb.nginx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Leo Liang
@@ -17,6 +18,22 @@ public class NginxServer {
     private List<NginxLocation> locations = new ArrayList<NginxLocation>();
     private int                 listen    = 80;
     private String              serverName;
+    private Map<String, String> properties;
+
+    /**
+     * @return the properties
+     */
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    /**
+     * @param properties
+     *            the properties to set
+     */
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
 
     /**
      * @return the locations

@@ -2,22 +2,14 @@
 <model>
   <entity name="configure" root="true">
     <entity-ref name="strategy" type="list" names="strategies" xml-indent="true" />
-    <entity-ref name="template" type="list" names="templates" xml-indent="true" />
     <entity-ref name="virtualServer" type="list" names="virtualServers" />
   </entity>
   <entity name="strategy">
     <attribute name="name" value-type="String" />
-    <attribute name="type" value-type="String" />
     <attribute name="target" value-type="String" />
     <attribute name="method" value-type="String" />
     <attribute name="creation-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
     <attribute name="last-modified-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
-  </entity>
-  <entity name="template">
-    <attribute name="name" value-type="String" />
-    <attribute name="creation-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
-    <attribute name="last-modified-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
-    <element name="content" value-type="String" />
   </entity>
   <entity name="virtualServer">
     <attribute name="name" value-type="String" />
@@ -26,10 +18,10 @@
     <attribute name="default-pool-name" value-type="String" />
     <attribute name="domain" value-type="String" />
     <attribute name="port" value-type="int" />
-    <attribute name="template-name" value-type="String" />
     <attribute name="creation-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
     <attribute name="last-modified-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
     <attribute name="version" value-type="int" />
+    <attribute name="access_log" value-type="String" />
     <entity-ref name="pool" type="list" names="pools" xml-indent="true" />
     <entity-ref name="instance" type="list" names="instances" xml-indent="true" />
     <entity-ref name="location" type="list" names="locations" xml-indent="true" />

@@ -6,9 +6,15 @@
  */
 package com.dianping.phoenix.lb.velocity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 
-import com.dianping.phoenix.lb.constant.Constants;
+import com.dianping.phoenix.lb.model.Availability;
+import com.dianping.phoenix.lb.model.State;
 import com.dianping.phoenix.lb.model.configure.entity.Directive;
 import com.dianping.phoenix.lb.model.configure.entity.Strategy;
 import com.dianping.phoenix.lb.nginx.NginxLocation.MatchType;
@@ -19,6 +25,7 @@ import com.dianping.phoenix.lb.nginx.NginxUpstreamServer;
  * 
  */
 public class NginxVelocityTools {
+
     public String locationMatchOp(MatchType matchType) {
         switch (matchType) {
             case COMMON:
@@ -34,45 +41,63 @@ public class NginxVelocityTools {
         }
     }
 
+    public String properties(Map<String, String> properties) {
+        StringBuilder content = new StringBuilder();
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
+            String template = getTemplate("properties", entry.getKey());
+            if (StringUtils.isNotBlank(template)) {
+                Map<String, Object> context = new HashMap<String, Object>();
+                context.put("value", entry.getValue());
+                content.append(VelocityEngineManager.INSTANCE.merge(template, context));
+            } else {
+                content.append(entry.getValue()).append(";");
+            }
+            content.append("\n");
+        }
+        return content.toString();
+    }
+
     public String lbStrategy(Strategy strategy) {
-        if ("ip-hash".equals(strategy.getType())) {
-            return "ip_hash;\n";
-        } else if ("url-hash".equals(strategy.getType())) {
-            return "hash $request_uri;\nhash_method crc32;\n";
+        String template = getTemplate("strategy", strategy.getName());
+        if (StringUtils.isNotBlank(template)) {
+            Map<String, Object> context = new HashMap<String, Object>();
+            context.put("strategy", strategy);
+            return VelocityEngineManager.INSTANCE.merge(template, context);
         } else {
             return "";
         }
     }
 
     public String directive(Directive directive) {
-        if (Constants.DIRECTIVE_TYPE_PROXYPASS.equals(directive.getType())) {
-            return String.format("proxy_pass http://%s;",
-                    directive.getDynamicAttribute(Constants.DIRECTIVE_PROXYPASS_POOLNAME));
-        } else if (Constants.DIRECTIVE_TYPE_REWRITE.equals(directive.getType())) {
-            String next = "";
-            String nextBreak = directive.getDynamicAttribute(Constants.DIRECTIVE_REWRITE_BREAK);
-            String nextLast = directive.getDynamicAttribute(Constants.DIRECTIVE_REWRITE_LAST);
-            if (StringUtils.isNotBlank(nextBreak) && StringUtils.equalsIgnoreCase("true", nextBreak)) {
-                next = "break";
-            } else if (StringUtils.isNotBlank(nextLast) && StringUtils.equalsIgnoreCase("true", nextLast)) {
-                next = "last";
-            }
-            return String.format("rewrite %s %s %s;",
-                    directive.getDynamicAttribute(Constants.DIRECTIVE_REWRITE_BEFORE),
-                    directive.getDynamicAttribute(Constants.DIRECTIVE_REWRITE_AFTER), next);
-        } else if (Constants.DIRECTIVE_TYPE_RETURN.equals(directive.getType())) {
-            return String.format("return %s;", directive.getDynamicAttribute(Constants.DIRECTIVE_RETURN_CODE));
-        } else if (Constants.DIRECTIVE_TYPE_STATICRES.equals(directive.getType())) {
-            return String.format("root %s;expires %s;\n",
-                    directive.getDynamicAttribute(Constants.DIRECTIVE_STATICRES_ROOTDOC),
-                    directive.getDynamicAttribute(Constants.DIRECTIVE_STATICRES_EXP));
+        String template = getTemplate("directive", directive.getType());
+        if (StringUtils.isNotBlank(template)) {
+            Map<String, Object> context = new HashMap<String, Object>();
+            context.put("directive", directive);
+            return VelocityEngineManager.INSTANCE.merge(template, context);
+        } else {
+            return "";
         }
-
-        return "";
     }
 
     public String upstreamServer(NginxUpstreamServer server) {
-        return String.format("server %s:%s       max_fails=%s  fail_timeout=%s;", server.getMember().getIp(), server
-                .getMember().getPort(), server.getMember().getWeight(), server.getMember().getMaxFails());
+        if (server.getMember().getAvailability() == Availability.AVAILABLE
+                && server.getMember().getState() == State.ENABLED) {
+            String template = getTemplate("upstream", "default");
+            if (StringUtils.isNotBlank(template)) {
+                Map<String, Object> context = new HashMap<String, Object>();
+                context.put("server", server);
+                return VelocityEngineManager.INSTANCE.merge(template, context);
+            }
+        }
+        return "";
+    }
+
+    public String nowTimeStamp() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(new Date());
+    }
+
+    private String getTemplate(String schema, String file) {
+        return TemplateManager.INSTANCE.getTemplate(schema, file);
     }
 }

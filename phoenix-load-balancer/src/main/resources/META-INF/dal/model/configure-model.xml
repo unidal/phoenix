@@ -3,23 +3,16 @@
 	enable-sax-parser="true">
 	<entity name="configure" root="true">
 		<entity-ref name="strategy" type="map" names="strategies" xml-indent="true" method-find-or-create="true" />
-		<entity-ref name="template" type="map" names="templates" xml-indent="true" method-find-or-create="true" />
 		<entity-ref name="virtualServer" type="map" names="virtualServers" method-find-or-create="true" />
 	</entity>
 	<entity name="strategy" dynamic-attributes="true">
 		<attribute name="name" value-type="String" key="true" />
-		<attribute name="type" value-type="String" />
 		<attribute name="target" value-type="String" enabled="false" />
 		<attribute name="method" value-type="String" enabled="false" />
 		<attribute name="creation-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
 		<attribute name="last-modified-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
 	</entity>
-	<entity name="template">
-		<attribute name="name" value-type="String" key="true" />
-		<attribute name="creation-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
-		<attribute name="last-modified-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
-	</entity>
-	<entity name="virtualServer">
+	<entity name="virtualServer" dynamic-attributes="true">
 		<attribute name="name" value-type="String" key="true" />
 		<attribute name="state" value-type="com.dianping.phoenix.lb.model.State" default-value="com.dianping.phoenix.lb.model.State.ENABLED"
 			enum="true" />
@@ -28,7 +21,7 @@
 		<attribute name="default-pool-name" value-type="String" />
 		<attribute name="domain" value-type="String" />
 		<attribute name="port" value-type="int" />
-		<attribute name="template-name" value-type="String" />
+		<attribute name="access_log" value-type="String" enabled="false" />
 		<attribute name="creation-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
 		<attribute name="last-modified-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
 		<attribute name="version" value-type="int" primitive="true" default-value="1" />

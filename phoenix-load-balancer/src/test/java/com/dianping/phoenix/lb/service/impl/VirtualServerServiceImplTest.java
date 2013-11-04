@@ -14,13 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.dianping.phoenix.lb.dao.StrategyDao;
-import com.dianping.phoenix.lb.dao.TemplateDao;
 import com.dianping.phoenix.lb.dao.VirtualServerDao;
 import com.dianping.phoenix.lb.dao.impl.LocalFileModelStoreImpl;
 import com.dianping.phoenix.lb.dao.impl.StrategyDaoImpl;
-import com.dianping.phoenix.lb.dao.impl.TemplateDaoImpl;
 import com.dianping.phoenix.lb.dao.impl.VirtualServerDaoImpl;
-import com.dianping.phoenix.lb.model.configure.entity.Template;
 import com.dianping.phoenix.lb.service.VirtualServerService;
 
 /**
@@ -33,7 +30,6 @@ public class VirtualServerServiceImplTest {
     private File                    tmpDir;
     private VirtualServerService    virtualServerService;
     private VirtualServerDao        virtualServerDao;
-    private TemplateDao             templateDao;
     private StrategyDao             strategyDao;
 
     @Before
@@ -50,9 +46,8 @@ public class VirtualServerServiceImplTest {
 
         virtualServerDao = new VirtualServerDaoImpl(store);
 
-        templateDao = new TemplateDaoImpl(store);
         strategyDao = new StrategyDaoImpl(store);
-        virtualServerService = new VirtualServerServiceImpl(virtualServerDao, templateDao, strategyDao);
+        virtualServerService = new VirtualServerServiceImpl(virtualServerDao, strategyDao);
     }
 
     @After
@@ -65,9 +60,6 @@ public class VirtualServerServiceImplTest {
 
     @Test
     public void testNginxConf() throws Exception {
-        Template template = new Template("default-template");
-        template.setContent(FileUtils.readFileToString(new File(tmpDir, "nginx_conf.vm")));
-        templateDao.add(template);
         System.out.println(virtualServerService.generateNginxConfig(virtualServerDao.find("www")));
     }
 }
