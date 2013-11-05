@@ -380,5 +380,23 @@
 				</requirement>
 			</requirements>
 		</component>
+		<component>
+			<role>com.dianping.phoenix.console.page.lb.Handler</role>
+			<implementation>com.dianping.phoenix.console.page.lb.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.console.page.lb.JspViewer</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.console.page.lb.JspViewer</role>
+			<implementation>com.dianping.phoenix.console.page.lb.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
+		</component>
 	</components>
 </plexus>

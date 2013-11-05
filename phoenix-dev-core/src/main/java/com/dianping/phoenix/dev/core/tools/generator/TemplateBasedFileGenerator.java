@@ -23,7 +23,8 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+
+import com.dianping.phoenix.dev.core.tools.velocity.PhoenixResourceLoader;
 
 /**
  * @author Leo Liang
@@ -35,7 +36,7 @@ public abstract class TemplateBasedFileGenerator<T> implements FileGenerator<T> 
     static {
         _ve = new VelocityEngine();
         _ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "class");
-        _ve.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
+        _ve.setProperty("class.resource.loader.class", PhoenixResourceLoader.class.getName());
         _ve.setProperty("class.resource.loader.cache", true);
         _ve.setProperty("class.resource.loader.modificationCheckInterval", "-1");
         _ve.setProperty("input.encoding", "UTF-8");

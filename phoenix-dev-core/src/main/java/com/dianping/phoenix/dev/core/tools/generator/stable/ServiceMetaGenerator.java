@@ -99,7 +99,19 @@ public class ServiceMetaGenerator extends TemplateBasedFileGenerator<ServiceMeta
 
     public static void main(String[] args) throws Exception {
         ServiceMetaGenerator serviceMetaGenerator = new ServiceMetaGenerator();
-        serviceMetaGenerator.generate(new File("/Users/leoleung/service-meta.xml"), new ServiceMetaContext(
-                "com.mysql.jdbc.Driver", "jdbc:mysql://192.168.7.105:3306/hawk", "dpcom_hawk", "123456"));
+        if (args == null || args.length == 0) {
+            System.out
+                    .println("Usage com.dianping.phoenix.dev.core.tools.generator.stable.ServiceMetaGenerator destfile [jdbcUrl] [dbUsername] [dbPassword]");
+            System.exit(1);
+        }
+
+        String destFile = args[0];
+        String jdbcUrl = (args.length < 2 || StringUtils.isBlank(args[1])) ? "jdbc:mysql://192.168.7.105:3306/hawk"
+                : args[1];
+        String dbUsername = (args.length < 3 || StringUtils.isBlank(args[2])) ? "dpcom_hawk" : args[2];
+        String dbPassword = (args.length < 4 || StringUtils.isBlank(args[3])) ? "123456" : args[3];
+
+        serviceMetaGenerator.generate(new File(destFile), new ServiceMetaContext("com.mysql.jdbc.Driver", jdbcUrl,
+                dbUsername, dbPassword));
     }
 }

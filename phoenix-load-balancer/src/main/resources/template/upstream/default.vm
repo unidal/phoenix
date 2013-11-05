@@ -1,0 +1,1 @@
+server $server.member.ip:$server.member.port max_fails=$server.member.weight  fail_timeout=$server.member.maxFails;

@@ -83,7 +83,7 @@ public class GitRepositoryListGenerator {
 						String projectName = repoUrl.substring(repoUrl.lastIndexOf("/") + 1, repoUrl.length()
 								- PATTERN_GIT.length());
 
-						if(hasPom(repoUrl)) {
+						if(hasPom(repoUrl) || repoUrl.startsWith("http://code.dianpingoa.com/arch/phoenix-maven-config.git")) {
 							pairs.add(new ProjectRepositoryPair(projectName, repoUrl));
 						}
 					}
