@@ -50,7 +50,7 @@ public class NginxVelocityTools {
                 context.put("value", entry.getValue());
                 content.append(VelocityEngineManager.INSTANCE.merge(template, context));
             } else {
-                content.append(entry.getValue()).append(";");
+                content.append(entry.getKey() + " " +entry.getValue()).append(";");
             }
             content.append("\n");
         }
