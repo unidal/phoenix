@@ -24,6 +24,10 @@ public class ConsoleContext<T extends ActionPayload<? extends Page, ? extends Ac
 		super.initialize(request, response);
 
 		String contextPath = request.getContextPath();
+		
+		if(contextPath == null) {
+			contextPath = "/";
+		}
 
 		synchronized (ResourceRuntime.INSTANCE) {
 			if (!ResourceRuntime.INSTANCE.hasConfig(contextPath)) {
