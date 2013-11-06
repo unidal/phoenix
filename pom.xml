@@ -22,6 +22,14 @@
 		<module>phoenix-byteman</module>
 		<module>phoenix-load-balancer</module>
 	</modules>
+    <profiles>
+        <profile>
+        <id>ci</id>
+            <modules>
+                <module>phoenix-console</module>
+            </modules> 
+        </profile>
+    </profiles>
         <build>
                 <pluginManagement>
                         <plugins>
