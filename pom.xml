@@ -8,23 +8,29 @@
 	<name>phoenix-parent</name>
 	<description>Phoenix Project</description>
 	<packaging>pom</packaging>
-	<modules>
-		<module>phoenix-bootstrap</module>
-		<module>phoenix-kernel</module>
-		<module>phoenix-samples</module>
-		<module>phoenix-console</module>
-		<module>phoenix-agent</module>
-		<module>phoenix-service-container</module>
-		<module>phoenix-router</module>
-		<module>phoenix-dev-core</module>
-		<module>phoenix-dev-agent</module>
-		<module>phoenix-dev-plugin</module>
-		<module>phoenix-byteman</module>
-		<module>phoenix-load-balancer</module>
-	</modules>
     <profiles>
         <profile>
-        <id>ci</id>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>phoenix-bootstrap</module>
+                <module>phoenix-kernel</module>
+                <module>phoenix-samples</module>
+                <module>phoenix-console</module>
+                <module>phoenix-agent</module>
+                <module>phoenix-service-container</module>
+                <module>phoenix-router</module>
+                <module>phoenix-dev-core</module>
+                <module>phoenix-dev-agent</module>
+                <module>phoenix-dev-plugin</module>
+                <module>phoenix-byteman</module>
+                <module>phoenix-load-balancer</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>ci</id>
             <modules>
                 <module>phoenix-console</module>
             </modules> 
