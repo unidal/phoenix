@@ -27,4 +27,12 @@ public interface VirtualServerDao {
 
     void delete(String virtualServerName) throws BizException;
 
+    String tag(String virtualServerName, int virtualServerVersion) throws BizException;
+
+    VirtualServer getTag(String virtualServerName, String tagId) throws BizException;
+
+    List<String> listTags(String virtualServerName) throws BizException;
+
+    VirtualServer findTagById(String virtualServerName, String tagId) throws BizException;
+
 }

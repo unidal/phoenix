@@ -15,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.xml.sax.SAXException;
+
 import com.dianping.phoenix.lb.constant.MessageID;
 import com.dianping.phoenix.lb.dao.ModelStore;
 import com.dianping.phoenix.lb.exception.BizException;
@@ -44,6 +46,15 @@ public abstract class AbstractModelStore implements ModelStore {
         }
 
     }
+
+    public void init() {
+        initConfigMetas();
+        initCustomizedMetas();
+    }
+
+    protected abstract void initCustomizedMetas();
+
+    protected abstract void initConfigMetas();
 
     public List<VirtualServer> listVirtualServers() {
         // ignore concurrent issue, since it will introduce unnecessary
@@ -289,6 +300,100 @@ public abstract class AbstractModelStore implements ModelStore {
             }
         }
     }
+
+    @Override
+    public String tag(String name, int version) throws BizException {
+        ConfigMeta configFileEntry = virtualServerConfigFileMapping.get(name);
+        if (configFileEntry != null) {
+            configFileEntry.lock.writeLock().lock();
+
+            try {
+                if (configFileEntry.configure.findVirtualServer(name) == null
+                        || configure.findVirtualServer(name) == null) {
+                    ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NOT_EXISTS, name);
+                }
+
+                int currentVersion = configFileEntry.configure.findVirtualServer(name).getVersion();
+
+                if (currentVersion != version) {
+                    ExceptionUtils.logAndRethrowBizException(new ConcurrentModificationException(),
+                            MessageID.VIRTUALSERVER_CONCURRENT_MOD, name);
+                }
+
+                return saveTag(configFileEntry.key, name, configFileEntry.configure);
+            } catch (IOException e) {
+                ExceptionUtils.logAndRethrowBizException(e, MessageID.VIRTUALSERVER_TAG_FAIL, name);
+            } finally {
+                configFileEntry.lock.writeLock().unlock();
+            }
+        } else {
+            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NOT_EXISTS, name);
+        }
+
+        return null;
+    }
+
+    @Override
+    public VirtualServer getTag(String name, String tagId) throws BizException {
+        ConfigMeta configFileEntry = virtualServerConfigFileMapping.get(name);
+        if (configFileEntry != null) {
+            configFileEntry.lock.readLock().lock();
+
+            try {
+                if (configFileEntry.configure.findVirtualServer(name) == null
+                        || configure.findVirtualServer(name) == null) {
+                    ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NOT_EXISTS, name);
+                }
+
+                Configure tagConfigure = loadTag(configFileEntry.key, name, tagId);
+                if (tagConfigure != null && tagConfigure.findVirtualServer(name) != null) {
+                    return tagConfigure.findVirtualServer(name);
+                } else {
+                    ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_TAG_NOT_FOUND, tagId, name);
+                }
+            } catch (Exception e) {
+                ExceptionUtils.logAndRethrowBizException(e, MessageID.VIRTUALSERVER_TAG_LOAD_FAIL, name, tagId);
+            } finally {
+                configFileEntry.lock.readLock().unlock();
+            }
+        } else {
+            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NOT_EXISTS, name);
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<String> listTagIds(String name) throws BizException {
+        ConfigMeta configFileEntry = virtualServerConfigFileMapping.get(name);
+        if (configFileEntry != null) {
+            configFileEntry.lock.readLock().lock();
+
+            try {
+                if (configFileEntry.configure.findVirtualServer(name) == null
+                        || configure.findVirtualServer(name) == null) {
+                    ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NOT_EXISTS, name);
+                }
+
+                return doListTagIds(name);
+
+            } catch (IOException e) {
+                ExceptionUtils.logAndRethrowBizException(e, MessageID.VIRTUALSERVER_TAG_LIST_FAIL, name);
+            } finally {
+                configFileEntry.lock.readLock().unlock();
+            }
+        } else {
+            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NOT_EXISTS, name);
+        }
+
+        return null;
+    }
+
+    protected abstract List<String> doListTagIds(String vsName) throws IOException;
+
+    protected abstract Configure loadTag(String key, String vsName, String tagId) throws IOException, SAXException;
+
+    protected abstract String saveTag(String key, String vsName, Configure configure) throws IOException;
 
     protected abstract void save(String key, Configure configure) throws IOException;
 

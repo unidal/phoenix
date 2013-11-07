@@ -7,8 +7,11 @@
 package com.dianping.phoenix.lb.dao.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import com.dianping.phoenix.lb.constant.MessageID;
 import com.dianping.phoenix.lb.exception.BizException;
@@ -123,8 +127,9 @@ public class LocalFileModelStoreTest {
         Assert.assertNotNull(newStrategy.getCreationDate());
         Assert.assertEquals(newStrategy.getLastModifiedDate(), newStrategy.getCreationDate());
 
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
+        assertEquals(configure, "configure_base.xml");
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
     }
 
     @Test
@@ -146,8 +151,9 @@ public class LocalFileModelStoreTest {
         Assert.assertEquals(now, modifiedStrategy.getLastModifiedDate());
         Assert.assertEquals(expectedStrategy.getCreationDate(), modifiedStrategy.getCreationDate());
 
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
+        assertEquals(configure, "configure_base.xml");
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
     }
 
     @Test
@@ -172,8 +178,9 @@ public class LocalFileModelStoreTest {
 
         assertEquals(new ArrayList<Strategy>(configure.getStrategies().values()), store.listStrategies());
 
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
+        assertRawFileNotChanged( "configure_base.xml");
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
     }
 
     @Test
@@ -197,8 +204,10 @@ public class LocalFileModelStoreTest {
 
         assertEquals(new ArrayList<Strategy>(configure.getStrategies().values()), store.listStrategies());
 
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
+        assertEquals(configure, "configure_base.xml");
+        assertRawFileNotChanged("configure_base.xml");
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
     }
 
     @Test
@@ -211,8 +220,9 @@ public class LocalFileModelStoreTest {
 
         assertEquals(new ArrayList<Strategy>(configure.getStrategies().values()), store.listStrategies());
 
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
+        assertEquals(configure, "configure_base.xml");
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
     }
 
     @Test
@@ -233,8 +243,10 @@ public class LocalFileModelStoreTest {
 
         assertEquals(new ArrayList<Strategy>(configure.getStrategies().values()), store.listStrategies());
 
-        Assert.assertEquals(configure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_base.xml"))).toString());
+        assertEquals(configure, "configure_base.xml");
+        assertRawFileNotChanged("configure_base.xml");
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
     }
 
     @Test
@@ -290,13 +302,9 @@ public class LocalFileModelStoreTest {
                 "configure_www.xml")));
         wwwConfigure.addVirtualServer(newVirtualServer);
         // assert www configure has updated
-        Assert.assertEquals(wwwConfigure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_www.xml"))).toString());
-        // assert tuangou & base configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+        assertEquals(wwwConfigure, "configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
     }
 
     @Test
@@ -389,13 +397,9 @@ public class LocalFileModelStoreTest {
                 "configure_www.xml")));
         wwwConfigure.addVirtualServer(newVirtualServer);
         // assert www configure has updated
-        Assert.assertEquals(wwwConfigure.toString(),
-                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, "configure_www.xml"))).toString());
-        // assert tuangou & base configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+        assertEquals(wwwConfigure, "configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
 
     }
 
@@ -444,14 +448,9 @@ public class LocalFileModelStoreTest {
 
         // assert the whole model
         assertEquals(new ArrayList<VirtualServer>(configure.getVirtualServers().values()), store.listVirtualServers());
-        // assert www configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(tmpDir, "configure_www.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_www.xml")));
-        // assert tuangou & base configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
 
     }
 
@@ -501,14 +500,9 @@ public class LocalFileModelStoreTest {
 
         // assert the whole model
         assertEquals(new ArrayList<VirtualServer>(configure.getVirtualServers().values()), store.listVirtualServers());
-        // assert www configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_www.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_www.xml")));
-        // assert tuangou & base configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
     }
 
     @Test
@@ -570,14 +564,9 @@ public class LocalFileModelStoreTest {
         Assert.assertEquals(sdf.format(newVirtualServer.getLastModifiedDate()),
                 sdf.format(virtualServerFromFile.getLastModifiedDate()));
 
-        // assert www configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_www.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_www.xml")));
-        // assert tuangou & base configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
 
     }
 
@@ -626,14 +615,9 @@ public class LocalFileModelStoreTest {
         assertEquals(new ArrayList<VirtualServer>(configure.getVirtualServers().values()), store.listVirtualServers());
         // assert new file not created
         Assert.assertFalse(new File(tmpDir, "configure_testVs.xml").exists());
-        // assert www configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_www.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_www.xml")));
-        // assert tuangou & base configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
 
     }
 
@@ -684,14 +668,9 @@ public class LocalFileModelStoreTest {
         assertEquals(new ArrayList<VirtualServer>(configure.getVirtualServers().values()), store.listVirtualServers());
         // assert new file not created
         Assert.assertFalse(new File(tmpDir, "configure_testVs.xml").exists());
-        // assert www configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_www.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_www.xml")));
-        // assert tuangou & base configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
 
     }
 
@@ -702,11 +681,9 @@ public class LocalFileModelStoreTest {
         Assert.assertNull(store.findVirtualServer("www"));
         // assert www configure deleted
         Assert.assertFalse(new File(tmpDir, "configure_www.xml").exists());
-        // assert tuangou & base configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
     }
 
     @Test
@@ -723,14 +700,9 @@ public class LocalFileModelStoreTest {
         }
 
         Assert.assertNotNull(store.findVirtualServer("www"));
-        // assert www configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_www.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_www.xml")));
-        // assert tuangou & base configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
     }
 
     @Test
@@ -743,14 +715,167 @@ public class LocalFileModelStoreTest {
             Assert.fail();
         }
 
-        // assert www configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_www.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_www.xml")));
-        // assert tuangou & base configure not changed
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_tuangou.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_tuangou.xml")));
-        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, "configure_base.xml")),
-                FileUtils.readFileToString(new File(tmpDir, "configure_base.xml")));
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
+    }
+
+    @Test
+    public void testTag() throws Exception {
+        store.tag("www", 1);
+        store.tag("www", 1);
+        File tagFile = new File(tmpDir, "tag/www/configure_www.xml_1");
+        File tagFile2 = new File(tmpDir, "tag/www/configure_www.xml_2");
+        Assert.assertTrue(tagFile.exists());
+        Assert.assertTrue(tagFile2.exists());
+        Assert.assertEquals(DefaultSaxParser.parse(FileUtils.readFileToString(new File(baseDir, "configure_www.xml"))),
+                DefaultSaxParser.parse(FileUtils.readFileToString(tagFile)));
+        Assert.assertEquals(DefaultSaxParser.parse(FileUtils.readFileToString(new File(baseDir, "configure_www.xml"))),
+                DefaultSaxParser.parse(FileUtils.readFileToString(tagFile2)));
+
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
+    }
+
+    @Test
+    public void testTagVSNotExists() throws Exception {
+        try {
+            store.tag("www2", 1);
+            Assert.fail();
+        } catch (BizException e) {
+            Assert.assertEquals(e.getMessageId(), MessageID.VIRTUALSERVER_NOT_EXISTS);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
+    }
+
+    @Test
+    public void testTagConcurrentMod() throws Exception {
+        try {
+            store.tag("www", 2);
+            Assert.fail();
+        } catch (BizException e) {
+            Assert.assertEquals(e.getMessageId(), MessageID.VIRTUALSERVER_CONCURRENT_MOD);
+            Assert.assertTrue(e.getCause() instanceof ConcurrentModificationException);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
+    }
+
+    @Test
+    public void testTagIOException() throws Exception {
+        File tagDir = new File(tmpDir, "tag/www");
+        FileUtils.forceMkdir(tagDir);
+        tagDir.setWritable(false);
+        try {
+            store.tag("www", 1);
+            Assert.fail();
+        } catch (BizException e) {
+            Assert.assertEquals(e.getMessageId(), MessageID.VIRTUALSERVER_TAG_FAIL);
+            Assert.assertTrue(e.getCause() instanceof IOException);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
+    }
+
+    @Test
+    public void testListTagIds() throws Exception {
+        store.tag("www", 1);
+        store.tag("www", 1);
+        store.tag("tuangou", 1);
+        store.tag("tuangou", 1);
+        store.tag("tuangou", 1);
+
+        store = new LocalFileModelStoreImpl();
+        store.setBaseDir(tmpDir.getAbsolutePath());
+        store.init();
+
+        List<String> wwwTagIds = store.listTagIds("www");
+        List<String> tuangouTagIds = store.listTagIds("tuangou");
+        Collections.sort(wwwTagIds);
+        Collections.sort(tuangouTagIds);
+
+        Assert.assertArrayEquals(new String[] { "1", "2" }, wwwTagIds.toArray(new String[0]));
+        Assert.assertArrayEquals(new String[] { "1", "2", "3" }, tuangouTagIds.toArray(new String[0]));
+
+        store.tag("www", 1);
+        store.tag("tuangou", 1);
+
+        wwwTagIds = store.listTagIds("www");
+        tuangouTagIds = store.listTagIds("tuangou");
+        Collections.sort(wwwTagIds);
+        Collections.sort(tuangouTagIds);
+
+        Assert.assertArrayEquals(new String[] { "1", "2", "3" }, wwwTagIds.toArray(new String[0]));
+        Assert.assertArrayEquals(new String[] { "1", "2", "3", "4" }, tuangouTagIds.toArray(new String[0]));
+
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
+    }
+
+    @Test
+    public void testListTagIdsVsNotExists() throws Exception {
+
+        try {
+            store.listTagIds("test");
+            Assert.fail();
+        } catch (BizException e) {
+            Assert.assertEquals(MessageID.VIRTUALSERVER_NOT_EXISTS, e.getMessageId());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
+    }
+    
+    @Test
+    public void testListTagIdsNoTags() throws Exception {
+
+        Assert.assertNull(store.listTagIds("www"));
+
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
+    }
+    
+    @Test
+    public void testGetTag() throws Exception {
+        String tagId = store.tag("www", 1);
+        
+        VirtualServer tagVs = store.getTag("www", tagId);
+        
+        Assert.assertEquals(store.findVirtualServer("www").toString(), tagVs.toString());
+
+        assertRawFileNotChanged("configure_www.xml");
+        assertRawFileNotChanged("configure_tuangou.xml");
+        assertRawFileNotChanged("configure_base.xml");
+    }
+    
+
+    private void assertRawFileNotChanged(String fileName) throws IOException {
+        Assert.assertEquals(FileUtils.readFileToString(new File(baseDir, fileName)),
+                FileUtils.readFileToString(new File(tmpDir, fileName)));
+    }
+
+    private void assertEquals(Configure configure, String fileName) throws SAXException, IOException {
+        Assert.assertEquals(configure.toString(),
+                DefaultSaxParser.parse(FileUtils.readFileToString(new File(tmpDir, fileName))).toString());
     }
 
     private <T> void assertEquals(List<T> expectedList, List<T> actualList) {
