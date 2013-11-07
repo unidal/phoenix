@@ -58,7 +58,7 @@ $(function() {
 		$(this).tab('show');
 	});
 	$('table').dataTable({
-		"bPaginate": false
-		
+		"bPaginate": false,
+		"sScrollY": "400px"
 	});
 });

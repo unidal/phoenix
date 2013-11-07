@@ -3,7 +3,7 @@ package com.dianping.phoenix.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager;
+import org.unidal.dal.jdbc.datasource.JdbcDataSourceDescriptorManager;
 import org.unidal.initialization.DefaultModuleManager;
 import org.unidal.initialization.Module;
 import org.unidal.initialization.ModuleManager;
@@ -60,7 +60,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 	private void defineDatabaseComponents(List<Component> all) {
 		// setup datasource configuration manager
-		all.add(C(JdbcDataSourceConfigurationManager.class) //
+		all.add(C(JdbcDataSourceDescriptorManager.class) //
 				.config(E("datasourceFile").value("/data/appdatas/phoenix/datasources.xml")));
 
 		// Phoenix database
