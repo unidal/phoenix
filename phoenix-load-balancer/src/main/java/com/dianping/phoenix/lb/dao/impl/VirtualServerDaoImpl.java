@@ -51,4 +51,24 @@ public class VirtualServerDaoImpl extends AbstractDao implements VirtualServerDa
         store.removeVirtualServer(virtualServerName);
     }
 
+    @Override
+    public String tag(String virtualServerName, int virtualServerVersion) throws BizException {
+        return store.tag(virtualServerName, virtualServerVersion);
+    }
+
+    @Override
+    public VirtualServer getTag(String virtualServerName, String tagId) throws BizException {
+        return store.getTag(virtualServerName, tagId);
+    }
+
+    @Override
+    public List<String> listTags(String virtualServerName) throws BizException {
+        return store.listTagIds(virtualServerName);
+    }
+
+    @Override
+    public VirtualServer findTagById(String virtualServerName, String tagId) throws BizException {
+        return store.getTag(virtualServerName, tagId);
+    }
+
 }
