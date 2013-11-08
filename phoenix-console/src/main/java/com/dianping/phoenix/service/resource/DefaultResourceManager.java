@@ -175,8 +175,6 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 				for (Entry<String, List<Device>> domainEntry : m_productCatalog.entrySet()) {
 					Domain domain = new Domain(domainEntry.getKey());
 
-					m_logger.info(String.format("Fetching agent status: [product= %s]\t[domain= %s]",
-							m_product.getName(), domain.getName()));
 					enrichDomain(domain, domainEntry.getValue());
 
 					m_product.addDomain(domain);
@@ -275,8 +273,6 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 	}
 
 	protected Resource getResourceFromCacheFile(String cachePath) {
-		m_logger.info("Fetch agent status from cache file.");
-
 		File cache = new File(cachePath, "resource-cache.xml");
 		if (cache.exists()) {
 			try {

@@ -83,11 +83,6 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 			int curPage = 2;
 
 			CountDownLatch latch = new CountDownLatch(threadCount);
-			boolean finishCorrectly = false;
-
-			m_logger.info(String.format(
-					"########## Cmdb page count:【%d】, thread count:【%d】, latch count:【%d】##########", totalPageCount,
-					threadCount, latch.getCount()));
 
 			while (curPage <= totalPageCount) {
 				executor.execute(new QueryTask(cmdbQuery, responce, curPage, getEndPageNumber(curPage, totalPageCount),
@@ -96,16 +91,12 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 			}
 
 			try {
-				finishCorrectly = latch.await(m_configManager.getCmdbTimeoutInSecond(), TimeUnit.SECONDS);
+				latch.await(m_configManager.getCmdbTimeoutInSecond(), TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				m_logger.error("Error happens when get cmdb infos, lost some infos.", e);
 			}
 
 			executor.shutdownNow();
-
-			m_logger.info(String
-					.format("########## Read cmdb catalog finished. Except count:【%d】, Total count:【%d】, Finish correctly:【%b】 ##########",
-							responce.getNumfound(), responce.getDevices().size(), finishCorrectly));
 
 			return generateCatalog(responce.getDevices());
 		}
@@ -146,7 +137,6 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 		Set<String> productSet = m_configManager.getProductSet();
 
 		Map<String, Map<String, List<Device>>> catalog = new LinkedHashMap<String, Map<String, List<Device>>>();
-		int ignoreDeviceCount = 0;
 
 		for (Device device : devices) {
 			String productName = getAttributeText(device.getAttributes().get(DeviceVisitor.KEY_CATALOG), "none");
@@ -154,13 +144,8 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 			if (!"none".equals(productName) && !"none".equals(domainName)
 					&& (productSet.size() == 0 || productSet.contains(productName))) {
 				getDomainFromProduct(getProductFromCatalog(catalog, productName), domainName).add(device);
-			} else {
-				ignoreDeviceCount++;
 			}
 		}
-		m_logger.info(String.format(
-				"########## Ignore some devices due to Product name or domain name is null, count:【%d】##########",
-				ignoreDeviceCount));
 		return catalog;
 	}
 
@@ -206,7 +191,6 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 		public void run() {
 			for (int page = startPage; page <= endPage && !Thread.interrupted(); page++) {
 				String q = String.format(query + "&page=%d", page);
-				m_logger.info(String.format("Querying: [%s]", q));
 				try {
 					Responce responce = readCmdb(q);
 					for (Device device : responce.getDevices()) {

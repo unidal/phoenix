@@ -47,6 +47,7 @@ public class DefaultDeliverableManager implements DeliverableManager, LogEnabled
 			return false;
 		} catch (DalNotFoundException e) {
 			// expected
+			m_logger.info(String.format("No current deliverable(%s, %s), create it now.", type, version));
 		}
 
 		Deliverable d = createLocal(type, version, description, "N/A", "phoenix");
@@ -120,6 +121,7 @@ public class DefaultDeliverableManager implements DeliverableManager, LogEnabled
 				String version = m_d.getWarVersion();
 				String key = type + ":" + version;
 				Transaction t = Cat.newTransaction(type, version);
+				m_logger.info(String.format("Start creating the deliverable(%s:%s)!", type, version));
 
 				try {
 					m_gitService.setup(ctx);
