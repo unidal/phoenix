@@ -22,6 +22,7 @@ public enum MessageID {
     VIRTUALSERVER_TAGID_EMPTY("vs_pushid_empty"), //
     VIRTUALSERVER_DEFAULTPOOL_NOT_EXISTS("vs_defaultpool_not_exists"), //
     VIRTUALSERVER_DIRECTIVE_TYPE_NOT_SUPPORT("vs_directive_type_not_support"), //
+    VIRTUALSERVER_LOCATION_NO_DOMAIN("vs_location_no_domain"), //
     VIRTUALSERVER_STRATEGY_NOT_SUPPORT("vs_strategy_not_support"), //
     VIRTUALSERVER_TAG_FAIL("vs_tag_fail"), //
     VIRTUALSERVER_TAG_LOAD_FAIL("vs_tag_load_fail"), //

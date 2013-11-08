@@ -46,6 +46,7 @@
     <attribute name="ip" value-type="String" />
   </entity>
   <entity name="location">
+    <attribute name="domain" value-type="String" />
     <attribute name="match-type" value-type="String" />
     <attribute name="pattern" value-type="String" />
     <attribute name="case-sensitive" value-type="boolean" />

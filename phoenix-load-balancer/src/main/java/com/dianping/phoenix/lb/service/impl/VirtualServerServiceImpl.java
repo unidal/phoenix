@@ -247,6 +247,10 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
         }
 
         for (Location location : virtualServer.getLocations()) {
+            if (StringUtils.isBlank(location.getDomain())) {
+                ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_LOCATION_NO_DOMAIN);
+            }
+
             for (Directive directive : location.getDirectives()) {
                 if (!TemplateManager.INSTANCE.availableFiles("directive").contains(directive.getType())) {
                     ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_DIRECTIVE_TYPE_NOT_SUPPORT,
@@ -259,7 +263,6 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
 
     @Override
     public String generateNginxConfig(VirtualServer virtualServer) throws BizException {
-        validate(virtualServer);
 
         Configure tmpConfigure = new Configure();
         for (Strategy strategy : strategyDao.list()) {
@@ -299,11 +302,11 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
 
     private void pushConfig(String nginxConfig, List<Instance> instances) {
         for (Instance instance : instances) {
-            // TODO 
+            // TODO
             // 1. commit git
             // 2. push git
             // 3. notify pull git
-            // 4. call nginx reload 
+            // 4. call nginx reload
         }
     }
 
