@@ -73,7 +73,7 @@
 					</c:otherwise>
 				</c:choose>
 				<div class="span12">
-					<table class="table table-bordered table-striped table-condensed table-page">
+					<table class="table table-bordered table-striped table-condensed abc">
 						<thead>
 							<tr>
 								<th>Project</th>
@@ -88,8 +88,8 @@
 							<c:forEach var="domain" items="${product.domains}">
 								<tr>
 									<td><a class="toProject" href="?op=project&type=${payload.plan.warType}&project=${domain.value.name}">${domain.value.name}</a></td>
-									<td align="center"><span class="badge badge-success">${domain.value.activeCount}</span></td>
-									<td align="center"><span class="badge badge-important">${domain.value.inactiveCount}</span></td>
+									<td><span class="badge badge-success">${domain.value.activeCount}</span></td>
+									<td><span class="badge badge-important">${domain.value.inactiveCount}</span></td>
 									<td><c:choose>
 											<c:when test="${fn:length(domain.value.owners) eq 0}">N/A</c:when>
 											<c:otherwise>

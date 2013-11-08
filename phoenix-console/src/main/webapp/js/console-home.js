@@ -55,10 +55,10 @@ $(function() {
 		return $(this).attr("href") + payloadStr;
 	});
 	$('#myTab a').click(function(e) {
+		e.preventDefault();
 		$(this).tab('show');
 	});
 	$('table').dataTable({
-		"bPaginate": false,
-		"sScrollY": "400px"
+		"bPaginate" : false
 	});
 });

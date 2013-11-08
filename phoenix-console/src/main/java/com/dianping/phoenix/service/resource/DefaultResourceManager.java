@@ -69,6 +69,8 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 
 	private Long m_lastUpdateTime = 0L;
 
+	private boolean m_inited = false;
+
 	@Override
 	public void initialize() throws InitializationException {
 		m_cachePath = m_configManager.getResourceCachePath();
@@ -85,14 +87,23 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 					m_logger.error("Can not get device catalog from cmdb.", e);
 				}
 			}
-		}, 0, m_configManager.getResourceInfoRefreshIntervalMin(), TimeUnit.MINUTES);
+		}, m_configManager.getResourceInfoRefreshIntervalMin(), m_configManager.getResourceInfoRefreshIntervalMin(),
+				TimeUnit.MINUTES);
 
 		m_logger.info("Starting agent status watchdog thread ...");
-		Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(new Runnable() {
+		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				refreshAgentStatus();
-				cacheResource(m_cachePath);
+				try {
+					if (!m_inited) {
+						m_deviceCatalog.set(m_deviceManager.getDeviceCatalog());
+						m_inited = true;
+					}
+					refreshAgentStatus();
+					cacheResource(m_cachePath);
+				} catch (Exception e) {
+					m_logger.error("Refresh agent status failed.", e);
+				}
 			}
 		}, 0, m_configManager.getAgentFetchIntervalMin(), TimeUnit.MINUTES);
 	}
@@ -110,34 +121,36 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 		long current = System.currentTimeMillis();
 
 		Map<String, Map<String, List<Device>>> catalog = m_deviceCatalog.get();
-		Resource resource = new Resource();
 
-		ExecutorService executor = Executors.newCachedThreadPool();
-		CountDownLatch latch = new CountDownLatch(catalog.size());
+		if (catalog != null) {
+			Resource resource = new Resource();
 
-		for (Entry<String, Map<String, List<Device>>> productEntry : catalog.entrySet()) {
-			Product product = new Product(productEntry.getKey());
-			executor.execute(new EnrichProductTask(product, productEntry.getValue(), latch, m_configManager
-					.getAgentFetchIntervalMin() * 60 / catalog.size()));
-			resource.addProduct(product);
-		}
+			ExecutorService executor = Executors.newCachedThreadPool();
+			CountDownLatch latch = new CountDownLatch(catalog.size());
 
-		try {
-			latch.await();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
+			for (Entry<String, Map<String, List<Device>>> productEntry : catalog.entrySet()) {
+				Product product = new Product(productEntry.getKey());
+				executor.execute(new EnrichProductTask(product, productEntry.getValue(), latch, m_configManager
+						.getAgentFetchIntervalMin() * 60 / catalog.size()));
+				resource.addProduct(product);
+			}
 
-		executor.shutdown();
+			try {
+				latch.await();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 
-		synchronized (m_lastUpdateTime) {
-			if (current > m_lastUpdateTime) {
-				generateMetaInformation(resource);
+			executor.shutdown();
 
-				m_resourceCache = resource;
-				m_resource.set(resource);
+			synchronized (m_lastUpdateTime) {
+				if (current > m_lastUpdateTime) {
+					generateMetaInformation(resource);
 
-				m_lastUpdateTime = System.currentTimeMillis();
+					m_resourceCache = resource;
+					m_resource.set(resource);
+					m_lastUpdateTime = System.currentTimeMillis();
+				}
 			}
 		}
 	}
@@ -327,7 +340,7 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 		Resource resource = new FilteredResourceBuilder("phoenix-agent".equals(payload.getType())
 				? new AgentFilterStrategy(getResource(), payload)
 				: new JarFilterStrategy(getResource(), payload)).getFilteredResource();
-		
+
 		return new ArrayList<Product>(resource.getProducts().values());
 	}
 
