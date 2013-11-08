@@ -1,4 +1,4 @@
-<%@ tag isELIgnored="false" trimDirectiveWhitespaces="true"%>
+<%@ tag isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <jsp:useBean id="navBar" class="com.dianping.kernel.inspect.view.NavigationBar" scope="page" />
 
