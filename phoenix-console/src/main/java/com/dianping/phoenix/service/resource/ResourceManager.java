@@ -12,15 +12,13 @@ public interface ResourceManager {
 
 	public Resource getResource();
 
-	public Domain updateDomainManually(String name);
+	public Domain refreshDomain(String domain);
 
 	public Set<String> getAgentVersionSet();
 
-	public Set<String> getJarNameSet();
-	
-	public Set<String> getJarNameSet(String domainName);
+	public Set<String> getResourceJarNameSet();
 
-	public List<Product> getProducts();
+	public Set<String> getDomainJarNameSet(String domain);
 
 	public Domain getDomain(String name);
 

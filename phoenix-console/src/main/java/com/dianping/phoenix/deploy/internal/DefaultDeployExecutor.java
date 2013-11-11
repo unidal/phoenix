@@ -42,6 +42,7 @@ import com.dianping.phoenix.deploy.agent.AgentStatus;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 import com.dianping.phoenix.deploy.model.entity.HostModel;
 import com.dianping.phoenix.deploy.model.entity.SegmentModel;
+import com.dianping.phoenix.service.resource.ResourceManager;
 
 public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 	@Inject
@@ -55,6 +56,9 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 	@Inject
 	private DeployPolicy m_policy;
+	
+	@Inject
+	static private ResourceManager m_resourceManager;
 
 	private Logger m_logger;
 
@@ -717,6 +721,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 					t.setStatus(m_ctx.getStatus().name());
 				} else {
 					t.setStatus(Message.SUCCESS);
+					m_resourceManager.refreshDomain(m_ctx.getDomain());
 				}
 			} catch (Throwable e) {
 				m_ctx.print("Deployment aborted due to: %s.\r\n", e);

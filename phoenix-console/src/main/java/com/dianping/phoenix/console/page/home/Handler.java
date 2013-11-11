@@ -16,6 +16,7 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.agent.resource.entity.Domain;
+import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Deliverable;
 import com.dianping.phoenix.console.dal.deploy.Deployment;
@@ -146,7 +147,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 
 				break;
 			case SEARCHJAR :
-				List<String> jarList = new ArrayList<String>(m_resourceManager.getJarNameSet());
+				List<String> jarList = new ArrayList<String>(m_resourceManager.getResourceJarNameSet());
 				Collections.sort(jarList);
 				model.setLibs(jarList);
 				break;
@@ -156,12 +157,12 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 				model.setAgentVersions(agentList);
 				break;
 			case OVERVIEW :
-				model.setProducts(m_resourceManager.getProducts());
+				model.setProducts(new ArrayList<Product>(m_resourceManager.getResource().getProducts().values()));
 				break;
 			case DOMAININFO :
 				Domain domain = m_resourceManager.getDomain(payload.getDomaininfo());
 				if (domain != null) {
-					List<String> list = new ArrayList<String>(m_resourceManager.getJarNameSet(domain.getName()));
+					List<String> list = new ArrayList<String>(m_resourceManager.getDomainJarNameSet(domain.getName()));
 					Collections.sort(list);
 					model.setDomainInfos(domain, list);
 				}

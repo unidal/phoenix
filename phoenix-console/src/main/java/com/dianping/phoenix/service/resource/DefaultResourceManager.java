@@ -289,23 +289,23 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 	}
 
 	@Override
-	public Domain updateDomainManually(String name) {
-		if (StringUtils.isBlank(name)) {
+	public Domain refreshDomain(String domainName) {
+		if (StringUtils.isBlank(domainName)) {
 			return null;
 		}
 
 		List<Device> devices;
 		try {
-			devices = m_deviceManager.getDevices(name);
-			Domain domain = new Domain(name);
+			devices = m_deviceManager.getDevices(domainName);
+			Domain domain = new Domain(domainName);
 			enrichDomain(domain, devices);
 
 			if (domain != null) {
 				Resource resource = getResource();
 				for (Product product : resource.getProducts().values()) {
-					if (product.getDomains().containsKey(name)) {
-						product.getDomains().put(name, domain);
-						m_domains.get().put(name, domain);
+					if (product.getDomains().containsKey(domainName)) {
+						product.getDomains().put(domainName, domain);
+						m_domains.get().put(domainName, domain);
 						break;
 					}
 				}
@@ -324,11 +324,6 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 			return domains.get(name);
 		}
 		return null;
-	}
-
-	@Override
-	public List<Product> getProducts() {
-		return new ArrayList<Product>(getResource().getProducts().values());
 	}
 
 	@Override
@@ -361,12 +356,12 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 	}
 
 	@Override
-	public Set<String> getJarNameSet() {
+	public Set<String> getResourceJarNameSet() {
 		return m_jarNameSet.get();
 	}
 
 	@Override
-	public Set<String> getJarNameSet(String domainName) {
+	public Set<String> getDomainJarNameSet(String domainName) {
 		Map<String, Set<String>> map = m_domainToJarNameSet.get();
 		return map.containsKey(domainName) ? map.get(domainName) : null;
 	}
