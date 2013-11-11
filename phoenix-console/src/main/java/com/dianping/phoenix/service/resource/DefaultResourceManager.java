@@ -191,7 +191,7 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 		}
 	}
 
-	private void generateMetaInformation(Resource resource) {
+	protected void generateMetaInformation(Resource resource) {
 		ResourceAnalyzer analyzer = new ResourceAnalyzer(resource);
 
 		setAgentVersionSet(analyzer.getAgentVersionSet());

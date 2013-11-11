@@ -56,9 +56,9 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 
 	@Inject
 	private DeployPolicy m_policy;
-	
+
 	@Inject
-	static private ResourceManager m_resourceManager;
+	private ResourceManager m_resourceManager;
 
 	private Logger m_logger;
 
@@ -685,7 +685,7 @@ public class DefaultDeployExecutor implements DeployExecutor, LogEnabled {
 		}
 	}
 
-	static class RolloutTask implements Task {
+	class RolloutTask implements Task {
 		private RolloutContext m_ctx;
 
 		private CountDownLatch m_latch;
