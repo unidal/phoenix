@@ -115,50 +115,46 @@ public class DefaultDeliverableManager implements DeliverableManager, LogEnabled
 
 		@Override
 		public void run() {
+			GitContext ctx = new GitContext(m_d);
+			String type = m_d.getWarType();
+			String version = m_d.getWarVersion();
+			String key = type + ":" + version;
+			Transaction t = Cat.newTransaction(type, version);
+			m_logger.info(String.format("Start creating the deliverable(%s:%s)!", type, version));
+
 			try {
-				GitContext ctx = new GitContext(m_d);
-				String type = m_d.getWarType();
-				String version = m_d.getWarVersion();
-				String key = type + ":" + version;
-				Transaction t = Cat.newTransaction(type, version);
-				m_logger.info(String.format("Start creating the deliverable(%s:%s)!", type, version));
+				m_gitService.setup(ctx);
+
+				File gitDir = m_gitService.getWorkingDir();
+
+				m_gitService.pull(ctx);
+				m_gitService.clear(ctx);
+
+				m_logService.log(key, "Downloading war(%s:%s) ... ", type, version);
+				m_warService.downloadAndExtractTo(type, version, gitDir);
+				m_logService.log(key, "Downloading war(%s:%s) ... DONE", type, version);
+
+				m_gitService.commit(ctx);
+				m_gitService.push(ctx);
+
+				m_d.setStatus(DeliverableStatus.ACTIVE.getId());
+				m_dao.updateByPK(m_d, DeliverableEntity.UPDATESET_FULL);
+			} catch (Exception e) {
+				m_logService.log(key, "Error when creating the deliverable(%s:%s)! Message: %s.", type, version, e);
+				t.setStatus(e);
+				Cat.logError(e);
 
 				try {
-					m_gitService.setup(ctx);
-
-					File gitDir = m_gitService.getWorkingDir();
-
-					m_gitService.pull(ctx);
-					m_gitService.clear(ctx);
-
-					m_logService.log(key, "Downloading war(%s:%s) ... ", type, version);
-					m_warService.downloadAndExtractTo(type, version, gitDir);
-					m_logService.log(key, "Downloading war(%s:%s) ... DONE", type, version);
-
-					m_gitService.commit(ctx);
-					m_gitService.push(ctx);
-
-					m_d.setStatus(DeliverableStatus.ACTIVE.getId());
+					m_d.setStatus(DeliverableStatus.ABORTED.getId());
 					m_dao.updateByPK(m_d, DeliverableEntity.UPDATESET_FULL);
-				} catch (Exception e) {
-					m_logService.log(key, "Error when creating the deliverable(%s:%s)! Message: %s.", type, version, e);
-					t.setStatus(e);
-					Cat.logError(e);
+				} catch (DalException ex) {
+					m_logService
+							.log(key, "Error when removing the deliverable(%s:%s)! Message: %s.", type, version, ex);
 
-					try {
-						m_d.setStatus(DeliverableStatus.ABORTED.getId());
-						m_dao.updateByPK(m_d, DeliverableEntity.UPDATESET_FULL);
-					} catch (DalException ex) {
-						m_logService.log(key, "Error when removing the deliverable(%s:%s)! Message: %s.", type,
-								version, ex);
-
-						Cat.logError(ex);
-					}
-				} finally {
-					t.complete();
+					Cat.logError(ex);
 				}
-			} catch (Exception e) {
-				m_logger.error("Error when creating deliverable!", e);
+			} finally {
+				t.complete();
 			}
 		}
 
