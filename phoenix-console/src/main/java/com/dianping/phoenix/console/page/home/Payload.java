@@ -10,6 +10,7 @@ import org.unidal.web.mvc.payload.annotation.ObjectMeta;
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.deploy.DeployPlan;
 import com.dianping.phoenix.deploy.DeployPolicy;
+import com.dianping.phoenix.deploy.DeployType;
 
 public class Payload implements ActionPayload<ConsolePage, Action> {
 	private ConsolePage m_page;
@@ -130,7 +131,8 @@ public class Payload implements ActionPayload<ConsolePage, Action> {
 		}
 
 		if (m_type != null) {
-			m_plan.setWarType(m_type);
+			DeployType type = DeployType.get(m_type);
+			m_plan.setWarType(type);
 		}
 
 		if (m_action == Action.PROJECT) {

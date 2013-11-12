@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,6 +24,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationExce
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.phoenix.agent.resource.entity.App;
 import com.dianping.phoenix.agent.resource.entity.Domain;
 import com.dianping.phoenix.agent.resource.entity.Host;
 import com.dianping.phoenix.agent.resource.entity.Product;
@@ -31,6 +33,7 @@ import com.dianping.phoenix.agent.resource.transform.DefaultSaxParser;
 import com.dianping.phoenix.agent.resource.transform.DefaultXmlBuilder;
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.console.page.home.Payload;
+import com.dianping.phoenix.deploy.agent.AgentContext;
 import com.dianping.phoenix.device.entity.Device;
 import com.dianping.phoenix.service.resource.cmdb.DeviceManager;
 import com.dianping.phoenix.service.resource.netty.AgentStatusFetcher;
@@ -49,13 +52,12 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 	protected ConfigManager m_configManager;
 
 	@Inject
-	private AgentStatusFetcher m_agentStatusFetcher;
+	protected AgentStatusFetcher m_agentStatusFetcher;
 
-	private Logger m_logger;
+	protected Logger m_logger;
 	private DefaultXmlBuilder m_xmlBuilder = new DefaultXmlBuilder();
 
 	private AtomicReference<Resource> m_resource = new AtomicReference<Resource>();
-	private AtomicReference<Map<String, Domain>> m_domains = new AtomicReference<Map<String, Domain>>();
 
 	private AtomicReference<Map<String, Map<String, List<Device>>>> m_deviceCatalog = new AtomicReference<Map<String, Map<String, List<Device>>>>();
 
@@ -137,8 +139,8 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 
 			try {
 				latch.await();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
+			} catch (InterruptedException e) {
+				m_logger.error("Refresh agent status failed.", e);
 			}
 
 			executor.shutdown();
@@ -194,19 +196,16 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 	protected void generateMetaInformation(Resource resource) {
 		ResourceAnalyzer analyzer = new ResourceAnalyzer(resource);
 
+		analyzer.analysis();
+
 		setAgentVersionSet(analyzer.getAgentVersionSet());
 		setJarNameSet(analyzer.getJarNameSet());
 		setDomainToJarNameSet(analyzer.getDomainToJarNameSet());
-		setDomains(analyzer.getDomains());
 	}
 
 	@Override
 	public void enableLogging(Logger logger) {
 		m_logger = logger;
-	}
-
-	public void setDomains(Map<String, Domain> domains) {
-		m_domains.set(domains);
 	}
 
 	@Override
@@ -256,6 +255,7 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 			}
 			m_agentStatusFetcher.fetchPhoenixAgentStatus(new ArrayList<Host>(domain.getHosts().values()));
 		} catch (Exception e) {
+			m_logger.error(String.format("Fetch phoenix agnet status faild, load from cache, domain: %s.", domain), e);
 			domain = getDomainFromCache(domain.getName());
 		}
 	}
@@ -264,19 +264,13 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 		if (m_resourceCache == null) {
 			m_resourceCache = getResourceFromCacheFile(m_cachePath);
 		}
-		for (Product product : m_resourceCache.getProducts().values()) {
-			if (product.getDomains() != null && product.getDomains().containsKey(domainName)) {
-				return product.getDomains().get(domainName);
-			}
-		}
-		return null;
+		return getDomain(domainName, m_resourceCache);
 	}
 
 	protected Resource getResourceFromCacheFile(String cachePath) {
 		File cache = new File(cachePath, "resource-cache.xml");
 		if (cache.exists()) {
 			try {
-				System.out.println(cache.getAbsolutePath());
 				Resource res = DefaultSaxParser.parse(new FileInputStream(cache));
 				return res;
 			} catch (Exception e) {
@@ -289,7 +283,7 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 	}
 
 	@Override
-	public Domain refreshDomain(String domainName) {
+	public Domain refreshDomainManually(String domainName) {
 		if (StringUtils.isBlank(domainName)) {
 			return null;
 		}
@@ -299,13 +293,18 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 			devices = m_deviceManager.getDevices(domainName);
 			Domain domain = new Domain(domainName);
 			enrichDomain(domain, devices);
-
+			Set<String> versions = new HashSet<String>();
+			for (Entry<String, Host> entry : domain.getHosts().entrySet()) {
+				for (App app : entry.getValue().getContainer().getApps()) {
+					versions.add(app.getKernel().getVersion());
+				}
+			}
 			if (domain != null) {
 				Resource resource = getResource();
 				for (Product product : resource.getProducts().values()) {
 					if (product.getDomains().containsKey(domainName)) {
 						product.getDomains().put(domainName, domain);
-						m_domains.get().put(domainName, domain);
+						generateMetaInformation(resource);
 						break;
 					}
 				}
@@ -319,9 +318,14 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 
 	@Override
 	public Domain getDomain(String name) {
-		Map<String, Domain> domains = m_domains.get();
-		if (domains != null && domains.containsKey(name)) {
-			return domains.get(name);
+		return getDomain(name, getResource());
+	}
+
+	protected Domain getDomain(String name, Resource resource) {
+		for (Entry<String, Product> pEntry : resource.getProducts().entrySet()) {
+			if (pEntry.getValue().getDomains().containsKey(name)) {
+				return pEntry.getValue().getDomains().get(name);
+			}
 		}
 		return null;
 	}
@@ -376,5 +380,24 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 
 	void setDomainToJarNameSet(Map<String, Set<String>> map) {
 		m_domainToJarNameSet.set(map);
+	}
+
+	@Override
+	public void refreshHostInternally(AgentContext context) {
+		Host host = getDomain(context.getDomain()).getHosts().get(context.getHost());
+		switch (context.getWarType()) {
+			case KERNEL :
+				for (App app : host.getContainer().getApps()) {
+					if (context.getDomain().equals(app.getName())) {
+						app.getKernel().setVersion(context.getVersion());
+					}
+				}
+				generateMetaInformation(getResource());
+				break;
+			case AGENT :
+				host.getPhoenixAgent().setVersion(context.getVersion());
+				generateMetaInformation(getResource());
+				break;
+		}
 	}
 }

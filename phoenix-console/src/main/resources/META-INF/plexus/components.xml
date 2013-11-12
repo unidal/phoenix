@@ -79,7 +79,7 @@
 		</component>
 		<component>
 			<role>com.dianping.phoenix.service.resource.ResourceManager</role>
-			<implementation>com.dianping.phoenix.service.resource.DefaultResourceManager</implementation>
+			<implementation>com.dianping.phoenix.service.resource.MockResourceManager</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.service.resource.cmdb.DeviceManager</role>

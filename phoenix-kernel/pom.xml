@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dianping.platform</groupId>
 	<artifactId>phoenix-kernel</artifactId>
-	<version>1.0.7-cat-pigeon</version>
+	<version>1.0.9-cat-pigeon</version>
 	<name>phoenix-kernel</name>
 	<packaging>war</packaging>
 	<dependencies>

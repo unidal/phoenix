@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 
@@ -80,7 +81,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 					DeployPlan plan = payload.getPlan();
 
 					try {
-						Deployment deploy = m_projectManager.findActiveDeploy(plan.getWarType(), name);
+						Deployment deploy = m_projectManager.findActiveDeploy(plan.getWarType().getName(), name);
 
 						if (deploy != null) {
 							ctx.redirect(deployUri + "?id=" + deploy.getId());
@@ -130,7 +131,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 				DeployPlan plan = payload.getPlan();
 
 				try {
-					String warType = plan.getWarType();
+					String warType = plan.getWarType().getName();
 					Domain domain = m_resourceManager.getFilteredDomain(payload, name);
 					List<Deliverable> versions = m_deliverableManager.getAllDeliverables(warType,
 							DeliverableStatus.ACTIVE);

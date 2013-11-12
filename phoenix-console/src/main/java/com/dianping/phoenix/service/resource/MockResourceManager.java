@@ -21,7 +21,7 @@ public class MockResourceManager extends DefaultResourceManager {
 		product.setName("PhoenixTest");
 
 		Domain domain = new Domain();
-		domain.setName("test");
+		domain.setName("user-web");
 
 		Host host = new Host();
 		host.setIp("192.168.22.73");// Don't use 127.0.0.1 or Localhost

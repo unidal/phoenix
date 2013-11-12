@@ -21,7 +21,6 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 	private Set<String> m_agentVersionSet = new HashSet<String>();
 	private Set<String> m_jarNameSet = new HashSet<String>();
 	private Map<String, Set<String>> m_domainToJarNameSet = new HashMap<String, Set<String>>();
-	private Map<String, Domain> m_domains = new HashMap<String, Domain>();
 
 	private Domain m_currentDomain;
 	private Set<String> m_currentDomainJarNameSet;
@@ -29,9 +28,15 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 	private int m_currentDomainInactiveCount;
 	private int m_currentProductActiveCount;
 	private int m_currentProductInactiveCount;
+	
+	private Resource m_resource;
 
 	public ResourceAnalyzer(Resource resource) {
-		visitResource(resource);
+		m_resource = resource;
+	}
+
+	public void analysis() {
+		visitResource(m_resource);
 	}
 
 	public Set<String> getAgentVersionSet() {
@@ -46,19 +51,16 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 		return m_domainToJarNameSet;
 	}
 
-	public Map<String, Domain> getDomains() {
-		return m_domains;
-	}
-
 	@Override
 	public void visitDomain(Domain domain) {
 		m_currentDomain = domain;
 		m_currentDomainActiveCount = 0;
 		m_currentDomainInactiveCount = 0;
+		
+		m_currentDomain.getAppVersions().clear();
+		m_currentDomain.getKernelVersions().clear();
 
 		if (!StringUtils.isBlank(domain.getName())) {
-			m_domains.put(domain.getName(), domain);
-
 			m_currentDomainJarNameSet = new HashSet<String>();
 			super.visitDomain(domain);
 			m_domainToJarNameSet.put(domain.getName(), m_currentDomainJarNameSet);

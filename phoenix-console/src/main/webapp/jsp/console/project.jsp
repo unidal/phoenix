@@ -34,7 +34,7 @@
        <h3>Error occurred:</h3>
 	   <pre class="error">
 	      <w:error code="project.hosts">Please check at least one of the hosts below.</w:error>
-	      <w:error code="project.version">You need select one version, or create a new one <a href="${model.moduleUri}/version?type=${payload.plan.warType}">here</a>.</w:error>
+	      <w:error code="project.version">You need select one version, or create a new one <a href="${model.moduleUri}/version?type=${payload.plan.warType.name}">here</a>.</w:error>
 	      <w:error code="*"><strong>\${code}</strong>: \${exception.message}</w:error>
 	   </pre>
 	</w:errors>
@@ -157,7 +157,7 @@
 							<thead>
 								<tr>
 									<th width="40%">
-                                       <label class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">版本号 (${payload.plan.warType})</strong></label>
+                                       <label class="help-inline" style="padding-left: 0px;"><strong style="color:#08C;">版本号 (${payload.plan.warType.name})</strong></label>
                                     </th>
 									<td>
 										<select name="plan.version">
@@ -171,7 +171,7 @@
 				</div>
 
 				<input type="hidden" name="op" value="deploy"/>
-				<input type="hidden" name="type" value="${payload.plan.warType}"/>
+				<input type="hidden" name="type" value="${payload.plan.warType.name}"/>
 				<div class="row-fluid">
 					<div class="span12 thumbnail">
 						 <table class="table table-condensed lion nohover" style="margin:0 0 0;border-bottom:1px solid #DDD;">

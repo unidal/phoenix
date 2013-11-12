@@ -56,10 +56,11 @@ public class DefaultDeviceManager implements DeviceManager, LogEnabled {
 		List<Device> devices = new ArrayList<Device>();
 		if (name != null && name.trim().length() > 0) {
 			StringBuilder cmdbQuery = new StringBuilder(String.format(m_configManager.getCmdbBaseUrl(),
-					"/s?wt=xml&fl=hostname,private_ip,status,rd_duty,env&q=app:%s,"));
+					String.format("/s?wt=xml&fl=hostname,private_ip,status,rd_duty,env&q=app:%s,(", name)));
 			for (String env : m_configManager.getEnvironments()) {
 				cmdbQuery.append(String.format("-env:%s,", env));
 			}
+			cmdbQuery.append(")");
 			Responce responce = readCmdb(cmdbQuery.toString());
 			if (responce != null && responce.getDevices() != null) {
 				for (Device device : responce.getDevices()) {

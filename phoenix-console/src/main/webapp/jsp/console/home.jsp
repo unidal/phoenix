@@ -87,7 +87,7 @@
 						<tbody>
 							<c:forEach var="domain" items="${product.domains}">
 								<tr>
-									<td><a class="toProject" href="?op=project&type=${payload.plan.warType}&project=${domain.value.name}">${domain.value.name}</a></td>
+									<td><a class="toProject" href="?op=project&type=${payload.plan.warType.name}&project=${domain.value.name}">${domain.value.name}</a></td>
 									<td><span class="badge badge-success">${domain.value.activeCount}</span></td>
 									<td><span class="badge badge-important">${domain.value.inactiveCount}</span></td>
 									<td><c:choose>

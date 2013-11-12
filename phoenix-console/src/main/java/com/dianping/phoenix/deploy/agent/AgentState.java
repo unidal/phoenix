@@ -17,7 +17,7 @@ public enum AgentState {
 			String domain = ctx.getDomain();
 			String version = ctx.getVersion();
 			String host = ctx.getHost();
-			String type = ctx.getWarType();
+			String type = ctx.getWarType().getName();
 			boolean skipTest = ctx.isSkipTest();
 			String url = ctx.getConfigManager().getDeployUrl(type, host, id, domain, version, skipTest);
 			String json = null;
@@ -92,7 +92,7 @@ public enum AgentState {
 				int id = ctx.getDeployId();
 				String domain = ctx.getDomain();
 				String version = ctx.getVersion();
-				String type = ctx.getWarType();
+				String type = ctx.getWarType().getName();
 				boolean skipTest = ctx.isSkipTest();
 				String url = ctx.getConfigManager().getDeployUrl(type, host, id, domain, version, skipTest);
 				String json = null;
@@ -170,8 +170,11 @@ public enum AgentState {
 		protected void doActivity(AgentContext ctx) throws Exception {
 			String version = ctx.getVersion();
 			String host = ctx.getHost();
-
-			ctx.println("[INFO] Deployed phoenix kernel(%s) to host(%s) successfully.", version, host);
+			String message =String.format("[INFO] Deployed phoenix kernel(%s) to host(%s) successfully.", version, host);
+			
+			ctx.updateStatus(AgentStatus.SUCCESS, message);
+			ctx.println(message);
+			ctx.refreshInternalInformation();
 		}
 	},
 
