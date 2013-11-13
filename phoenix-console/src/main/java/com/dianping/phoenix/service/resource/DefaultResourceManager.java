@@ -27,6 +27,7 @@ import org.unidal.lookup.annotation.Inject;
 import com.dianping.phoenix.agent.resource.entity.App;
 import com.dianping.phoenix.agent.resource.entity.Domain;
 import com.dianping.phoenix.agent.resource.entity.Host;
+import com.dianping.phoenix.agent.resource.entity.Kernel;
 import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
 import com.dianping.phoenix.agent.resource.transform.DefaultSaxParser;
@@ -389,7 +390,13 @@ public class DefaultResourceManager extends ContainerHolder implements ResourceM
 			case KERNEL :
 				for (App app : host.getContainer().getApps()) {
 					if (context.getDomain().equals(app.getName())) {
-						app.getKernel().setVersion(context.getVersion());
+						if (app.getKernel() != null) {
+							app.getKernel().setVersion(context.getVersion());
+						} else {
+							Kernel kernel = new Kernel();
+							kernel.setVersion(context.getVersion());
+							app.setKernel(kernel);
+						}
 					}
 				}
 				generateMetaInformation(getResource());
