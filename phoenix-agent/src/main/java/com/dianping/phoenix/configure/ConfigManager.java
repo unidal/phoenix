@@ -23,280 +23,280 @@ import com.dianping.phoenix.configure.transform.DefaultSaxParser;
 
 public class ConfigManager implements Initializable {
 
-	private final static Logger logger = Logger.getLogger(ConfigManager.class);
+    private final static Logger logger              = Logger.getLogger(ConfigManager.class);
 
-	private final static String TOMCAT_LOADER_CLASS = "com.dianping.phoenix.bootstrap.Tomcat6WebappLoader";
-	private final static String JBOSS_LOADER_CLASS = "com.dianping.phoenix.bootstrap.Jboss4WebappLoader";
+    private final static String TOMCAT_LOADER_CLASS = "com.dianping.phoenix.bootstrap.Tomcat6WebappLoader";
+    private final static String JBOSS_LOADER_CLASS  = "com.dianping.phoenix.bootstrap.Jboss4WebappLoader";
 
-	public enum ContainerType {
-		TOMCAT, JBOSS
-	}
+    public enum ContainerType {
+        TOMCAT, JBOSS
+    }
 
-	@Inject
-	private String m_configFile = "/data/webapps/phoenix/phoenix-config/config.xml";
+    @Inject
+    private String        m_configFile  = "/data/webapps/phoenix/phoenix-config/config.xml";
 
-	private Config m_config;
+    private Config        m_config;
 
-	private ContainerType containerType;
+    private ContainerType containerType;
 
-	private List<File> serverXmlList = new ArrayList<File>();
+    private List<File>    serverXmlList = new ArrayList<File>();
 
-	private String loaderClass;
+    private String        loaderClass;
 
-	private String m_pid;
+    private String        m_pid;
 
-	private void check() {
-		if (m_config == null) {
-			throw new RuntimeException("ConfigManager is not initialized properly!");
-		}
-	}
+    private void check() {
+        if (m_config == null) {
+            throw new RuntimeException("ConfigManager is not initialized properly!");
+        }
+    }
 
-	/**
-	 * Where the container installs
-	 */
-	public String getContainerInstallPath() {
-		check();
+    /**
+     * Where the container installs
+     */
+    public String getContainerInstallPath() {
+        check();
 
-		String containerInstallPath = m_config.getAgent().getContainerInstallPath().trim();
+        String containerInstallPath = m_config.getAgent().getContainerInstallPath().trim();
 
-		// replace ~ to user home directory
-		if (containerInstallPath.startsWith("~")) {
-			containerInstallPath = System.getProperty("user.home") + containerInstallPath.substring(1);
-		}
+        // replace ~ to user home directory
+        if (containerInstallPath.startsWith("~")) {
+            containerInstallPath = System.getProperty("user.home") + containerInstallPath.substring(1);
+        }
 
-		return containerInstallPath;
-	}
+        return containerInstallPath;
+    }
 
-	/**
-	 * Where kernel docBase locates. Use first %s to represent domain name and
-	 * second %s to represent kernel version.
-	 */
-	public String getKernelDocBasePattern() {
-		check();
+    /**
+     * Where kernel docBase locates. Use first %s to represent domain name and
+     * second %s to represent kernel version.
+     */
+    public String getKernelDocBasePattern() {
+        check();
 
-		return m_config.getAgent().getKernelDocBasePattern();
-	}
+        return m_config.getAgent().getKernelDocBasePattern();
+    }
 
-	public String getAgentDocBasePattern() {
-		check();
+    public String getAgentDocBasePattern() {
+        check();
 
-		return m_config.getAgent().getAgentDocBasePattern();
-	}
+        return m_config.getAgent().getAgentDocBasePattern();
+    }
 
-	public String getTempScriptDir() {
-		check();
+    public String getTempScriptDir() {
+        check();
 
-		return m_config.getAgent().getTempScriptDir();
-	}
+        return m_config.getAgent().getTempScriptDir();
+    }
 
-	public int getAgentHeartbeatFreq() {
-		check();
+    public int getAgentHeartbeatFreq() {
+        check();
 
-		return m_config.getAgent().getAgentHeartbeatFreq();
-	}
+        return m_config.getAgent().getAgentHeartbeatFreq();
+    }
 
-	/**
-	 * Where domain docBase locates relative to the domain webapps root dir. Use
-	 * %s to represent domain name. Make sure starts with "/".
-	 */
-	public String getDomainDocBaseFeaturePattern() {
-		check();
+    /**
+     * Where domain docBase locates relative to the domain webapps root dir. Use
+     * %s to represent domain name. Make sure starts with "/".
+     */
+    public String getDomainDocBaseFeaturePattern() {
+        check();
 
-		return m_config.getAgent().getDomainDocBaseKeywordPattern();
-	}
+        return m_config.getAgent().getDomainDocBaseKeywordPattern();
+    }
 
-	public ContainerType getContainerType() {
-		check();
+    public ContainerType getContainerType() {
+        check();
 
-		return containerType;
-	}
+        return containerType;
+    }
 
-	public String getLoaderClass() {
-		check();
+    public String getLoaderClass() {
+        check();
 
-		return loaderClass;
-	}
+        return loaderClass;
+    }
 
-	public List<File> getServerXmlList() {
-		return serverXmlList;
-	}
+    public List<File> getServerXmlList() {
+        return serverXmlList;
+    }
 
-	public List<File> getServerXmlFileList() {
-		check();
-		List<File> fileList = new ArrayList<File>();
-		for (File fileOrDir : serverXmlList) {
-			if (fileOrDir != null && fileOrDir.exists()) {
-				if (fileOrDir.isDirectory()) {
-					for (File file : fileOrDir.listFiles()) {
-						if (file.isFile()) {
-							fileList.add(file);
-						}
-					}
-				} else {
-					fileList.add(fileOrDir);
-				}
-			}
-		}
-		return fileList;
-	}
+    public List<File> getServerXmlFileList() {
+        check();
+        List<File> fileList = new ArrayList<File>();
+        for (File fileOrDir : serverXmlList) {
+            if (fileOrDir != null && fileOrDir.exists()) {
+                if (fileOrDir.isDirectory()) {
+                    for (File file : fileOrDir.listFiles()) {
+                        if (file.isFile()) {
+                            fileList.add(file);
+                        }
+                    }
+                } else {
+                    fileList.add(fileOrDir);
+                }
+            }
+        }
+        return fileList;
+    }
 
-	/**
-	 * The interval when querying qa service task status, in milliseconds
-	 */
-	public int getQaServiceQueryInterval() {
-		check();
+    /**
+     * The interval when querying qa service task status, in milliseconds
+     */
+    public int getQaServiceQueryInterval() {
+        check();
 
-		return m_config.getAgent().getTestServicePollInterval();
-	}
+        return m_config.getAgent().getTestServicePollInterval();
+    }
 
-	/**
-	 * The HTTP port of container
-	 */
-	public int getContainerPort() {
-		check();
+    /**
+     * The HTTP port of container
+     */
+    public int getContainerPort() {
+        check();
 
-		return m_config.getAgent().getContainerPort();
-	}
+        return m_config.getAgent().getContainerPort();
+    }
 
-	/**
-	 * The env of agent
-	 */
-	public String getEnv() {
-		check();
+    /**
+     * The env of agent
+     */
+    public String getEnv() {
+        check();
 
-		return m_config.getEnv();
-	}
+        return m_config.getEnv();
+    }
 
-	public int getDryrunPort() {
-		check();
+    public int getDryrunPort() {
+        check();
 
-		return m_config.getAgent().getDryrunPort();
-	}
+        return m_config.getAgent().getDryrunPort();
+    }
 
-	public String getPid() {
-		return m_pid;
-	}
+    public String getPid() {
+        return m_pid;
+    }
 
-	@Override
-	public void initialize() throws InitializationException {
-		try {
-			File file = new File(m_configFile);
+    @Override
+    public void initialize() throws InitializationException {
+        try {
+            File file = new File(m_configFile);
 
-			if (file.isFile()) {
-				String content = Files.forIO().readFrom(file, "utf-8");
+            if (file.isFile()) {
+                String content = Files.forIO().readFrom(file, "utf-8");
 
-				m_config = DefaultSaxParser.parse(content);
+                m_config = DefaultSaxParser.parse(content);
 
-				if (m_config.getGit() == null) {
-					m_config.setGit(new GitConfig());
-				}
+                if (m_config.getGit() == null) {
+                    m_config.setGit(new GitConfig());
+                }
 
-				if (m_config.getAgent() == null) {
-					m_config.setAgent(new AgentConfig());
-				}
+                if (m_config.getAgent() == null) {
+                    m_config.setAgent(new AgentConfig());
+                }
 
-				if (m_config.getConsole() == null) {
-					m_config.setConsole(new ConsoleConfig());
-				}
-			} else {
-				m_config = new Config();
-				m_config.setGit(new GitConfig());
-				m_config.setAgent(new AgentConfig());
-				m_config.setConsole(new ConsoleConfig());
-			}
-		} catch (Exception e) {
-			throw new InitializationException(String.format("Unable to load configuration file(%s)!", m_configFile), e);
-		}
+                if (m_config.getConsole() == null) {
+                    m_config.setConsole(new ConsoleConfig());
+                }
+            } else {
+                m_config = new Config();
+                m_config.setGit(new GitConfig());
+                m_config.setAgent(new AgentConfig());
+                m_config.setConsole(new ConsoleConfig());
+            }
+        } catch (Exception e) {
+            throw new InitializationException(String.format("Unable to load configuration file(%s)!", m_configFile), e);
+        }
 
-		// initialize containerType
-		String containerInstallPath = getContainerInstallPath();
-		File startupSh = new File(containerInstallPath + "/bin/startup.sh");
-		File runSh = new File(containerInstallPath + "/bin/run.sh");
-		if (startupSh.exists()) {
-			containerType = ContainerType.TOMCAT;
-		} else if (runSh.exists()) {
-			containerType = ContainerType.JBOSS;
-		} else {
-			throw new InitializationException(String.format(
-					"containerInstallPath %s does not have a valid tomcat or jboss installation", containerInstallPath));
-		}
+        // initialize containerType
+        String containerInstallPath = getContainerInstallPath();
+        File startupSh = new File(containerInstallPath + "/bin/startup.sh");
+        File runSh = new File(containerInstallPath + "/bin/run.sh");
+        if (startupSh.exists()) {
+            containerType = ContainerType.TOMCAT;
+        } else if (runSh.exists()) {
+            containerType = ContainerType.JBOSS;
+        } else {
+//            throw new InitializationException(String.format(
+//                    "containerInstallPath %s does not have a valid tomcat or jboss installation", containerInstallPath));
+        }
 
-		// initialize pid
-		m_pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+        // initialize pid
+        m_pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 
-		// initialize loaderClass and serverXml
-		if (containerType == ContainerType.TOMCAT) {
-			loaderClass = TOMCAT_LOADER_CLASS;
-			serverXmlList.add(new File(containerInstallPath + "/conf/server.xml"));
-			serverXmlList.add(new File(containerInstallPath + "/conf/Catalina/localhost/"));
-		} else {
-			loaderClass = JBOSS_LOADER_CLASS;
-			serverXmlList.add(new File(String.format("%s/server/%s/deploy/jboss-web.deployer/server.xml",
-					containerInstallPath, m_config.getAgent().getJbossServerName())));
-		}
+        // initialize loaderClass and serverXml
+        if (containerType == ContainerType.TOMCAT) {
+            loaderClass = TOMCAT_LOADER_CLASS;
+            serverXmlList.add(new File(containerInstallPath + "/conf/server.xml"));
+            serverXmlList.add(new File(containerInstallPath + "/conf/Catalina/localhost/"));
+        } else {
+            loaderClass = JBOSS_LOADER_CLASS;
+            serverXmlList.add(new File(String.format("%s/server/%s/deploy/jboss-web.deployer/server.xml",
+                    containerInstallPath, m_config.getAgent().getJbossServerName())));
+        }
 
-		logAllField(this);
-		logAllField(m_config.getAgent());
-		logAllField(m_config.getGit());
+        logAllField(this);
+        logAllField(m_config.getAgent());
+        logAllField(m_config.getGit());
 
-		makeShellScriptExecutable();
+        makeShellScriptExecutable();
 
-	}
+    }
 
-	private void makeShellScriptExecutable() {
-		File scriptDir = getAgentScriptFile().getParentFile();
-		@SuppressWarnings("unchecked")
-		Iterator<File> scriptIter = FileUtils.iterateFiles(scriptDir, new String[] { "sh" }, true);
-		while (scriptIter != null && scriptIter.hasNext()) {
-			scriptIter.next().setExecutable(true, false);
-		}
-	}
+    private void makeShellScriptExecutable() {
+        File scriptDir = getAgentScriptFile().getParentFile();
+        @SuppressWarnings("unchecked")
+        Iterator<File> scriptIter = FileUtils.iterateFiles(scriptDir, new String[] { "sh" }, true);
+        while (scriptIter != null && scriptIter.hasNext()) {
+            scriptIter.next().setExecutable(true, false);
+        }
+    }
 
-	private void logAllField(Object obj) {
-		Field[] fields = obj.getClass().getDeclaredFields();
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
-			field.setAccessible(true);
-			try {
-				logger.info(field.getName() + "=" + field.get(obj));
-			} catch (Exception e) {
-				logger.info(String.format("error log config field %s", field), e);
-			}
-		}
-	}
+    private void logAllField(Object obj) {
+        Field[] fields = obj.getClass().getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            Field field = fields[i];
+            field.setAccessible(true);
+            try {
+                logger.info(field.getName() + "=" + field.get(obj));
+            } catch (Exception e) {
+                logger.info(String.format("error log config field %s", field), e);
+            }
+        }
+    }
 
-	public void setConfigFile(String configFile) {
-		m_configFile = configFile;
-	}
+    public void setConfigFile(String configFile) {
+        m_configFile = configFile;
+    }
 
-	public int getUrlConnectTimeout() {
-		return m_config.getAgent().getUrlConnectTimeout();
-	}
+    public int getUrlConnectTimeout() {
+        return m_config.getAgent().getUrlConnectTimeout();
+    }
 
-	public int getUrlReadTimeout() {
-		return m_config.getAgent().getUrlReadTimeout();
-	}
+    public int getUrlReadTimeout() {
+        return m_config.getAgent().getUrlReadTimeout();
+    }
 
-	public File getAgentScriptFile() {
-		File scriptFile = getScriptFile("agent.sh");
-		return scriptFile;
-	}
+    public File getAgentScriptFile() {
+        File scriptFile = getScriptFile("agent.sh");
+        return scriptFile;
+    }
 
-	public File getAgentStatusScriptFile() {
-		File scriptFile = getScriptFile("agent_status.sh");
-		return scriptFile;
-	}
+    public File getAgentStatusScriptFile() {
+        File scriptFile = getScriptFile("agent_status.sh");
+        return scriptFile;
+    }
 
-	public File getAgentSelfUpgradeScriptFile() {
-		File scriptFile = getScriptFile("self_upgrade.sh");
-		return scriptFile;
-	}
+    public File getAgentSelfUpgradeScriptFile() {
+        File scriptFile = getScriptFile("self_upgrade.sh");
+        return scriptFile;
+    }
 
-	private File getScriptFile(String scriptFileName) {
-		URL scriptUrl = this.getClass().getClassLoader().getResource("script/" + scriptFileName);
-		if (scriptUrl == null) {
-			throw new RuntimeException(scriptFileName + " not found");
-		}
-		return new File(scriptUrl.getPath());
-	}
+    private File getScriptFile(String scriptFileName) {
+        URL scriptUrl = this.getClass().getClassLoader().getResource("script/" + scriptFileName);
+        if (scriptUrl == null) {
+            throw new RuntimeException(scriptFileName + " not found");
+        }
+        return new File(scriptUrl.getPath());
+    }
 }

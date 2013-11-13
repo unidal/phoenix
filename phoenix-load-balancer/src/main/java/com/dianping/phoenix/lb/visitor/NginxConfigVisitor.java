@@ -80,6 +80,7 @@ public class NginxConfigVisitor extends AbstractVisitor<NginxConfig> {
         NginxLocation nginxLocation = new NginxLocation();
         nginxLocation.setMatchType(toNginxMatchType(location));
         nginxLocation.setPattern(location.getPattern());
+        nginxLocation.setDomain(location.getDomain());
         for (Directive directive : location.getDirectives()) {
             nginxLocation.addDirective(directive);
         }

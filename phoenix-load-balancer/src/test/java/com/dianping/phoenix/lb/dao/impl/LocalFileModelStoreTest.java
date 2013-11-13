@@ -114,6 +114,7 @@ public class LocalFileModelStoreTest {
     @Test
     public void testAddStrategy() throws Exception {
         Strategy newStrategy = new Strategy("dper-hash");
+        newStrategy.setType("hash");
         newStrategy.setDynamicAttribute("target", "dper");
         newStrategy.setDynamicAttribute("method", "crc32");
         store.updateOrCreateStrategy("dper-hash", newStrategy);
@@ -135,7 +136,8 @@ public class LocalFileModelStoreTest {
     @Test
     public void testUpdateStrategy() throws Exception {
         Strategy modifiedStrategy = new Strategy("uri-hash");
-        modifiedStrategy.setDynamicAttribute("target", "uri");
+        modifiedStrategy.setType("hash");
+        modifiedStrategy.setDynamicAttribute("target", "$request_uri");
         modifiedStrategy.setDynamicAttribute("method", "md5");
         Date now = new Date();
         store.updateOrCreateStrategy("uri-hash", modifiedStrategy);
@@ -161,6 +163,7 @@ public class LocalFileModelStoreTest {
         new File(tmpDir, "configure_base.xml").setWritable(false);
 
         Strategy newStrategy = new Strategy("dper-hash");
+        newStrategy.setType("hash");
         newStrategy.setDynamicAttribute("target", "dper");
         newStrategy.setDynamicAttribute("method", "crc32");
 
@@ -188,6 +191,7 @@ public class LocalFileModelStoreTest {
         new File(tmpDir, "configure_base.xml").setWritable(false);
 
         Strategy modifiedStrategy = new Strategy("uri-hash");
+        modifiedStrategy.setType("hash");
         modifiedStrategy.setDynamicAttribute("target", "uri");
         modifiedStrategy.setDynamicAttribute("method", "md5");
         try {
