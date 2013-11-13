@@ -1,2 +1,0 @@
-hash $request_uri;
-hash_method crc32;

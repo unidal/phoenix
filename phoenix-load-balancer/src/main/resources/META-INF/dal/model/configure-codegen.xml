@@ -6,6 +6,7 @@
   </entity>
   <entity name="strategy">
     <attribute name="name" value-type="String" />
+    <attribute name="type" value-type="String" />
     <attribute name="target" value-type="String" />
     <attribute name="method" value-type="String" />
     <attribute name="creation-date" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />

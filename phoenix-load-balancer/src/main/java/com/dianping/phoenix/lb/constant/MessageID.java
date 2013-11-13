@@ -12,6 +12,8 @@ package com.dianping.phoenix.lb.constant;
  */
 public enum MessageID {
     STRATEGY_SAVE_FAIL("strategy_save_fail"), //
+    STRATEGY_NAME_EMPTY("strategy_name_empty"), //
+    STRATEGY_TYPE_EMPTY("strategy_type_empty"), //
     //
     VIRTUALSERVER_ALREADY_EXISTS("vs_already_exists"), //
     VIRTUALSERVER_SAVE_FAIL("vs_save_fail"), //

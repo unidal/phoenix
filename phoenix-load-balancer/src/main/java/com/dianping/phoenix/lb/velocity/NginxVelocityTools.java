@@ -58,7 +58,7 @@ public class NginxVelocityTools {
     }
 
     public String lbStrategy(Strategy strategy) {
-        String template = getTemplate("strategy", strategy.getName());
+        String template = getTemplate("strategy", strategy.getType());
         if (StringUtils.isNotBlank(template)) {
             Map<String, Object> context = new HashMap<String, Object>();
             context.put("strategy", strategy);
