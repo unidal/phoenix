@@ -81,7 +81,9 @@
 						<table id="host-nav" class="table table-striped table-condensed lion">
 							<thead>
 								<tr>
-									<th><input type="checkbox" id="all-machine-check"/> IP</th>
+									<th><input type="checkbox" id="all-machine-check"/></th>
+									<th>IP</th>
+									<th>ST</th>
 									<th>Hostname</th>
 									<th>Env</th>
 									<th>Kernel</th>
@@ -92,8 +94,11 @@
 								<c:forEach var="host" items="${domain.hosts}" varStatus="status">
 									<tr>
 										<td>
-											<%--  ${w:showCheckbox('host', host.value, payload.hosts, 'ip', 'ip')}--%>
-											${w:showCheckbox('host', host.value, payload.hosts, 'ip', 'ip')}
+											<%-- ${w:showCheckbox('host', host.value, payload.hosts, 'ip', 'ip')} --%>
+											<input type="checkbox" name="host" value="${host.value.ip}" id="host-${host.value.ip}">
+										</td>
+										<td>${host.value.ip}</td>
+										<td>
 											<c:if test="${host.value.phoenixAgent.status=='ok'}">
 											   <div class="z6 a-f-e" title="可用"></div>
 											</c:if>

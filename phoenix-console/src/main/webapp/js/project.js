@@ -9,10 +9,19 @@ $(function() {
 	var navtable = $("#host-nav").dataTable({
 		"bFilter" : false,
 		"bInfo" : false,
-		"bLengthChange": false,
-		"bPaginate": false
+		"bLengthChange" : false,
+		"bPaginate" : false,
+		"aoColumns" : [ {
+			"bSortable" : false
+		}, null, {
+			"bSortable" : false
+		}, null, {
+			"bSortable" : false
+		}, null, {
+			"bSortable" : false
+		} ]
 	});
-	navtable.fnSort([ [ 1, 'asc' ] ]);
+	navtable.fnSort([ [ 3, 'asc' ] ]);
 });
 
 function bind_cmp_evt_handlers() {

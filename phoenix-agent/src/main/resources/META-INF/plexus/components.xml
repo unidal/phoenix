@@ -145,6 +145,9 @@
 				<requirement>
 					<role>com.dianping.phoenix.agent.core.tx.LogFormatter</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.agent.core.AgentStatusHolder</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
