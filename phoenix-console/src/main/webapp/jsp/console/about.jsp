@@ -28,8 +28,10 @@
 						<span class="label label-important">向彬</span>
 						<span class="label label-warning">老马</span>
 						<span class="label label-info">Danson</span>
-						<span class="label label-info">song</span>
-						<span class="label label-info">克柱</span>
+						<span class="label label-inverse">锦华</span>
+						<span class="label label-success">Song</span>
+						<span class="label label-warning">克柱</span>
+						<span class="label label-info">胡鹏</span>
 					</p>
 					<p>
 						Hackthon by 

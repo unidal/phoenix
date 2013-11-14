@@ -9,14 +9,30 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dianping.platform</groupId>
 	<artifactId>phoenix-kernel</artifactId>
-	<version>1.0.9-cat-pigeon</version>
+	<version>1.0.13-cat-pigeon</version>
 	<name>phoenix-kernel</name>
 	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>com.dianping.dpsf</groupId>
 			<artifactId>dpsf-net</artifactId>
-			<version>1.8.1</version>
+			<version>1.9.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dianping.lion</groupId>
+			<artifactId>lion-client</artifactId>
+			<version>0.3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.dianping.platform</groupId>
+			<artifactId>phoenix-environment</artifactId>
+			<version>0.1.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.dianping.cat</groupId>
@@ -66,12 +82,8 @@
 			<artifactId>jetty</artifactId>
 			<version>6.1.14</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>jasper</artifactId>
-			<version>6.0.35</version>
-			<scope>test</scope>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.apache.tomcat</groupId> <artifactId>jasper</artifactId> 
+			<version>6.0.35</version> <scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jsp-2.1</artifactId>
@@ -103,7 +115,7 @@
 			<version>1.1</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- for jboss4 -->
 		<dependency>
 			<groupId>jboss</groupId>
