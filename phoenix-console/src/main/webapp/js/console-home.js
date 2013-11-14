@@ -57,8 +57,17 @@ $(function() {
 	$('#myTab a').click(function(e) {
 		e.preventDefault();
 		$(this).tab('show');
+		var table = $.fn.dataTable.fnTables(true);
+		if (table.length > 0) {
+			$(table).dataTable().fnAdjustColumnSizing();
+		}
 	});
 	$('table').dataTable({
-		"bPaginate" : false
+		"sScrollY" : "400px",
+		"bPaginate" : false,
+		"oLanguage" : {
+			"sInfo" : "Total Domains：_TOTAL_"
+		},
+		"sDom" : "<'row-fluid'<'span6'f><'span6'i>r>t<'row-fluid'<'span6'l><'span6'p>>"
 	});
 });

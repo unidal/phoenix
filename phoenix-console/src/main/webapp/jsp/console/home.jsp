@@ -72,8 +72,8 @@
 						<div class="tab-pane row-fluid" id="${product.name}">
 					</c:otherwise>
 				</c:choose>
-				<div class="span12">
-					<table class="table table-bordered table-striped table-condensed abc">
+				<div>
+					<table class="table table-bordered table-striped table-condensed">
 						<thead>
 							<tr>
 								<th>Project</th>
@@ -124,7 +124,9 @@
 	</div>
 	</div>
 	<res:useJs value="${res.js.local['jquery.dataTables.min.js']}" target="datatable-js" />
+	<res:useJs value="${res.js.local['DT_bootstrap.js']}" target="b-datatable-js" />
 	<res:useJs value="${res.js.local['console-home.js']}" target="home-js" />
 	<res:jsSlot id="datatable-js" />
+	<res:jsSlot id="b-datatable-js" />
 	<res:jsSlot id="home-js" />
 </a:layout>
