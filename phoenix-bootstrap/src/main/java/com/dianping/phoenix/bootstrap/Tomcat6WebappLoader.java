@@ -3,6 +3,7 @@ package com.dianping.phoenix.bootstrap;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.jar.JarFile;
 
@@ -59,6 +60,8 @@ public class Tomcat6WebappLoader extends AbstractCatalinaWebappLoader {
 			}
 		}
 
+		logOldFields(classloader);
+		
 		setFieldValue(classloader, "repositoryURLs", urls.toArray(new URL[0]));
 		setFieldValue(classloader, "jarFiles", new JarFile[0]);
 		setFieldValue(classloader, "jarNames", new String[0]);
@@ -68,6 +71,25 @@ public class Tomcat6WebappLoader extends AbstractCatalinaWebappLoader {
 		setFieldValue(classloader, "paths", new String[0]);
 	}
 
+	private void logOldFields(WebappClassLoader classloader) {
+		try {
+			JarFile[] jarFiles = getFieldValue(classloader, "jarFiles");
+			
+			List<String> list = new ArrayList<String>();
+			for (JarFile jarFile : jarFiles) {
+				list.add(jarFile.getName());
+			}
+			
+			LOG.info("old jarFiles: " + list);
+			LOG.info("old jarNames: " + Arrays.toString((String[]) getFieldValue(classloader, "jarNames")));
+			LOG.info("old jarRealFiles: " + Arrays.toString((File[]) getFieldValue(classloader, "jarRealFiles")));
+			LOG.info("old repositories: " + Arrays.toString((String[]) getFieldValue(classloader, "repositories")));
+			LOG.info("old files: " + Arrays.toString((File[]) getFieldValue(classloader, "files")));
+			LOG.info("old paths: " + Arrays.toString((String[]) getFieldValue(classloader, "paths")));
+		} catch (Exception e) {
+			LOG.error("log old fields of WebappClassLoader failed.", e);
+		}
+	}
 	@Override
 	public Log getLog() {
 		return new Log() {
@@ -133,7 +155,7 @@ public class Tomcat6WebappLoader extends AbstractCatalinaWebappLoader {
 			Listener listener = loadListener(Listener.class, createBootstrapClassloader());
 
 			context.addLifecycleListener( //
-			      new Delegate<Tomcat6WebappLoader, LifecycleHandler<Tomcat6WebappLoader>>(this, listener));
+			new Delegate<Tomcat6WebappLoader, LifecycleHandler<Tomcat6WebappLoader>>(this, listener));
 		}
 	}
 

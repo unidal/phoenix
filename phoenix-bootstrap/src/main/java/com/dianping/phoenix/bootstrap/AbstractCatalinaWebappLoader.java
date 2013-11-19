@@ -23,7 +23,6 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.loader.WebappClassLoader;
 import org.apache.catalina.loader.WebappLoader;
 
-import com.dianping.phoenix.spi.ClasspathBuilder;
 import com.dianping.phoenix.spi.WebappProvider;
 import com.dianping.phoenix.spi.internal.MetaBasedClasspathBuilder;
 import com.dianping.phoenix.spi.internal.OrderingReservedWepappProvider;
@@ -70,12 +69,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			String appName = getAppNameFromDocBase(m_appDocBase);
 			File metafile = getMetaFileFromKernelBase(m_kernelDocBase);
 
-			ClasspathBuilder builder = new MetaBasedClasspathBuilder(metafile, appName);
-			List<URL> urls = builder.build(m_kernelProvider, m_appProvider);
-
-			for (URL url : urls) {
-				super.addRepository(url.toExternalForm());
-			}
+			initRepositories(new MetaBasedClasspathBuilder(metafile, appName).build(m_kernelProvider, m_appProvider));
 
 			if (m_debug) {
 				getLog().info(String.format("Webapp classpath: %s.", Arrays.asList(classloader.getURLs())));
@@ -91,6 +85,15 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			return classloader;
 		} catch (Exception e) {
 			throw new RuntimeException("Error when adjusting webapp classloader!", e);
+		}
+	}
+
+	private void initRepositories(List<URL> urls) throws Exception {
+		setFieldValue(getClassLoader(), "repositories", new String[]{"/WEB-INF/classes/"});
+		setFieldValue(getClassLoader(), "files", new File[]{new File("/WEB-INF/classes/")});
+
+		for (URL url : urls) {
+			super.addRepository(url.toExternalForm());
 		}
 	}
 
