@@ -1,0 +1,24 @@
+# gen-time: $nginx.nowTimeStamp()
+server {
+    listen       $config.server.listen;
+    server_name  $config.server.serverName;
+    $nginx.properties($config.server.properties)
+ 
+ 	#foreach( $location in $config.server.locations)
+    location $nginx.locationMatchOp($location.matchType) $location.pattern  {
+    	dp_domain $location.domain;
+        #foreach( $directive in $location.directives)
+      	$nginx.directive($directive)
+        #end
+    }
+    #end
+}
+ 
+#foreach($upstream in $config.upstreams)
+upstream $upstream.name {
+    $nginx.lbStrategy($upstream.lbStrategy)
+    #foreach($server in $upstream.servers)
+        $nginx.upstreamServer($server)
+    #end
+}
+#end
