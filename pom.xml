@@ -21,6 +21,7 @@
 		<module>phoenix-dev-plugin</module>
 		<module>phoenix-byteman</module>
 		<module>phoenix-load-balancer</module>
+		<module>phoenix-environment</module>
 	</modules>
         <build>
                 <pluginManagement>
