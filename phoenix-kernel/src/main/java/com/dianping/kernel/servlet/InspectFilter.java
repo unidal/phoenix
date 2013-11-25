@@ -20,13 +20,13 @@ public class InspectFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-	      ServletException {
+			ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		String contextPath = req.getContextPath();
 		String requestUri = req.getRequestURI();
 		boolean matched = false;
 
-		if (contextPath == null || contextPath.equals("/")) {
+		if (contextPath == null || contextPath.length() == 0 || contextPath.equals("/")) {
 			matched = requestUri.startsWith("/jsp/inspect/") || requestUri.startsWith("//jsp/inspect/");
 		} else {
 			matched = requestUri.substring(contextPath.length()).startsWith("/jsp/inspect/");
