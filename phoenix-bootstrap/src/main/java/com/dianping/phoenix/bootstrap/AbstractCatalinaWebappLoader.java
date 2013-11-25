@@ -7,9 +7,11 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ServiceLoader;
+import java.util.jar.JarFile;
 
 import javax.servlet.ServletContext;
 
@@ -58,22 +60,17 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 
 	protected WebappClassLoader adjustWebappClassloader(WebappClassLoader classloader) {
 		try {
+			// *********** Debug Infos **************
 			if (m_debug) {
-				getLog().info(
-						String.format("Webapp classpath before adjust: %s.", Arrays.asList(classloader.getURLs())));
+				logBeforeClear(classloader);
 			}
+
 			m_appProvider = new OrderingReservedWepappProvider(m_appDocBase, classloader);
 
 			clearLoadedJars(classloader);
 
-			String appName = getAppNameFromDocBase(m_appDocBase);
-			File metafile = getMetaFileFromKernelBase(m_kernelDocBase);
-
-			initRepositories(new MetaBasedClasspathBuilder(metafile, appName).build(m_kernelProvider, m_appProvider));
-
-			if (m_debug) {
-				getLog().info(String.format("Webapp classpath: %s.", Arrays.asList(classloader.getURLs())));
-			}
+			initRepositories(new MetaBasedClasspathBuilder(getMetaFileFromKernelBase(m_kernelDocBase),
+					getAppNameFromDocBase(m_appDocBase)).build(m_kernelProvider, m_appProvider), classloader);
 
 			Container container = getContainer();
 			ServletContext ctx = ((StandardContext) container).getServletContext();
@@ -82,15 +79,113 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 			ctx.setAttribute(PHOENIX_WEBAPP_LOADER, this);
 			ctx.setAttribute(PHOENIX_WEBAPP_PROVIDER_KERNEL, m_kernelProvider);
 			ctx.setAttribute(PHOENIX_WEBAPP_PROVIDER_APP, m_appProvider);
+
+			// *********** Debug Infos **************
+			if (m_debug) {
+				logAfterClear(classloader);
+			}
 			return classloader;
 		} catch (Exception e) {
 			throw new RuntimeException("Error when adjusting webapp classloader!", e);
 		}
 	}
 
-	private void initRepositories(List<URL> urls) throws Exception {
-		setFieldValue(getClassLoader(), "repositories", new String[]{"/WEB-INF/classes/"});
-		setFieldValue(getClassLoader(), "files", new File[]{new File("/WEB-INF/classes/")});
+	private void logBeforeClear(WebappClassLoader classloader) {
+		System.out.println("\n================== Logs before ====================");
+		logWebappClassloaderStatus(classloader);
+	}
+
+	private void logAfterClear(WebappClassLoader classloader) {
+		System.out.println("\n++++++++++++++++++++ Logs after++++++++++++++++++++");
+		logWebappClassloaderStatus(classloader);
+	}
+
+	private void logWebappClassloaderStatus(WebappClassLoader classloader) {
+		logVar("contextName", classloader);
+		logVars("files", classloader);
+		logVar("hasExternalRepositories", classloader);
+		logJarFiles("jarFiles", classloader);
+		logVars("jarNames", classloader);
+		logVar("jarPath", classloader);
+		logVars("jarRealFiles", classloader);
+		logVar("lastJarAccessed", classloader);
+		logLongs("lastModifiedDates", classloader);
+		logVar("loaderDir", classloader);
+		logMap("loaderPC", classloader);
+		logVar("needConvert", classloader);
+		logMap("notFoundResources", classloader);
+		logVars("paths", classloader);
+		logVar("permissionList", classloader);
+		logVars("repositories", classloader);
+		logVars("repositoryURLs", classloader);
+		logMap("resourceEntries", classloader);
+		logVar("resources", classloader);
+		logVar("searchExternalFirst", classloader);
+		logVar("system", classloader);
+	}
+
+	private void logJarFiles(String title, WebappClassLoader classloader) {
+		try {
+			System.out.println(String.format("***** %s *****", title));
+			JarFile[] objs = getFieldValue(classloader, title);
+			for (JarFile obj : objs) {
+				System.out.println(obj.getName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void logLongs(String title, WebappClassLoader classloader) {
+		try {
+			System.out.println(String.format("***** %s *****", title));
+			long[] objs = getFieldValue(classloader, title);
+			for (long obj : objs) {
+				System.out.println(obj);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void logVar(String title, WebappClassLoader classloader) {
+		try {
+			Object obj = getFieldValue(classloader, title);
+			System.out.println(String.format("%s = %s", title, obj));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void logVars(String title, WebappClassLoader classloader) {
+		try {
+			System.out.println(String.format("***** %s *****", title));
+			Object[] objs = getFieldValue(classloader, title);
+			for (Object obj : objs) {
+				System.out.println(obj);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void logMap(String title, WebappClassLoader classloader) {
+		try {
+			System.out.println(String.format("***** %s *****", title));
+			Map<String, Object> objs = getFieldValue(classloader, title);
+			for (Entry<String, Object> entry : objs.entrySet()) {
+				System.out.println(String.format("%s = %s", entry.getKey(), entry.getValue()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void initRepositories(List<URL> urls, WebappClassLoader classloader) throws Exception {
+		String dir = "/WEB-INF/classes/";
+
+		setFieldValue(classloader, "repositories", new String[] { "app:" + dir, "phoenix:" + dir });
+		setFieldValue(classloader, "files", new File[] { new File(m_appDocBase, dir), new File(m_kernelDocBase, dir) });
 
 		for (URL url : urls) {
 			super.addRepository(url.toExternalForm());
@@ -111,8 +206,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		}
 		int lastSeparator = appDocBase.lastIndexOf(File.separator);
 		appDocBase = lastSeparator < 0 ? appDocBase : appDocBase.substring(lastSeparator + 1);
-		return appDocBase.endsWith(".war")
-				? appDocBase.substring(0, appDocBase.length() - ".war".length())
+		return appDocBase.endsWith(".war") ? appDocBase.substring(0, appDocBase.length() - ".war".length())
 				: appDocBase;
 	}
 
@@ -226,6 +320,7 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 
 	public Object invokeMethod(Class<?> clazz, Object instance, String methodName, Class<?>[] parameterTypes,
 			Object[] parameters) throws Exception {
+		System.out.println(clazz.getDeclaredMethods());
 		Method method = clazz.getMethod(methodName, parameterTypes);
 		if (!method.isAccessible()) {
 			method.setAccessible(true);
@@ -333,9 +428,8 @@ public abstract class AbstractCatalinaWebappLoader extends WebappLoader {
 		m_webappClassloader = adjustWebappClassloader((WebappClassLoader) getClassLoader());
 	}
 
-	protected static class Delegate<T extends AbstractCatalinaWebappLoader, S extends LifecycleHandler<T>>
-			implements
-				LifecycleListener {
+	protected static class Delegate<T extends AbstractCatalinaWebappLoader, S extends LifecycleHandler<T>> implements
+			LifecycleListener {
 		private T m_loader;
 
 		private LifecycleHandler<T> m_listener;

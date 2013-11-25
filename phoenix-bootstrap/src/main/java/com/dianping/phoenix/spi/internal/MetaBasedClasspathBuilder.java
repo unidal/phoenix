@@ -27,7 +27,8 @@ public class MetaBasedClasspathBuilder extends AbstractClasspathBuilder {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.out.println(String.format("[WARN] No kernel meta file [%s] found, use default pickup policy.",
+						metafile.toString()));
 			}
 		}
 	}
@@ -52,14 +53,14 @@ public class MetaBasedClasspathBuilder extends AbstractClasspathBuilder {
 				PickupPolicy policy = PickupPolicy.getByName(rule.getPolicy());
 				if (policy != null) {
 					switch (policy) {
-						case USE_APP :
-							return appEntry;
-						case USE_KERNEL :
-							return kernelEntry;
-						case USE_NEITHER :
-							return null;
-						default :
-							break;
+					case USE_APP:
+						return appEntry;
+					case USE_KERNEL:
+						return kernelEntry;
+					case USE_NEITHER:
+						return null;
+					default:
+						break;
 					}
 				}
 			}
