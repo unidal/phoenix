@@ -12,9 +12,9 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 import org.unidal.tuple.Triple;
-import org.unidal.webres.helper.Files;
 
 import com.dianping.phoenix.configure.ConfigManager;
 import com.dianping.phoenix.deploy.agent.AgentContext;
@@ -252,20 +252,14 @@ public class DeployExecutorTest extends ComponentTestCase {
 
 		@Override
 		public void onDeployPause(int deployId) throws Exception {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void onDeployCancel(int deployId) throws Exception {
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
 		public void onDeployContinue(int deployId) throws Exception {
-			// TODO Auto-generated method stub
-			
 		}
 	}
 }
