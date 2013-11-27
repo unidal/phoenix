@@ -23,7 +23,7 @@
                 <module>phoenix-router</module>
                 <module>phoenix-dev-core</module>
                 <module>phoenix-dev-agent</module>
-                <module>phoenix-dev-plugin</module>
+                <module>phoenix-maven-plugin</module>
                 <module>phoenix-byteman</module>
                 <module>phoenix-load-balancer</module>
                 <module>phoenix-environment</module>
