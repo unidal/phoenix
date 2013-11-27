@@ -6,6 +6,7 @@ server {
  
  	#foreach( $location in $config.server.locations)
     location $nginx.locationMatchOp($location.matchType) $location.pattern  {
+    	dp_domain $location.domain;
         #foreach( $directive in $location.directives)
       	$nginx.directive($directive)
         #end

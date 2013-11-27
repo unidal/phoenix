@@ -18,6 +18,8 @@ import com.dianping.phoenix.lb.model.configure.entity.VirtualServer;
  */
 public interface ModelStore {
 
+    public void init();
+
     public List<VirtualServer> listVirtualServers();
 
     public List<Strategy> listStrategies();
@@ -35,5 +37,11 @@ public interface ModelStore {
     public void removeVirtualServer(String name) throws BizException;
 
     public void addVirtualServer(String name, VirtualServer virtualServer) throws BizException;
+
+    public String tag(String name, int version) throws BizException;
+
+    public VirtualServer getTag(String name, String tagId) throws BizException;
+
+    public List<String> listTagIds(String name) throws BizException;
 
 }

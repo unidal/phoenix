@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <wizard>
-   <webapp package="com.dianping.phoenix" webres="true">
+   <webapp package="com.dianping.phoenix" webres="true" plugin-management="true">
       <module name="agent" path="agent">
          <page name="home" title="Home" default="true" path="home">
             <description>Home</description>
@@ -8,7 +8,9 @@
          <page name="deploy" title="Deploy" path="deploy">
             <description>Deploy</description>
          </page>
+         <page name="nginx" title="Nginx" path="nginx" template="default">
+            <description>Nginx</description>
+         </page>
       </module>
    </webapp>
 </wizard>
-

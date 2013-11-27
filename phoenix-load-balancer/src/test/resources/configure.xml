@@ -1,7 +1,9 @@
 <configure>
 	<strategies>
-		<strategy name="uri-hash" target="uri" method="crc32" creation-date="2013-10-15 16:40:00" last-modified-date="2013-10-15 16:40:00" />
-		<strategy />
+		<strategy name="uri-hash" type="hash" target="$request_uri" method="crc32" creation-date="2013-10-15 16:40:00"
+			last-modified-date="2013-10-15 16:40:00" />
+		<strategy name="ip-hash" type="ip-hash" creation-date="2013-10-15 16:40:00" last-modified-date="2013-10-15 16:40:00" />
+		<strategy name="roundrobin" type="roundrobin" creation-date="2013-10-15 16:40:00" last-modified-date="2013-10-15 16:40:00" />
 	</strategies>
 	<virtualServer name="www" state="ENABLED" availability="AVAILABLE" default-pool-name="Web.Index" domain="www.dianping.com"
 		port="80" creation-date="2013-10-15 16:40:00" last-modified-date="2013-10-15 16:40:00" version="1" access_log="logs/domain2.access.log  main">
@@ -19,17 +21,18 @@
 			<instance ip="10.2.1.2" />
 		</instances>
 		<locations>
-			<location match-type="prefix" pattern="/download">
+			<location domain="Web.Tuangou" match-type="prefix" pattern="/download">
 				<directive type="rewrite" matches="^(/download/.*)/media/(.*)\..*$" target-pattern="$1/mp3/$2.mp3" break="true" />
 				<directive type="rewrite" matches="^(/download/.*)/audio/(.*)\..*$" target-pattern="$1/mp3/$2.ra" last="true" />
 				<directive type="return" response-code="403" />
 			</location>
-			<location match-type="prefix" pattern="/shanghai">
+			<location domain="Web.Tuangou" match-type="prefix" pattern="/shanghai">
 				<directive type="accesslog" path="logs/access.log" format="main" />
 				<directive type="rewrite" matches="^(/shanghai/.*)/media/(.*)\..*$" target-pattern="$1/mp3/$2.mp3" break="true" />
 				<directive type="proxy_pass" pool-name="Web.Tuangou" />
 			</location>
-			<location match-type="regex" pattern="^/(images|javascript|js|css|flash|media|static)/" case-sensitive="true">
+			<location domain="Web.Tuangou" match-type="regex" pattern="^/(images|javascript|js|css|flash|media|static)/"
+				case-sensitive="true">
 				<directive type="static-resource" root-doc="/var/www/virtual/big.server.com/htdocs" expires="30d" />
 			</location>
 		</locations>

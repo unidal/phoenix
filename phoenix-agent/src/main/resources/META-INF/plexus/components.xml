@@ -260,5 +260,23 @@
 				</requirement>
 			</requirements>
 		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.page.nginx.Handler</role>
+			<implementation>com.dianping.phoenix.agent.page.nginx.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.phoenix.agent.page.nginx.JspViewer</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.phoenix.agent.page.nginx.JspViewer</role>
+			<implementation>com.dianping.phoenix.agent.page.nginx.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
+		</component>
 	</components>
 </plexus>

@@ -7,7 +7,6 @@
 package com.dianping.phoenix.lb.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.dianping.phoenix.lb.constant.Constants;
 import com.dianping.phoenix.lb.constant.MessageID;
 import com.dianping.phoenix.lb.dao.StrategyDao;
 import com.dianping.phoenix.lb.dao.VirtualServerDao;
@@ -24,6 +22,7 @@ import com.dianping.phoenix.lb.model.Availability;
 import com.dianping.phoenix.lb.model.State;
 import com.dianping.phoenix.lb.model.configure.entity.Configure;
 import com.dianping.phoenix.lb.model.configure.entity.Directive;
+import com.dianping.phoenix.lb.model.configure.entity.Instance;
 import com.dianping.phoenix.lb.model.configure.entity.Location;
 import com.dianping.phoenix.lb.model.configure.entity.Member;
 import com.dianping.phoenix.lb.model.configure.entity.Pool;
@@ -248,6 +247,10 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
         }
 
         for (Location location : virtualServer.getLocations()) {
+            if (StringUtils.isBlank(location.getDomain())) {
+                ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_LOCATION_NO_DOMAIN);
+            }
+
             for (Directive directive : location.getDirectives()) {
                 if (!TemplateManager.INSTANCE.availableFiles("directive").contains(directive.getType())) {
                     ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_DIRECTIVE_TYPE_NOT_SUPPORT,
@@ -260,7 +263,6 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
 
     @Override
     public String generateNginxConfig(VirtualServer virtualServer) throws BizException {
-        validate(virtualServer);
 
         Configure tmpConfigure = new Configure();
         for (Strategy strategy : strategyDao.list()) {
@@ -274,6 +276,81 @@ public class VirtualServerServiceImpl extends ConcurrentControlServiceTemplate i
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("config", visitor.getVisitorResult());
         return VelocityEngineManager.INSTANCE.merge(TemplateManager.INSTANCE.getTemplate("server", "default"), context);
+    }
+
+    @Override
+    public String push(final String virtualServerName, final int virtualServerVersion) throws BizException {
+        if (StringUtils.isBlank(virtualServerName)) {
+            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NAME_EMPTY);
+        }
+
+        return read(new ReadOperation<String>() {
+
+            @Override
+            public String doRead() throws BizException {
+                String tagId = virtualServerDao.tag(virtualServerName, virtualServerVersion);
+                VirtualServer tagVs = virtualServerDao.getTag(virtualServerName, tagId);
+                List<Instance> instances = virtualServerDao.find(virtualServerName).getInstances();
+                String nginxConfig = generateNginxConfig(tagVs);
+                pushConfig(nginxConfig, instances);
+                return tagId;
+            }
+
+        });
+
+    }
+
+    private void pushConfig(String nginxConfig, List<Instance> instances) {
+        for (Instance instance : instances) {
+            // TODO
+            // 1. commit git
+            // 2. push git
+            // 3. notify pull git
+            // 4. call nginx reload
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.dianping.phoenix.lb.service.VirtualServerService#listPushIds(java
+     * .lang.String)
+     */
+    @Override
+    public List<String> listPushIds(final String virtualServerName) throws BizException {
+        if (StringUtils.isBlank(virtualServerName)) {
+            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NAME_EMPTY);
+        }
+
+        return read(new ReadOperation<List<String>>() {
+
+            @Override
+            public List<String> doRead() throws BizException {
+                return virtualServerDao.listTags(virtualServerName);
+            }
+
+        });
+    }
+
+    @Override
+    public VirtualServer findTagById(final String virtualServerName, final String tagId) throws BizException {
+        if (StringUtils.isBlank(virtualServerName)) {
+            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_NAME_EMPTY);
+        }
+
+        if (StringUtils.isBlank(tagId)) {
+            ExceptionUtils.throwBizException(MessageID.VIRTUALSERVER_TAGID_EMPTY);
+        }
+
+        return read(new ReadOperation<VirtualServer>() {
+
+            @Override
+            public VirtualServer doRead() throws BizException {
+                return virtualServerDao.findTagById(virtualServerName, tagId);
+            }
+
+        });
     }
 
 }

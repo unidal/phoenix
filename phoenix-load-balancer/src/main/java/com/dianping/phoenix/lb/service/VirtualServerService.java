@@ -27,4 +27,10 @@ public interface VirtualServerService {
     void modifyVirtualServer(String virtualServerName, VirtualServer virtualServer) throws BizException;
 
     String generateNginxConfig(VirtualServer virtualServer) throws BizException;
+
+    String push(String virtualServerName, int virtualServerVersion) throws BizException;
+
+    List<String> listPushIds(String virtualServerName) throws BizException;
+
+    VirtualServer findTagById(String virtualServerName, String tagId) throws BizException;
 }

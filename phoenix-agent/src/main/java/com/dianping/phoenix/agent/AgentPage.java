@@ -7,7 +7,9 @@ public enum AgentPage implements Page {
 
    HOME("home", "home", "Home", "Home", true),
 
-   DEPLOY("deploy", "deploy", "Deploy", "Deploy", true);
+   DEPLOY("deploy", "deploy", "Deploy", "Deploy", true),
+
+   NGINX("nginx", "nginx", "Nginx", "Nginx", true);
 
    private String m_name;
 
