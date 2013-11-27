@@ -15,23 +15,23 @@
       <dependency>
          <groupId>org.unidal.framework</groupId>
          <artifactId>web-framework</artifactId>
-         <version>2.0.3-SNAPSHOT</version>
+         <version>2.0.4</version>
       </dependency>
       <dependency>
          <groupId>org.unidal.framework</groupId>
          <artifactId>dal-jdbc</artifactId>
-         <version>2.0.1-SNAPSHOT</version>
+         <version>2.0.4</version>
       </dependency>
       <dependency>
          <groupId>org.unidal.framework</groupId>
          <artifactId>test-framework</artifactId>
-         <version>2.0.0</version>
+         <version>2.0.4</version>
          <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.unidal.webres</groupId>
          <artifactId>WebResServer</artifactId>
-         <version>1.2.0</version>
+         <version>1.2.1</version>
       </dependency>
       <dependency>
          <groupId>javax.servlet</groupId>
@@ -97,7 +97,7 @@
       <dependency>
       	<groupId>org.jboss.netty</groupId>
       	<artifactId>netty</artifactId>
-      	<version>3.2.4.Final</version>
+      	<version>3.2.7.Final</version>
       </dependency>
    </dependencies>
    <build>
@@ -105,7 +105,7 @@
          <plugin>
             <groupId>org.unidal.maven.plugins</groupId>
             <artifactId>codegen-maven-plugin</artifactId>
-            <version>2.0.4-SNAPSHOT</version>
+            <version>2.0.5</version>
             <executions>
                <execution>
                   <id>generate projects model</id>
@@ -182,6 +182,23 @@ org.eclipse.jdt.core.compiler.compliance=1.6]]></content>
                   </additionalConfig>
                </configuration>
             </plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>exploded</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<webappDirectory>${webappDirectory}</webappDirectory>
+					<warName>phoenix-web-${env}-1.0.0-SNAPSHOT</warName>
+				</configuration>
+			</plugin>
          </plugins>
       </pluginManagement>
    </build>

@@ -7,20 +7,21 @@ import com.dianping.phoenix.agent.resource.entity.Domain;
 import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
 import com.dianping.phoenix.console.page.home.Payload;
+import com.dianping.phoenix.deploy.agent.AgentContext;
 
 public interface ResourceManager {
 
 	public Resource getResource();
 
-	public Domain updateDomainManually(String name);
+	public Domain refreshDomainManually(String domain);
+
+	public void refreshHostInternally(AgentContext context);
 
 	public Set<String> getAgentVersionSet();
 
-	public Set<String> getJarNameSet();
-	
-	public Set<String> getJarNameSet(String domainName);
+	public Set<String> getResourceJarNameSet();
 
-	public List<Product> getProducts();
+	public Set<String> getDomainJarNameSet(String domain);
 
 	public Domain getDomain(String name);
 

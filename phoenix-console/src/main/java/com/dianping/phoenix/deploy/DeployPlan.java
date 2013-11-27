@@ -1,7 +1,7 @@
 package com.dianping.phoenix.deploy;
 
 public class DeployPlan {
-	private String m_warType = "phoenix-kernel";
+	private DeployType m_warType = DeployType.KERNEL;
 
 	private String m_version;
 
@@ -23,7 +23,7 @@ public class DeployPlan {
 		return m_version;
 	}
 
-	public String getWarType() {
+	public DeployType getWarType() {
 		return m_warType;
 	}
 
@@ -59,7 +59,7 @@ public class DeployPlan {
 		m_version = version;
 	}
 
-	public void setWarType(String warType) {
+	public void setWarType(DeployType warType) {
 		m_warType = warType;
 	}
 

@@ -133,7 +133,7 @@ public class Tomcat6WebappLoader extends AbstractCatalinaWebappLoader {
 			Listener listener = loadListener(Listener.class, createBootstrapClassloader());
 
 			context.addLifecycleListener( //
-			      new Delegate<Tomcat6WebappLoader, LifecycleHandler<Tomcat6WebappLoader>>(this, listener));
+			new Delegate<Tomcat6WebappLoader, LifecycleHandler<Tomcat6WebappLoader>>(this, listener));
 		}
 	}
 

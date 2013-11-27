@@ -290,8 +290,8 @@ public class DeployStateTest extends ComponentTestCase {
 		}
 
 		@Override
-		public String getWarType() {
-			return "phoenix-kernel";
+		public DeployType getWarType() {
+			return DeployType.KERNEL;
 		}
 
 		protected boolean isDeploy(String url) {
@@ -346,5 +346,9 @@ public class DeployStateTest extends ComponentTestCase {
 			m_log.append(String.format("updateStatus: %s, %s\r\n", status.getName(), message));
 		}
 
+		@Override
+		public void refreshInternalInformation() {
+			//do nothing
+		}
 	}
 }

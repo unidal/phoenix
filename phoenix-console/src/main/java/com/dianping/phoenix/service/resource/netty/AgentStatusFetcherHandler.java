@@ -1,4 +1,4 @@
-package com.dianping.phoenix.service.netty;
+package com.dianping.phoenix.service.resource.netty;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -83,7 +83,7 @@ public class AgentStatusFetcherHandler extends SimpleChannelUpstreamHandler {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-		e.getChannel().close();
+		ctx.getChannel().close();
 		m_latch.countDown();
 	}
 }

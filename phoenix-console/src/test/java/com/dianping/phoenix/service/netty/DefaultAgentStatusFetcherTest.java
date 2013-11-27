@@ -9,6 +9,7 @@ import org.unidal.lookup.ComponentTestCase;
 import com.dianping.phoenix.agent.resource.entity.App;
 import com.dianping.phoenix.agent.resource.entity.Host;
 import com.dianping.phoenix.agent.resource.entity.Lib;
+import com.dianping.phoenix.service.resource.netty.AgentStatusFetcher;
 
 public class DefaultAgentStatusFetcherTest extends ComponentTestCase {
 

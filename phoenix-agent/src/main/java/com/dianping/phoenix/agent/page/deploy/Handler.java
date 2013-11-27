@@ -108,7 +108,6 @@ public class Handler implements PageHandler<Context> {
 				submitTask(task, txId, res, ctx);
 				break;
 			}
-			m_agentStatusHolder.onAgentStatusChanged();
 			break;
 
 		case STATUS:

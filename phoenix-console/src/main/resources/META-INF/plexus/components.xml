@@ -48,8 +48,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.service.netty.AgentStatusFetcher</role>
-			<implementation>com.dianping.phoenix.service.netty.DefaultAgentStatusFetcher</implementation>
+			<role>com.dianping.phoenix.service.resource.netty.AgentStatusFetcher</role>
+			<implementation>com.dianping.phoenix.service.resource.netty.DefaultAgentStatusFetcher</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -57,8 +57,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.phoenix.service.cmdb.DeviceManager</role>
-			<implementation>com.dianping.phoenix.service.cmdb.DefaultDeviceManager</implementation>
+			<role>com.dianping.phoenix.service.resource.cmdb.DeviceManager</role>
+			<implementation>com.dianping.phoenix.service.resource.cmdb.DefaultDeviceManager</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
@@ -82,13 +82,13 @@
 			<implementation>com.dianping.phoenix.service.resource.DefaultResourceManager</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.phoenix.service.netty.AgentStatusFetcher</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.phoenix.service.cmdb.DeviceManager</role>
+					<role>com.dianping.phoenix.service.resource.cmdb.DeviceManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.configure.ConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.resource.netty.AgentStatusFetcher</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -109,6 +109,9 @@
 				<requirement>
 					<role>com.dianping.phoenix.deploy.agent.AgentListener</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.resource.ResourceManager</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -128,6 +131,9 @@
 				<requirement>
 					<role>com.dianping.phoenix.deploy.agent.AgentListener</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.resource.ResourceManager</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -146,6 +152,9 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.phoenix.deploy.agent.AgentListener</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.phoenix.service.resource.ResourceManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -186,8 +195,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</role>
-			<implementation>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</implementation>
+			<role>org.unidal.dal.jdbc.datasource.JdbcDataSourceDescriptorManager</role>
+			<implementation>org.unidal.dal.jdbc.datasource.JdbcDataSourceDescriptorManager</implementation>
 			<configuration>
 				<datasourceFile>/data/appdatas/phoenix/datasources.xml</datasourceFile>
 			</configuration>
@@ -204,7 +213,7 @@
 				<statement-cache-size>1000</statement-cache-size>
 				<properties>
 					<driver>com.mysql.jdbc.Driver</driver>
-					<URL>jdbc:mysql://root:root@192.168.26.23:3306/phoenix</URL>
+					<url>jdbc:mysql://root:root@192.168.26.23:3306/phoenix</url>
 					<user>root</user>
 					<password></password>
 					<connectionProperties><![CDATA[useUnicode=true&autoReconnect=true]]></connectionProperties>
@@ -212,7 +221,7 @@
 			</configuration>
 			<requirements>
 				<requirement>
-					<role>org.unidal.dal.jdbc.datasource.JdbcDataSourceConfigurationManager</role>
+					<role>org.unidal.dal.jdbc.datasource.JdbcDataSourceDescriptorManager</role>
 				</requirement>
 			</requirements>
 		</component>

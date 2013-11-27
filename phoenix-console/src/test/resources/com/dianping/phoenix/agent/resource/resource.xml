@@ -3,7 +3,7 @@
 	<product name="TuanGou">
 		<domain name="TuanGouWeb">
 			<description>TuanGou Web Application</description>
-			<host ip="127.0.0.1" status="up" env="product" owner="marsqing">
+			<host ip="127.0.0.1" status="up" env="product" owner="marsqing" hostname="tuangou-web01.nh">
 				<phoenix-agent version="1.0.1" status="up"/> 
 				<container type="tomcat" version="6.2.0" status="up" install-path="/usr/local/tomcat/">
 					<app name="tuangou-web" version="1.2.3">

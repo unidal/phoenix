@@ -30,8 +30,8 @@ public class ConsoleContext<T extends ActionPayload<? extends Page, ? extends Ac
 				ServletContext servletContext = request.getSession().getServletContext();
 				File warRoot = new File(servletContext.getRealPath("/"));
 
-				System.out.println("[INFO] Working directory is " + System.getProperty("user.dir"));
-				System.out.println("[INFO] War root is " + warRoot);
+//				System.out.println("[INFO] Working directory is " + System.getProperty("user.dir"));
+//				System.out.println("[INFO] War root is " + warRoot);
 
 				ResourceRuntime.INSTANCE.removeConfig(contextPath);
 				ResourceInitializer.initialize(contextPath, warRoot);

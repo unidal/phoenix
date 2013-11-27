@@ -59,7 +59,7 @@
 					   	   <li><a href="${model.moduleUri}/home?op=agent-search">Search</a></li>
                          </ul>
                        </li>
-					   <li><a href="${model.moduleUri}/home?op=overview">Overview</a></li>
+					   <li><a href="${model.moduleUri}/home?op=overview">Category</a></li>
 					   <li><a href="${model.moduleUri}/home?op=about">About</a></li>
 					</ul>
 				</div>

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.unidal.lookup.annotation.Inject;
 
+import com.dianping.phoenix.agent.core.AgentStatusHolder;
 import com.dianping.phoenix.agent.core.tx.LogFormatter;
 
 public class Engine {
@@ -14,6 +15,9 @@ public class Engine {
 
 	@Inject
 	LogFormatter logFormatter;
+	
+	@Inject
+	AgentStatusHolder agentStatusHolder;
 
 	public int start(Step startStep, Context ctx) {
 		Step curStep = startStep;
@@ -35,6 +39,7 @@ public class Engine {
 			writeLogChunkTerminator(logOut);
 			curStep = curStep.getNextStep(exitCode);
 		}
+		agentStatusHolder.onAgentStatusChanged();
 		writeLogTerminator(logOut);
 		return exitCode;
 	}

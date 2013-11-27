@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="meta" root="true">
+    <entity-ref name="rule" type="list" names="rules" />
+  </entity>
+  <entity name="rule">
+    <attribute name="jar-pattern" value-type="String" />
+    <attribute name="version-in-app" value-type="String" />
+    <attribute name="version-in-kernel" value-type="String" />
+    <attribute name="policy" value-type="String" />
+    <element name="include-domain" value-type="String" type="list" names="include-domains" />
+    <element name="exclude-domain" value-type="String" type="list" names="exclude-domains" />
+  </entity>
+</model>
+

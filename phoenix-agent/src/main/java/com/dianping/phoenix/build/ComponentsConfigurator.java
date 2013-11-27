@@ -66,7 +66,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 				.req(Engine.class).req(LogFormatter.class));
 		all.add(C(TaskProcessorFactory.class));
 		all.add(C(TransactionManager.class, FileBasedTransactionManager.class));
-		all.add(C(Engine.class).req(LogFormatter.class));
+		all.add(C(Engine.class).req(LogFormatter.class, AgentStatusHolder.class));
 		all.add(C(Context.class, "kernel_ctx", KernelUpgradeContext.class).is(PER_LOOKUP) //
 				.req(ScriptExecutor.class, KernelUpgradeStepProvider.class));
 		all.add(C(Context.class, "agent_ctx", AgentUpgradeContext.class).is(PER_LOOKUP) //

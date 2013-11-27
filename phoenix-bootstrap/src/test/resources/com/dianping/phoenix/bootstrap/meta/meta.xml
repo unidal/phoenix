@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<meta>
+	<rule jar-pattern="spring.*" version-in-app="[3.0,4.0)" version-in-kernel="[1.0,3.0)" policy="use-app|use-kernel|none|continue">
+		<include-domain>user-web</include-domain>
+		<include-domain>shop-web</include-domain>
+	</rule>
+	<rule jar-pattern="struts-framework" version-in-app="*" version-in-kernel="3.5" policy="use-app|use-kernel|none|continue">
+		<exclude-domain>shop-service</exclude-domain>
+		<exclude-domain>shop-service</exclude-domain>
+	</rule>
+</meta>

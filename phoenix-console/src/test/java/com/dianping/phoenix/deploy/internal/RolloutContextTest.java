@@ -8,12 +8,11 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.dianping.phoenix.configure.ConfigManager;
+import com.dianping.phoenix.deploy.DeployType;
 import com.dianping.phoenix.deploy.agent.AgentListener;
-import com.dianping.phoenix.deploy.internal.DefaultDeployExecutor.ControllerTask;
-import com.dianping.phoenix.deploy.internal.DefaultDeployExecutor.RolloutContext;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
-public class RolloutContextTest {
+public class RolloutContextTest extends DefaultDeployExecutor{
 
 	@Test
 	public void testOpenUrlReconnect() throws IOException {
@@ -24,7 +23,7 @@ public class RolloutContextTest {
 		ControllerTask controller = mock(ControllerTask.class);
 		ConfigManager configManager = mock(ConfigManager.class);
 		when(controller.getConfigManager()).thenReturn(configManager );
-		RolloutContext ctx = new RolloutContext(controller, listener, model, warType, host);
+		RolloutContext ctx = new RolloutContext(controller, listener, model, DeployType.get(warType), host);
 		ctx.openUrl("?op=log&");
 	}
 	

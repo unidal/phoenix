@@ -28,11 +28,16 @@
 		<agent-fetch-read-timeout>50</agent-fetch-read-timeout>
 		<agent-fetch-interval-min>10</agent-fetch-interval-min>
 		<resource-info-refresh-interval-min>30</resource-info-refresh-interval-min>
+		<environment>生产</environment>
+		<environment>预发</environment>
+		<product>信息线</product>
+		<product>商务线</product>
 		<cmdb>
 			<base-url-pattern><![CDATA[http://10.1.1.129/cmdb/device%s&wt=xml]]></base-url-pattern>
 			<catalog-url-part><![CDATA[/s?q=*&facet=catalog]]></catalog-url-part>
 			<domain-url-pattern-part><![CDATA[/s?q=catalog:%s&facet=app]]></domain-url-pattern-part>
 			<ip-url-pattern-part><![CDATA[/s?q=app:%s&facet=private_ip]]></ip-url-pattern-part>
+			<timeout-in-second>3</timeout-in-second>
 		</cmdb>
 	</console>
 </config>

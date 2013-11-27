@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 
@@ -16,6 +17,7 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.phoenix.agent.resource.entity.Domain;
+import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.console.ConsolePage;
 import com.dianping.phoenix.console.dal.deploy.Deliverable;
 import com.dianping.phoenix.console.dal.deploy.Deployment;
@@ -79,7 +81,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 					DeployPlan plan = payload.getPlan();
 
 					try {
-						Deployment deploy = m_projectManager.findActiveDeploy(plan.getWarType(), name);
+						Deployment deploy = m_projectManager.findActiveDeploy(plan.getWarType().getName(), name);
 
 						if (deploy != null) {
 							ctx.redirect(deployUri + "?id=" + deploy.getId());
@@ -129,7 +131,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 				DeployPlan plan = payload.getPlan();
 
 				try {
-					String warType = plan.getWarType();
+					String warType = plan.getWarType().getName();
 					Domain domain = m_resourceManager.getFilteredDomain(payload, name);
 					List<Deliverable> versions = m_deliverableManager.getAllDeliverables(warType,
 							DeliverableStatus.ACTIVE);
@@ -146,7 +148,7 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 
 				break;
 			case SEARCHJAR :
-				List<String> jarList = new ArrayList<String>(m_resourceManager.getJarNameSet());
+				List<String> jarList = new ArrayList<String>(m_resourceManager.getResourceJarNameSet());
 				Collections.sort(jarList);
 				model.setLibs(jarList);
 				break;
@@ -156,12 +158,12 @@ public class Handler implements PageHandler<Context>, LogEnabled {
 				model.setAgentVersions(agentList);
 				break;
 			case OVERVIEW :
-				model.setProducts(m_resourceManager.getProducts());
+				model.setProducts(new ArrayList<Product>(m_resourceManager.getResource().getProducts().values()));
 				break;
 			case DOMAININFO :
 				Domain domain = m_resourceManager.getDomain(payload.getDomaininfo());
 				if (domain != null) {
-					List<String> list = new ArrayList<String>(m_resourceManager.getJarNameSet(domain.getName()));
+					List<String> list = new ArrayList<String>(m_resourceManager.getDomainJarNameSet(domain.getName()));
 					Collections.sort(list);
 					model.setDomainInfos(domain, list);
 				}

@@ -3,6 +3,7 @@ package com.dianping.phoenix.deploy.agent;
 import java.io.IOException;
 
 import com.dianping.phoenix.configure.ConfigManager;
+import com.dianping.phoenix.deploy.DeployType;
 import com.dianping.phoenix.deploy.model.entity.DeployModel;
 
 public interface AgentContext {
@@ -28,7 +29,7 @@ public interface AgentContext {
 
 	public String getVersion();
 
-	public String getWarType();
+	public DeployType getWarType();
 
 	public boolean isSkipTest();
 
@@ -45,4 +46,6 @@ public interface AgentContext {
 	public void setState(AgentState state);
 
 	public void updateStatus(AgentStatus status, String message);
+	
+	public void refreshInternalInformation();
 }

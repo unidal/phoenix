@@ -1,5 +1,7 @@
 package com.dianping.phoenix.console.page.home;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.unidal.web.mvc.ViewModel;
@@ -71,6 +73,12 @@ public class Model extends ViewModel<ConsolePage, Action, Context> {
 
 	public void setProducts(List<Product> products) {
 		m_products = products;
+		Collections.sort(m_products, new Comparator<Product>() {
+			@Override
+			public int compare(Product o1, Product o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 	}
 
 	public Domain getDomain() {

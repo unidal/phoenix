@@ -3,6 +3,8 @@ package com.dianping.phoenix.deliverable;
 import java.io.File;
 import java.util.List;
 
+import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.Logger;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.helper.Threads;
@@ -19,7 +21,7 @@ import com.dianping.phoenix.service.GitService;
 import com.dianping.phoenix.service.LogService;
 import com.dianping.phoenix.service.WarService;
 
-public class DefaultDeliverableManager implements DeliverableManager {
+public class DefaultDeliverableManager implements DeliverableManager, LogEnabled {
 	@Inject
 	private WarService m_warService;
 
@@ -32,14 +34,20 @@ public class DefaultDeliverableManager implements DeliverableManager {
 	@Inject
 	private LogService m_logService;
 
+	private Logger m_logger;
+
 	@Override
 	public boolean createDeliverable(String type, String version, String description) throws Exception {
 		try {
-			m_dao.findActiveByTypeAndVersion(type, version, DeliverableEntity.READSET_FULL);
+			Deliverable deliverable = m_dao.findActiveByTypeAndVersion(type, version, DeliverableEntity.READSET_FULL);
+			if (deliverable != null) {
+				m_logger.warn(String.format("Version(%s) of %s is already existed!", type, version));
+			}
 			m_logService.log(type + ":" + version, "Version(%s) of %s is already existed!", type, version);
 			return false;
 		} catch (DalNotFoundException e) {
 			// expected
+			m_logger.info(String.format("No current deliverable(%s, %s), create it now.", type, version));
 		}
 
 		Deliverable d = createLocal(type, version, description, "N/A", "phoenix");
@@ -52,7 +60,7 @@ public class DefaultDeliverableManager implements DeliverableManager {
 	}
 
 	private Deliverable createLocal(String type, String version, String description, String releaseNotes,
-	      String createdBy) {
+			String createdBy) {
 		Deliverable d = m_dao.createLocal();
 
 		d.setWarType(type);
@@ -112,6 +120,7 @@ public class DefaultDeliverableManager implements DeliverableManager {
 			String version = m_d.getWarVersion();
 			String key = type + ":" + version;
 			Transaction t = Cat.newTransaction(type, version);
+			m_logger.info(String.format("Start creating the deliverable(%s:%s)!", type, version));
 
 			try {
 				m_gitService.setup(ctx);
@@ -139,7 +148,8 @@ public class DefaultDeliverableManager implements DeliverableManager {
 					m_d.setStatus(DeliverableStatus.ABORTED.getId());
 					m_dao.updateByPK(m_d, DeliverableEntity.UPDATESET_FULL);
 				} catch (DalException ex) {
-					m_logService.log(key, "Error when removing the deliverable(%s:%s)! Message: %s.", type, version, ex);
+					m_logService
+							.log(key, "Error when removing the deliverable(%s:%s)! Message: %s.", type, version, ex);
 
 					Cat.logError(ex);
 				}
@@ -151,5 +161,10 @@ public class DefaultDeliverableManager implements DeliverableManager {
 		@Override
 		public void shutdown() {
 		}
+	}
+
+	@Override
+	public void enableLogging(Logger logger) {
+		m_logger = logger;
 	}
 }

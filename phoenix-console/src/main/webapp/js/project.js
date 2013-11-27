@@ -6,6 +6,22 @@ $(function() {
 	$("a.toParent").attr("href", function() {
 		return $(this).attr("href") + payloadStr;
 	});
+	var navtable = $("#host-nav").dataTable({
+		"bFilter" : false,
+		"bInfo" : false,
+		"bLengthChange" : false,
+		"bPaginate" : false,
+		"aoColumns" : [ {
+			"bSortable" : false
+		}, null, {
+			"bSortable" : false
+		}, null, {
+			"bSortable" : false
+		}, null, {
+			"bSortable" : false
+		} ]
+	});
+	navtable.fnSort([ [ 3, 'asc' ] ]);
 });
 
 function bind_cmp_evt_handlers() {
@@ -46,7 +62,9 @@ function parsePayload() {
 
 	if (queryTips != "") {
 		$("#queryInfo").html(queryTips);
-		$("#queryInfo").parent().css({"display":""});
+		$("#queryInfo").parent().css({
+			"display" : ""
+		});
 	}
 }
 

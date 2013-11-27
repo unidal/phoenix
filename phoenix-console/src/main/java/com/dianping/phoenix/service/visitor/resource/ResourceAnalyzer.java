@@ -11,6 +11,7 @@ import com.dianping.phoenix.agent.resource.entity.Host;
 import com.dianping.phoenix.agent.resource.entity.Kernel;
 import com.dianping.phoenix.agent.resource.entity.Lib;
 import com.dianping.phoenix.agent.resource.entity.PhoenixAgent;
+import com.dianping.phoenix.agent.resource.entity.Product;
 import com.dianping.phoenix.agent.resource.entity.Resource;
 import com.dianping.phoenix.utils.StringUtils;
 
@@ -20,15 +21,22 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 	private Set<String> m_agentVersionSet = new HashSet<String>();
 	private Set<String> m_jarNameSet = new HashSet<String>();
 	private Map<String, Set<String>> m_domainToJarNameSet = new HashMap<String, Set<String>>();
-	private Map<String, Domain> m_domains = new HashMap<String, Domain>();
 
 	private Domain m_currentDomain;
 	private Set<String> m_currentDomainJarNameSet;
 	private int m_currentDomainActiveCount;
 	private int m_currentDomainInactiveCount;
+	private int m_currentProductActiveCount;
+	private int m_currentProductInactiveCount;
+	
+	private Resource m_resource;
 
 	public ResourceAnalyzer(Resource resource) {
-		visitResource(resource);
+		m_resource = resource;
+	}
+
+	public void analysis() {
+		visitResource(m_resource);
 	}
 
 	public Set<String> getAgentVersionSet() {
@@ -43,24 +51,24 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 		return m_domainToJarNameSet;
 	}
 
-	public Map<String, Domain> getDomains() {
-		return m_domains;
-	}
-
 	@Override
 	public void visitDomain(Domain domain) {
 		m_currentDomain = domain;
 		m_currentDomainActiveCount = 0;
 		m_currentDomainInactiveCount = 0;
+		
+		m_currentDomain.getAppVersions().clear();
+		m_currentDomain.getKernelVersions().clear();
 
 		if (!StringUtils.isBlank(domain.getName())) {
-			m_domains.put(domain.getName(), domain);
-
 			m_currentDomainJarNameSet = new HashSet<String>();
 			super.visitDomain(domain);
 			m_domainToJarNameSet.put(domain.getName(), m_currentDomainJarNameSet);
 			m_currentDomain.setActiveCount(m_currentDomainActiveCount);
 			m_currentDomain.setInactiveCount(m_currentDomainInactiveCount);
+
+			m_currentProductActiveCount += m_currentDomainActiveCount;
+			m_currentProductInactiveCount += m_currentDomainInactiveCount;
 		}
 	}
 
@@ -86,7 +94,13 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 
 	@Override
 	public void visitHost(Host host) {
-		m_currentDomain.addOwner(StringUtils.getDefaultValueIfBlank(host.getOwner(), "NONE"));
+		String owner = StringUtils.getDefaultValueIfBlank(host.getOwner(), "NONE");
+		if (!"NONE".equals(owner)) {
+			m_currentDomain.addOwner(owner);
+		}
+		if (host.getPhoenixAgent() == null) {
+			m_currentDomainInactiveCount++;
+		}
 		super.visitHost(host);
 	}
 
@@ -101,4 +115,16 @@ public class ResourceAnalyzer extends BaseResourceVisitor {
 		m_currentDomain.addKernelVersion(StringUtils.getDefaultValueIfBlank(kernel.getVersion(), "NONE"));
 		super.visitKernel(kernel);
 	}
+
+	@Override
+	public void visitProduct(Product product) {
+		m_currentProductActiveCount = 0;
+		m_currentProductInactiveCount = 0;
+
+		super.visitProduct(product);
+
+		product.setProductActiveCount(m_currentProductActiveCount);
+		product.setProductInactiveCount(m_currentProductInactiveCount);
+	}
+
 }

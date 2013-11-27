@@ -37,8 +37,9 @@ public abstract class AbstractClasspathBuilder implements ClasspathBuilder {
 						urls.add(appEntry.getFile().toURI().toURL());
 					} else {
 						Entry entry = pickup(kernelEntry, appEntry);
-
-						urls.add(entry.getFile().toURI().toURL());
+						if (entry != null) {
+							urls.add(entry.getFile().toURI().toURL());
+						}
 					}
 				} else {
 					urls.add(appEntry.getFile().toURI().toURL());

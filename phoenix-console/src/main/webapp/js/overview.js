@@ -5,7 +5,7 @@ $("li").click(function() {
 	var domain = $(this).text();
 	$.ajax({
 		async : false,
-		url : "/phoenix/console/home",
+		url : "/console/home",
 		data : {
 			"op" : "domaininfo",
 			"getdomain" : domain

@@ -51,6 +51,8 @@ public class FilteredResourceBuilder extends BaseResourceVisitor {
 		}
 		m_resource = new Resource();
 		super.visitResource(resource);
+		
+		new ResourceAnalyzer(m_resource).analysis();
 	}
 
 	public Resource getFilteredResource() {

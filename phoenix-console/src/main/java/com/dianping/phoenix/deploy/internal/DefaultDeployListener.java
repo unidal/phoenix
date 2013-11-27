@@ -44,7 +44,7 @@ public class DefaultDeployListener implements DeployListener {
 		d.setStatus(1); // 1 - created
 		d.setDeployedBy("phoenix"); // TODO use real user name
 		d.setWarVersion(plan.getVersion());
-		d.setWarType(plan.getWarType()); // kernel, agent
+		d.setWarType(plan.getWarType().getName()); // kernel, agent
 
 		return d;
 	}
