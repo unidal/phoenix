@@ -1,4 +1,4 @@
-package com.dianping.platform.session.console;
+package com.dianping.phoenix.session.console;
 
 import org.unidal.web.mvc.Page;
 import org.unidal.web.mvc.annotation.ModuleMeta;

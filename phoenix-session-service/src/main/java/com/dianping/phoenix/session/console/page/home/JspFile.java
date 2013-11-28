@@ -1,4 +1,4 @@
-package com.dianping.platform.session.console.page.home;
+package com.dianping.phoenix.session.console.page.home;
 
 public enum JspFile {
 	VIEW("/jsp/console/home.jsp"),

@@ -1,6 +1,6 @@
-package com.dianping.platform.session.console.page.home;
+package com.dianping.phoenix.session.console.page.home;
 
-import com.dianping.platform.session.console.ConsolePage;
+import com.dianping.phoenix.session.console.ConsolePage;
 import org.unidal.web.mvc.ViewModel;
 
 public class Model extends ViewModel<ConsolePage, Action, Context> {

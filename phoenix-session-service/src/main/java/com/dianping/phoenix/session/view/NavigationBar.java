@@ -1,6 +1,6 @@
-package com.dianping.platform.session.view;
+package com.dianping.phoenix.session.view;
 
-import com.dianping.platform.session.console.ConsolePage;
+import com.dianping.phoenix.session.console.ConsolePage;
 import org.unidal.web.mvc.Page;
 
 public class NavigationBar {

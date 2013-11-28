@@ -1,6 +1,6 @@
 <%@ tag trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<jsp:useBean id="navBar" class="com.dianping.platform.session.view.NavigationBar" scope="page" />
+<jsp:useBean id="navBar" class="com.dianping.phoenix.session.view.NavigationBar" scope="page" />
 
 <!DOCTYPE html>
 <html lang="en">

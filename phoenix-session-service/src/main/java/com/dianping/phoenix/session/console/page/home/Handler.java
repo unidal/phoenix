@@ -1,10 +1,10 @@
-package com.dianping.platform.session.console.page.home;
+package com.dianping.phoenix.session.console.page.home;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 
-import com.dianping.platform.session.console.ConsolePage;
+import com.dianping.phoenix.session.console.ConsolePage;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;

@@ -5,26 +5,26 @@
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
 				<modules>
-					<module default="true">com.dianping.platform.session.console.ConsoleModule</module>
+					<module default="true">com.dianping.phoenix.session.console.ConsoleModule</module>
 				</modules>
 			</configuration>
 		</component>
 		<component>
-			<role>com.dianping.platform.session.console.ConsoleModule</role>
-			<implementation>com.dianping.platform.session.console.ConsoleModule</implementation>
+			<role>com.dianping.phoenix.session.console.ConsoleModule</role>
+			<implementation>com.dianping.phoenix.session.console.ConsoleModule</implementation>
 		</component>
 		<component>
-			<role>com.dianping.platform.session.console.page.home.Handler</role>
-			<implementation>com.dianping.platform.session.console.page.home.Handler</implementation>
+			<role>com.dianping.phoenix.session.console.page.home.Handler</role>
+			<implementation>com.dianping.phoenix.session.console.page.home.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.platform.session.console.page.home.JspViewer</role>
+					<role>com.dianping.phoenix.session.console.page.home.JspViewer</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.platform.session.console.page.home.JspViewer</role>
-			<implementation>com.dianping.platform.session.console.page.home.JspViewer</implementation>
+			<role>com.dianping.phoenix.session.console.page.home.JspViewer</role>
+			<implementation>com.dianping.phoenix.session.console.page.home.JspViewer</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.web.mvc.view.model.ModelHandler</role>

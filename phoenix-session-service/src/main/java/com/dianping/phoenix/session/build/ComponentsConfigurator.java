@@ -1,4 +1,4 @@
-package com.dianping.platform.session.build;
+package com.dianping.phoenix.session.build;
 
 import java.util.ArrayList;
 import java.util.List;

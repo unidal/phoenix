@@ -1,9 +1,9 @@
-package com.dianping.platform.session.build;
+package com.dianping.phoenix.session.build;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dianping.platform.session.console.ConsoleModule;
+import com.dianping.phoenix.session.console.ConsoleModule;
 
 import org.unidal.lookup.configuration.Component;
 import org.unidal.web.configuration.AbstractWebComponentsConfigurator;

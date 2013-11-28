@@ -1,4 +1,4 @@
-package com.dianping.platform.session;
+package com.dianping.phoenix.session;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
