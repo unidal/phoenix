@@ -4,12 +4,12 @@
 
 # Client => Server
 
-    <guid, sha1(url), sha1(refer-url), request-id>
+    <guid, sha1(url), sha1(refer-url), request-id, 0>
 
 
 # Server => Server
 
-    <guid, sha1(url), sha1(refer-url), request-id>
+    <guid, sha1(url), sha1(refer-url), request-id, 1>
 
 
 # Server => File
